@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+    <head>
+<title>Devinci βeta</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" type="text/css" href="CSS/SFPro.css">
+<link rel="stylesheet" type="text/css" href="CSS/ac-localnav.built.css">
+<link rel="stylesheet" type="text/css" href="CSS/ac-globalfooter.built.css">
+<link rel="stylesheet" type="text/css" href="CSS/fonts.css">
+<link rel="stylesheet" type="text/css" href="CSS/main.built.css">
+<link rel="stylesheet" type="text/css" href="CSS/overview.built.css">
+<link rel="stylesheet" type="text/css" href="CSS/overview.css">
+<link rel="stylesheet" type="text/css" href="CSS/modal.css">
+<link rel="stylesheet" type="text/css" href="https://appleseedcdn.apple.com/sp/assets/open/tenten/application-d783f421c8a5970f586701a92770ae620b34df932e15dff6e342206ae315431e.css">
+<style>
+    * {
+        --indigo: #009688;
+    }
+
+    .segmented-control {
+    display: table;
+    margin: 0 auto;
+  
+    padding: 0;
+}
+
+.segmented-control__item {
+    display: table-cell;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.segmented-control__input {
+    position: absolute;
+    visibility: hidden;
+}
+
+.segmented-control__label {
+    
+    display: block;
+    margin: 0 -1px -1px 0; /* -1px margin removes double-thickness borders between items */
+    padding: 1em .25em;
+    padding-left: 25px;
+    padding-right: 25px;
+    border: 1px solid #ddd;
+
+    font: 14px/1.5 sans-serif; 
+    text-align: center;  
+
+    cursor: pointer;
+}
+
+.segmented-control__label:hover {
+    background: #fafafa;
+}
+
+.segmented-control__input:checked + .segmented-control__label {
+    background: #eee;
+    color: #333; 
+}
+
+
+</style>
+
+</head>
+<body>
+    <nav class="large-pad-bottom localnav" id="localnav" role="navigation">
+        <div class="localnav-wrapper">
+            <div class="localnav-background"></div>
+            <div class="localnav-content">
+                <div class="localnav-title localnav-title-compact">
+                    <a href="/beta.html"
+                        >Programme
+                        Devinci βeta</a>
+                </div>
+                <div class="localnav-menu">
+                    <a class="localnav-menucta-anchor localnav-menucta-anchor-open" href="#localnav-menustate"
+                        id="localnav-menustate-open" role="button"
+                        >
+                        <span class="localnav-menucta-anchor-label">Open Menu</span>
+                    </a>
+                    <a class="localnav-menucta-anchor localnav-menucta-anchor-close" href="#"
+                        id="localnav-menustate-close" role="button"
+                        >
+                        <span class="localnav-menucta-anchor-label">Close Menu</span>
+                    </a>
+                    <div class="localnav-menu-tray">
+                        <ul class="localnav-menu-items">
+                            
+                            <li class="localnav-menu-item">
+                                <a class="localnav-menu-link"
+                                    href="/"
+                                    >Accueil</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="localnav-actions localnav-actions-center">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <label for="localnav-menustate" id="localnav-curtain"></label>
+    
+
+    <div class="text-center content">
+        <div aria-label="Programme de logiciels bêta d’Apple" class="medium-pad-bottom picture-welcome-hero item-center"
+            title="Programme de logiciels bêta d’Apple" style="background-image: url(ASSETS/images/devinci_beta.svg); background-size: contain;"></div>
+        
+        <div class="row">
+            <div class="large-12 medium-10 small-11 column large-centered small-centered">
+                <p class="typography-intro-elevated medium-pad-bottom">Testez en avant première les dernières nouveautés de l'application Devinci. Avec le programme Devinci βeta pour iOS et Android vous avez la possibilité d'aider au développement des futures versions de l'application en faisant remonter vos commentaires et potentiels problèmes</p>
+                
+            </div>
+        </div>
+        
+        <a class="button" href="#ios"
+            >Devinci βeta iOS</a>&nbsp;
+            <a class="button" href="#android"
+            >Devinci βeta Android</a>
+        
+        <hr class="large-pad-top medium-pad-bottom">
+        <div class="row">
+            
+            <div id="ios" class="large-12 medium-10 small-11 column large-centered small-centered">
+                <h4 class="typography-headline-reduced">Devinci βeta iOS</h4>
+                <p class="typography-intro-elevated medium-pad-bottom">Méthode simple avec AltStore :</p>
+                
+                <ul class="segmented-control">
+                    <li class="segmented-control__item">
+                        <input class="segmented-control__input" type="radio" value="1" name="option" id="option-1" checked onclick="document.getElementById('macos_alt').style.display = ''; document.getElementById('windows_alt').style.display = 'none';">
+                        <label class="segmented-control__label" for="option-1">macOS</label>
+                    </li>
+                    <li class="segmented-control__item">
+                        <input class="segmented-control__input" type="radio" value="2" name="option" id="option-2" onclick="document.getElementById('macos_alt').style.display = 'none'; document.getElementById('windows_alt').style.display = '';" >
+                        <label class="segmented-control__label" for="option-2">Windows</label>
+                    </li>
+                </ul>
+                <br>
+                <div id="macos_alt">
+                    <ol style="text-align: left;
+                    width: 80%;
+                    margin: 0 auto;">
+                        <li>Télécharger <a href="https://www.altstore.io/">AltStore</a>. Utilisez le lien correspondant à votre système d'exploitation.</li>
+                        <li> Décompressez et déplacez AltStore dans votre dossier Applications.</li>
+                        <li> Lancer l'application AltStore.</li>
+                        <li>Cliquez sur l'icône AltStore dans la barre de menu, puis cliquez sur l'option Install Mail Plug-in.</li>
+                        <li>Ouvrir l'application Mail, et cliquer sur Mail → Préférences dans la barre de menu.</li>
+                        <li>Ouvrir l'onglet Général dans les préférences de messagerie, cliquer sur Gérer les plug-ins, cocher AltPlugin, puis appliquer et redémarrer Mail.</li>
+                        <li>Connectez votre appareil iOS via USB.</li>
+                        <li>Cliquez sur AltStore dans la barre de menu, puis allez à Installer AltStore → (Votre appareil iOS)</li>
+                        <li>Connectez-vous avec votre identifiant Apple lorsque vous y êtes invité et cliquez sur installer.</li>
+                        <li>Sur votre appareil iOS, ouvrez Réglages → General → Gestion de l'appareil et tapez sur votre Apple ID.</li>
+                        <li>Faites confiance à AltStore.</li>
+                    </ol>
+                </div>
+                <div id="windows_alt" style="display: none">
+                    <ol style="text-align: left;
+                    width: 80%;
+                    margin: 0 auto;">
+                        <li>
+                            Installer iTunes (Win32 et pas UWP)
+                            <ul>
+                                <li><a href="https://www.apple.com/itunes/download/win64">Téléchargement 64 Bits</a></li>
+                                <li><a href="https://www.apple.com/itunes/download/win32">Téléchargement 32 bits</a></li>
+                            </ul>
+                        </li>
+                        <li>Télécharger <a href="https://www.altstore.io/">AltStore</a>. Utilisez le lien correspondant à votre système d'exploitation.</li>
+                        <li>Clique-droit sur le fichier zip que vous venez de télécharger et cliquez sur "Extraire tout" Attendez que cela se termine.</li>
+                        <li>Double-cliquez sur "Setup.exe" et suivez les instructions à l'écran fournies par AltStore.</li>
+                        <li>Pressez la touche Windows, tapez "AltServer" et ouvrez l'application.</li>
+                        <li>Cliquez sur l'icône en forme de flèche près de l'icône du réseau dans la barre des tâches. Cela fera apparaître un menu avec plusieurs icônes. Cherchez un logo en forme de diamant qui indique AltServer lorsque vous passez la souris dessus. Cliquez dessus. </li>
+                        <li>À partir de l'option proposée, survolez Install AltStore, et sélectionnez votre appareil iOS.</li>
+                        <li>Entrez votre identifiant et votre mot de passe Apple lorsque vous y êtes invité.</li>
+                        <li>Sur votre appareil iOS, ouvrez Réglages → General → Gestion de l'appareil et tapez sur votre Apple ID.</li>
+                        <li>Faites confiance à AltStore.</li>
+                        
+                    </ol>
+                </div>
+                <br>
+                <a class="button" href="altstore://install?url=https://photo.antoineraulin.com/devinci/devinci.ipa"
+            >Installer avec AltStore</a>
+            <br>
+            <p style="margin-top: 28px;" class="typography-intro-elevated medium-pad-bottom">Méthode avancée :</p>
+            <p>Installer Devinci βeta à l'aide d'un fichier .ipa. Vous pouvez utiliser Xcode + <a href="https://dantheman827.github.io/ios-app-signer/">iOS App Signer</a> ou <a href="http://www.cydiaimpactor.com/">Cydia Impactor</a> si vous êtes sur macOS, <a href="http://www.cydiaimpactor.com/">Cydia Impactor</a> pour Windows ou Linux, ou un service d'installation hors-AppStore tel que <a href="https://appdb.to/">appDB</a>.</p>
+            <a class="button" href="https://photo.antoineraulin.com/devinci/devinci.ipa"
+            >devinci.ipa</a>
+            <p style="margin-top: 28px;" class="typography-intro-elevated medium-pad-bottom">S'inscrire pour les futures mise-à-jour</p>
+            <p>Contacter le développeur en cliquant <a href="mailto:antoine@araulin.eu?subject=Inscription Devinci βeta">ici</a> pour être inscrit au programme beta sur <a href="https://appcenter.ms">AppCenter</a></p>
+            </div>
+        </div>
+        <hr class="large-pad-top medium-pad-bottom">
+        <div class="row">
+            
+            <div id="android" class="large-12 medium-10 small-11 column large-centered small-centered">
+                <h4 class="typography-headline-reduced">Devinci βeta Android</h4>
+                
+                
+            
+            <p>Installer Devinci βeta à l'aide d'un fichier d'installation .apk. Il vous suffit de télécharger le fichier devinci.apk, de cliquer sur la notification de téléchargement pour lancer l'installation de Devinci βeta.</p>
+            <a  class="button" href="https://github.com/antoineraulin/devinci-app/releases/download/v1.0.6/devinci.apk"
+            >devinci.apk</a>
+            <p style="margin-top: 28px;" class="typography-intro-elevated medium-pad-bottom">S'inscrire pour les futures mise-à-jour</p>
+            <p style="margin-bottom: 28px">Contacter le développeur en cliquant <a href="mailto:antoine@araulin.eu?subject=Inscription Devinci βeta">ici</a> pour être inscrit au programme beta sur <a href="https://appcenter.ms">AppCenter</a></p>
+            
+            </div>
+        </div>
+    </div>
+    <script>
+
+    </script>
+
+    <footer aria-labelledby="footer-label" class="footer" id="footer" role="contentinfo">
+        <div class="footer-content">
+            <h2 class="footer-label" id="footer-label">Footer</h2>
+            <section class="footer-mini" typeof="Organization" vocab="http://schema.org/">
+                <div class="footer-mini-legal">
+                    <div class="footer-mini-legal-copyright">
+                        Fait avec ❤️ par Antoine Raulin
+                    </div>
+                    
+                    
+                </div>
+            </section>
+        </div>
+    </footer>
+
+    
+
+
+</body>
+
+</html>

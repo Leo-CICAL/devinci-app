@@ -1,1 +1,425 @@
+<!DOCTYPE html>
+<html>
 
+<head>
+    <title>Devinci app</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <link rel="stylesheet" type="text/css" href="CSS/SFPro.css">
+    <link rel="stylesheet" type="text/css" href="CSS/ac-localnav.built.css">
+    <link rel="stylesheet" type="text/css" href="CSS/ac-globalfooter.built.css">
+    <link rel="stylesheet" type="text/css" href="CSS/fonts.css">
+    <link rel="stylesheet" type="text/css" href="CSS/main.built.css">
+    <link rel="stylesheet" type="text/css" href="CSS/overview.built.css">
+    <link rel="stylesheet" type="text/css" href="CSS/overview.css">
+    <link rel="stylesheet" type="text/css" href="CSS/modal.css">
+    <style>
+        * {
+            --indigo: #009688;
+        }
+
+        .side-phone-left {
+            padding-right: 0px;
+        }
+
+        .side-phone-right {
+            padding-left: 0px;
+        }
+
+        @media only screen and (max-width: 530px) {
+            .side-phone-left {
+                padding-right: 25px;
+            }
+
+            .side-phone-right {
+                padding-left: 25px;
+            }
+        }
+        .main-center {
+                background-image: url(ASSETS/images/main1-blanc.png);
+            }
+        .main-left {
+            background-image: url(ASSETS/images/main2-blanc.png);
+        }
+        .main-right {
+            background-image: url(ASSETS/images/main32-blanc.png);
+        }
+        .edt {
+            background-image: url(ASSETS/images/main1-blanc.png);
+        }
+        .notes {
+            background-image: url(ASSETS/images/main2-blanc.png);
+        }
+        .absences {
+            background-image: url(ASSETS/images/absences-blanc.png);
+        }
+        .presence {
+            background-image: url(ASSETS/images/appel-blanc.png);
+        }
+        .user {
+            background-image: url(ASSETS/images/user-blanc.png);
+        }
+        @media (prefers-color-scheme: dark) {
+            .main-center {
+                background-image: url(ASSETS/images/main1.png);
+            }
+            .main-left {
+            background-image: url(ASSETS/images/main2.png);
+        }
+        .main-right {
+            background-image: url(ASSETS/images/main32.png);
+        }
+        .edt {
+            background-image: url(ASSETS/images/main1.png);
+        }
+        .notes {
+            background-image: url(ASSETS/images/main2.png);
+        }
+        .absences {
+            background-image: url(ASSETS/images/absences.png);
+        }
+        .presence {
+            background-image: url(ASSETS/images/appel.png);
+        }
+        .user {
+            background-image: url(ASSETS/images/user.png);
+        }
+        }
+    </style>
+
+</head>
+
+<body class="page-overview ac-gn-current-iphone" data-anim-scroll-group="body">
+
+    <input type="checkbox" id="ac-ln-menustate" class="ac-ln-menustate">
+    <div id="ac-ln-sticky-placeholder" class="css-sticky"></div>
+    <nav id="ac-localnav"
+        class="ac-localnav-noborder ac-localnav-hero ac-localnav-scrim ac-localnav-stacked js no-touch css-sticky"
+        lang="fr-FR" dir="ltr" data-sticky="" data-analytics-region="local nav" role="navigation" aria-label="Local">
+        <div class="ac-ln-wrapper">
+            <div class="ac-ln-background"></div>
+            <div class="ac-ln-content">
+                <div class="ac-ln-title">
+                    <a href="/" data-analytics-title="product index">Devinci&nbsp;app <span
+                            class="ac-ln-title-comingsoon">Aperçu</span></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <label id="ac-ln-curtain" for="ac-ln-menustate"></label>
+    <script type="text/javascript" src="JS/ac-localnav.built.js"></script>
+    <div id="ac-ln-viewport-emitter" data-viewport-emitter-dispatch=""
+        data-viewport-emitter-state="{&quot;viewport&quot;:&quot;none&quot;,&quot;orientation&quot;:&quot;landscape&quot;,&quot;retina&quot;:false}">
+    </div>
+
+    <main id="main" class="main" role="main" data-page-type="overview" data-component-list=" InlineModal">
+        <section class="section section-hero" data-component-list="HeroAnimation"
+            data-anim-scroll-group="Section - Hero" data-analytics-section-engagement="name:hero"
+            style="--hero-scale:1; --wallpaper-scale:1; --hero-copy-offset:0px;">
+            <div class="section-content">
+
+                <div class="phone-lockup-wrap">
+                    <div class="side-phone center-phone side-phone-left">
+                        <!-- <figure class="image-side-phone image-side-phone-left"></figure> -->
+                        <figure class="image-hardware"></figure>
+                        <div class="screen-wrap">
+                            <div class="main-left image-wallpaper">
+                            </div>
+
+                        </div>
+                        <div class="screen">
+
+                        </div>
+                    </div>
+                    <div class="center-phone">
+                        <figure class="image-hardware"></figure>
+                        <div class="screen-wrap">
+                            <div class="main-center image-wallpaper" >
+                            </div>
+
+                        </div>
+                        <div class="screen">
+
+                        </div>
+                    </div>
+                    <div class="side-phone center-phone side-phone-right">
+                        <!-- <figure class="image-side-phone image-side-phone-left"></figure> -->
+                        <figure class="image-hardware"></figure>
+                        <div class="screen-wrap">
+                            <div class="main-right image-wallpaper">
+                            </div>
+
+                        </div>
+                        <div class="screen">
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="copy-wrap">
+                    <h1 class="copy typography-hero-eyebrow" tabindex="-1">Portail étudiant Devinci</h1>
+                    <h2 class="copy typography-hero-headline">Si différent.<br>Si familier.</h2>
+                    <p class="copy intro-violator typography-intro"><span class="violator violator-secondary">Disponible
+                            en Septembre</span> </p>
+                    <p class="copy intro-cta typography-hero-intro" style="margin-bottom: 0px;"><a href="/beta.html"
+                            class="icon-wrapper"><span class="icon-copy">Accéder à la Beta</span><span
+                                class="icon icon-after more"></span></a></p>
+                    <p class="copy intro-cta typography-hero-intro"><a
+                            href="https://github.com/antoineraulin/devinci-app" class="icon-wrapper"><span
+                                class="icon-copy">Voir sur GitHub</span><span class="icon icon-after more"></span></a>
+                    </p>
+                </div>
+            </div>
+        </section>
+        <section class="section section-experience" data-anim-scroll-group="Section - Experience"
+            data-analytics-section-engagement="name:experience">
+            <div class="section-content header">
+                <div class="section-header">
+                    <h2 class="section-header-headline typography-headline-elevated ">Expérience</h2>
+
+                </div>
+            </div>
+
+            <div class="section-content row app-library-row">
+                <div class="row large-12 large-centered feature-breakdown display-column">
+                    <div
+                        class="column large-4 medium-5 small-12 large-offset-1 medium-offset-1 small-offset-0 justify-content-center copy">
+                        <h3 class="typography-subsection-headline">Emploi du temps</h3>
+                        <p class="typography-subsection-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            Fusce vitae neque ac ex ullamcorper posuere id ac diam.</p>
+                    </div>
+                    <div
+                        class="column large-6 medium-6 small-6 small-offset-0 justify-content-center device image-bottom">
+                        <div class="glass-hardware portrait">
+                            <glass-container class="hardware" data-anim-lazy-image="">
+                                <glass-hardware></glass-hardware>
+                                <glass-screen>
+                                    <figure data-anim-lazy-image=""
+                                        class="glass-screen image-picture-in-picture-2-screen edt"
+                                        ></figure>
+                                </glass-screen>
+                            </glass-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-content row compact-calls-row">
+                <div
+                    class="row large-11 medium-11 small-12 align-reverse large-centered feature-breakdown display-column">
+                    <div
+                        class="column large-4 medium-6 small-12 justify-content-center medium-offset-3 small-offset-0 copy">
+                        <h3 class="typography-subsection-headline">Notes</h3>
+                        <p class="typography-subsection-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            Fusce vitae neque ac ex ullamcorper posuere id ac diam. Donec sed convallis urna, et egestas
+                            lectus. Donec pharetra purus vehicula lobortis volutpat.</p>
+                    </div>
+                    <div class="column large-6 medium-5 medium-offset-1 justify-content-center device animated-device"
+                        data-component-list="CompactUI">
+                        <div class="glass-hardware portrait">
+                            <glass-container class="hardware" data-anim-lazy-image="">
+                                <glass-hardware></glass-hardware>
+                                <glass-screen>
+                                    <figure data-anim-lazy-image="" class="glass-screen image-picture-in-picture-2-screen notes"
+                                        >
+                                    </figure>
+
+                                </glass-screen>
+                            </glass-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-content row picture-in-picture-row" style="padding-bottom: 0px;">
+                <div class="row large-12 large-centered feature-breakdown display-column">
+                    <div
+                        class="column large-4 medium-5 small-12 large-offset-1 medium-offset-1 small-offset-0 justify-content-center copy">
+                        <h3 class="typography-subsection-headline">Absences</h3>
+                        <p class="typography-subsection-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            Fusce vitae neque ac ex ullamcorper posuere id ac diam.</p>
+                    </div>
+                    <div
+                        class="column large-6 medium-6 small-6 small-offset-0 justify-content-center device image-bottom">
+                        <div class="glass-hardware portrait">
+                            <glass-container class="hardware" data-anim-lazy-image="">
+                                <glass-hardware></glass-hardware>
+                                <glass-screen>
+                                    <figure data-anim-lazy-image=""
+                                        class="glass-screen image-picture-in-picture-2-screen absences"
+                                        ></figure>
+                                </glass-screen>
+                            </glass-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-content row compact-calls-row">
+                <div
+                    class="row large-11 medium-11 small-12 align-reverse large-centered feature-breakdown display-column">
+                    <div
+                        class="column large-4 medium-6 small-12 justify-content-center medium-offset-3 small-offset-0 copy">
+                        <h3 class="typography-subsection-headline">Présence</h3>
+                        <p class="typography-subsection-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            Fusce vitae neque ac ex ullamcorper posuere id ac diam. Donec sed convallis urna, et egestas
+                            lectus. Donec pharetra purus vehicula lobortis volutpat.</p>
+                    </div>
+                    <div class="column large-6 medium-5 medium-offset-1 justify-content-center device animated-device"
+                        data-component-list="CompactUI">
+                        <div class="glass-hardware portrait">
+                            <glass-container class="hardware" data-anim-lazy-image="">
+                                <glass-hardware></glass-hardware>
+                                <glass-screen>
+                                    <figure data-anim-lazy-image="" class="glass-screen image-picture-in-picture-2-screen presence"
+                                        >
+                                    </figure>
+
+                                </glass-screen>
+                            </glass-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-content row picture-in-picture-row">
+                <div class="row large-12 large-centered feature-breakdown display-column">
+                    <div
+                        class="column large-4 medium-5 small-12 large-offset-1 medium-offset-1 small-offset-0 justify-content-center copy">
+                        <h3 class="typography-subsection-headline">Vous et vos données</h3>
+                        <p class="typography-subsection-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            Fusce vitae neque ac ex ullamcorper posuere id ac diam.</p>
+                    </div>
+                    <div
+                        class="column large-6 medium-6 small-6 small-offset-0 justify-content-center device image-bottom">
+                        <div class="glass-hardware portrait">
+                            <glass-container class="hardware" data-anim-lazy-image="">
+                                <glass-hardware></glass-hardware>
+                                <glass-screen>
+                                    <figure data-anim-lazy-image=""
+                                        class="glass-screen image-picture-in-picture-2-screen user"
+                                        ></figure>
+                                </glass-screen>
+                            </glass-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <!--/main-->
+    <footer id="ac-globalfooter" class="js flexbox" lang="fr-FR" dir="ltr" data-analytics-region="global footer"
+        role="contentinfo" aria-labelledby="ac-gf-label">
+        <div class="ac-gf-content">
+
+            <nav class="ac-gf-directory with-5-columns" role="navigation">
+                <div class="ac-gf-directory-column"><input class="ac-gf-directory-column-section-state" type="checkbox"
+                        id="ac-gf-directory-column-section-state-products">
+                    <div class="ac-gf-directory-column-section">
+                        <label class="ac-gf-directory-column-section-label"
+                            for="ac-gf-directory-column-section-state-products">
+                            <h3 class="ac-gf-directory-column-section-title">Devinci βeta</h3>
+                        </label>
+                        <a href="#ac-gf-directory-column-section-state-products"
+                            class="ac-gf-directory-column-section-anchor ac-gf-directory-column-section-anchor-open">
+                            <span class="ac-gf-directory-column-section-anchor-label">Ouvrir le menu</span>
+                        </a>
+                        <a href="#"
+                            class="ac-gf-directory-column-section-anchor ac-gf-directory-column-section-anchor-close">
+                            <span class="ac-gf-directory-column-section-anchor-label">Fermer le menu</span>
+                        </a>
+                        <ul class="ac-gf-directory-column-section-list">
+                            <li class="ac-gf-directory-column-section-item"><a
+                                    class="ac-gf-directory-column-section-link" href="/beta.html#android">Devinci βeta pour Android</a>
+                            </li>
+                            <li class="ac-gf-directory-column-section-item"><a
+                                    class="ac-gf-directory-column-section-link" href="/beta.html#ios">Devinci βeta pour iOS</a></li>
+                            <li class="ac-gf-directory-column-section-item"><a
+                                    class="ac-gf-directory-column-section-link" href="https://github.com/antoineraulin/devinci-app">Sources du projet</a></li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="ac-gf-directory-column">
+                    <input class="ac-gf-directory-column-section-state" type="checkbox"
+                        id="ac-gf-directory-column-section-state-services">
+                    <div class="ac-gf-directory-column-section">
+                        <label class="ac-gf-directory-column-section-label"
+                            for="ac-gf-directory-column-section-state-services">
+                            <h3 class="ac-gf-directory-column-section-title">Contacts</h3>
+                        </label>
+                        <a href="#ac-gf-directory-column-section-state-services"
+                            class="ac-gf-directory-column-section-anchor ac-gf-directory-column-section-anchor-open">
+                            <span class="ac-gf-directory-column-section-anchor-label">Ouvrir le menu</span>
+                        </a>
+                        <a href="#"
+                            class="ac-gf-directory-column-section-anchor ac-gf-directory-column-section-anchor-close">
+                            <span class="ac-gf-directory-column-section-anchor-label">Fermer le menu</span>
+                        </a>
+                        <ul class="ac-gf-directory-column-section-list">
+                            <li class="ac-gf-directory-column-section-item"><a
+                                    class="ac-gf-directory-column-section-link" href="https://github.com/antoineraulin">GitHub</a></li>
+                            <li class="ac-gf-directory-column-section-item"><a
+                                    class="ac-gf-directory-column-section-link" href="https://twitter.com/antoinra">Twitter</a></li>
+                            <li class="ac-gf-directory-column-section-item"><a
+                                    class="ac-gf-directory-column-section-link" href="https://www.facebook.com/antoin.raulin">Facebook</a></li>
+                            <li class="ac-gf-directory-column-section-item"><a
+                                    class="ac-gf-directory-column-section-link" href="mailto:antoine@araulin.eu?subject=Devinci App">Mail</a></li>
+
+                        </ul>
+                    </div>
+                    <input class="ac-gf-directory-column-section-state" type="checkbox"
+                        id="ac-gf-directory-column-section-state-accounts">
+
+                </div>
+                <div class="ac-gf-directory-column"><input class="ac-gf-directory-column-section-state" type="checkbox"
+                        id="ac-gf-directory-column-section-state-storeservices">
+                    <div class="ac-gf-directory-column-section">
+                        <label class="ac-gf-directory-column-section-label"
+                            for="ac-gf-directory-column-section-state-storeservices">
+                            <h3 class="ac-gf-directory-column-section-title">Un problème ?</h3>
+                        </label>
+                        <a href="#ac-gf-directory-column-section-state-storeservices"
+                            class="ac-gf-directory-column-section-anchor ac-gf-directory-column-section-anchor-open">
+                            <span class="ac-gf-directory-column-section-anchor-label">Ouvrir le menu</span>
+                        </a>
+                        <a href="#"
+                            class="ac-gf-directory-column-section-anchor ac-gf-directory-column-section-anchor-close">
+                            <span class="ac-gf-directory-column-section-anchor-label">Fermer le menu</span>
+                        </a>
+                        <ul class="ac-gf-directory-column-section-list">
+                            <li class="ac-gf-directory-column-section-item"><a
+                                    class="ac-gf-directory-column-section-link" href="https://github.com/antoineraulin/devinci-app/issues">Ouvrir un ticket sur GitHub</a>
+                            </li>
+                            <li class="ac-gf-directory-column-section-item"><a
+                                    class="ac-gf-directory-column-section-link" href="https://github.com/antoineraulin/devinci-app/tree/gh-pages">Apporter une contribution à
+                                    cette page</a></li>
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <section class="ac-gf-footer">
+                <div class="ac-gf-footer-shop" x-ms-format-detection="none">
+
+                </div>
+
+                <div class="ac-gf-footer-legal">
+                    <div class="ac-gf-footer-legal-copyright">Fait avec ❤️ par Antoine Raulin</div>
+
+                </div>
+            </section>
+
+            <script type="text/javascript" src="JS/ac-globalfooter.built.js"></script>
+
+
+        </div>
+    </footer>
+
+    <script src="JS/main.built.js" type="text/javascript" charset="utf-8"></script><span
+        style="visibility: hidden; position: absolute; top: 0px; bottom: 0px; z-index: -1;">&nbsp;<iframe
+            style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;"></iframe></span>
+
+
+
+</body>
+
+</html>
