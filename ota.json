@@ -1,0 +1,11 @@
+{
+    "app":"Devinci",
+    "last":"1.0.6",
+    "otas":{
+        "1.0.6":{
+            "description":"### Petite mise à jour des familles avant une grosse mise à jour, avec aujourd'hui au programme :\n- [**new**] l'app n'affichera plus les absences d'une année antérieure si une nouvelle année est disponible. Si l'utilisateur n'a aucune absence (bravo !) la page présentera une petite illustration et un message en lieu et place d'une page vide.\n-  [**new**] la page *utilisateur* présente maintenant les informations personnelles de l'utilisateur, celles-ci sont cachées par défaut, peuvent être copiées et partagées.\n-  [**fix**] Dans la page *utilisateur* toujours, la section document est fonctionnelle et présente une sélection de documents importants avec la possibilité de les voir directement dans l'application et de les partager.\n\n#### A venir dans la prochaine grosse mise à jour (v 1.1.0) [**Teaser**]:\n- Des notifications ! Pour prévenir d'une nouvelle note (recherche de nouvelles notes toutes les 1~2h), et de nouvelles mise à jour de l'app.\n- [Potentiellement] la possibilité de trier les notes par ordre croissant, etc.\n\n##### Voila voila, en attendant la v1.1.0 d'autre petites mise à jour (v1.0.7, v1.0.8 ...) pourront voir le jour pour régler des problèmes ou autres.\n",
+            "url":"https://devinci.araulin.tech/devinci/devinci-1-0-6.apk",
+            "size":"25.6 MB"
+        }
+    }
+}
