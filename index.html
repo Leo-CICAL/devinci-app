@@ -18,6 +18,14 @@
             --indigo: #009688;
         }
 
+        .section-messages .modal-content {
+    background-color: #121212;
+}
+
+        a {
+            color: var(--indigo);
+        }
+
         .side-phone-left {
             padding-right: 0px;
         }
@@ -35,55 +43,79 @@
                 padding-left: 25px;
             }
         }
+
         .main-center {
-                background-image: url(ASSETS/images/main1-blanc.png);
-            }
+            background-image: url(ASSETS/images/main1-blanc.png);
+        }
+
         .main-left {
             background-image: url(ASSETS/images/main2-blanc.png);
         }
+
         .main-right {
             background-image: url(ASSETS/images/main32-blanc.png);
         }
+
         .edt {
             background-image: url(ASSETS/images/main1-blanc.png);
         }
+
+        .edt-j {
+            background-image: url(ASSETS/images/main3-blanc.png);
+        }
+
         .notes {
             background-image: url(ASSETS/images/main2-blanc.png);
         }
+
         .absences {
             background-image: url(ASSETS/images/absences-blanc.png);
         }
+
         .presence {
             background-image: url(ASSETS/images/appel-blanc.png);
         }
+
         .user {
             background-image: url(ASSETS/images/user-blanc.png);
         }
+
         @media (prefers-color-scheme: dark) {
             .main-center {
                 background-image: url(ASSETS/images/main1.png);
             }
+
             .main-left {
-            background-image: url(ASSETS/images/main2.png);
-        }
-        .main-right {
-            background-image: url(ASSETS/images/main32.png);
-        }
-        .edt {
-            background-image: url(ASSETS/images/main1.png);
-        }
-        .notes {
-            background-image: url(ASSETS/images/main2.png);
-        }
-        .absences {
-            background-image: url(ASSETS/images/absences.png);
-        }
-        .presence {
-            background-image: url(ASSETS/images/appel.png);
-        }
-        .user {
-            background-image: url(ASSETS/images/user.png);
-        }
+                background-image: url(ASSETS/images/main2.png);
+            }
+
+            .main-right {
+                background-image: url(ASSETS/images/main32.png);
+            }
+
+            .edt {
+                background-image: url(ASSETS/images/main1.png);
+            }
+
+            .notes {
+                background-image: url(ASSETS/images/main2.png);
+            }
+
+            .absences {
+                background-image: url(ASSETS/images/absences.png);
+            }
+
+            .presence {
+                background-image: url(ASSETS/images/appel.png);
+            }
+
+            .user {
+                background-image: url(ASSETS/images/user.png);
+            }
+
+            .edt-j {
+                background-image: url(ASSETS/images/main3.png);
+            }
         }
     </style>
 
@@ -134,7 +166,7 @@
                     <div class="center-phone">
                         <figure class="image-hardware"></figure>
                         <div class="screen-wrap">
-                            <div class="main-center image-wallpaper" >
+                            <div class="main-center image-wallpaper">
                             </div>
 
                         </div>
@@ -175,7 +207,7 @@
             data-analytics-section-engagement="name:experience">
             <div class="section-content header">
                 <div class="section-header">
-                    <h2 class="section-header-headline typography-headline-elevated ">Expérience</h2>
+                    <h2 class="section-header-headline typography-headline-elevated ">Présentation</h2>
 
                 </div>
             </div>
@@ -185,8 +217,12 @@
                     <div
                         class="column large-4 medium-5 small-12 large-offset-1 medium-offset-1 small-offset-0 justify-content-center copy">
                         <h3 class="typography-subsection-headline">Emploi du temps</h3>
-                        <p class="typography-subsection-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            Fusce vitae neque ac ex ullamcorper posuere id ac diam.</p>
+                        <p class="typography-subsection-copy">L'onglet EDT de Devinci vous permet de voir votre emploi
+                            du temps sous deux formes différentes, une vue <a style="cursor: pointer;"
+                                onclick="document.querySelector('#edt').classList.remove('edt-j');document.querySelector('#edt').classList.add('edt');">au
+                                mois</a> ou <a style="cursor: pointer;"
+                                onclick="document.querySelector('#edt').classList.remove('edt');document.querySelector('#edt').classList.add('edt-j');">au
+                                jour</a> selon vos envies.</p>
                     </div>
                     <div
                         class="column large-6 medium-6 small-6 small-offset-0 justify-content-center device image-bottom">
@@ -194,9 +230,8 @@
                             <glass-container class="hardware" data-anim-lazy-image="">
                                 <glass-hardware></glass-hardware>
                                 <glass-screen>
-                                    <figure data-anim-lazy-image=""
-                                        class="glass-screen image-picture-in-picture-2-screen edt"
-                                        ></figure>
+                                    <figure id="edt" class="glass-screen image-picture-in-picture-2-screen edt">
+                                    </figure>
                                 </glass-screen>
                             </glass-container>
                         </div>
@@ -209,9 +244,10 @@
                     <div
                         class="column large-4 medium-6 small-12 justify-content-center medium-offset-3 small-offset-0 copy">
                         <h3 class="typography-subsection-headline">Notes</h3>
-                        <p class="typography-subsection-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            Fusce vitae neque ac ex ullamcorper posuere id ac diam. Donec sed convallis urna, et egestas
-                            lectus. Donec pharetra purus vehicula lobortis volutpat.</p>
+                        <p class="typography-subsection-copy">Devinci vous permet de voir vos notes de manière simple et
+                            claire. Un jeu de couleur vous informe d'un coup d'oeil de la note. De plus, l'application
+                            vous informe en temps réel d'une nouvelle note ou d'un changement de notation via une
+                            notification.</p>
                     </div>
                     <div class="column large-6 medium-5 medium-offset-1 justify-content-center device animated-device"
                         data-component-list="CompactUI">
@@ -219,8 +255,8 @@
                             <glass-container class="hardware" data-anim-lazy-image="">
                                 <glass-hardware></glass-hardware>
                                 <glass-screen>
-                                    <figure data-anim-lazy-image="" class="glass-screen image-picture-in-picture-2-screen notes"
-                                        >
+                                    <figure data-anim-lazy-image=""
+                                        class="glass-screen image-picture-in-picture-2-screen notes">
                                     </figure>
 
                                 </glass-screen>
@@ -234,8 +270,8 @@
                     <div
                         class="column large-4 medium-5 small-12 large-offset-1 medium-offset-1 small-offset-0 justify-content-center copy">
                         <h3 class="typography-subsection-headline">Absences</h3>
-                        <p class="typography-subsection-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            Fusce vitae neque ac ex ullamcorper posuere id ac diam.</p>
+                        <p class="typography-subsection-copy">Comme son nom l'indique cet onglet vous affiche une liste
+                            de vos absences.</p>
                     </div>
                     <div
                         class="column large-6 medium-6 small-6 small-offset-0 justify-content-center device image-bottom">
@@ -244,8 +280,7 @@
                                 <glass-hardware></glass-hardware>
                                 <glass-screen>
                                     <figure data-anim-lazy-image=""
-                                        class="glass-screen image-picture-in-picture-2-screen absences"
-                                        ></figure>
+                                        class="glass-screen image-picture-in-picture-2-screen absences"></figure>
                                 </glass-screen>
                             </glass-container>
                         </div>
@@ -258,9 +293,8 @@
                     <div
                         class="column large-4 medium-6 small-12 justify-content-center medium-offset-3 small-offset-0 copy">
                         <h3 class="typography-subsection-headline">Présence</h3>
-                        <p class="typography-subsection-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            Fusce vitae neque ac ex ullamcorper posuere id ac diam. Donec sed convallis urna, et egestas
-                            lectus. Donec pharetra purus vehicula lobortis volutpat.</p>
+                        <p class="typography-subsection-copy">(Aperçu) l'onglet Présence vous permet de valider la
+                            présence pour le cours directement depuis l'application.</p>
                     </div>
                     <div class="column large-6 medium-5 medium-offset-1 justify-content-center device animated-device"
                         data-component-list="CompactUI">
@@ -268,8 +302,8 @@
                             <glass-container class="hardware" data-anim-lazy-image="">
                                 <glass-hardware></glass-hardware>
                                 <glass-screen>
-                                    <figure data-anim-lazy-image="" class="glass-screen image-picture-in-picture-2-screen presence"
-                                        >
+                                    <figure data-anim-lazy-image=""
+                                        class="glass-screen image-picture-in-picture-2-screen presence">
                                     </figure>
 
                                 </glass-screen>
@@ -283,8 +317,10 @@
                     <div
                         class="column large-4 medium-5 small-12 large-offset-1 medium-offset-1 small-offset-0 justify-content-center copy">
                         <h3 class="typography-subsection-headline">Vous et vos données</h3>
-                        <p class="typography-subsection-copy">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                            Fusce vitae neque ac ex ullamcorper posuere id ac diam.</p>
+                        <p class="typography-subsection-copy">Les informations de bases qui se trouvent habituellement
+                            sur la page d'accueil du portail sont ici disponible dans l'onglet qui à votre nom, elle
+                            sont cachées par défaut, et peuvent être copiées. Vous trouverez également sur cet onglet
+                            une liste non exhaustive de documents importants </p>
                     </div>
                     <div
                         class="column large-6 medium-6 small-6 small-offset-0 justify-content-center device image-bottom">
@@ -293,13 +329,94 @@
                                 <glass-hardware></glass-hardware>
                                 <glass-screen>
                                     <figure data-anim-lazy-image=""
-                                        class="glass-screen image-picture-in-picture-2-screen user"
-                                        ></figure>
+                                        class="glass-screen image-picture-in-picture-2-screen user"></figure>
                                 </glass-screen>
                             </glass-container>
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+        <section class="section section-messages" data-anim-scroll-group="Section - Messages"
+            data-analytics-section-engagement="name:messages">
+            <div class="section-header">
+                <h2 class="section-header-headline typography-headline-elevated ">En vrac</h2>
+                <p class="section-header-intro typography-section-header-intro large-6 medium-8 small-12">Devinci
+                    regorge de plein de petits détails pour vous faciliter la vie, ou faire de cette application la
+                    vôtre.</p>
+            </div>
+            <div class="grid-container">
+                <div class="grid-item span-8-col span-6-col-medium span-12-col-small grid-item-pinned-conversations"
+                    data-anim-scroll-group="pinned-conversations" data-component-list="PinnedConversations">
+                    <div class="grid-item-header">
+                        <h3 class="grid-item-headline typography-subsection-headline">Mode sombre.<br>Cette obscure clarté
+                            arrive sur Devinci.</h3>
+                        <p class="grid-item-copy typography-subsection-copy">L'app possède un mode jour et nuit pour
+                            mieux s'intégrer dans votre système et permettre une plus grande personnalisation</p>
+                    </div>
+                    <div class="grid-item-content">
+                        <div class="pinned-conversations-figure zoomed-hardware">
+                            <div class="glass-hardware portrait-zoomed inline-video controls-top">
+                                <glass-container class="hardware"
+                                    style="transform: matrix(1, 0, 0, 1, 0, 0); will-change: transform;"
+                                    data-anim-lazy-image-download-complete="">
+                                    <glass-hardware></glass-hardware>
+                                    <glass-screen> 
+                                        <div aria-hidden="true">
+                                            <div role="img"
+                                                aria-label="Animation du mode nuit">
+                                                <div class="inline-video-media">
+                                                    <div class="inline-video-frame-static" style="background-image: url(ASSETS/images/main1.png)"
+                                                        ></div>
+                                                    <div class="inline-video-frame-start" style="background-image: url(ASSETS/images/main1.png)"></div>
+                                                    <div class="inline-video-frame-end active" style="background-image: url(ASSETS/images/main1.png)"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </glass-screen>
+                                </glass-container>
+                                <div class="visuallyhidden focus-item" tabindex="-1"></div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <input type="checkbox" tabindex="-1" class="modal-toggle visuallyhidden" aria-hidden="true"
+                        id="modal-toggle-pinned-conversations" data-analytics-title="open - modal pinned conversation"
+                        data-analytics-click="prop3:open - modal pinned conversation" data-analytics-intrapage-link="">
+                    <div class="grid-modal ">
+                        <label tabindex="0" class="modal-cta" for="modal-toggle-pinned-conversations">
+                            <svg class="plus-icon" viewBox="0 0 4 4">
+                                <path d="M3.3,1.8H2.2V0.7c0-0.1-0.1-0.2-0.2-0.2S1.8,0.6,1.8,0.7v1.1H0.7C0.6,1.8,0.5,1.9,0.5,2s0.1,0.2,0.2,0.2h1.1v1.1
+			c0,0.1,0.1,0.2,0.2,0.2c0.1,0,0.2-0.1,0.2-0.2V2.2h1.1c0.1,0,0.2-0.1,0.2-0.2S3.4,1.8,3.3,1.8z"></path>
+                            </svg>
+                            <span class="modal-cta-text" role="button" aria-expanded="false"
+                                aria-controls="content-toggle-pinned-conversations"> <span class="visuallyhidden">Plus
+                                    d’informations sur le mode sombre</span></span>
+                        </label>
+                        <div class="modal-content" role="group"
+                            aria-label="Plus de contenu sur les Conversations épinglées">
+                            <div class="grid-item-header" id="content-toggle-pinned-conversations">
+                                <h3 class="grid-item-headline typography-subsection-headline modal-headline">
+                                    Mode sombre</h3>
+                                <div class="modal-copy-wrap fade-transform-in">
+                                    <p class="modal-copy">Le mode sombre de Devinci s'adapte au thème choisi sur votre téléphone, que ce soit le thème jour auquel cas l'application proposera des nuances plus claires, ou le thème nuit avec ses tons noirs et néons. Vous pouvez modifier le thème choisit dans les paramètres du téléphone.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-item span-4-col span-6-col-medium span-12-col-small grid-item-group-photos"
+                    data-anim-scroll-group="group-photos" data-component-list="InlineVideoAutoplay">
+                    <div class="grid-item-header">
+                        <h3 class="grid-item-headline typography-subsection-headline">Personalisation</h3>
+                        <p class="grid-item-copy typography-subsection-copy">Donnez à votre application une
+                            identité visuelle en lui attribuant une icone alternative.</p>
+                    </div>
+                    <div>
+                       <img src="ASSETS/images/settings.png" style="width: 100%;height: 100%;"> 
+                    </div>
+                </div>
+                
             </div>
         </section>
 
@@ -327,12 +444,15 @@
                         </a>
                         <ul class="ac-gf-directory-column-section-list">
                             <li class="ac-gf-directory-column-section-item"><a
-                                    class="ac-gf-directory-column-section-link" href="/beta.html#android">Devinci βeta pour Android</a>
+                                    class="ac-gf-directory-column-section-link" href="/beta.html#android">Devinci βeta
+                                    pour Android</a>
                             </li>
                             <li class="ac-gf-directory-column-section-item"><a
-                                    class="ac-gf-directory-column-section-link" href="/beta.html#ios">Devinci βeta pour iOS</a></li>
+                                    class="ac-gf-directory-column-section-link" href="/beta.html#ios">Devinci βeta pour
+                                    iOS</a></li>
                             <li class="ac-gf-directory-column-section-item"><a
-                                    class="ac-gf-directory-column-section-link" href="https://github.com/antoineraulin/devinci-app">Sources du projet</a></li>
+                                    class="ac-gf-directory-column-section-link"
+                                    href="https://github.com/antoineraulin/devinci-app">Sources du projet</a></li>
 
                         </ul>
                     </div>
@@ -355,13 +475,17 @@
                         </a>
                         <ul class="ac-gf-directory-column-section-list">
                             <li class="ac-gf-directory-column-section-item"><a
-                                    class="ac-gf-directory-column-section-link" href="https://github.com/antoineraulin">GitHub</a></li>
+                                    class="ac-gf-directory-column-section-link"
+                                    href="https://github.com/antoineraulin">GitHub</a></li>
                             <li class="ac-gf-directory-column-section-item"><a
-                                    class="ac-gf-directory-column-section-link" href="https://twitter.com/antoinra">Twitter</a></li>
+                                    class="ac-gf-directory-column-section-link"
+                                    href="https://twitter.com/antoinra">Twitter</a></li>
                             <li class="ac-gf-directory-column-section-item"><a
-                                    class="ac-gf-directory-column-section-link" href="https://www.facebook.com/antoin.raulin">Facebook</a></li>
+                                    class="ac-gf-directory-column-section-link"
+                                    href="https://www.facebook.com/antoin.raulin">Facebook</a></li>
                             <li class="ac-gf-directory-column-section-item"><a
-                                    class="ac-gf-directory-column-section-link" href="mailto:antoine@araulin.eu?subject=Devinci App">Mail</a></li>
+                                    class="ac-gf-directory-column-section-link"
+                                    href="mailto:antoine@araulin.eu?subject=Devinci App">Mail</a></li>
 
                         </ul>
                     </div>
@@ -386,10 +510,14 @@
                         </a>
                         <ul class="ac-gf-directory-column-section-list">
                             <li class="ac-gf-directory-column-section-item"><a
-                                    class="ac-gf-directory-column-section-link" href="https://github.com/antoineraulin/devinci-app/issues">Ouvrir un ticket sur GitHub</a>
+                                    class="ac-gf-directory-column-section-link"
+                                    href="https://github.com/antoineraulin/devinci-app/issues">Ouvrir un ticket sur
+                                    GitHub</a>
                             </li>
                             <li class="ac-gf-directory-column-section-item"><a
-                                    class="ac-gf-directory-column-section-link" href="https://github.com/antoineraulin/devinci-app/tree/gh-pages">Apporter une contribution à
+                                    class="ac-gf-directory-column-section-link"
+                                    href="https://github.com/antoineraulin/devinci-app/tree/gh-pages">Apporter une
+                                    contribution à
                                     cette page</a></li>
 
                         </ul>

@@ -5420,7 +5420,7 @@
                     l = (function () {
                         function e(t, n) {
                             (0, r.default)(this, e), (n = Object.assign({}, n)), (this._model = n.model || s), delete n.model, (this._options = n);
-                            var i = "VIDEO" === t.tagName;
+                            var i = "VIDEO";
                             (this._container = i ? null : t),
                                 (this._el = i ? t : null),
                                 (this._source = null),
