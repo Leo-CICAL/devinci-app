@@ -1,3 +1,4 @@
+[![Codemagic build status](https://api.codemagic.io/apps/5f1aaf9588aa90329c1b72a5/5f1aaf9588aa90329c1b72a4/status_badge.svg)](https://codemagic.io/apps/5f1aaf9588aa90329c1b72a5/5f1aaf9588aa90329c1b72a4/latest_build)
 <p align="center">
   <a href="https://github.com/antoineraulin/devinci-app"><img src="assets/icon_blanc_a.png" height="140"></a>
 </p>
