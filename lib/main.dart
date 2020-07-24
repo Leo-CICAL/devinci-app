@@ -54,7 +54,7 @@ Future<Null> main() async {
   // - https://www.dartlang.org/articles/libraries/zones
   runZonedGuarded<Future<Null>>(() async {
     SyncfusionLicense.registerLicense(
-        null); // vous pouvez obtenir une clé d'activitation gratuitement sur https://www.syncfusion.com
+        $SyncfusionLicense); // vous pouvez obtenir une clé d'activitation gratuitement sur https://www.syncfusion.com, ici $SyncfusionLicense est une variable environnement pour le système de build
     runApp(
       BetterFeedback(
         //backgroundColor: getColor("background", context),
