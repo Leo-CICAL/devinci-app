@@ -27,6 +27,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import './config.dart'; //ce fichier est créé par CodeMagic lors du build car il contient des clé de license
 
 Future<Null> main() async {
   // This captures errors reported by the Flutter framework.
@@ -54,7 +55,7 @@ Future<Null> main() async {
   // - https://www.dartlang.org/articles/libraries/zones
   runZonedGuarded<Future<Null>>(() async {
     SyncfusionLicense.registerLicense(
-        $SyncfusionLicense); // vous pouvez obtenir une clé d'activitation gratuitement sur https://www.syncfusion.com, ici $SyncfusionLicense est une variable environnement pour le système de build
+        Config.syncfusionLicense); // vous pouvez obtenir une clé d'activitation gratuitement sur https://www.syncfusion.com, ici $SyncfusionLicense est une variable environnement pour le système de build
     runApp(
       BetterFeedback(
         //backgroundColor: getColor("background", context),
