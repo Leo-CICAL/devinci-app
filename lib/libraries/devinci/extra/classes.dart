@@ -122,19 +122,7 @@ class User {
           await globals.storage
               .deleteAll(); //remove all sensitive data from the phone if the user can't connect
           //the exception was thrown because credentials are wrong
-          final Sentry.SentryResponse response =
-              await globals.sentry.captureException(
-            exception:
-                "classes.dart | getToken | wrong credentials => '${this.username}':'${this.password}'",
-            stackTrace: StackTrace.fromString(""),
-          );
-
-          if (response.isSuccessful) {
-            //print('Success! Event ID: ${response.eventId}');
-            globals.eventId = response.eventId;
-          } else {
-            //print('Failed to report to Sentry.io: ${response.error}');
-          }
+         
           throw Exception(
               "wrong credentials : $exception"); //throw an exception to indicate to the parent process that credentials are wrong and may need to be changed
         } else {
