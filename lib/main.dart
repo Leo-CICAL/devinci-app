@@ -95,7 +95,7 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => new _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -103,7 +103,25 @@ class _MyAppState extends State<MyApp> {
       print("changes");
       setState(() {});
     });
+    WidgetsBinding.instance.addObserver(this);
     initPlatformState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    final Brightness brightness =
+        WidgetsBinding.instance.window.platformBrightness;
+    //inform listeners and rebuild widget tree
+    String setTheme = globals.prefs.getString("theme") ?? "Système";
+    if (setTheme == "Système") {
+      globals.currentTheme.setDark(brightness == Brightness.dark);
+    }
   }
 
   @override
