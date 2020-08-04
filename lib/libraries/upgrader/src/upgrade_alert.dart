@@ -219,7 +219,7 @@ class UpgradeCard extends _UpgradeBase {
           if (processed.connectionState == ConnectionState.done) {
             if (Upgrader().shouldDisplayUpgrade()) {
               return Card(
-                  color: getColor("background", context),
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   margin: margin,
                   child: _AlertStyleWidget(
                       title: Text(Upgrader().title),
@@ -245,7 +245,6 @@ class UpgradeCard extends _UpgradeBase {
                                 Upgrader().onUserIgnored(context, false);
                                 state.forceUpdateState();
                               }),
-                        
                         FlatButton(
                             child: Text(Upgrader().buttonTitleUpdate),
                             onPressed: () {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -48,15 +49,13 @@ class _UserPageState extends State<UserPage> {
   }
 
   void runBeforeBuild() async {
+    for (int i = 0; i < 10; i++) {
+      docCardDetail.add(false);
+      docCardData.add({"frShowButton": true, "enShowButton": true});
+    }
     if (globals.user.documents["certificat"]["annee"] == "") {
       try {
         await globals.user.getDocuments();
-        for (int i = 0;
-            i < 3 + globals.user.documents["bulletins"].length;
-            i++) {
-          docCardDetail.add(false);
-          docCardData.add({"frShowButton": true, "enShowButton": true});
-        }
       } catch (exception, stacktrace) {
         HttpClient client = new HttpClient();
         HttpClientRequest req = await client.getUrl(
@@ -77,16 +76,11 @@ class _UserPageState extends State<UserPage> {
             "user.dart | _UserPageState | runBeforeBuild() | user.getDocuments() => $exception",
             stacktrace);
       }
-    } else {
-      for (int i = 0; i < 3 + globals.user.documents["bulletins"].length; i++) {
-        docCardDetail.add(false);
-        docCardData.add({"frShowButton": true, "enShowButton": true});
-      }
     }
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid && globals.isConnected) {
       HttpClient client = new HttpClient();
       HttpClientRequest req = await client.getUrl(
-        Uri.parse('https://photo.antoineraulin.com/devinci/ota.json'),
+        Uri.parse('https://devinci.araulin.tech/ota.json'),
       );
       HttpClientResponse res = await req.close();
       String body = await res.transform(utf8.decoder).join();
@@ -102,8 +96,7 @@ class _UserPageState extends State<UserPage> {
         print("there is a new version");
 
         updateUrl = otas["otas"][otas["last"]]["url"];
-        globals.crashConsent = await globals.storage.read(key: "crashConsent");
-        String ignoredUpdate = await globals.storage.read(key: "ignored") ?? "";
+        String ignoredUpdate = globals.prefs.getString('ignored') ?? "";
         if (ignoredUpdate != updateNumber) {
           setState(() {
             showUpdate = true;
@@ -111,7 +104,6 @@ class _UserPageState extends State<UserPage> {
         }
       }
     }
-    //print(globals.crashConsent);
     setState(() {
       show = true;
     });
@@ -122,50 +114,61 @@ class _UserPageState extends State<UserPage> {
 
   Future<String> downloadDocuments(String url, String filename) async {
     HttpClient client = new HttpClient();
-    var _downloadData = List<int>();
     Directory directory;
     if (Platform.isAndroid) {
-      await getExternalStorageDirectory();
+      directory = await getExternalStorageDirectory();
     } else {
       directory = await getApplicationDocumentsDirectory();
     }
     final String path = directory.path;
 
     var fileSave = new File(path + '/' + removeDiacritics(filename) + ".pdf");
-    //check if all tokens are still valid:
-    if (globals.user.tokens["SimpleSAML"] != "" &&
-        globals.user.tokens["alv"] != "" &&
-        globals.user.tokens["uids"] != "" &&
-        globals.user.tokens["SimpleSAMLAuthToken"] != "" &&
-        globals.user.error == false) {
-      globals.user.error = false;
-      globals.user.code = 200;
-
-      HttpClientRequest request = await client.getUrl(
-        Uri.parse(url),
-      );
-      //request.followRedirects = false;
-      request.cookies.addAll([
-        new Cookie('alv', globals.user.tokens["alv"]),
-        new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
-        new Cookie('uids', globals.user.tokens["uids"]),
-        new Cookie(
-            'SimpleSAMLAuthToken', globals.user.tokens["SimpleSAMLAuthToken"]),
-      ]);
-      HttpClientResponse response = await request.close();
-      if (response.headers.value("content-type").indexOf("html") > -1) {
-        //c'est du html, mais bordel ou est le fichier ?
-        String body = await response.transform(utf8.decoder).join();
-        print(body);
-      } else {
-        var bytes = await consolidateHttpClientResponseBytes(response);
-        await fileSave.writeAsBytes(bytes);
+    if (globals.isConnected) {
+      if (await fileSave.exists()) {
         return fileSave.path;
       }
+      //check if all tokens are still valid:
+      if (globals.user.tokens["SimpleSAML"] != "" &&
+          globals.user.tokens["alv"] != "" &&
+          globals.user.tokens["uids"] != "" &&
+          globals.user.tokens["SimpleSAMLAuthToken"] != "" &&
+          globals.user.error == false) {
+        globals.user.error = false;
+        globals.user.code = 200;
+
+        HttpClientRequest request = await client.getUrl(
+          Uri.parse(url),
+        );
+        //request.followRedirects = false;
+        request.cookies.addAll([
+          new Cookie('alv', globals.user.tokens["alv"]),
+          new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
+          new Cookie('uids', globals.user.tokens["uids"]),
+          new Cookie('SimpleSAMLAuthToken',
+              globals.user.tokens["SimpleSAMLAuthToken"]),
+        ]);
+        HttpClientResponse response = await request.close();
+        if (response.headers.value("content-type").indexOf("html") > -1) {
+          //c'est du html, mais bordel ou est le fichier ?
+          String body = await response.transform(utf8.decoder).join();
+          print(body);
+        } else {
+          var bytes = await consolidateHttpClientResponseBytes(response);
+          await fileSave.writeAsBytes(bytes);
+          return fileSave.path;
+        }
+      } else {
+        globals.user.error = true;
+        globals.user.code = 400;
+        throw Exception("missing parameters");
+      }
+    } else if (await fileSave.exists()) {
+      return fileSave.path;
     } else {
-      globals.user.error = true;
-      globals.user.code = 400;
-      throw Exception("missing parameters");
+      final snackBar = SnackBar(content: Text('Non disponible hors ligne'));
+
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+      Scaffold.of(globals.currentContext).showSnackBar(snackBar);
     }
     return "";
   }
@@ -189,7 +192,7 @@ class _UserPageState extends State<UserPage> {
       setState(() {
         if (delta == 1) {
           Clipboard.setData(new ClipboardData(text: data));
-          final snackBar = SnackBar(content: Text('${title} copié'));
+          final snackBar = SnackBar(content: Text('$title copié'));
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
           Scaffold.of(context).showSnackBar(snackBar);
@@ -206,27 +209,6 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget TitleSection(String title,
-        {Widget iconButton = const SizedBox.shrink()}) {
-      return Padding(
-          padding: const EdgeInsets.only(top: 20.0, left: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                title,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                    color: getColor("text", context),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
-              ),
-              Padding(
-                  padding: EdgeInsets.only(left: 4, top: 1), child: iconButton),
-            ],
-          ));
-    }
-
     Widget InfoSection(String main, String second) {
       return Padding(
           padding: const EdgeInsets.only(top: 12.0, left: 38),
@@ -245,10 +227,7 @@ class _UserPageState extends State<UserPage> {
                   textAlign: TextAlign.left,
                   text: TextSpan(
                     text: main + ": ",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: getColor("text", context)),
+                    style: Theme.of(context).textTheme.bodyText1,
                     children: <TextSpan>[
                       TextSpan(
                           text:
@@ -269,11 +248,8 @@ class _UserPageState extends State<UserPage> {
       return Padding(
         padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
         child: Card(
-          elevation:
-              MediaQuery.of(context).platformBrightness == Brightness.dark
-                  ? 4
-                  : 1,
-          color: getColor("card", context),
+          elevation: globals.currentTheme.isDark() ? 4 : 1,
+          //color: Theme.of(context).cardColor,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           child: InkWell(
@@ -290,16 +266,18 @@ class _UserPageState extends State<UserPage> {
                   docCardData[id]["frShowButton"] = false;
                 });
                 print(frUrl);
-                ReCase rc = new ReCase(name);
+                ReCase rc = new ReCase('${name}_$subtitle');
                 String path = await downloadDocuments(frUrl, rc.camelCase);
                 setState(() {
                   docCardData[id]["frShowButton"] = true;
                 });
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PDFScreen(path, name)),
-                );
+                if (path != "") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PDFScreen(path, name)),
+                  );
+                }
               }
             }, // handle your onTap here
             child: (enUrl == "" && !docCardData[id]["frShowButton"])
@@ -310,7 +288,7 @@ class _UserPageState extends State<UserPage> {
                     ),
                   )
                 : Container(
-                    height: docCardDetail[id] ? 100 : 65,
+                    height: docCardDetail[id] ? 102 : 65,
                     width: MediaQuery.of(context).size.width,
                     child: Column(
                       children: <Widget>[
@@ -376,20 +354,24 @@ class _UserPageState extends State<UserPage> {
                                                   false;
                                             });
                                             print(frUrl);
-                                            ReCase rc = new ReCase(name);
+                                            ReCase rc =
+                                                new ReCase('${name}_$subtitle');
                                             String path =
                                                 await downloadDocuments(
                                                     frUrl, rc.camelCase);
+
                                             setState(() {
                                               docCardData[id]["frShowButton"] =
                                                   true;
                                             });
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PDFScreen(path, name)),
-                                            );
+                                            if (path != "") {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PDFScreen(path, name)),
+                                              );
+                                            }
                                           },
                                           child: Text(enUrl != ""
                                               ? "Français"
@@ -412,21 +394,25 @@ class _UserPageState extends State<UserPage> {
                                                     ["enShowButton"] = false;
                                               });
                                               print(enUrl);
-                                              ReCase rc =
-                                                  new ReCase(name + "_en");
+                                              ReCase rc = new ReCase(
+                                                  '${name}_${subtitle}_en');
                                               String path =
                                                   await downloadDocuments(
-                                                      enUrl, rc.camelCase);
+                                                      frUrl, rc.camelCase);
+
                                               setState(() {
                                                 docCardData[id]
                                                     ["enShowButton"] = true;
                                               });
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        PDFScreen(path, name)),
-                                              );
+                                              if (path != "") {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          PDFScreen(
+                                                              path, name)),
+                                                );
+                                              }
                                             },
                                             child: Text("English"),
                                           )
@@ -471,7 +457,6 @@ class _UserPageState extends State<UserPage> {
                                 padding: EdgeInsets.only(left: 16, top: 12),
                                 child: Text(updateTitle,
                                     style: TextStyle(
-                                        color: getColor("text", context),
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20)),
                               ),
@@ -495,8 +480,8 @@ class _UserPageState extends State<UserPage> {
                                   onPressed: () {
                                     setState(() {
                                       showUpdate = false;
-                                      globals.storage.write(
-                                          key: "ignored", value: updateNumber);
+                                      globals.prefs
+                                          .setString('ignored', updateNumber);
                                     });
                                   },
                                   child: Text("ignorer"),
@@ -540,7 +525,7 @@ class _UserPageState extends State<UserPage> {
                                               valueColor:
                                                   new AlwaysStoppedAnimation<
                                                       Color>(
-                                                getColor("primary", context),
+                                                Theme.of(context).accentColor,
                                               ),
                                             )
                                           : Text(
@@ -632,27 +617,30 @@ class PDFScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(getColor("top", context));
+    FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
-        MediaQuery.of(context).platformBrightness == Brightness.dark);
-    FlutterStatusbarcolor.setNavigationBarColor(getColor("top", context));
+        globals.currentTheme.isDark());
+    FlutterStatusbarcolor.setNavigationBarColor(
+        Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
-        MediaQuery.of(context).platformBrightness == Brightness.dark);
+        globals.currentTheme.isDark());
     return PDFViewerScaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(
-              color: getColor("text", context) //change your color here
+              //change your color here
               ),
           title: Text(
             title,
-            style: TextStyle(color: getColor("text", context)),
+            style: Theme.of(context).textTheme.bodyText1,
           ),
-          backgroundColor: getColor("top", context),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           actions: <Widget>[
             IconButton(
-              icon: Icon(
-                OMIcons.share,
-                color: getColor("text", context),
+              icon: IconTheme(
+                data: Theme.of(context).accentIconTheme,
+                child: Icon(
+                  OMIcons.share,
+                ),
               ),
               onPressed: () {
                 ShareExtend.share(pathPDF, title);

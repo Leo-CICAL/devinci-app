@@ -1,0 +1,29 @@
+
+App Thinning Size Report for All Variants of Runner
+
+Variant: Devinci-1685AC54-EFFD-47AD-B45E-CB88C50ADE35.ipa
+Supported variant descriptors: [device: iPhone9,2, os-version: 14.0], [device: iPhone12,5, os-version: 14.0], [device: iPhone9,4, os-version: 14.0], [device: iPhone11,4, os-version: 14.0], [device: iPhone10,5, os-version: 14.0], [device: iPhone11,2, os-version: 14.0], [device: iPhone10,6, os-version: 14.0], [device: iPhone12,3, os-version: 14.0], [device: iPhone11,6, os-version: 14.0], [device: iPhone10,2, os-version: 14.0], and [device: iPhone10,3, os-version: 14.0]
+App + On Demand Resources size: 8,2 MB compressed, 22,1 MB uncompressed
+App size: 8,2 MB compressed, 22,1 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed
+
+
+Variant: Devinci-3074B4F7-7F33-47BE-866A-9F7E09125105.ipa
+Supported variant descriptors: [device: iPhone10,6, os-version: 12.0], [device: iPhone11,4, os-version: 12.0], [device: iPhone9,4, os-version: 12.0], [device: iPhone11,2, os-version: 12.0], [device: iPhone11,6, os-version: 12.0], [device: iPhone9,2, os-version: 12.0], [device: iPhone10,3, os-version: 12.0], [device: iPhone10,2, os-version: 12.0], and [device: iPhone10,5, os-version: 12.0]
+App + On Demand Resources size: 10,6 MB compressed, 29,7 MB uncompressed
+App size: 10,6 MB compressed, 29,7 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed
+
+
+Variant: Devinci-3B1C877D-86D9-470B-8D6F-C0A8D55BAE6A.ipa
+Supported variant descriptors: [device: iPhone11,4, os-version: 12.2], [device: iPhone11,6, os-version: 12.2], [device: iPhone10,5, os-version: 12.2], [device: iPhone9,2, os-version: 12.2], [device: iPhone9,4, os-version: 12.2], [device: iPhone11,2, os-version: 12.2], [device: iPhone10,2, os-version: 12.2], [device: iPhone10,3, os-version: 12.2], and [device: iPhone10,6, os-version: 12.2]
+App + On Demand Resources size: 8,2 MB compressed, 22,1 MB uncompressed
+App size: 8,2 MB compressed, 22,1 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed
+
+
+Variant: Devinci-8FB5D3D1-2093-4F59-B2B5-1B97D52C9304.ipa
+Supported variant descriptors: [device: iPhone12,5, os-version: 13.0], [device: iPhone10,5, os-version: 13.0], [device: iPhone9,4, os-version: 13.0], [device: iPhone10,3, os-version: 13.0], [device: iPhone9,2, os-version: 13.0], [device: iPhone11,4, os-version: 13.0], [device: iPhone11,2, os-version: 13.0], [device: iPhone12,3, os-version: 13.0], [device: iPhone10,6, os-version: 13.0], [device: iPhone11,6, os-version: 13.0], and [device: iPhone10,2, os-version: 13.0]
+App + On Demand Resources size: 8,2 MB compressed, 22,1 MB uncompressed
+App size: 8,2 MB compressed, 22,1 MB uncompressed
+On Demand Resources size: Zero KB compressed, Zero KB uncompressed

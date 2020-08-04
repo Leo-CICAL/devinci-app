@@ -84,5 +84,3 @@ post_install do |installer|
     end
   end
 end
-
-pod 'OktaStorage', '~> 1.1'

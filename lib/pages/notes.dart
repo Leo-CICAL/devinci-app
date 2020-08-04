@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -42,14 +43,13 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   void runBeforeBuild() async {
-    if (globals.user.notes["s1"].isEmpty) {
+    if (!globals.user.notesFetched) {
       try {
         await globals.user.getNotes();
       } catch (exception, stacktrace) {
         HttpClient client = new HttpClient();
         HttpClientRequest req = await client.getUrl(
           Uri.parse('https://www.leonard-de-vinci.net/?my=notes'),
-       
         );
         req.followRedirects = false;
         req.cookies.addAll([
@@ -81,25 +81,6 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     globals.currentContext = context;
 
-    Widget TitleSection(String title) {
-      return Padding(
-          padding: const EdgeInsets.only(top: 20.0, left: 20),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Text(
-                  title,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: getColor("text", context),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
-                ),
-              )
-            ],
-          ));
-    }
-
     Widget SemestreSelection(String sem, String subtitle) {
       return Expanded(
         child: Padding(
@@ -108,16 +89,13 @@ class _NotesPageState extends State<NotesPage> {
               top: 0,
               right: sem == "s2" ? 20.0 : 10.0),
           child: Card(
-            elevation:
-                MediaQuery.of(context).platformBrightness == Brightness.dark
-                    ? 4
-                    : 2,
-            color: getColor("card", context),
+            elevation: globals.currentTheme.isDark() ? 4 : 2,
+            color: Theme.of(context).cardColor,
             shape: currentSemester == sem
                 ? RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     side: new BorderSide(
-                        color: getColor("primary", context), width: 2.0))
+                        color: Theme.of(context).accentColor, width: 2.0))
                 : RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0)),
             child: InkWell(
@@ -130,10 +108,8 @@ class _NotesPageState extends State<NotesPage> {
                     padding: const EdgeInsets.only(left: 0.0, top: 6, right: 0),
                     child: Text(
                       sem.toUpperCase(),
-                      style: TextStyle(
-                          color: getColor("text", context),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 40),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
                     ),
                   ),
                   Padding(
@@ -161,11 +137,8 @@ class _NotesPageState extends State<NotesPage> {
       return Padding(
         padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
         child: Card(
-            elevation:
-                MediaQuery.of(context).platformBrightness == Brightness.dark
-                    ? 4
-                    : 2,
-            color: getColor("card", context),
+            elevation: globals.currentTheme.isDark() ? 4 : 2,
+            color: Theme.of(context).cardColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)),
             child: InkWell(
@@ -191,9 +164,7 @@ class _NotesPageState extends State<NotesPage> {
                                         ["matieres"][j]["matiere"]),
                                 //overflow: TextOverflow.ellipsis,
                                 style: new TextStyle(
-                                    color: getColor("text", context),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
+                                    fontWeight: FontWeight.bold, fontSize: 20),
                               ),
                             ),
                           ),
@@ -214,7 +185,7 @@ class _NotesPageState extends State<NotesPage> {
                                                   ["matieres"][j]) ??
                                               11) >=
                                           10
-                                      ? getColor("primary", context)
+                                      ? Theme.of(context).accentColor
                                       : getMatMoy(globals.user.notes[currentSemester]
                                                   [i]["matieres"][j]) ==
                                               0
@@ -255,11 +226,8 @@ class _NotesPageState extends State<NotesPage> {
         child: Padding(
           padding: const EdgeInsets.only(left: 24.0, bottom: 5, right: 0),
           child: Card(
-            elevation:
-                MediaQuery.of(context).platformBrightness == Brightness.dark
-                    ? 4
-                    : 1,
-            color: getColor("card", context),
+            elevation: globals.currentTheme.isDark() ? 4 : 1,
+            color: Theme.of(context).cardColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)),
             child: Container(
@@ -311,7 +279,7 @@ class _NotesPageState extends State<NotesPage> {
                                                             [i]["matieres"][j]
                                                         ["notes"][y]["note"] >=
                                                     10
-                                                ? getColor("primary", context)
+                                                ? Theme.of(context).accentColor
                                                 : (globals.user.notes[currentSemester]
                                                                     [i]["matieres"]
                                                                 [j]["notes"][y]
@@ -381,7 +349,7 @@ class _NotesPageState extends State<NotesPage> {
                     child: Row(
                       children: <Widget>[
                         SemestreSelection("s1", "Sept. - Janvier"),
-                        SemestreSelection("s2", "janvier - Juin")
+                        SemestreSelection("s2", "Janvier - Juin")
                       ],
                     )),
 
