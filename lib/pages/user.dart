@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:devinci/extra/CommonWidgets.dart';
-import 'package:diacritic/diacritic.dart';
+import 'package:devinci/extra/classes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,15 +10,14 @@ import 'package:flutter/scheduler.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:ota_update/ota_update.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:package_info/package_info.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter_full_pdf_viewer/flutter_full_pdf_viewer.dart';
-import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:recase/recase.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:sembast/sembast.dart';
+
+Map<String, dynamic> documents;
 
 class UserPage extends StatefulWidget {
   UserPage({Key key}) : super(key: key);
@@ -45,6 +43,37 @@ class _UserPageState extends State<UserPage> {
   var _tapPosition;
   void initState() {
     super.initState();
+    globals.isLoading.addListener(() async {
+      if (globals.isLoading.state(4)) {
+        try {
+          await globals.user.getDocuments();
+        } catch (exception, stacktrace) {
+          HttpClient client = new HttpClient();
+          HttpClientRequest req = await client.getUrl(
+            Uri.parse('https://www.leonard-de-vinci.net/?my=docs'),
+          );
+          req.followRedirects = false;
+          req.cookies.addAll([
+            new Cookie('alv', globals.user.tokens["alv"]),
+            new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
+            new Cookie('uids', globals.user.tokens["uids"]),
+            new Cookie('SimpleSAMLAuthToken',
+                globals.user.tokens["SimpleSAMLAuthToken"]),
+          ]);
+          HttpClientResponse res = await req.close();
+          globals.feedbackNotes = await res.transform(utf8.decoder).join();
+
+          await reportError(
+              "user.dart | _UserPageState | runBeforeBuild() | user.getDocuments() => $exception",
+              stacktrace);
+        }
+        if (mounted)
+          setState(() {
+            show = true;
+          });
+        globals.isLoading.setState(4, false);
+      }
+    });
     SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
   }
 
@@ -53,29 +82,44 @@ class _UserPageState extends State<UserPage> {
       docCardDetail.add(false);
       docCardData.add({"frShowButton": true, "enShowButton": true});
     }
-    if (globals.user.documents["certificat"]["annee"] == "") {
-      try {
-        await globals.user.getDocuments();
-      } catch (exception, stacktrace) {
-        HttpClient client = new HttpClient();
-        HttpClientRequest req = await client.getUrl(
-          Uri.parse('https://www.leonard-de-vinci.net/?my=docs'),
-        );
-        req.followRedirects = false;
-        req.cookies.addAll([
-          new Cookie('alv', globals.user.tokens["alv"]),
-          new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
-          new Cookie('uids', globals.user.tokens["uids"]),
-          new Cookie('SimpleSAMLAuthToken',
-              globals.user.tokens["SimpleSAMLAuthToken"]),
-        ]);
-        HttpClientResponse res = await req.close();
-        globals.feedbackNotes = await res.transform(utf8.decoder).join();
 
-        await reportError(
-            "user.dart | _UserPageState | runBeforeBuild() | user.getDocuments() => $exception",
-            stacktrace);
+    if (globals.user.documents["certificat"]["annee"] == "") {
+      documents = await globals.store.record('documents').get(globals.db);
+      if (documents == null) {
+        try {
+          await globals.user.getDocuments();
+        } catch (exception, stacktrace) {
+          HttpClient client = new HttpClient();
+          HttpClientRequest req = await client.getUrl(
+            Uri.parse('https://www.leonard-de-vinci.net/?my=docs'),
+          );
+          req.followRedirects = false;
+          req.cookies.addAll([
+            new Cookie('alv', globals.user.tokens["alv"]),
+            new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
+            new Cookie('uids', globals.user.tokens["uids"]),
+            new Cookie('SimpleSAMLAuthToken',
+                globals.user.tokens["SimpleSAMLAuthToken"]),
+          ]);
+          HttpClientResponse res = await req.close();
+          globals.feedbackNotes = await res.transform(utf8.decoder).join();
+
+          await reportError(
+              "user.dart | _UserPageState | runBeforeBuild() | user.getDocuments() => $exception",
+              stacktrace);
+        }
       }
+      if (mounted)
+        setState(() {
+          show = true;
+        });
+      await Future.delayed(Duration(milliseconds: 200));
+      globals.isLoading.setState(4, true);
+    } else {
+      if (mounted)
+        setState(() {
+          show = true;
+        });
     }
     if (Platform.isAndroid && globals.isConnected) {
       HttpClient client = new HttpClient();
@@ -98,80 +142,17 @@ class _UserPageState extends State<UserPage> {
         updateUrl = otas["otas"][otas["last"]]["url"];
         String ignoredUpdate = globals.prefs.getString('ignored') ?? "";
         if (ignoredUpdate != updateNumber) {
-          setState(() {
-            showUpdate = true;
-          });
+          if (mounted)
+            setState(() {
+              showUpdate = true;
+            });
         }
       }
     }
-    setState(() {
-      show = true;
-    });
   }
 
   ScrollController scroll = new ScrollController();
   ScrollController scrollMark = new ScrollController();
-
-  Future<String> downloadDocuments(String url, String filename) async {
-    HttpClient client = new HttpClient();
-    Directory directory;
-    if (Platform.isAndroid) {
-      directory = await getExternalStorageDirectory();
-    } else {
-      directory = await getApplicationDocumentsDirectory();
-    }
-    final String path = directory.path;
-
-    var fileSave = new File(path + '/' + removeDiacritics(filename) + ".pdf");
-    if (globals.isConnected) {
-      if (await fileSave.exists()) {
-        return fileSave.path;
-      }
-      //check if all tokens are still valid:
-      if (globals.user.tokens["SimpleSAML"] != "" &&
-          globals.user.tokens["alv"] != "" &&
-          globals.user.tokens["uids"] != "" &&
-          globals.user.tokens["SimpleSAMLAuthToken"] != "" &&
-          globals.user.error == false) {
-        globals.user.error = false;
-        globals.user.code = 200;
-
-        HttpClientRequest request = await client.getUrl(
-          Uri.parse(url),
-        );
-        //request.followRedirects = false;
-        request.cookies.addAll([
-          new Cookie('alv', globals.user.tokens["alv"]),
-          new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
-          new Cookie('uids', globals.user.tokens["uids"]),
-          new Cookie('SimpleSAMLAuthToken',
-              globals.user.tokens["SimpleSAMLAuthToken"]),
-        ]);
-        HttpClientResponse response = await request.close();
-        if (response.headers.value("content-type").indexOf("html") > -1) {
-          //c'est du html, mais bordel ou est le fichier ?
-          String body = await response.transform(utf8.decoder).join();
-          print(body);
-        } else {
-          var bytes = await consolidateHttpClientResponseBytes(response);
-          await fileSave.writeAsBytes(bytes);
-          return fileSave.path;
-        }
-      } else {
-        globals.user.error = true;
-        globals.user.code = 400;
-        throw Exception("missing parameters");
-      }
-    } else if (await fileSave.exists()) {
-      return fileSave.path;
-    } else {
-      final snackBar = SnackBar(content: Text('Non disponible hors ligne'));
-
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-      Scaffold.of(globals.currentContext).showSnackBar(snackBar);
-    }
-    return "";
-  }
 
   void _showCustomMenu(String data, String title) {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
@@ -209,6 +190,7 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: non_constant_identifier_names
     Widget InfoSection(String main, String second) {
       return Padding(
           padding: const EdgeInsets.only(top: 12.0, left: 38),
@@ -243,6 +225,7 @@ class _UserPageState extends State<UserPage> {
           ));
     }
 
+    // ignore: non_constant_identifier_names
     Widget DocumentTile(
         String name, String subtitle, String frUrl, String enUrl, int id) {
       return Padding(
@@ -564,17 +547,27 @@ class _UserPageState extends State<UserPage> {
                   padding: EdgeInsets.only(top: 12, left: 20, right: 20),
                   child: DocumentTile(
                       "Certificat de scolarité",
-                      globals.user.documents["certificat"]["annee"],
-                      globals.user.documents["certificat"]["fr_url"],
-                      globals.user.documents["certificat"]["en_url"],
+                      (globals.user.documents["certificat"]["annee"] != ""
+                          ? globals.user.documents
+                          : documents)["certificat"]["annee"],
+                      (globals.user.documents["certificat"]["annee"] != ""
+                          ? globals.user.documents
+                          : documents)["certificat"]["fr_url"],
+                      (globals.user.documents["certificat"]["annee"] != ""
+                          ? globals.user.documents
+                          : documents)["certificat"]["en_url"],
                       0),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 0, left: 20, right: 20),
                   child: DocumentTile(
                       "Certificat ImaginR",
-                      globals.user.documents["imaginr"]["annee"],
-                      globals.user.documents["imaginr"]["url"],
+                      (globals.user.documents["certificat"]["annee"] != ""
+                          ? globals.user.documents
+                          : documents)["imaginr"]["annee"],
+                      (globals.user.documents["certificat"]["annee"] != ""
+                          ? globals.user.documents
+                          : documents)["imaginr"]["url"],
                       "",
                       1),
                 ),
@@ -582,8 +575,12 @@ class _UserPageState extends State<UserPage> {
                   padding: EdgeInsets.only(top: 0, left: 20, right: 20),
                   child: DocumentTile(
                       "Calendrier académique",
-                      globals.user.documents["calendrier"]["annee"],
-                      globals.user.documents["calendrier"]["url"],
+                      (globals.user.documents["certificat"]["annee"] != ""
+                          ? globals.user.documents
+                          : documents)["calendrier"]["annee"],
+                      (globals.user.documents["certificat"]["annee"] != ""
+                          ? globals.user.documents
+                          : documents)["calendrier"]["url"],
                       "",
                       2),
                 ),
@@ -591,15 +588,27 @@ class _UserPageState extends State<UserPage> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     scrollDirection: Axis.vertical,
-                    itemCount: globals.user.documents["bulletins"].length,
+                    itemCount:
+                        (globals.user.documents["certificat"]["annee"] != ""
+                                ? globals.user.documents
+                                : documents)["bulletins"]
+                            .length,
                     itemBuilder: (BuildContext ctxt, int i) {
                       return Padding(
                         padding: EdgeInsets.only(top: 0, left: 20, right: 20),
                         child: DocumentTile(
-                            globals.user.documents["bulletins"][i]["name"],
-                            globals.user.documents["bulletins"][i]["sub"],
-                            globals.user.documents["bulletins"][i]["fr_url"],
-                            globals.user.documents["bulletins"][i]["en_url"],
+                            (globals.user.documents["certificat"]["annee"] != ""
+                                ? globals.user.documents
+                                : documents)["bulletins"][i]["name"],
+                            (globals.user.documents["certificat"]["annee"] != ""
+                                ? globals.user.documents
+                                : documents)["bulletins"][i]["sub"],
+                            (globals.user.documents["certificat"]["annee"] != ""
+                                ? globals.user.documents
+                                : documents)["bulletins"][i]["fr_url"],
+                            (globals.user.documents["certificat"]["annee"] != ""
+                                ? globals.user.documents
+                                : documents)["bulletins"][i]["en_url"],
                             3 + i),
                       );
                     }),
@@ -607,97 +616,5 @@ class _UserPageState extends State<UserPage> {
             ),
           )
         : Center(child: CupertinoActivityIndicator());
-  }
-}
-
-class PDFScreen extends StatelessWidget {
-  String pathPDF = "";
-  String title = "";
-  PDFScreen(this.pathPDF, this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
-    FlutterStatusbarcolor.setStatusBarWhiteForeground(
-        globals.currentTheme.isDark());
-    FlutterStatusbarcolor.setNavigationBarColor(
-        Theme.of(context).scaffoldBackgroundColor);
-    FlutterStatusbarcolor.setNavigationBarWhiteForeground(
-        globals.currentTheme.isDark());
-    return PDFViewerScaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-              //change your color here
-              ),
-          title: Text(
-            title,
-            style: Theme.of(context).textTheme.bodyText1,
-          ),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          actions: <Widget>[
-            IconButton(
-              icon: IconTheme(
-                data: Theme.of(context).accentIconTheme,
-                child: Icon(
-                  OMIcons.share,
-                ),
-              ),
-              onPressed: () {
-                ShareExtend.share(pathPDF, title);
-              },
-            ),
-          ],
-        ),
-        path: pathPDF);
-  }
-}
-
-class ContextEntry extends PopupMenuEntry<int> {
-  @override
-  double height = 50;
-  // height doesn't matter, as long as we are not giving
-  // initialValue to showMenu().
-
-  @override
-  bool represents(int n) => n == 1 || n == -1;
-
-  @override
-  ContextEntryState createState() => ContextEntryState();
-}
-
-class ContextEntryState extends State<ContextEntry> {
-  void copy() {
-    // This is how you close the popup menu and return user selection.
-    Navigator.pop<int>(context, 1);
-  }
-
-  void share() {
-    Navigator.pop<int>(context, -1);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Container(
-            height: 20,
-            child: FlatButton(
-              onPressed: copy,
-              child: Text('Copier'),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            height: 20,
-            child: FlatButton(
-              onPressed: share,
-              child: Text('Partager'),
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }

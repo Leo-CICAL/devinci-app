@@ -24,7 +24,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="/tmp/outline_assignment_24.xml" />
+                                                <entry key="imagePath" value="/tmp/round_access_time_24.xml" />
                                                 <entry key="opacityPercent" value="60" />
                                               </map>
                                             </option>
@@ -36,7 +36,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/home/antoine/Dev/android-studio/plugins/android/lib/android.jar!/images/material/icons/materialiconsoutlined/assignment/outline_assignment_24.xml" />
+                                                <entry key="url" value="jar:file:/home/antoine/Dev/android-studio/plugins/android/lib/android.jar!/images/material/icons/materialiconsround/access_time/round_access_time_24.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -48,6 +48,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
+                                                <entry key="imagePath" value="$PROJECT_DIR$/../assets/megaphone_outlined.svg" />
                                                 <entry key="opacityPercent" value="60" />
                                               </map>
                                             </option>
@@ -80,7 +81,9 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="icon_notes" />
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="imageAsset" value="$PROJECT_DIR$/../assets/megaphone_outlined.svg" />
+                                      <entry key="outputName" value="icon_presence" />
                                     </map>
                                   </option>
                                 </PersistentState>

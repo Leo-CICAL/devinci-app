@@ -1,2 +1,10 @@
+/build
+build/ios/Debug-iphoneos/Runner.app/Frameworks/url_launcher.framework/url_launcher
+build/ios/Debug-iphoneos/Runner.app/Info.plist
+build/ios/Debug-iphoneos/Runner.app/Frameworks/url_launcher.framework/url_launcher
+build/ios/Debug-iphoneos/Runner.app/Frameworks/shared_preferences.framework/shared_preferences
+lib/config.dart
+/.dart_tool/
+.flutter-plugins
 
-.DS_Store
+.flutter-plugins-dependencies

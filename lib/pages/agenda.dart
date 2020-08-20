@@ -1,18 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'package:intl/date_symbol_data_local.dart'; //for date locale
-
 import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:devinci/libraries/devinci/extra/functions.dart';
-import 'package:devinci/libraries/devinci/extra/classes.dart';
+import 'package:devinci/extra/classes.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
-import 'package:sembast/sembast.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 Function setAgendaHeaderState;
@@ -51,8 +46,6 @@ class _AgendaPageState extends State<AgendaPage> {
   _AgendaPageState();
 
   Future<void> getCalendar() async {
-    //print("getCalendar");
-    //throw Exception("test");
     if (globals.lastFetchAgenda == null) {
       globals.lastFetchAgenda = DateTime.now();
       String icalUrl = globals.user.data["edtUrl"];
@@ -67,21 +60,7 @@ class _AgendaPageState extends State<AgendaPage> {
       setState(() {
         show = true;
       });
-    } else if (DateTime.now().difference(globals.lastFetchAgenda).inMinutes >
-        30) {
-      globals.lastFetchAgenda = DateTime.now();
-      String icalUrl = globals.user.data["edtUrl"];
-      try {
-        globals.cours = await parseIcal(icalUrl);
-      } catch (exception, stacktrace) {
-        await reportError(
-            "agenda.dart | _AgendaPageState | getCalendar() | parseIcal() | after 30 min => $exception",
-            stacktrace);
-        return;
-      }
-      setState(() {
-        show = true;
-      });
+      globals.isLoading.setState(0, true);
     } else {
       setState(() {
         show = true;
@@ -93,6 +72,24 @@ class _AgendaPageState extends State<AgendaPage> {
   void initState() {
     Intl.defaultLocale = "fr_FR";
     super.initState();
+    globals.isLoading.addListener(() async {
+      print("isLoading");
+      if (globals.isLoading.state(0)) {
+        try {
+          globals.cours =
+              await parseIcal(globals.user.data["edtUrl"], load: true);
+        } catch (exception, stacktrace) {
+          await reportError(
+              "agenda.dart | _AgendaPageState | getCalendar() | parseIcal() => $exception",
+              stacktrace);
+          return;
+        }
+        if (mounted) {
+          setState(() {});
+        }
+        globals.isLoading.setState(0, false);
+      }
+    });
     SchedulerBinding.instance.addPostFrameCallback((_) => getCalendar());
   }
 
@@ -134,7 +131,8 @@ class _AgendaPageState extends State<AgendaPage> {
                                   .format(viewChangedDetails.visibleDates[
                                       viewChangedDetails.visibleDates.length ~/
                                           2])
-                                  .toString();
+                                  .toString()
+                                  .capitalize();
                           SchedulerBinding.instance
                               .addPostFrameCallback((duration) {
                             setAgendaHeaderState(() {});

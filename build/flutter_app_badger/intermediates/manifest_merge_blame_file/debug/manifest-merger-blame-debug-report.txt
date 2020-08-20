@@ -3,6 +3,6 @@
 3    package="fr.g123k.flutterappbadge.flutterappbadger" >
 4
 5    <uses-sdk android:minSdkVersion="16" />
-5-->/home/antoine/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_app_badger-1.1.2/android/src/main/AndroidManifest.xml
+5-->C:\src\flutter\.pub-cache\hosted\pub.dartlang.org\flutter_app_badger-1.1.2\android\src\main\AndroidManifest.xml
 6
 7</manifest>

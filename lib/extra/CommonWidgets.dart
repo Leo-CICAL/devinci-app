@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: non_constant_identifier_names
 Widget TitleSection(String title,
     {Widget iconButton = const SizedBox.shrink(),
     EdgeInsets padding = const EdgeInsets.only(top: 20.0, left: 20)}) {

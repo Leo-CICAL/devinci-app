@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:about/about.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:devinci/libraries/devinci/extra/classes.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
@@ -24,20 +24,27 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final myControllerUsername = TextEditingController();
   final myControllerPassword = TextEditingController();
+  final FocusNode _usernameFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
   ButtonState buttonState = ButtonState.normal;
-
   bool show = false;
 
   void runBeforeBuild() async {
+    String username;
+    String password;
+
     var connectivityResult = await (Connectivity().checkConnectivity());
 
-    globals.isConnected = globals.prefs.getBool("isConnected") ?? true;
+    globals.isConnected = !globals.isConnected
+        ? false
+        : globals.prefs.getBool("isConnected") ?? true;
     globals.isConnected = !globals.isConnected
         ? false
         : connectivityResult != ConnectivityResult.none;
-    String username = await globals.storage.read(key: "username");
-    String password = await globals.storage.read(key: "password");
+    username = await globals.storage.read(key: "username");
+    password = await globals.storage.read(key: "password");
+
     if (username != null && password != null) {
       print("credentials exists");
       globals.user = new User(username, password);
@@ -49,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
         });
         print(exception);
 
-        //user.init() throw error if credentials are wrong or if an error occured during the process
+        //user.init() throw error if credentials are wrong or if an error occurred during the process
         if (globals.user.code == 401) {
           //credentials are wrong
           myControllerPassword.text = "";
@@ -57,13 +64,14 @@ class _LoginPageState extends State<LoginPage> {
           await reportError(
               "main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception",
               stacktrace);
+
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
                 title: new Text("Erreur"),
                 content: new Text(
-                    "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: ${exception}"),
+                    "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: $exception"),
                 actions: <Widget>[
                   new FlatButton(
                     child: new Text("Fermer"),
@@ -109,6 +117,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(
+        globals.currentTheme.isDark());
     FlutterStatusbarcolor.setNavigationBarColor(
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
@@ -153,11 +164,17 @@ class _LoginPageState extends State<LoginPage> {
                               TextFormField(
                                 keyboardType: TextInputType.emailAddress,
                                 autocorrect: false,
+                                textInputAction: TextInputAction.next,
+                                focusNode: _usernameFocus,
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
                                   labelText: 'Utilisateur',
                                 ),
                                 controller: myControllerUsername,
+                                onFieldSubmitted: (term) {
+                                  fieldFocusChange(
+                                      context, _usernameFocus, _passwordFocus);
+                                },
                                 validator: (value) {
                                   if (globals.user != null) {
                                     if (globals.user.error) {
@@ -174,11 +191,92 @@ class _LoginPageState extends State<LoginPage> {
                                 padding: const EdgeInsets.only(top: 20.0),
                                 child: TextFormField(
                                   obscureText: true,
+                                  textInputAction: TextInputAction.done,
+                                  focusNode: _passwordFocus,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(),
                                     labelText: 'Mot de passe',
                                   ),
                                   controller: myControllerPassword,
+                                  onFieldSubmitted: (value) async {
+                                    _passwordFocus.unfocus();
+
+                                    if (globals.user != null)
+                                      globals.user.error = false;
+                                    if (_formKey.currentState.validate()) {
+                                      print("valid");
+                                      setState(() {
+                                        buttonState = ButtonState.inProgress;
+                                      });
+                                      globals.user = new User(
+                                          myControllerUsername.text,
+                                          myControllerPassword.text);
+                                      try {
+                                        await globals.user.init();
+                                        Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                            builder: (context) => MainPage(),
+                                          ),
+                                        );
+                                      } catch (exception, stacktrace) {
+                                        print(exception);
+                                        setState(() {
+                                          buttonState = ButtonState.error;
+                                        });
+                                        Timer(
+                                            Duration(milliseconds: 500),
+                                            () => setState(() {
+                                                  buttonState =
+                                                      ButtonState.normal;
+                                                }));
+                                        //user.init() throw error if credentials are wrong or if an error occurred during the process
+                                        if (globals.user.code == 401) {
+                                          //credentials are wrong
+                                          myControllerPassword.text = "";
+                                        } else {
+                                          await reportError(
+                                              'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
+                                              stacktrace);
+
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              // return object of type Dialog
+                                              return AlertDialog(
+                                                title: new Text("Erreur"),
+                                                content: new Text(
+                                                    "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: $exception"),
+                                                actions: <Widget>[
+                                                  // usually buttons at the bottom of the dialog
+                                                  new FlatButton(
+                                                    child: new Text("Fermer"),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        }
+
+                                        _formKey.currentState.validate();
+                                      }
+                                    } else {
+                                      print("invalid");
+                                      setState(() {
+                                        buttonState = ButtonState.error;
+                                      });
+                                      Timer(
+                                          Duration(milliseconds: 500),
+                                          () => setState(() {
+                                                buttonState =
+                                                    ButtonState.normal;
+                                              }));
+                                    }
+                                  },
                                   validator: (value) {
                                     if (globals.user != null) {
                                       if (globals.user.error) {
@@ -203,9 +301,7 @@ class _LoginPageState extends State<LoginPage> {
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
-                                          color: MediaQuery.of(context)
-                                                      .platformBrightness ==
-                                                  Brightness.dark
+                                          color: globals.currentTheme.isDark()
                                               ? Colors.black
                                               : Colors.white),
                                     ),
@@ -240,14 +336,15 @@ class _LoginPageState extends State<LoginPage> {
                                                   buttonState =
                                                       ButtonState.normal;
                                                 }));
-                                        //user.init() throw error if credentials are wrong or if an error occured during the process
+                                        //user.init() throw error if credentials are wrong or if an error occurred during the process
                                         if (globals.user.code == 401) {
                                           //credentials are wrong
                                           myControllerPassword.text = "";
                                         } else {
                                           await reportError(
-                                              "main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception",
+                                              'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
                                               stacktrace);
+
                                           showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
@@ -255,7 +352,7 @@ class _LoginPageState extends State<LoginPage> {
                                               return AlertDialog(
                                                 title: new Text("Erreur"),
                                                 content: new Text(
-                                                    "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: ${exception}"),
+                                                    "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: $exception"),
                                                 actions: <Widget>[
                                                   // usually buttons at the bottom of the dialog
                                                   new FlatButton(
@@ -289,9 +386,7 @@ class _LoginPageState extends State<LoginPage> {
                                   buttonState: buttonState,
                                   backgroundColor:
                                       Theme.of(context).accentColor,
-                                  progressColor: MediaQuery.of(context)
-                                              .platformBrightness ==
-                                          Brightness.dark
+                                  progressColor: globals.currentTheme.isDark()
                                       ? Colors.black
                                       : Colors.white,
                                 ),
@@ -303,6 +398,60 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
           ),
+          persistentFooterButtons: show
+              ? [
+                  FlatButton(
+                      child: Text('CGU'),
+                      onPressed: () {
+                        showMarkdownPage(
+                          applicationIcon: SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Container(
+                              child: Center(
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/icon_blanc_a.png'),
+                                  radius: 50,
+                                ),
+                              ),
+                            ),
+                          ),
+                          context: context,
+                          applicationName: 'Devinci',
+                          filename: 'assets/tos.md',
+                          title: Text("Conditions générales d'utilisation"),
+                          useMustache: false,
+                          mustacheValues: null,
+                        );
+                      }),
+                  FlatButton(
+                      child: Text('Politique de confidentialité'),
+                      onPressed: () {
+                        showMarkdownPage(
+                          applicationIcon: SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Container(
+                              child: Center(
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/icon_blanc_a.png'),
+                                  radius: 50,
+                                ),
+                              ),
+                            ),
+                          ),
+                          context: context,
+                          applicationName: 'Devinci',
+                          filename: 'assets/privacy.md',
+                          title: Text('Politique de confidentialité'),
+                          useMustache: false,
+                          mustacheValues: null,
+                        );
+                      })
+                ]
+              : null,
         ));
   }
 }

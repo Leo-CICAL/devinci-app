@@ -6,6 +6,7 @@ import WidgetKit
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
     let notificationCenter = UNUserNotificationCenter.current()
+    let defaults = UserDefaults.standard
     
     
     override func application(
@@ -50,7 +51,7 @@ import WidgetKit
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
-    private func changeIcon(iconId: Intresult: @escaping FlutterResult,){
+    private func changeIcon(iconId: Int,result: @escaping FlutterResult){
         if UIApplication.shared.supportsAlternateIcons {
                 var iconName = "iconwhitea"
                 switch iconId {
@@ -90,4 +91,5 @@ import WidgetKit
         UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true)
         
     }
+
 }

@@ -153,6 +153,7 @@ class JsonDiffer {
         if (!foundMissing) {
           // Never found left[leftFoot] in right, nor right[rightFoot] in left.
           // This must just be a changed value.
+          // ignore: todo
           // TODO: This notation is wrong for a case such as:
           //     [1,2,3,4,5,6] => [1,4,5,7]
           //     changed.first = [[5, 6], [3,7]

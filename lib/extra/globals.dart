@@ -10,6 +10,7 @@ import 'package:sentry/sentry.dart' as Sentry;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:devinci/extra/classes.dart';
 
 final Sentry.SentryClient sentry = Sentry.SentryClient(
     dsn:
@@ -123,6 +124,10 @@ int selectedPage = 0;
 
 SharedPreferences prefs;
 
-bool isConnected = false;
+bool isConnected = true;
 
 DevinciTheme currentTheme = DevinciTheme();
+
+IsLoading isLoading = IsLoading();
+
+bool noteLocked = false;

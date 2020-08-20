@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:devinci/libraries/json_diff/json_diff.dart';
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -21,6 +22,7 @@ import 'dart:typed_data';
 import 'package:devinci/libraries/feedback/feedback.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sembast/sembast.dart';
+import 'package:devinci/extra/classes.dart';
 
 Cookie getCookie(List<Cookie> cookieJar, String name) {
   Cookie res;
@@ -55,7 +57,7 @@ double getMatMoy(var elem) {
       if (!globals.asXxMoy) {
         globals.asXxMoy = true;
       }
-      return null as double;
+      return null;
     }
   }
 }
@@ -76,11 +78,11 @@ String truncateWithEllipsis(int cutoff, String myString) {
       : '${myString.substring(0, cutoff)}...';
 }
 
-Future<List<Cours>> parseIcal(String icsUrl) async {
+Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
   List<Cours> results = new List<Cours>();
   HttpClient client = new HttpClient();
   String body = "";
-  if (globals.isConnected) {
+  if (globals.isConnected && load) {
     HttpClientRequest req = await client.getUrl(Uri.parse(icsUrl));
     HttpClientResponse res = await req.close();
 
@@ -96,7 +98,23 @@ Future<List<Cours>> parseIcal(String icsUrl) async {
   } else {
     body = await globals.store.record('ical').get(globals.db) as String ?? "";
     if (body == "") {
-      throw Exception("no backup");
+      if (globals.isConnected) {
+        HttpClientRequest req = await client.getUrl(Uri.parse(icsUrl));
+        HttpClientResponse res = await req.close();
+
+        body = await res.transform(utf8.decoder).join();
+        if (res.statusCode == 200) {
+          await globals.store.record('ical').put(globals.db, body);
+        } else {
+          body = await globals.store.record('ical').get(globals.db) as String ??
+              "";
+          if (body == "") {
+            throw Exception("error ${res.statusCode}");
+          }
+        }
+      } else {
+        throw Exception("no backup");
+      }
     }
   }
   RegExp mainReg =
@@ -178,20 +196,22 @@ bool get isInDebugMode {
 Future<Null> reportError(dynamic error, dynamic stackTrace) async {
   print('Caught error: $error');
   String err = error.toString();
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  if (Platform.isIOS) {
-    IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-    err +=
-        "\ndevice info : ${iosInfo.name} : ${iosInfo.model} \n ios : ${iosInfo.systemVersion}\n physical device : ${iosInfo.isPhysicalDevice}";
-  } else {
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+  if (Platform.isAndroid || Platform.isIOS) {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      err +=
+          "\ndevice info : ${iosInfo.name} : ${iosInfo.model} \n ios : ${iosInfo.systemVersion}\n physical device : ${iosInfo.isPhysicalDevice}";
+    } else {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
 
+      err +=
+          "\ndevice info : ${androidInfo.product}:${androidInfo.brand} \n android : ${androidInfo.version.release}\n physical device : ${androidInfo.isPhysicalDevice}";
+    }
     err +=
-        "\ndevice info : ${androidInfo.product}:${androidInfo.brand} \n android : ${androidInfo.version.release}\n physical device : ${androidInfo.isPhysicalDevice}";
+        "\n appName : ${packageInfo.appName}\n packageName : ${packageInfo.packageName}\n version : ${packageInfo.version}\n buildNumber : ${packageInfo.buildNumber}\n ";
   }
-  err +=
-      "\n appName : ${packageInfo.appName}\n packageName : ${packageInfo.packageName}\n version : ${packageInfo.version}\n buildNumber : ${packageInfo.buildNumber}\n ";
   String consent = globals.prefs.getString('crashConsent');
   if (consent == null) {
     dialog(
@@ -214,7 +234,7 @@ Future<Null> reportError(dynamic error, dynamic stackTrace) async {
   } else {
     final snackBar = SnackBar(
       content: Text(
-          'Une erreur est survenue, mais nous n\'avons pas envoyer de rapport d\'incident'),
+          "Une erreur est survenue, mais nous n'avons pas envoyer de rapport d'incident"),
       action: SnackBarAction(
         label: 'Envoyer',
         onPressed: () => reportToSentry(err, stackTrace),
@@ -291,7 +311,6 @@ Map<String, dynamic> comparer(old, n) {
       "note": n[i]["note"],
       "noteP": n[i]["noteP"]
     };
-    ;
   }
   var differ = JsonDiffer(oldM, nM);
   var diff = differ.diff();
@@ -362,11 +381,11 @@ extension CopyDeepMap on Map<String, dynamic> {
 
 Future<void> showNotification(
     {String title, String body, int delay = 5, int id = 0}) async {
-  print("sendind notification");
+  print("sending notification");
   if (title != null && body != null) {
     var scheduledNotificationDateTime = DateTime.now().add(Duration(
         seconds:
-            delay)); //On envoit la notif avec 5 secondes de retard pour être sur que l'app n'est plus en forground
+            delay)); //On envoie la notif avec 5 secondes de retard pour être sur que l'app n'est plus en foreground
     await globals.flutterLocalNotificationsPlugin.schedule(0, title, body,
         scheduledNotificationDateTime, globals.platformChannelSpecifics);
   }
@@ -441,6 +460,7 @@ Future<void> initPlatformState() async {
     bool isConnected = connectivityResult != ConnectivityResult.none;
     if (isConnected) {
       HttpClient client = new HttpClient();
+      client.connectionTimeout = const Duration(seconds: 4);
       HttpClientRequest req = await client.getUrl(
         Uri.parse('https://devinci.araulin.tech/n.json'),
       );
@@ -462,7 +482,7 @@ Future<void> initPlatformState() async {
         if (now.hour > 7 && now.hour < 22) {
           //on ne fetch pas de nouvelles notes la nuit
           if (now.millisecondsSinceEpoch - timeLastNotes > 5400000) {
-            //on ne fetch que toute les heures et demi pour ne pas être pénalisé par l'OS (hmm hmm iOS), et puis 1h30 me semble raisonable comme interval de temps, les nouvelles notes n'ont pas besoin d'être en temps réel parce que au minimum le background fetch est appelé tout les 15 min
+            //on ne fetch que toute les heures et demi pour ne pas être pénalisé par l'OS (hmm hmm iOS), et puis 1h30 me semble raisonnable comme interval de temps, les nouvelles notes n'ont pas besoin d'être en temps réel parce que au minimum le background fetch est appelé tout les 15 min
             fetch = true;
           }
         }
@@ -470,6 +490,7 @@ Future<void> initPlatformState() async {
 
       if (fetch) {
         print("fetch");
+        globals.noteLocked = true;
 
         String username = await storage.read(key: 'username');
         String password = await storage.read(key: 'password');
@@ -478,7 +499,10 @@ Future<void> initPlatformState() async {
           await globals.user
               .init(); //on récupère les tokens, et le backup des notes
           print("connected");
-          await globals.user.getNotes();
+          await globals.user.getNotes().timeout(Duration(seconds: 8),
+              onTimeout: () {
+            BackgroundFetch.finish(taskId);
+          });
           print(globals.user.notesEvolution);
           String notifTitle = "";
           String notifBody = "";
@@ -628,6 +652,7 @@ Future<void> initPlatformState() async {
                   delay: 5);
           }
         }
+        globals.noteLocked = false;
       } else {
         bool show = false;
         if (nId == "") {
@@ -657,7 +682,7 @@ Future<void> initPlatformState() async {
   return;
 }
 
-void quick_actions_callback(shortcutType) {
+void quickActionsCallback(shortcutType) {
   switch (shortcutType) {
     case "action_edt":
       globals.selectedPage = 0;
@@ -665,6 +690,14 @@ void quick_actions_callback(shortcutType) {
       break;
     case "action_notes":
       globals.selectedPage = 1;
+      return;
+      break;
+    case "action_presence":
+      globals.selectedPage = 3;
+      return;
+      break;
+    case "action_offline":
+      globals.isConnected = false;
       return;
       break;
     default:
@@ -694,5 +727,78 @@ Future<void> dialog(
     callback(res);
   } catch (exception, stacktrace) {
     reportError(exception, stacktrace);
+  }
+}
+
+Future<String> downloadDocuments(String url, String filename) async {
+  HttpClient client = new HttpClient();
+  Directory directory;
+  if (Platform.isAndroid) {
+    directory = await getExternalStorageDirectory();
+  } else {
+    directory = await getApplicationDocumentsDirectory();
+  }
+  final String path = directory.path;
+
+  var fileSave = new File(path + '/' + removeDiacritics(filename) + ".pdf");
+  if (globals.isConnected) {
+    if (await fileSave.exists()) {
+      return fileSave.path;
+    }
+    //check if all tokens are still valid:
+    if (globals.user.tokens["SimpleSAML"] != "" &&
+        globals.user.tokens["alv"] != "" &&
+        globals.user.tokens["uids"] != "" &&
+        globals.user.tokens["SimpleSAMLAuthToken"] != "" &&
+        globals.user.error == false) {
+      globals.user.error = false;
+      globals.user.code = 200;
+
+      HttpClientRequest request = await client.getUrl(
+        Uri.parse(url),
+      );
+      //request.followRedirects = false;
+      request.cookies.addAll([
+        new Cookie('alv', globals.user.tokens["alv"]),
+        new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
+        new Cookie('uids', globals.user.tokens["uids"]),
+        new Cookie(
+            'SimpleSAMLAuthToken', globals.user.tokens["SimpleSAMLAuthToken"]),
+      ]);
+      HttpClientResponse response = await request.close();
+      if (response.headers.value("content-type").indexOf("html") > -1) {
+        //c'est du html, mais bordel ou est le fichier ?
+        String body = await response.transform(utf8.decoder).join();
+        print(body);
+      } else {
+        var bytes = await consolidateHttpClientResponseBytes(response);
+        await fileSave.writeAsBytes(bytes);
+        return fileSave.path;
+      }
+    } else {
+      globals.user.error = true;
+      globals.user.code = 400;
+      throw Exception("missing parameters");
+    }
+  } else if (await fileSave.exists()) {
+    return fileSave.path;
+  } else {
+    final snackBar = SnackBar(content: Text('Non disponible hors ligne'));
+
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+    Scaffold.of(globals.currentContext).showSnackBar(snackBar);
+  }
+  return "";
+}
+
+fieldFocusChange(
+    BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+  currentFocus.unfocus();
+  FocusScope.of(context).requestFocus(nextFocus);
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
   }
 }

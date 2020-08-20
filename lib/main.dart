@@ -8,6 +8,7 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -28,16 +29,21 @@ Future<Null> main() async {
   }
   //init quick_actions
   final QuickActions quickActions = new QuickActions();
-  quickActions.initialize(quick_actions_callback);
+  quickActions.initialize(quickActionsCallback);
   quickActions.setShortcutItems(<ShortcutItem>[
     const ShortcutItem(
         type: 'action_edt', localizedTitle: 'EDT', icon: 'icon_edt'),
     const ShortcutItem(
         type: 'action_notes', localizedTitle: 'Notes', icon: 'icon_notes'),
+    const ShortcutItem(
+        type: 'action_presence',
+        localizedTitle: 'Présence',
+        icon: 'icon_presence'),
+    const ShortcutItem(
+        type: 'action_offline',
+        localizedTitle: 'Hors connexion',
+        icon: 'icon_offline'),
   ]);
-  SyncfusionLicense.registerLicense(
-      Config.syncfusionLicense); //initialisation des widgets
-
   // initialisation du système de notifications.
   globals.notificationAppLaunchDetails = await globals
       .flutterLocalNotificationsPlugin
@@ -47,20 +53,23 @@ Future<Null> main() async {
       globals.initializationSettings,
       onSelectNotification: onSelectNotification);
 
+  SyncfusionLicense.registerLicense(
+      Config.syncfusionLicense); //initialisation des widgets
+
   // Fin init notifications
 
   // Ceci capture les erreurs renvoyées par Flutter
   FlutterError.onError = (FlutterErrorDetails details) async {
     if (isInDebugMode) {
-      // en developpement on print dans la console
+      // en développement on print dans la console
       FlutterError.dumpErrorToConsole(details);
     } else {
-      // En mode production on renvoit les données à la Zone qui va s'occuper de les transferer a Sentry.
+      // En mode production on renvoie les données à la Zone qui va s'occuper de les transferer a Sentry.
       Zone.current.handleUncaughtError(details.exception, details.stack);
     }
   };
 
-  // This creates a [Zone] that contains the Flutter application and stablishes
+  // This creates a [Zone] that contains the Flutter application and establishes
   // an error handler that captures errors and reports them.
   //
   // Using a zone makes sure that as many errors as possible are captured,
@@ -76,7 +85,7 @@ Future<Null> main() async {
       BetterFeedback(
           // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
           child: Phoenix(
-            // Phoenix permet de redemarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
+            // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
             child: MyApp(),
           ),
           onFeedback: betterFeedbackOnFeedback),
@@ -117,7 +126,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangePlatformBrightness() {
     final Brightness brightness =
         WidgetsBinding.instance.window.platformBrightness;
-    //inform listeners and rebuild widget tree
     String setTheme = globals.prefs.getString("theme") ?? "Système";
     if (setTheme == "Système") {
       globals.currentTheme.setDark(brightness == Brightness.dark);
@@ -129,6 +137,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     globals.currentContext = context;
     return MaterialApp(
       localizationsDelegates: [
+        RefreshLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         SfGlobalLocalizations.delegate
@@ -158,8 +167,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             fontSize: 36,
             color: Colors.black,
           ),
+          headline2: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 26,
+            color: Colors.black,
+          ),
           bodyText1: TextStyle(
             fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: Colors.black,
+          ),
+          bodyText2: TextStyle(
+            fontWeight: FontWeight.normal,
             fontSize: 18,
             color: Colors.black,
           ),
@@ -185,8 +204,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             fontSize: 36,
             color: Colors.white,
           ),
+          headline2: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 26,
+            color: Colors.white,
+          ),
           bodyText1: TextStyle(
             fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: Colors.white,
+          ),
+          bodyText2: TextStyle(
+            fontWeight: FontWeight.normal,
             fontSize: 18,
             color: Colors.white,
           ),

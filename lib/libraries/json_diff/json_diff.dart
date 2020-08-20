@@ -1,7 +1,6 @@
 // Copyright 2014 Google Inc. All Rights Reserved.
 // Licensed under the Apache License, Version 2.0, found in the LICENSE file.
 
-
 /// A library for determining the difference between two JSON objects.
 ///
 /// ## Usage
@@ -20,7 +19,7 @@
 /// differences between the two objects.
 library json_diff;
 
-import 'dart:convert';
+// ignore: deprecated_member_use
 import 'package:collection/equality.dart';
 
 part 'src/diff_node.dart';

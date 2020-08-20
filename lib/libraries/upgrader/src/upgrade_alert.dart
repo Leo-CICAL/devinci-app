@@ -2,7 +2,6 @@
  * Copyright (c) 2018 Larry Aasen. All rights reserved.
  */
 
-import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;

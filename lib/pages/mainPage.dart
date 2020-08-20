@@ -1,11 +1,12 @@
 import 'package:badges/badges.dart';
 import 'package:devinci/extra/devinci_icons_icons.dart';
-import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/pages/absences.dart';
 import 'package:devinci/pages/agenda.dart';
 import 'package:devinci/pages/notes.dart';
+import 'package:devinci/pages/presence.dart';
 import 'package:devinci/pages/settings.dart';
 import 'package:devinci/pages/user.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -23,11 +24,21 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   CalendarView calendarView = CalendarView.month;
+  String dropdownValue = "A1";
+  @override
+  void initState() {
+    super.initState();
+    globals.isLoading.addListener(() {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     globals.currentContext = context;
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(
+        globals.currentTheme.isDark());
     FlutterStatusbarcolor.setNavigationBarColor(
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
@@ -64,9 +75,9 @@ class _MainPageState extends State<MainPage> {
                     });
                   },
                 ),
-                Text(""),
-                Text(""),
-                Text(""),
+                SizedBox.shrink(),
+                SizedBox.shrink(),
+                SizedBox.shrink(),
                 IconButton(
                   icon: IconTheme(
                     data: Theme.of(context).accentIconTheme,
@@ -81,6 +92,43 @@ class _MainPageState extends State<MainPage> {
                   },
                 ),
               ].elementAt(globals.selectedPage),
+              <Widget>[
+                globals.isConnected
+                    ? (globals.isLoading.state(0)
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 14),
+                            child: CupertinoActivityIndicator(),
+                          )
+                        : IconButton(
+                            icon: IconTheme(
+                              data: Theme.of(context).accentIconTheme,
+                              child: Icon(OMIcons.refresh),
+                            ),
+                            onPressed: () {
+                              globals.isLoading.setState(0, true);
+                            },
+                          ))
+                    : SizedBox.shrink(),
+                globals.isLoading.state(1)
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: CupertinoActivityIndicator(),
+                      )
+                    : SizedBox.shrink(),
+                globals.isLoading.state(2)
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: CupertinoActivityIndicator(),
+                      )
+                    : SizedBox.shrink(),
+                SizedBox.shrink(),
+                globals.isLoading.state(4)
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: CupertinoActivityIndicator(),
+                      )
+                    : SizedBox.shrink()
+              ].elementAt(globals.selectedPage),
               globals.isConnected
                   ? SizedBox.shrink()
                   : IconButton(
@@ -92,7 +140,6 @@ class _MainPageState extends State<MainPage> {
                         final snackBar =
                             SnackBar(content: Text('Vous êtes hors-ligne'));
 
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
                         Scaffold.of(globals.currentContext)
                             .showSnackBar(snackBar);
                       },
@@ -103,11 +150,7 @@ class _MainPageState extends State<MainPage> {
           AgendaPage(),
           NotesPage(),
           AbsencesPage(),
-          Container(
-            child: Center(
-              child: Text("Non disponible pour le moment"),
-            ),
-          ),
+          PresencePage(),
           UserPage()
         ].elementAt(globals.selectedPage),
         bottomNavigationBar: new Theme(
