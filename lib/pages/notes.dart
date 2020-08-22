@@ -23,7 +23,8 @@ class _NotesPageState extends State<NotesPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  String currentSemester = "s2";
+  String currentSemester = "s1";
+  bool changed = false;
 
   void initState() {
     super.initState();
@@ -60,7 +61,7 @@ class _NotesPageState extends State<NotesPage> {
         }
         if (mounted) {
           setState(() {
-            print("a");
+            if (!globals.user.notes["s2"].isEmpty && !changed) currentSemester = "s2";
           });
         }
         globals.isLoading.setState(1, false);
@@ -72,8 +73,8 @@ class _NotesPageState extends State<NotesPage> {
 
   void changeCurrentSemester(String sem) {
     setState(() {
-      print("b");
       currentSemester = sem;
+      if(!changed) changed = true;
     });
   }
 
@@ -110,6 +111,7 @@ class _NotesPageState extends State<NotesPage> {
     }
     if (mounted) {
       setState(() {
+        if (!globals.user.notes["s2"].isEmpty && !changed) currentSemester = "s2";
         _refreshController.refreshCompleted();
       });
     }
@@ -120,42 +122,47 @@ class _NotesPageState extends State<NotesPage> {
     if (!globals.user.notesFetched) {
       notes = await globals.store.record('notes').get(globals.db)
           as Map<String, dynamic>;
-      if(notes == null){
+      if (notes == null) {
         //il n'existe pas de backup hors connexion des notes
         try {
-        await globals.user.getNotes(load: true);
-      } catch (exception, stacktrace) {
-        if (globals.isConnected) {
-          HttpClient client = new HttpClient();
-          HttpClientRequest req = await client.getUrl(
-            Uri.parse('https://www.leonard-de-vinci.net/?my=notes'),
-          );
-          req.followRedirects = false;
-          req.cookies.addAll([
-            new Cookie('alv', globals.user.tokens["alv"]),
-            new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
-            new Cookie('uids', globals.user.tokens["uids"]),
-            new Cookie('SimpleSAMLAuthToken',
-                globals.user.tokens["SimpleSAMLAuthToken"]),
-          ]);
-          HttpClientResponse res = await req.close();
-          globals.feedbackNotes = await res.transform(utf8.decoder).join();
+          await globals.user.getNotes(load: true);
+        } catch (exception, stacktrace) {
+          if (globals.isConnected) {
+            HttpClient client = new HttpClient();
+            HttpClientRequest req = await client.getUrl(
+              Uri.parse('https://www.leonard-de-vinci.net/?my=notes'),
+            );
+            req.followRedirects = false;
+            req.cookies.addAll([
+              new Cookie('alv', globals.user.tokens["alv"]),
+              new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
+              new Cookie('uids', globals.user.tokens["uids"]),
+              new Cookie('SimpleSAMLAuthToken',
+                  globals.user.tokens["SimpleSAMLAuthToken"]),
+            ]);
+            HttpClientResponse res = await req.close();
+            globals.feedbackNotes = await res.transform(utf8.decoder).join();
 
-          await reportError(
-              "notes.dart | _NotesPageState | runBeforeBuild() | user.getNotes() => $exception",
-              stacktrace);
+            await reportError(
+                "notes.dart | _NotesPageState | runBeforeBuild() | user.getNotes() => $exception",
+                stacktrace);
+          }
         }
-      }
       }
       if (mounted)
         setState(() {
+          if (!globals.user.notes["s2"].isEmpty && !changed) currentSemester = "s2";
           show = true;
         });
       globals.user.notes.copy(notes);
 
       if (!globals.noteLocked) {
         if (globals.user.notesFetched) {
-          if (mounted) setState(() {});
+          if (mounted)
+            setState(() {
+              if (!globals.user.notes["s2"].isEmpty && !changed) currentSemester = "s2";
+              show = true;
+            });
         } else {
           globals.isLoading.setState(1, true);
         }
@@ -164,6 +171,7 @@ class _NotesPageState extends State<NotesPage> {
       }
     } else {
       setState(() {
+        if (!globals.user.notes["s2"].isEmpty && !changed) currentSemester = "s2";
         show = true;
       });
     }

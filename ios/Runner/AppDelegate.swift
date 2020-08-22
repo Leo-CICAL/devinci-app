@@ -1,6 +1,7 @@
 import UIKit
 import Flutter
 import UserNotifications
+import WidgetKit
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -14,6 +15,7 @@ import UserNotifications
     ) -> Bool {
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
         let options: UNAuthorizationOptions = [.alert, .sound, .badge]
+        WidgetCenter.shared.reloadAllTimelines()
         notificationCenter.requestAuthorization(options: options) {
             (didAllow, error) in
             if !didAllow {

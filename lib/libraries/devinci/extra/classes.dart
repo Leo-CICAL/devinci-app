@@ -70,7 +70,7 @@ class User {
   var promotion = {};
 
   Map<String, dynamic> presence = {
-    "type": "ongoing", //5 types : ongoing / done / notOpen / none / closed
+    "type": "none", //5 types : ongoing / done / notOpen / none / closed
     "title": "Espaces vectoriels",
     "horaires": DateTime.now().millisecondsSinceEpoch,
     "prof": "Baptiste Beaux-Colin",

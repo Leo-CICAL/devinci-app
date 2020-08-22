@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:about/about.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:devinci/extra/CommonWidgets.dart';
@@ -184,7 +185,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           Expanded(
                             child: Text(
                               "Hors connexion",
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.subtitle1,
                             ),
                           ),
                           Padding(
@@ -217,7 +218,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           Expanded(
                             child: Text(
                               "Theme",
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.subtitle1,
                             ),
                           ),
                           Padding(
@@ -229,7 +230,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 icon: Icon(OMIcons.expandMore),
                                 iconSize: 24,
                                 elevation: 16,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.subtitle1,
                                 underline: Container(
                                   height: 0,
                                   color: Colors.transparent,
@@ -283,7 +284,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Expanded(
                               child: Text(
                                 "Paramètres des notifications",
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.subtitle1,
                               ),
                             ),
                             Padding(
@@ -309,7 +310,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           Expanded(
                             child: Text(
                               "Rapports d'incident",
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.subtitle1,
                             ),
                           ),
                           Padding(
@@ -347,6 +348,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Expanded(
                               child: Text("Déconnexion",
                                   style: TextStyle(
+                                      fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.redAccent.shade200)),
                             ),
@@ -403,7 +405,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           Expanded(
                             child: Text(
                               "Écrire un commentaire",
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.subtitle1,
                             ),
                           ),
                           Padding(
@@ -483,7 +485,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           Expanded(
                             child: Text(
                               "À Propos",
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.subtitle1,
                             ),
                           ),
                           Padding(
@@ -535,7 +537,9 @@ class _SettingsPageState extends State<SettingsPage> {
                             padding: const EdgeInsets.only(
                                 top: 12, left: 24, right: 24),
                             child: Text(
-                              "Les fonds récoltés serviront principalement à mettre suffisamment de côté pour payer les frais de l'App Store et permettre dans un futur proche d'y proposer l'application.",
+                              Platform.isIOS
+                                  ? "Les fonds récoltés serviront principalement à mettre suffisamment de côté pour payer les frais de l'App Store et permettre dans un futur proche d'y proposer l'application."
+                                  : "Les fonds récoltés serviront principalement à mettre suffisamment de côté pour payer les frais du Play Store et permettre dans un futur proche d'y proposer l'application.",
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontWeight: FontWeight.normal,
@@ -548,461 +552,52 @@ class _SettingsPageState extends State<SettingsPage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
-                                top: 12, left: 24, right: 24),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text('☕  Pour un café',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1),
-                                ),
-                                OutlineButton(
-                                  onPressed: () {
-                                    slideDialog.showSlideDialog(
-                                      context: context,
-                                      backgroundColor:
-                                          Theme.of(context).cardColor,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Text(
-                                                '☕  Pour un café — 0,99 €',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline2),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 32, right: 32, top: 64),
-                                            child: OutlineButton(
-                                              onPressed: () async {
-                                                const url =
-                                                    'https://www.paypal.com/paypalme/antoinraulin/0.99';
-                                                if (await canLaunch(url)) {
-                                                  await launch(url);
-                                                } else {
-                                                  throw 'Could not launch $url';
-                                                }
-                                              },
-                                              highlightedBorderColor:
-                                                  globals.currentTheme.isDark()
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                              borderSide: BorderSide(
-                                                  width: 1.5,
-                                                  color: Theme.of(context)
-                                                      .accentColor),
-                                              child: Container(
-                                                width: double.infinity,
-                                                height: 50,
-                                                child: Center(
-                                                  child: Row(
-                                                    children: [
-                                                      Container(
-                                                        height: 28,
-                                                        width: 28,
-                                                        child: SvgPicture.asset(
-                                                          'assets/paypal.svg',
-                                                          color: globals
-                                                                  .currentTheme
-                                                                  .isDark()
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Center(
-                                                          child: Text(
-                                                              'Payer avec PayPal',
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyText1),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 32, right: 32, top: 32),
-                                            child: OutlineButton(
-                                              onPressed: () {
-                                                Clipboard.setData(
-                                                    new ClipboardData(
-                                                        text: "0781535885"));
-                                              },
-                                              highlightedBorderColor:
-                                                  globals.currentTheme.isDark()
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                              borderSide: BorderSide(
-                                                  width: 1.5,
-                                                  color: Theme.of(context)
-                                                      .accentColor),
-                                              child: Container(
-                                                width: double.infinity,
-                                                height: 50,
-                                                child: Center(
-                                                  child: Row(
-                                                    children: [
-                                                      Container(
-                                                        height: 28,
-                                                        width: 28,
-                                                        child: SvgPicture.asset(
-                                                          'assets/lydia.svg',
-                                                          color: globals
-                                                                  .currentTheme
-                                                                  .isDark()
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Center(
-                                                          child: Text(
-                                                              'Lydia : 07.81.53.58.85',
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyText1),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                top: 48, left: 24, right: 24),
+                            child: OutlineButton(
+                              onPressed: () async {
+                                const url =
+                                    'https://www.paypal.com/paypalme/antoinraulin';
+                                if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {
+                                  throw 'Could not launch $url';
+                                }
+                              },
+                              highlightedBorderColor:
+                                  globals.currentTheme.isDark()
+                                      ? Colors.white
+                                      : Colors.black,
+                              borderSide: BorderSide(
+                                  width: 1.5,
+                                  color: Theme.of(context).accentColor),
+                              child: Container(
+                                width: double.infinity,
+                                height: 50,
+                                child: Center(
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        height: 28,
+                                        width: 28,
+                                        child: SvgPicture.asset(
+                                          'assets/paypal.svg',
+                                          color: globals.currentTheme.isDark()
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
                                       ),
-                                    );
-                                  },
-                                  highlightedBorderColor:
-                                      globals.currentTheme.isDark()
-                                          ? Colors.white
-                                          : Colors.black,
-                                  borderSide: BorderSide(
-                                      width: 1.5,
-                                      color: Theme.of(context).accentColor),
-                                  child: Text('0,99 €',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1),
-                                )
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 0, left: 24, right: 24),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text('🍪  Pour un paquet de gâteau',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1),
-                                ),
-                                OutlineButton(
-                                  onPressed: () {
-                                    slideDialog.showSlideDialog(
-                                      context: context,
-                                      backgroundColor:
-                                          Theme.of(context).cardColor,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Text(
-                                                '🍪  Pour un paquet de gâteau — 4,99 €',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline2),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 32, right: 32, top: 64),
-                                            child: OutlineButton(
-                                              onPressed: () async {
-                                                const url =
-                                                    'https://www.paypal.com/paypalme/antoinraulin/4.99';
-                                                if (await canLaunch(url)) {
-                                                  await launch(url);
-                                                } else {
-                                                  throw 'Could not launch $url';
-                                                }
-                                              },
-                                              highlightedBorderColor:
-                                                  globals.currentTheme.isDark()
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                              borderSide: BorderSide(
-                                                  width: 1.5,
-                                                  color: Theme.of(context)
-                                                      .accentColor),
-                                              child: Container(
-                                                width: double.infinity,
-                                                height: 50,
-                                                child: Center(
-                                                  child: Row(
-                                                    children: [
-                                                      Container(
-                                                        height: 28,
-                                                        width: 28,
-                                                        child: SvgPicture.asset(
-                                                          'assets/paypal.svg',
-                                                          color: globals
-                                                                  .currentTheme
-                                                                  .isDark()
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Center(
-                                                          child: Text(
-                                                              'Payer avec PayPal',
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyText1),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 32, right: 32, top: 32),
-                                            child: OutlineButton(
-                                              onPressed: () {
-                                                Clipboard.setData(
-                                                    new ClipboardData(
-                                                        text: "0781535885"));
-                                              },
-                                              highlightedBorderColor:
-                                                  globals.currentTheme.isDark()
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                              borderSide: BorderSide(
-                                                  width: 1.5,
-                                                  color: Theme.of(context)
-                                                      .accentColor),
-                                              child: Container(
-                                                width: double.infinity,
-                                                height: 50,
-                                                child: Center(
-                                                  child: Row(
-                                                    children: [
-                                                      Container(
-                                                        height: 28,
-                                                        width: 28,
-                                                        child: SvgPicture.asset(
-                                                          'assets/lydia.svg',
-                                                          color: globals
-                                                                  .currentTheme
-                                                                  .isDark()
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Center(
-                                                          child: Text(
-                                                              'Lydia : 07.81.53.58.85',
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyText1),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                      Expanded(
+                                        child: Center(
+                                          child: Text('Supporter',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1),
+                                        ),
                                       ),
-                                    );
-                                  },
-                                  highlightedBorderColor:
-                                      globals.currentTheme.isDark()
-                                          ? Colors.white
-                                          : Colors.black,
-                                  borderSide: BorderSide(
-                                      width: 1.5,
-                                      color: Theme.of(context).accentColor),
-                                  child: Text('4,99 €',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1),
-                                )
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 0, left: 24, right: 24),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text('🍺  Pour une bière',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1),
+                                    ],
+                                  ),
                                 ),
-                                OutlineButton(
-                                  onPressed: () {
-                                    slideDialog.showSlideDialog(
-                                      context: context,
-                                      backgroundColor:
-                                          Theme.of(context).cardColor,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Text(
-                                                '🍺 Pour une bière — 7,99 €',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline2),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 32, right: 32, top: 64),
-                                            child: OutlineButton(
-                                              onPressed: () async {
-                                                const url =
-                                                    'https://www.paypal.com/paypalme/antoinraulin/7.99';
-                                                if (await canLaunch(url)) {
-                                                  await launch(url);
-                                                } else {
-                                                  throw 'Could not launch $url';
-                                                }
-                                              },
-                                              highlightedBorderColor:
-                                                  globals.currentTheme.isDark()
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                              borderSide: BorderSide(
-                                                  width: 1.5,
-                                                  color: Theme.of(context)
-                                                      .accentColor),
-                                              child: Container(
-                                                width: double.infinity,
-                                                height: 50,
-                                                child: Center(
-                                                  child: Row(
-                                                    children: [
-                                                      Container(
-                                                        height: 28,
-                                                        width: 28,
-                                                        child: SvgPicture.asset(
-                                                          'assets/paypal.svg',
-                                                          color: globals
-                                                                  .currentTheme
-                                                                  .isDark()
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Center(
-                                                          child: Text(
-                                                              'Payer avec PayPal',
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyText1),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 32, right: 32, top: 32),
-                                            child: OutlineButton(
-                                              onPressed: () {
-                                                Clipboard.setData(
-                                                    new ClipboardData(
-                                                        text: "0781535885"));
-                                              },
-                                              highlightedBorderColor:
-                                                  globals.currentTheme.isDark()
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                              borderSide: BorderSide(
-                                                  width: 1.5,
-                                                  color: Theme.of(context)
-                                                      .accentColor),
-                                              child: Container(
-                                                width: double.infinity,
-                                                height: 50,
-                                                child: Center(
-                                                  child: Row(
-                                                    children: [
-                                                      Container(
-                                                        height: 28,
-                                                        width: 28,
-                                                        child: SvgPicture.asset(
-                                                          'assets/lydia.svg',
-                                                          color: globals
-                                                                  .currentTheme
-                                                                  .isDark()
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Center(
-                                                          child: Text(
-                                                              'Lydia : 07.81.53.58.85',
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyText1),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  highlightedBorderColor:
-                                      globals.currentTheme.isDark()
-                                          ? Colors.white
-                                          : Colors.black,
-                                  borderSide: BorderSide(
-                                      width: 1.5,
-                                      color: Theme.of(context).accentColor),
-                                  child: Text('7,99 €',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1),
-                                )
-                              ],
+                              ),
                             ),
                           ),
                         ]),
@@ -1021,8 +616,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "Bocal à pourboires",
-                              style: Theme.of(context).textTheme.bodyText2,
+                              "Supporter",
+                              style: Theme.of(context).textTheme.subtitle1,
                             ),
                           ),
                           Padding(
@@ -1048,6 +643,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         Expanded(
                           child: Text("Version: $appVersion",
                               style: TextStyle(
+                                fontSize: 16,
                                 fontWeight: FontWeight.w300,
                               )),
                         ),
@@ -1062,6 +658,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         Expanded(
                           child: Text("Date fetch: $bgTime",
                               style: TextStyle(
+                                fontSize: 16,
                                 fontWeight: FontWeight.w300,
                               )),
                         ),

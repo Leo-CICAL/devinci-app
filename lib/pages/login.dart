@@ -35,13 +35,16 @@ class _LoginPageState extends State<LoginPage> {
     String password;
 
     var connectivityResult = await (Connectivity().checkConnectivity());
-
-    globals.isConnected = !globals.isConnected
-        ? false
-        : globals.prefs.getBool("isConnected") ?? true;
-    globals.isConnected = !globals.isConnected
-        ? false
-        : connectivityResult != ConnectivityResult.none;
+    if (!globals.isConnected) {
+      print("shortcut set offline");
+    } else {
+      globals.isConnected = globals.prefs.getBool("isConnected") ?? true;
+      if (!globals.isConnected) print("prefs set offline");
+      if (globals.isConnected) {
+        print("no pref nor shortcut set to offline");
+        globals.isConnected = connectivityResult != ConnectivityResult.none;
+      }
+    }
     username = await globals.storage.read(key: "username");
     password = await globals.storage.read(key: "password");
 

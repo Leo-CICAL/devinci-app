@@ -441,7 +441,7 @@ Future<void> initPlatformState() async {
       BackgroundFetchConfig(
           minimumFetchInterval: 15,
           stopOnTerminate: false,
-          enableHeadless: false,
+          enableHeadless: true,
           requiresBatteryNotLow: false,
           requiresCharging: false,
           requiresStorageNotLow: false,
@@ -683,6 +683,7 @@ Future<void> initPlatformState() async {
 }
 
 void quickActionsCallback(shortcutType) {
+  print(shortcutType);
   switch (shortcutType) {
     case "action_edt":
       globals.selectedPage = 0;

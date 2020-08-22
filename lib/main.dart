@@ -182,6 +182,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             fontSize: 18,
             color: Colors.black,
           ),
+          subtitle1: TextStyle(
+            fontWeight: FontWeight.normal,
+            fontSize: 16,
+            color: Colors.black,
+          ),
         ),
       ),
       darkTheme: ThemeData(
@@ -217,6 +222,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           bodyText2: TextStyle(
             fontWeight: FontWeight.normal,
             fontSize: 18,
+            color: Colors.white,
+          ),
+          subtitle1: TextStyle(
+            fontWeight: FontWeight.normal,
+            fontSize: 16,
             color: Colors.white,
           ),
         ),

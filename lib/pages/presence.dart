@@ -43,21 +43,28 @@ class _PresencePageState extends State<PresencePage> {
                   Padding(
                     padding: const EdgeInsets.only(top: 62),
                     child: Center(
-                      child: Text(globals.user.presence["title"],
+                      child: Text(
+                          globals.user.presence['type'] == 'none'
+                              ? 'Pas de cours prévu.'
+                              : globals.user.presence["title"],
                           style: Theme.of(context).textTheme.headline2),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 0),
                     child: Center(
-                      child: Text("—",
+                      child: Text(
+                          globals.user.presence['type'] == 'none' ? '' : "—",
                           style: Theme.of(context).textTheme.headline2),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 0),
                     child: Center(
-                      child: Text(globals.user.presence["prof"],
+                      child: Text(
+                          globals.user.presence['type'] == 'none'
+                              ? ''
+                              : globals.user.presence["prof"],
                           style: Theme.of(context).textTheme.bodyText2),
                     ),
                   ),
