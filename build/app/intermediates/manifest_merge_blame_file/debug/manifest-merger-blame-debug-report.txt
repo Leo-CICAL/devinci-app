@@ -12,27 +12,27 @@
 12         to allow setting breakpoints, to provide hot reload, etc.
 13    -->
 14    <uses-permission android:name="android.permission.INTERNET" />
-14-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:9:10-71
-14-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:9:27-69
+14-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:9:10-71
+14-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:9:27-69
 15    <!-- storage permission are required to download and show user's documents -->
 16    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-16-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:11:5-79
-16-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:11:22-77
+16-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:11:5-79
+16-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:11:22-77
 17    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- notification permissions -->
-17-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:12:5-80
-17-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:12:22-78
+17-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:12:5-80
+17-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:12:22-78
 18    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-18-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:14:5-80
-18-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:14:22-78
+18-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:14:5-80
+18-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:14:22-78
 19    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-19-->[:ota_update] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\ota_update\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-83
-19-->[:ota_update] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\ota_update\intermediates\library_manifest\debug\AndroidManifest.xml:7:22-80
+19-->[:ota_update] C:\Users\antoi\Documents\Dev\devinci\build\ota_update\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-83
+19-->[:ota_update] C:\Users\antoi\Documents\Dev\devinci\build\ota_update\intermediates\library_manifest\debug\AndroidManifest.xml:7:22-80
 20    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-20-->[:ota_update] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\ota_update\intermediates\library_manifest\debug\AndroidManifest.xml:8:5-79
-20-->[:ota_update] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\ota_update\intermediates\library_manifest\debug\AndroidManifest.xml:8:22-76
+20-->[:ota_update] C:\Users\antoi\Documents\Dev\devinci\build\ota_update\intermediates\library_manifest\debug\AndroidManifest.xml:8:5-79
+20-->[:ota_update] C:\Users\antoi\Documents\Dev\devinci\build\ota_update\intermediates\library_manifest\debug\AndroidManifest.xml:8:22-76
 21    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-21-->[:ota_update] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\ota_update\intermediates\library_manifest\debug\AndroidManifest.xml:9:5-76
-21-->[:ota_update] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\ota_update\intermediates\library_manifest\debug\AndroidManifest.xml:9:22-73
+21-->[:ota_update] C:\Users\antoi\Documents\Dev\devinci\build\ota_update\intermediates\library_manifest\debug\AndroidManifest.xml:9:5-76
+21-->[:ota_update] C:\Users\antoi\Documents\Dev\devinci\build\ota_update\intermediates\library_manifest\debug\AndroidManifest.xml:9:22-73
 22    <uses-permission android:name="android.permission.WAKE_LOCK" />
 22-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:12:5-68
 22-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:12:22-65
@@ -94,356 +94,192 @@
 44-->[me.leolin:ShortcutBadger:1.1.22] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\886a81c6d9ec6a9f9fefedd967840c02\ShortcutBadger-1.1.22\AndroidManifest.xml:50:22-86
 45
 46    <application
-46-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:15:5-114:19
+46-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:15:5-72:19
 47        android:name="io.flutter.app.FlutterApplication"
-47-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:16:9-57
+47-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:16:9-57
 48        android:allowBackup="false"
-48-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:19:9-36
+48-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:19:9-36
 49        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 49-->[androidx.core:core:1.2.0] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\b6252bb7f30c7dceb20e97dfa6dfae00\core-1.2.0\AndroidManifest.xml:24:18-86
 50        android:debuggable="true"
 51        android:fullBackupContent="false"
-51-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:22:9-42
+51-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:22:9-42
 52        android:icon="@mipmap/ic_launcher"
-52-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:18:9-43
+52-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:18:9-43
 53        android:label="devinci"
-53-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:17:9-32
+53-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:17:9-32
 54        android:supportsRtl="true" >
 54-->[com.github.myinnos:AppIconNameChanger:1.0.7] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6bef2b12786e63ea71777c14850120bf\AppIconNameChanger-1.0.7\AndroidManifest.xml:14:9-35
 55        <activity
-55-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:23:9-24:20
+55-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:23:9-51:20
 56            android:name="eu.araulin.devinci.MainActivity"
-56-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:23:19-47
+56-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:24:13-41
 57            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-57-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:23:114-264
+57-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:27:13-163
 58            android:hardwareAccelerated="true"
-58-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:23:265-299
+58-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:28:13-47
 59            android:launchMode="singleTop"
-59-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:23:48-78
+59-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:25:13-43
 60            android:theme="@style/LaunchTheme"
-60-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:23:79-113
+60-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:26:13-47
 61            android:windowSoftInputMode="adjustResize" >
-61-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:23:300-342
-62        </activity>
-63
-64        <activity-alias
-64-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:77:9-93:26
-65            android:name="eu.araulin.devinci.MainActivity4"
-65-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:77:25-72
-66            android:enabled="false"
-66-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:77:73-96
-67            android:icon="@mipmap/ic_launcher4"
-67-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:77:97-132
-68            android:label="Devinci"
-68-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:77:133-156
-69            android:targetActivity="eu.araulin.devinci.MainActivity" >
-69-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:77:157-195
-70
-71            <!--
-72                 Specifies an Android theme to apply to this Activity as soon as
-73                 the Android process has started. This theme is visible to the user
-74                 while the Flutter UI initializes. After that, this theme continues
-75                 to determine the Window background behind the Flutter UI.
-76            -->
-77            <meta-data
-77-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:31:13-120
-78                android:name="io.flutter.embedding.android.NormalTheme"
-78-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:31:24-79
-79                android:resource="@style/NormalTheme" />
-79-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:31:80-117
-80            <!--
-81                 Displays an Android View that continues showing the launch screen
-82                 Drawable until Flutter paints its first frame, then this splash
-83                 screen fades out. A splash screen is useful to avoid any visual
-84                 gap between the end of Android's launch screen and the painting of
-85                 Flutter's first frame.
-86            -->
-87            <meta-data
-87-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:37:13-138
-88                android:name="io.flutter.embedding.android.SplashScreenDrawable"
-88-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:37:24-88
-89                android:resource="@drawable/launch_background" />
-89-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:37:89-135
-90
-91            <intent-filter>
-91-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:38:13-41:29
-92                <action android:name="android.intent.action.MAIN" />
-92-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:39:17-68
-92-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:39:25-66
-93
-94                <category android:name="android.intent.category.LAUNCHER" />
-94-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:40:17-76
-94-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:40:27-74
-95            </intent-filter>
-96        </activity-alias>
-97        <activity-alias
-97-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:60:9-76:26
-98            android:name="eu.araulin.devinci.MainActivity3"
-98-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:60:25-72
-99            android:enabled="false"
-99-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:60:73-96
-100            android:icon="@mipmap/ic_launcher3"
-100-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:60:97-132
-101            android:label="Devinci"
-101-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:60:133-156
-102            android:targetActivity="eu.araulin.devinci.MainActivity" >
-102-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:60:157-195
-103
-104            <!--
-105                 Specifies an Android theme to apply to this Activity as soon as
-106                 the Android process has started. This theme is visible to the user
-107                 while the Flutter UI initializes. After that, this theme continues
-108                 to determine the Window background behind the Flutter UI.
-109            -->
-110            <meta-data
-110-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:31:13-120
-111                android:name="io.flutter.embedding.android.NormalTheme"
-111-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:31:24-79
-112                android:resource="@style/NormalTheme" />
-112-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:31:80-117
-113            <!--
-114                 Displays an Android View that continues showing the launch screen
-115                 Drawable until Flutter paints its first frame, then this splash
-116                 screen fades out. A splash screen is useful to avoid any visual
-117                 gap between the end of Android's launch screen and the painting of
-118                 Flutter's first frame.
-119            -->
-120            <meta-data
-120-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:37:13-138
-121                android:name="io.flutter.embedding.android.SplashScreenDrawable"
-121-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:37:24-88
-122                android:resource="@drawable/launch_background" />
-122-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:37:89-135
-123
-124            <intent-filter>
-124-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:38:13-41:29
-125                <action android:name="android.intent.action.MAIN" />
-125-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:39:17-68
-125-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:39:25-66
-126
-127                <category android:name="android.intent.category.LAUNCHER" />
-127-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:40:17-76
-127-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:40:27-74
-128            </intent-filter>
-129        </activity-alias>
-130        <activity-alias
-130-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:43:9-59:26
-131            android:name="eu.araulin.devinci.MainActivity2"
-131-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:43:25-72
-132            android:enabled="false"
-132-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:43:73-96
-133            android:icon="@mipmap/ic_launcher2"
-133-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:43:97-132
-134            android:label="Devinci"
-134-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:43:133-156
-135            android:targetActivity="eu.araulin.devinci.MainActivity" >
-135-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:43:157-195
-136
-137            <!--
-138                 Specifies an Android theme to apply to this Activity as soon as
-139                 the Android process has started. This theme is visible to the user
-140                 while the Flutter UI initializes. After that, this theme continues
-141                 to determine the Window background behind the Flutter UI.
-142            -->
-143            <meta-data
-143-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:31:13-120
-144                android:name="io.flutter.embedding.android.NormalTheme"
-144-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:31:24-79
-145                android:resource="@style/NormalTheme" />
-145-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:31:80-117
-146            <!--
-147                 Displays an Android View that continues showing the launch screen
-148                 Drawable until Flutter paints its first frame, then this splash
-149                 screen fades out. A splash screen is useful to avoid any visual
-150                 gap between the end of Android's launch screen and the painting of
-151                 Flutter's first frame.
-152            -->
-153            <meta-data
-153-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:37:13-138
-154                android:name="io.flutter.embedding.android.SplashScreenDrawable"
-154-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:37:24-88
-155                android:resource="@drawable/launch_background" />
-155-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:37:89-135
-156
-157            <intent-filter>
-157-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:38:13-41:29
-158                <action android:name="android.intent.action.MAIN" />
-158-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:39:17-68
-158-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:39:25-66
-159
-160                <category android:name="android.intent.category.LAUNCHER" />
-160-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:40:17-76
-160-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:40:27-74
-161            </intent-filter>
-162        </activity-alias>
-163        <activity-alias
-163-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:26:9-42:26
-164            android:name="eu.araulin.devinci.MainActivity"
-164-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:26:25-71
-165            android:enabled="true"
-165-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:26:72-94
-166            android:icon="@mipmap/ic_launcher"
-166-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:26:95-129
-167            android:label="Devinci"
-167-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:26:130-153
-168            android:targetActivity="eu.araulin.devinci.MainActivity" >
-168-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:26:154-192
-169
-170            <!--
-171                 Specifies an Android theme to apply to this Activity as soon as
-172                 the Android process has started. This theme is visible to the user
-173                 while the Flutter UI initializes. After that, this theme continues
-174                 to determine the Window background behind the Flutter UI.
-175            -->
-176            <meta-data
-176-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:31:13-120
-177                android:name="io.flutter.embedding.android.NormalTheme"
-177-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:31:24-79
-178                android:resource="@style/NormalTheme" />
-178-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:31:80-117
-179            <!--
-180                 Displays an Android View that continues showing the launch screen
-181                 Drawable until Flutter paints its first frame, then this splash
-182                 screen fades out. A splash screen is useful to avoid any visual
-183                 gap between the end of Android's launch screen and the painting of
-184                 Flutter's first frame.
-185            -->
-186            <meta-data
-186-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:37:13-138
-187                android:name="io.flutter.embedding.android.SplashScreenDrawable"
-187-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:37:24-88
-188                android:resource="@drawable/launch_background" />
-188-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:37:89-135
-189
-190            <intent-filter>
-190-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:38:13-41:29
-191                <action android:name="android.intent.action.MAIN" />
-191-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:39:17-68
-191-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:39:25-66
-192
-193                <category android:name="android.intent.category.LAUNCHER" />
-193-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:40:17-76
-193-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:40:27-74
-194            </intent-filter>
-195        </activity-alias>
-196
-197        <provider
-198            android:name="sk.fourq.otaupdate.OtaUpdateFileProvider"
-199            android:authorities="eu.araulin.devinci.ota_update_provider"
-200            android:exported="false"
-201            android:grantUriPermissions="true" >
-202            <meta-data
-202-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-15:61
-203                android:name="android.support.FILE_PROVIDER_PATHS"
-203-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:14:17-67
-204                android:resource="@xml/filepaths" />
-204-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:15:17-58
-205        </provider>
-206
-207        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver" >
-207-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:98:9-103:20
-207-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:98:19-107
-208            <intent-filter>
-208-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:99:13-102:29
-209                <action android:name="android.intent.action.BOOT_COMPLETED" />
-209-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:100:17-78
-209-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:100:25-76
-210                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-210-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:101:17-83
-210-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:101:25-81
-211            </intent-filter>
-212        </receiver>
-213        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
-213-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:104:9-106
-213-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:104:19-103
-214
-215        <provider
-216            android:name="androidx.core.content.FileProvider"
-217            android:authorities="eu.araulin.devinci.fileProvider"
-218            android:exported="false"
-219            android:grantUriPermissions="true" >
-220            <meta-data
-220-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-15:61
-221                android:name="android.support.FILE_PROVIDER_PATHS"
-221-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:14:17-67
-222                android:resource="@xml/filepaths" />
-222-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:15:17-58
-223        </provider>
-224        <!--
-225             Don't delete the meta-data below.
-226             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
-227        -->
-228        <meta-data
-228-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:110:9-112:33
-229            android:name="flutterEmbedding"
-229-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:111:13-44
-230            android:value="2" />
-230-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:112:13-30
-231
-232        <provider
-232-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-16:20
-233            android:name="com.sidlatau.flutteremailsender.FlutterEmailSenderFileProvider"
-233-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-90
-234            android:authorities="eu.araulin.devinci.file_provider"
-234-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-65
-235            android:exported="false"
-235-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-37
-236            android:grantUriPermissions="true" >
-236-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:12:13-47
-237            <meta-data
-237-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-15:61
-238                android:name="android.support.FILE_PROVIDER_PATHS"
-238-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:14:17-67
-239                android:resource="@xml/shared_file_paths" />
-239-->[:flutter_email_sender] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:15:17-58
-240        </provider>
-241        <provider
-241-->[:share_extend] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\share_extend\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-13:20
-242            android:name="com.zt.shareextend.ShareExtendProvider"
-242-->[:share_extend] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\share_extend\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-66
-243            android:authorities="eu.araulin.devinci.shareextend.fileprovider"
-243-->[:share_extend] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\share_extend\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-76
-244            android:exported="false"
-244-->[:share_extend] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\share_extend\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-37
-245            android:grantUriPermissions="true" >
-245-->[:share_extend] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\share_extend\intermediates\library_manifest\debug\AndroidManifest.xml:12:13-47
-246        </provider>
-247
-248        <activity
-248-->[:url_launcher] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-11:74
-249            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
-249-->[:url_launcher] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-74
-250            android:exported="false"
-250-->[:url_launcher] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-37
-251            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-251-->[:url_launcher] C:\Users\antoi\OneDrive\Documents\dev\devinci\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-71
-252
-253        <receiver android:name="com.transistorsoft.tsbackgroundfetch.FetchAlarmReceiver" />
-253-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:16:9-92
-253-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:16:19-89
-254
-255        <service
-255-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:18:9-21:72
-256            android:name="com.transistorsoft.tsbackgroundfetch.FetchJobService"
-256-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:19:13-80
-257            android:exported="true"
-257-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:20:13-36
-258            android:permission="android.permission.BIND_JOB_SERVICE" />
-258-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:21:13-69
-259
-260        <receiver android:name="com.transistorsoft.tsbackgroundfetch.BootReceiver" >
-260-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:23:9-28:20
-260-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:23:19-83
-261            <intent-filter>
-261-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:99:13-102:29
-262                <action android:name="android.intent.action.BOOT_COMPLETED" />
-262-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:100:17-78
-262-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:100:25-76
-263                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-263-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:101:17-83
-263-->C:\Users\antoi\OneDrive\Documents\dev\devinci\android\app\src\main\AndroidManifest.xml:101:25-81
-264            </intent-filter>
-265        </receiver>
-266    </application>
-267
-268</manifest>
+61-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:29:13-55
+62
+63            <!--
+64                 Specifies an Android theme to apply to this Activity as soon as
+65                 the Android process has started. This theme is visible to the user
+66                 while the Flutter UI initializes. After that, this theme continues
+67                 to determine the Window background behind the Flutter UI.
+68            -->
+69            <meta-data
+69-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:34:13-37:17
+70                android:name="io.flutter.embedding.android.NormalTheme"
+70-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:35:15-70
+71                android:resource="@style/NormalTheme" />
+71-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:36:15-52
+72            <!--
+73                 Displays an Android View that continues showing the launch screen
+74                 Drawable until Flutter paints its first frame, then this splash
+75                 screen fades out. A splash screen is useful to avoid any visual
+76                 gap between the end of Android's launch screen and the painting of
+77                 Flutter's first frame.
+78            -->
+79            <meta-data
+79-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:43:13-46:17
+80                android:name="io.flutter.embedding.android.SplashScreenDrawable"
+80-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:44:15-79
+81                android:resource="@drawable/launch_background" />
+81-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:45:15-61
+82
+83            <intent-filter>
+83-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:47:13-50:29
+84                <action android:name="android.intent.action.MAIN" />
+84-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:48:17-68
+84-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:48:25-66
+85
+86                <category android:name="android.intent.category.LAUNCHER" />
+86-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:49:17-76
+86-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:49:27-74
+87            </intent-filter>
+88        </activity>
+89
+90        <provider
+91            android:name="sk.fourq.otaupdate.OtaUpdateFileProvider"
+92            android:authorities="eu.araulin.devinci.ota_update_provider"
+93            android:exported="false"
+94            android:grantUriPermissions="true" >
+95            <meta-data
+95-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-15:61
+96                android:name="android.support.FILE_PROVIDER_PATHS"
+96-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:14:17-67
+97                android:resource="@xml/filepaths" />
+97-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:15:17-58
+98        </provider>
+99
+100        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver" >
+100-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:56:9-61:20
+100-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:56:19-107
+101            <intent-filter>
+101-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:57:13-60:29
+102                <action android:name="android.intent.action.BOOT_COMPLETED" />
+102-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:58:17-78
+102-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:58:25-76
+103                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+103-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:59:17-83
+103-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:59:25-81
+104            </intent-filter>
+105        </receiver>
+106        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+106-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:62:9-106
+106-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:62:19-103
+107
+108        <provider
+109            android:name="androidx.core.content.FileProvider"
+110            android:authorities="eu.araulin.devinci.fileProvider"
+111            android:exported="false"
+112            android:grantUriPermissions="true" >
+113            <meta-data
+113-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-15:61
+114                android:name="android.support.FILE_PROVIDER_PATHS"
+114-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:14:17-67
+115                android:resource="@xml/filepaths" />
+115-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:15:17-58
+116        </provider>
+117        <!--
+118             Don't delete the meta-data below.
+119             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+120        -->
+121        <meta-data
+121-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:68:9-70:33
+122            android:name="flutterEmbedding"
+122-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:69:13-44
+123            android:value="2" />
+123-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:70:13-30
+124
+125        <provider
+125-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-16:20
+126            android:name="com.sidlatau.flutteremailsender.FlutterEmailSenderFileProvider"
+126-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-90
+127            android:authorities="eu.araulin.devinci.file_provider"
+127-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-65
+128            android:exported="false"
+128-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-37
+129            android:grantUriPermissions="true" >
+129-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:12:13-47
+130            <meta-data
+130-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-15:61
+131                android:name="android.support.FILE_PROVIDER_PATHS"
+131-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:14:17-67
+132                android:resource="@xml/shared_file_paths" />
+132-->[:flutter_email_sender] C:\Users\antoi\Documents\Dev\devinci\build\flutter_email_sender\intermediates\library_manifest\debug\AndroidManifest.xml:15:17-58
+133        </provider>
+134        <provider
+134-->[:share_extend] C:\Users\antoi\Documents\Dev\devinci\build\share_extend\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-13:20
+135            android:name="com.zt.shareextend.ShareExtendProvider"
+135-->[:share_extend] C:\Users\antoi\Documents\Dev\devinci\build\share_extend\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-66
+136            android:authorities="eu.araulin.devinci.shareextend.fileprovider"
+136-->[:share_extend] C:\Users\antoi\Documents\Dev\devinci\build\share_extend\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-76
+137            android:exported="false"
+137-->[:share_extend] C:\Users\antoi\Documents\Dev\devinci\build\share_extend\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-37
+138            android:grantUriPermissions="true" >
+138-->[:share_extend] C:\Users\antoi\Documents\Dev\devinci\build\share_extend\intermediates\library_manifest\debug\AndroidManifest.xml:12:13-47
+139        </provider>
+140
+141        <activity
+141-->[:url_launcher] C:\Users\antoi\Documents\Dev\devinci\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-11:74
+142            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+142-->[:url_launcher] C:\Users\antoi\Documents\Dev\devinci\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-74
+143            android:exported="false"
+143-->[:url_launcher] C:\Users\antoi\Documents\Dev\devinci\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-37
+144            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+144-->[:url_launcher] C:\Users\antoi\Documents\Dev\devinci\build\url_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-71
+145
+146        <receiver android:name="com.transistorsoft.tsbackgroundfetch.FetchAlarmReceiver" />
+146-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:16:9-92
+146-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:16:19-89
+147
+148        <service
+148-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:18:9-21:72
+149            android:name="com.transistorsoft.tsbackgroundfetch.FetchJobService"
+149-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:19:13-80
+150            android:exported="true"
+150-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:20:13-36
+151            android:permission="android.permission.BIND_JOB_SERVICE" />
+151-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:21:13-69
+152
+153        <receiver android:name="com.transistorsoft.tsbackgroundfetch.BootReceiver" >
+153-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:23:9-28:20
+153-->[com.transistorsoft:tsbackgroundfetch:0.4.5] C:\Users\antoi\.gradle\caches\transforms-2\files-2.1\6f5552af382524ff62b03def23c09e15\tsbackgroundfetch-0.4.5\AndroidManifest.xml:23:19-83
+154            <intent-filter>
+154-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:57:13-60:29
+155                <action android:name="android.intent.action.BOOT_COMPLETED" />
+155-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:58:17-78
+155-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:58:25-76
+156                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+156-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:59:17-83
+156-->C:\Users\antoi\Documents\Dev\devinci\android\app\src\main\AndroidManifest.xml:59:25-81
+157            </intent-filter>
+158        </receiver>
+159    </application>
+160
+161</manifest>

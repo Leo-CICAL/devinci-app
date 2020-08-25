@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\antoi\\OneDrive\\Documents\\dev\\devinci\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values\\values.xml",
+            "outputFile": "C:\\Users\\antoi\\Documents\\Dev\\devinci\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values\\values.xml",
             "map": [
                 {
                     "source": "C:\\Users\\antoi\\.gradle\\caches\\transforms-2\\files-2.1\\9dd23d6d920b9acc52f68ac61998a333\\jetified-android-pdf-viewer-2.8.2\\res\\values\\values.xml",
@@ -59,24 +59,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\antoi\\.gradle\\caches\\transforms-2\\files-2.1\\6bef2b12786e63ea71777c14850120bf\\AppIconNameChanger-1.0.7\\res\\values\\values.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "44",
-                        "endOffsets": "95"
-                    },
-                    "to": {
-                        "startLines": "991",
-                        "startColumns": "4",
-                        "startOffsets": "57552",
-                        "endColumns": "44",
-                        "endOffsets": "57592"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\antoi\\OneDrive\\Documents\\dev\\devinci\\android\\app\\src\\main\\res\\values\\styles.xml",
+                    "source": "C:\\Users\\antoi\\Documents\\Dev\\devinci\\android\\app\\src\\main\\res\\values\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
@@ -92,6 +75,23 @@
                         "endLines": "2974,3026",
                         "endColumns": "12,12",
                         "endOffsets": "193178,196896"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\antoi\\.gradle\\caches\\transforms-2\\files-2.1\\6bef2b12786e63ea71777c14850120bf\\AppIconNameChanger-1.0.7\\res\\values\\values.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "44",
+                        "endOffsets": "95"
+                    },
+                    "to": {
+                        "startLines": "991",
+                        "startColumns": "4",
+                        "startOffsets": "57552",
+                        "endColumns": "44",
+                        "endOffsets": "57592"
                     }
                 },
                 {
@@ -243,6 +243,23 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\antoi\\Documents\\Dev\\devinci\\android\\app\\src\\main\\res\\values\\colors.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "1",
+                        "startOffsets": "54",
+                        "endColumns": "38",
+                        "endOffsets": "91"
+                    },
+                    "to": {
+                        "startLines": "467",
+                        "startColumns": "4",
+                        "startOffsets": "23968",
+                        "endColumns": "41",
+                        "endOffsets": "24005"
+                    }
+                },
+                {
                     "source": "C:\\Users\\antoi\\.gradle\\caches\\transforms-2\\files-2.1\\68952fc751baec5d29bcfe7458fdfebc\\recyclerview-1.1.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
@@ -259,23 +276,6 @@
                         "endLines": "300,628,629,630,638,639,640,895,6998",
                         "endColumns": "55,58,47,55,74,75,71,65,24",
                         "endOffsets": "14085,34790,34838,34894,35580,35656,35728,51943,452893"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\antoi\\OneDrive\\Documents\\dev\\devinci\\android\\app\\src\\main\\res\\values\\colors.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "1",
-                        "startOffsets": "54",
-                        "endColumns": "38",
-                        "endOffsets": "91"
-                    },
-                    "to": {
-                        "startLines": "467",
-                        "startColumns": "4",
-                        "startOffsets": "23968",
-                        "endColumns": "41",
-                        "endOffsets": "24005"
                     }
                 }
             ]

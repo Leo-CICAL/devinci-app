@@ -61,7 +61,8 @@ class _NotesPageState extends State<NotesPage> {
         }
         if (mounted) {
           setState(() {
-            if (!globals.user.notes["s2"].isEmpty && !changed) currentSemester = "s2";
+            if (!globals.user.notes["s2"].isEmpty && !changed)
+              currentSemester = "s2";
           });
         }
         globals.isLoading.setState(1, false);
@@ -74,7 +75,7 @@ class _NotesPageState extends State<NotesPage> {
   void changeCurrentSemester(String sem) {
     setState(() {
       currentSemester = sem;
-      if(!changed) changed = true;
+      if (!changed) changed = true;
     });
   }
 
@@ -111,7 +112,8 @@ class _NotesPageState extends State<NotesPage> {
     }
     if (mounted) {
       setState(() {
-        if (!globals.user.notes["s2"].isEmpty && !changed) currentSemester = "s2";
+        if (!globals.user.notes["s2"].isEmpty && !changed)
+          currentSemester = "s2";
         _refreshController.refreshCompleted();
       });
     }
@@ -151,7 +153,8 @@ class _NotesPageState extends State<NotesPage> {
       }
       if (mounted)
         setState(() {
-          if (!globals.user.notes["s2"].isEmpty && !changed) currentSemester = "s2";
+          if (!globals.user.notes["s2"].isEmpty && !changed)
+            currentSemester = "s2";
           show = true;
         });
       globals.user.notes.copy(notes);
@@ -160,7 +163,8 @@ class _NotesPageState extends State<NotesPage> {
         if (globals.user.notesFetched) {
           if (mounted)
             setState(() {
-              if (!globals.user.notes["s2"].isEmpty && !changed) currentSemester = "s2";
+              if (!globals.user.notes["s2"].isEmpty && !changed)
+                currentSemester = "s2";
               show = true;
             });
         } else {
@@ -171,7 +175,8 @@ class _NotesPageState extends State<NotesPage> {
       }
     } else {
       setState(() {
-        if (!globals.user.notes["s2"].isEmpty && !changed) currentSemester = "s2";
+        if (!globals.user.notes["s2"].isEmpty && !changed)
+          currentSemester = "s2";
         show = true;
       });
     }
@@ -219,8 +224,7 @@ class _NotesPageState extends State<NotesPage> {
                     child: Text(
                       subtitle,
                       style: TextStyle(
-                          color: MediaQuery.of(context).platformBrightness ==
-                                  Brightness.dark
+                          color: globals.currentTheme.isDark()
                               ? Color(0xffE1E2E1)
                               : Color(0xffACACAC),
                           fontSize: 16),
@@ -296,18 +300,18 @@ class _NotesPageState extends State<NotesPage> {
                                       .toString(),
                               style: new TextStyle(
                                   color: (getMatMoy(globals.user.notesFetched
-                                                  ? globals.user.notes[currentSemester]
+                                                  ? globals.user
+                                                          .notes[currentSemester]
                                                       [i]["matieres"][j]
                                                   : notes[currentSemester][i]
                                                       ["matieres"][j]) ??
                                               11) >=
                                           10
                                       ? Theme.of(context).accentColor
-                                      : getMatMoy(globals.user.notesFetched ? globals.user.notes[currentSemester][i]["matieres"][j] : notes[currentSemester][i]["matieres"][j]) == 0
+                                      : getMatMoy(globals.user.notesFetched ? globals.user.notes[currentSemester][i]["matieres"][j] : notes[currentSemester][i]["matieres"][j]) ==
+                                              0
                                           ? Color(0xffCA3E47)
-                                          : (MediaQuery.of(context)
-                                                      .platformBrightness ==
-                                                  Brightness.dark
+                                          : (globals.currentTheme.isDark()
                                               ? Color(0xffFFDE03)
                                               : Color(0xffFF8A5C)),
                                   fontWeight: FontWeight.bold,
@@ -410,15 +414,16 @@ class _NotesPageState extends State<NotesPage> {
                                                         ? globals.user.notes[currentSemester]
                                                                 [i]["matieres"][j]
                                                             ["notes"][y]["note"]
-                                                        : notes[currentSemester][i]
-                                                                ["matieres"][j]["notes"]
-                                                            [y]["note"]) >=
+                                                        : notes[currentSemester]
+                                                                        [i]
+                                                                    ["matieres"]
+                                                                [j]["notes"][y]
+                                                            ["note"]) >=
                                                     10
                                                 ? Theme.of(context).accentColor
                                                 : ((globals.user.notesFetched ? globals.user.notes[currentSemester][i]["matieres"][j]["notes"][y]["note"] : notes[currentSemester][i]["matieres"][j]["notes"][y]["note"]) == 0
                                                     ? Color(0xffCA3E47)
-                                                    : (MediaQuery.of(context).platformBrightness ==
-                                                            Brightness.dark
+                                                    : (globals.currentTheme.isDark()
                                                         ? Color(0xffFFDE03)
                                                         : Color(0xffFF8A5C))),
                                           ),

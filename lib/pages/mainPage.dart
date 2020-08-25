@@ -5,6 +5,7 @@ import 'package:devinci/pages/agenda.dart';
 import 'package:devinci/pages/notes.dart';
 import 'package:devinci/pages/presence.dart';
 import 'package:devinci/pages/settings.dart';
+import 'package:devinci/pages/timechef.dart';
 import 'package:devinci/pages/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:url_launcher/url_launcher.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key}) : super(key: key);
@@ -81,6 +83,22 @@ class _MainPageState extends State<MainPage> {
                 IconButton(
                   icon: IconTheme(
                     data: Theme.of(context).accentIconTheme,
+                    child: Icon(OMIcons.add),
+                  ),
+                  onPressed: () async {
+                    const url = 'https://timechef.elior.com/#/recharger';
+                    if (await canLaunch(url)) {
+                      await launch(
+                        url,
+                      );
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  },
+                ),
+                IconButton(
+                  icon: IconTheme(
+                    data: Theme.of(context).accentIconTheme,
                     child: Icon(OMIcons.settings),
                   ),
                   onPressed: () {
@@ -122,6 +140,7 @@ class _MainPageState extends State<MainPage> {
                       )
                     : SizedBox.shrink(),
                 SizedBox.shrink(),
+                SizedBox.shrink(),
                 globals.isLoading.state(4)
                     ? Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -151,6 +170,7 @@ class _MainPageState extends State<MainPage> {
           NotesPage(),
           AbsencesPage(),
           PresencePage(),
+          TimeChefPage(),
           UserPage()
         ].elementAt(globals.selectedPage),
         bottomNavigationBar: new Theme(
@@ -184,11 +204,17 @@ class _MainPageState extends State<MainPage> {
                   title: Text('Présence'),
                 ),
                 BottomNavigationBarItem(
-                  icon: globals.showUserBadge && globals.selectedPage != 4
+                  icon: Icon(globals.selectedPage == 4
+                      ? Icons.restaurant
+                      : OMIcons.restaurant),
+                  title: Text('Restaurant'),
+                ),
+                BottomNavigationBarItem(
+                  icon: globals.showUserBadge && globals.selectedPage != 5
                       ? Badge(
                           shape: BadgeShape.circle,
                           borderRadius: 100,
-                          child: Icon(globals.selectedPage == 4
+                          child: Icon(globals.selectedPage == 5
                               ? Icons.person
                               : OMIcons.person),
                           badgeContent: Container(
@@ -200,7 +226,7 @@ class _MainPageState extends State<MainPage> {
                                     Theme.of(context).scaffoldBackgroundColor),
                           ),
                         )
-                      : Icon(globals.selectedPage == 4
+                      : Icon(globals.selectedPage == 5
                           ? Icons.person
                           : OMIcons.person),
                   //,
