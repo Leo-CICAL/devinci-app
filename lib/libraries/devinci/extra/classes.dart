@@ -70,10 +70,10 @@ class User {
   var promotion = {};
 
   Map<String, dynamic> presence = {
-    "type": "none", //5 types : ongoing / done / notOpen / none / closed
+    "type": "ongoing", //5 types : ongoing / done / notOpen / none / closed
     "title": "Espaces vectoriels",
     "horaires": DateTime.now().millisecondsSinceEpoch,
-    "prof": "Baptiste Beaux-Colin",
+    "prof": "M. Prof",
     "seance_pk": "azertyuiop"
   };
 
@@ -707,8 +707,8 @@ class User {
           this.tokens["uids"] != "" &&
           this.tokens["SimpleSAMLAuthToken"] != "") {
         HttpClientRequest req = await client.getUrl(
-          Uri.parse("https://www.leonard-de-vinci.net/?my=abs"),
-          //Uri.parse("https://araulin.tech/devinci/absences.html"),
+          //Uri.parse("https://www.leonard-de-vinci.net/?my=abs"),
+          Uri.parse("https://www.araulin.tech/devinci/absences.html"),
         );
         req.followRedirects = false;
         req.cookies.addAll([
@@ -719,6 +719,7 @@ class User {
         ]);
         HttpClientResponse res = await req.close();
         if (res.statusCode == 200) {
+          print("got absences");
           String body = await res.transform(utf8.decoder).join();
           var doc = parse(body);
           //print(doc.outerHtml);
@@ -746,7 +747,7 @@ class User {
               .group(1);
           this.absences["seances"] = int.parse(seanceM);
           List<Element> trs =
-              doc.querySelectorAll(".tab-pane .active > table > tbody > tr");
+              doc.querySelectorAll(".tab-pane.active > table > tbody > tr");
           trs.forEach((tr) {
             Map<String, String> elem = {
               "cours": "",
@@ -774,6 +775,7 @@ class User {
                 tds[6].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
             this.absences["liste"].add(elem);
           });
+          print(this.absences["liste"]);
           this.absences["done"] = true;
           await globals.store.record('absences').put(globals.db, this.absences);
         } else {
@@ -820,7 +822,10 @@ class User {
         int timestamp = DateTime.now().millisecondsSinceEpoch;
 
         HttpClientRequest req = await client.getUrl(
-          Uri.parse('https://www.leonard-de-vinci.net/?my=notes'),
+          Uri.parse(
+            'https://www.araulin.tech/devinci/raulin_notes.html',
+            //'https://www.leonard-de-vinci.net/?my=notes',
+          ),
         );
         req.followRedirects = false;
         req.cookies.addAll([

@@ -184,7 +184,9 @@ class TimeChefUser {
         tFetched = true;
         if (resJson.isNotEmpty) {
           //TODO faire qqchose
-        } else {}
+        } else {
+          this.transactions.add({'name': 'CANTINE'});
+        }
       }
     } else {
       throw Exception("missing tokens or user has error");

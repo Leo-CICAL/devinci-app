@@ -115,7 +115,7 @@ class _AgendaPageState extends State<AgendaPage> {
                           startHour: 7,
                           endHour: 23,
                           nonWorkingDays: <int>[DateTime.sunday],
-                          timeFormat: 'h:mm',
+                          timeFormat: 'HH:mm',
                         ),
                         firstDayOfWeek: 1,
                         selectionDecoration: BoxDecoration(

@@ -1,4 +1,5 @@
 import 'package:devinci/extra/CommonWidgets.dart';
+import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -16,6 +17,7 @@ class _MainPageState extends State<MainPage> {
   String tString = "Transactions";
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  List<bool> tCardDetail = [false, false, false];
   void runBeforeBuild() async {
     try {
       await globals.timeChefUser.getTransactions();
@@ -48,8 +50,116 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    globals.timeChefUser.solde = 123.45;
     int bigN = int.parse(globals.timeChefUser.solde.toString().split('.')[0]);
     int smallN = int.parse(globals.timeChefUser.solde.toString().split('.')[1]);
+
+    Widget TransactionTile(
+        String title, String date, String prix, String details, int id) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
+        child: Card(
+          elevation: globals.currentTheme.isDark() ? 4 : 1,
+          //color: Theme.of(context).cardColor,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          child: InkWell(
+            onTap: () async {
+              for (int i = 0; i < tCardDetail.length; i++) {
+                if (i != id) tCardDetail[i] = false;
+              }
+              if (details != "") {
+                setState(() {
+                  tCardDetail[id] = !tCardDetail[id];
+                });
+              }
+            }, // handle your onTap here
+            child: Container(
+              height: tCardDetail[id] ? 102 : 65,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 15.0, top: 10, right: 4),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(
+                            child: new Container(
+                              padding: new EdgeInsets.only(right: 10),
+                              child: Text(
+                                title,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                          //Expanded(
+                          //child:
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: Text(
+                                prix,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w900,
+                                  color: Theme.of(context).accentColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          //),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 15.0, top: 2, right: 4),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            date,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xff787878),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: tCardDetail[id],
+                    child: Padding(
+                        padding:
+                            const EdgeInsets.only(left: 15.0, top: 8, right: 4),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                details,
+                                textAlign: TextAlign.left,
+                              )
+                            ])),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return CupertinoScrollbar(
         child: SmartRefresher(
             enablePullDown: true,
@@ -124,12 +234,27 @@ class _MainPageState extends State<MainPage> {
                     : SizedBox.shrink(),
                 TitleSection(tString),
                 globals.timeChefUser.tFetched
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: 68),
-                        child: Center(
-                          child: Text('Aucune transaction'),
-                        ),
-                      )
+                    ? (globals.timeChefUser.transactions.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(
+                                top: 16, left: 20, right: 20),
+                            child: Column(
+                              children: [
+                                TransactionTile('DISTRIBUTEUR', '03/09/2020',
+                                    '0,90 €', '1x Menu étudiant', 0),
+                                TransactionTile('CANTINE', '09/09/2020',
+                                    '5,60 €', '1x Menu étudiant', 1),
+                                TransactionTile('DISTRIBUTEUR', '03/09/2020',
+                                    '1,10 €', '1x Menu étudiant', 2)
+                              ],
+                            ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.only(top: 68),
+                            child: Center(
+                              child: Text('Aucune transaction'),
+                            ),
+                          ))
                     : Padding(
                         padding: const EdgeInsets.only(top: 68),
                         child: Center(

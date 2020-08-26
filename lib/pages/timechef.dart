@@ -37,6 +37,12 @@ class _TimeChefPageState extends State<TimeChefPage> {
               show = true;
             });
         }
+      } else {
+        globals.pageChanger.setPage(0);
+        if (mounted)
+          setState(() {
+            show = true;
+          });
       }
     } else {
       if (mounted)

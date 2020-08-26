@@ -173,6 +173,19 @@ Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
           Colors.teal,
           false));
     });
+    //to delete
+    results.add(new Cours(
+        '[TD] NOM MATIERE \nM. Prof',
+        DateTime.parse('20200909T081500'),
+        DateTime.parse('20200909T111500'),
+        Colors.teal,
+        false));
+    results.add(new Cours(
+        '[CM] NOM MATIERE \nM. Prof',
+        DateTime.parse('20200909T121500'),
+        DateTime.parse('20200909T151500'),
+        Colors.teal,
+        false));
   } else {
     throw Exception("no vevents in body");
   }
