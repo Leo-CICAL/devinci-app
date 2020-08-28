@@ -83,7 +83,6 @@ class Appcast {
 
     try {
       // Parse the XML
-      // ignore: deprecated_member_use
       final document = xml.parse(xmlString);
 
       var items = <AppcastItem>[];
