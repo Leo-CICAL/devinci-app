@@ -17,7 +17,7 @@ class _MainPageState extends State<MainPage> {
   String tString = "Transactions";
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  List<bool> tCardDetail = [false, false, false];
+  List<bool> tCardDetail = new List<bool>();
   void runBeforeBuild() async {
     try {
       await globals.timeChefUser.getTransactions();
@@ -50,7 +50,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    globals.timeChefUser.solde = 123.45;
     int bigN = int.parse(globals.timeChefUser.solde.toString().split('.')[0]);
     int smallN = int.parse(globals.timeChefUser.solde.toString().split('.')[1]);
 
@@ -239,14 +238,7 @@ class _MainPageState extends State<MainPage> {
                             padding: const EdgeInsets.only(
                                 top: 16, left: 20, right: 20),
                             child: Column(
-                              children: [
-                                TransactionTile('DISTRIBUTEUR', '03/09/2020',
-                                    '0,90 €', '1x Menu étudiant', 0),
-                                TransactionTile('CANTINE', '09/09/2020',
-                                    '5,60 €', '1x Menu étudiant', 1),
-                                TransactionTile('DISTRIBUTEUR', '03/09/2020',
-                                    '1,10 €', '1x Menu étudiant', 2)
-                              ],
+                              children: [],
                             ),
                           )
                         : Padding(

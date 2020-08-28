@@ -3,10 +3,11 @@ import 'dart:io';
 import 'dart:async';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/extra/globals.dart' as globals;
-import 'package:flutter/material.dart' as material;
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';
-import 'package:sentry/sentry.dart' as Sentry;
+import 'package:path_provider/path_provider.dart';
+import 'package:sembast/sembast.dart';
+import 'package:sembast/sembast_io.dart';
 
 class User {
   //constructor
@@ -54,17 +55,26 @@ class User {
     "done": false
   };
 
-  Map<String, List> notes = {
+  Map<String, dynamic> notes = {
     "s1": [],
     "s2": [],
   };
 
+  Map notesEvolution = {
+    "added": [],
+    "changed": [],
+  };
+
+  bool notesFetched = false;
+
   var promotion = {};
 
-  Map<String, String> presence = {
-    "type": "",
-    "title": "",
-    "horaires": "",
+  Map<String, dynamic> presence = {
+    "type": "none", //5 types : ongoing / done / notOpen / none / closed
+    "title": "Espaces vectoriels",
+    "horaires": DateTime.now().millisecondsSinceEpoch,
+    "prof": "M. Prof",
+    "seance_pk": "azertyuiop"
   };
 
   Map<String, dynamic> documents = {
@@ -84,7 +94,135 @@ class User {
     "bulletins": []
   };
 
+  Map<String, dynamic> notesConfig = {
+    //note : cette config est téléchargée depuis github a chaque démarrage de l'app pour s'assurer que les notes soient toujours bien parsé, cette map doit donc etre la plus petite possible pour ne pas impacter le chargement de l'app. Actuellement le json associé à cette map fait 751 Bytes
+    'mainDivs': '#main > div > div',
+    'modules': {
+      'ols':
+          'div > div > div.social-box.social-bordered > div > div > div.dd > ol',
+      'olsBis': 'li',
+      'item': {
+        'm': 2,
+        'mR': r'\s\s+',
+        'eI': 5,
+        'eStr': 'Vous devez compléter toutes les évaluations',
+        '!e': {
+          'moy': {
+            'i': 6,
+            'r': r'\s\s+',
+            's': '/',
+            'si': 0,
+          },
+          'nf': {
+            'r': r': (.*?)"',
+            'i': 7,
+            '+': '"',
+          },
+          'moyP': {
+            'r': r': (.*?)"',
+            'i': 9,
+            '+': '"',
+          },
+        },
+      },
+    },
+    'matieres': {
+      'mi': 2,
+      'mr': r'\s\s+',
+      'ei': 3,
+      'eStr': 'Evaluer',
+      '!e': {
+        'moy': {
+          'i': 6,
+          'r': r'\s\s+',
+          's': '/',
+          'si': 0,
+        },
+        'ri': 9,
+        'rStr': 'Rattrapage',
+        '!r': {
+          'moyP': {
+            'r': r': (.*?)"',
+            'i': 10,
+            '+': '"',
+          },
+        },
+        'r': {
+          'noteR': {
+            'r': r': (.*?)"',
+            'i': 9,
+            '+': '"',
+          },
+          'moyP': {
+            'r': r': (.*?)"',
+            'i': 11,
+            '+': '"',
+          },
+        },
+      },
+    },
+    'notes': {
+      'n': {
+        'i': 2,
+        'r': r'\s\s+',
+      },
+      'tl': 7,
+      'note': {
+        'i': 6,
+        'r': r'\s\s+',
+        's': '/',
+        'si': 0,
+      },
+      'nP': {
+        'r': r': (.*?)"',
+        'i': 10,
+        '+': '"',
+      }
+    },
+  };
+
   Future<void> init() async {
+    //fetch notesConfig
+    print(json.encode(this.notesConfig));
+    //try {
+    //  HttpClient client = new HttpClient();
+    //  client.connectionTimeout = const Duration(seconds: 4);
+    //  HttpClientRequest req = await client.getUrl(
+    //    Uri.parse(
+    //      "https://devinci.araulin.tech/nc.json",
+    //    ),
+    //  );
+    //  HttpClientResponse res = await req.close();
+    //  if (res.statusCode == 200) {
+    //    String body = await res.transform(utf8.decoder).join();
+    //    this.notesConfig = json.decode(body);
+    //  }
+    //} catch (exception) {}
+    //init sembast db
+    Directory directory;
+    if (Platform.isAndroid) {
+      directory = await getExternalStorageDirectory();
+    } else {
+      directory = await getApplicationDocumentsDirectory();
+    }
+    final String path = directory.path;
+    // File path to a file in the current directory
+    String dbPath = path + '/data/db.db';
+    DatabaseFactory dbFactory = databaseFactoryIo;
+
+// We use the database factory to open the database
+    globals.db = await dbFactory.openDatabase(dbPath);
+    Map<String, dynamic> notes = await globals.store
+        .record('notes')
+        .get(globals.db) as Map<String, dynamic>;
+    if (notes == null) {
+      notes = {
+        "s1": [],
+        "s2": [],
+      };
+      await globals.store.record('notes').put(globals.db, notes);
+    }
+    //this.notes.copy(notes);
     //retrieve tokens from secure storage (if they exist)
     this.tokens["SimpleSAML"] = await globals.storage.read(key: "SimpleSAML") ??
         ""; //try to get token SimpleSAML from secure storage, if secure storage send back null (because the token does't exist yet) '??' means : if null, so if the token doesn't exist replace null by an empty string.
@@ -94,69 +232,78 @@ class User {
         await globals.storage.read(key: "SimpleSAMLAuthToken") ?? "";
 
     //retrieve data from secure storage
-    globals.crashConsent = await globals.storage.read(key: "crashConsent");
+    globals.crashConsent = globals.prefs.getString('crashConsent');
     this.data["badge"] = await globals.storage.read(key: "badge") ?? "";
     this.data["client"] = await globals.storage.read(key: "client") ?? "";
     this.data["idAdmin"] = await globals.storage.read(key: "idAdmin") ?? "";
     this.data["ine"] = await globals.storage.read(key: "ine") ?? "";
     this.data["edtUrl"] = await globals.storage.read(key: "edtUrl") ?? "";
     this.data["name"] = await globals.storage.read(key: "name") ?? "";
-    try {
-      l("test tokens");
-      await this
-          .testTokens(); //test if tokens exist and if so, test if they are still valid
-    } catch (exception) {
-      l("test tokens exception : $exception");
-
-      //testTokens throw an exception if tokens don't exist or if they aren't valid
-      //as the tokens don't exist yet or aren't valid, we shall retrieve them from devinci's server
+    if (globals.isConnected) {
       try {
-        await this.getTokens();
-      } catch (exception) {
-        //getTokens throw an exception if an error occurs during the retrieving or if credentials are wrong
-        if (this.code == 500) {
-          //the exception was thrown by a dart process, which meens that credentials may be good, but the function had trouble to access the server.
-          //TODO implement a retry process.
+        l("test tokens");
+        await this.testTokens().timeout(Duration(seconds: 8), onTimeout: () {
+          globals.isConnected = false;
+        }).catchError((exception) async {
+          l("test tokens exception : $exception");
+          //testTokens throw an exception if tokens don't exist or if they aren't valid
+          //as the tokens don't exist yet or aren't valid, we shall retrieve them from devinci's server
+          try {
+            await this.getTokens();
+          } catch (exception) {
+            //getTokens throw an exception if an error occurs during the retrieving or if credentials are wrong
+            if (this.code == 500) {
+              //the exception was thrown by a dart process, which meens that credentials may be good, but the function had trouble to access the server.
 
-        } else if (this.code == 401) {
-          await globals.storage
-              .deleteAll(); //remove all sensitive data from the phone if the user can't connect
-          //the exception was thrown because credentials are wrong
-          final Sentry.SentryResponse response =
-              await globals.sentry.captureException(
-            exception:
-                "classes.dart | getToken | wrong credentials => '${this.username}':'${this.password}'",
-            stackTrace: StackTrace.fromString(""),
-          );
-
-          if (response.isSuccessful) {
-            //print('Success! Event ID: ${response.eventId}');
-            globals.eventId = response.eventId;
-          } else {
-            //print('Failed to report to Sentry.io: ${response.error}');
+            } else if (this.code == 401) {
+              await globals.storage
+                  .deleteAll(); //remove all sensitive data from the phone if the user can't connect
+              //the exception was thrown because credentials are wrong
+              throw Exception(
+                  "wrong credentials : $exception"); //throw an exception to indicate to the parent process that credentials are wrong and may need to be changed
+            } else {
+              throw Exception(exception); //we don't know what happened here
+            }
           }
-          throw Exception(
-              "wrong credentials : $exception"); //throw an exception to indicate to the parent process that credentials are wrong and may need to be changed
-        } else {
-          throw Exception(exception); //we don't know what happened here
+        }); //test if tokens exist and if so, test if they are still valid
+      } catch (exception) {
+        l("test tokens exception : $exception");
+
+        //testTokens throw an exception if tokens don't exist or if they aren't valid
+        //as the tokens don't exist yet or aren't valid, we shall retrieve them from devinci's server
+        try {
+          await this.getTokens();
+        } catch (exception) {
+          //getTokens throw an exception if an error occurs during the retrieving or if credentials are wrong
+          if (this.code == 500) {
+            //the exception was thrown by a dart process, which meens that credentials may be good, but the function had trouble to access the server.
+
+          } else if (this.code == 401) {
+            await globals.storage
+                .deleteAll(); //remove all sensitive data from the phone if the user can't connect
+            //the exception was thrown because credentials are wrong
+            throw Exception(
+                "wrong credentials : $exception"); //throw an exception to indicate to the parent process that credentials are wrong and may need to be changed
+          } else {
+            throw Exception(exception); //we don't know what happened here
+          }
         }
       }
-    }
-    //if we manage to arrive here it means that we have valid tokens and that credentials are good
-    //TODO implement "remember me" function
-    await globals.storage.write(
-        key: "username",
-        value: this
-            .username); //save credentials in secure storage if user specified "remember me"
-    await globals.storage.write(key: "password", value: this.password);
-    this.password =
-        null; //if tokens are still valid we'll never need the password again in this session, so it is useless to keep it in the object and risk it to be leaked or displayed
-    if (globals.user.data["edtUrl"] == "") {
-      //edtUrl being the last information we retrieve from the getData() function, if it doesn't exist it means that the getData() function didn't work or was never run and must be run at least once.
-      try {
-        await globals.user.getData();
-      } catch (exception) {
-        //print(exception);
+      //if we manage to arrive here it means that we have valid tokens and that credentials are good
+      await globals.storage.write(
+          key: "username",
+          value: this
+              .username); //save credentials in secure storage if user specified "remember me"
+      await globals.storage.write(key: "password", value: this.password);
+      this.password =
+          null; //if tokens are still valid we'll never need the password again in this session, so it is useless to keep it in the object and risk it to be leaked or displayed
+      if (globals.user.data["edtUrl"] == "") {
+        //edtUrl being the last information we retrieve from the getData() function, if it doesn't exist it means that the getData() function didn't work or was never run and must be run at least once.
+        try {
+          await globals.user.getData();
+        } catch (exception) {
+          //print(exception);
+        }
       }
     }
     //print("done init");
@@ -252,6 +399,7 @@ class User {
               res.statusCode == 302) {
             l('connected');
             regExp = new RegExp(r'(.*?)=(.*?)($|;|,(?! ))');
+            // ignore: non_constant_identifier_names
             String MSISAuth = regExp
                 .firstMatch(
                   res.headers.value("set-cookie"),
@@ -553,395 +701,15 @@ class User {
   }
 
   Future<void> getAbsences() async {
-    HttpClient client = new HttpClient();
-    if (this.tokens["SimpleSAML"] != "" &&
-        this.tokens["alv"] != "" &&
-        this.tokens["uids"] != "" &&
-        this.tokens["SimpleSAMLAuthToken"] != "") {
-      HttpClientRequest req = await client.getUrl(
-        Uri.parse("https://www.leonard-de-vinci.net/?my=abs"),
-        //Uri.parse("https://araulin.tech/devinci/absences.html"),
-      );
-      req.followRedirects = false;
-      req.cookies.addAll([
-        new Cookie('alv', this.tokens["alv"]),
-        new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-        new Cookie('uids', this.tokens["uids"]),
-        new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-      ]);
-      HttpClientResponse res = await req.close();
-      if (res.statusCode == 200) {
-        String body = await res.transform(utf8.decoder).join();
-        var doc = parse(body);
-        //print(doc.outerHtml);
-        List<Element> spans = doc.querySelectorAll(".tab-pane > header > span");
-        Element nTB =
-            doc.querySelector(".tab-pane > header > span.label.label-warning");
-        print(nTB);
-        String nTM =
-            new RegExp(r': (.*?)"').firstMatch(nTB.text + '"').group(1);
-        this.absences["nT"] = int.parse(nTM);
-
-        String s1M =
-            new RegExp(r': (.*?)"').firstMatch(spans[0].text + '"').group(1);
-        this.absences["s1"] = int.parse(s1M);
-
-        Element s2B =
-            doc.querySelector(".tab-pane > header > span.label.label-success");
-        String s2M =
-            new RegExp(r': (.*?)"').firstMatch(s2B.text + '"').group(1);
-        this.absences["s2"] = int.parse(s2M);
-
-        String seanceM = new RegExp(r'"(.*?) séance')
-            .firstMatch('"' + spans[3].text)
-            .group(1);
-        this.absences["seances"] = int.parse(seanceM);
-        List<Element> trs =
-            doc.querySelectorAll(".tab-pane .active > table > tbody > tr");
-        trs.forEach((tr) {
-          Map<String, String> elem = {
-            "cours": "",
-            "type": "",
-            "jour": "",
-            "creneau": "",
-            "duree": "",
-            "modalite": ""
-          };
-
-          List<Element> tds = tr.querySelectorAll("td");
-          elem["cours"] = tds[1]
-              .text
-              .replaceAll(tds[1].querySelector("span").text, "")
-              .replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-          elem["type"] =
-              tds[2].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-          elem["jour"] =
-              tds[3].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-          elem["creneau"] =
-              tds[4].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-          elem["duree"] =
-              tds[5].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-          elem["modalite"] =
-              tds[6].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-          this.absences["liste"].add(elem);
-        });
-        this.absences["done"] = true;
-        // JsonEncoder encoder = new JsonEncoder.withIndent('  ');
-        //   String prettyprint = encoder.convert(this.absences);
-        //   print(prettyprint);
-      } else {
-        this.error = true;
-        this.code = res.statusCode;
-        throw Exception("unhandled exception");
-      }
-    } else {
-      this.error = true;
-      this.code = 400;
-
-      throw Exception("missing parameters => " +
-          this.tokens["SimpleSAML"] +
-          " | " +
-          this.tokens["alv"] +
-          " | " +
-          this.tokens["SimpleSAMLAuthToken"] +
-          " | " +
-          this.tokens["uids"] +
-          " | " +
-          this.error.toString());
-    }
-    return;
-  }
-
-  Future<void> getNotes() async {
-    HttpClient client = new HttpClient();
-    if (this.tokens["SimpleSAML"] != "" &&
-        this.tokens["alv"] != "" &&
-        this.tokens["uids"] != "" &&
-        this.tokens["SimpleSAMLAuthToken"] != "") {
-      this.notes["s1"] = [];
-      this.notes["s2"] = [];
-      HttpClientRequest req = await client.getUrl(
-        Uri.parse('https://www.leonard-de-vinci.net/?my=notes'),
-        //Uri.parse('http://araulin.tech/devinci/devinci_n.html'),
-      );
-      req.followRedirects = false;
-      req.cookies.addAll([
-        new Cookie('alv', this.tokens["alv"]),
-        new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-        new Cookie('uids', this.tokens["uids"]),
-        new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-      ]);
-      HttpClientResponse res = await req.close();
-      l("NOTES - STATUS CODE : ${res.statusCode}");
-      if (res.statusCode == 200) {
-        String body = await res.transform(utf8.decoder).join();
-        var doc = parse(body);
-
-        List<Element> divs = doc.querySelectorAll("#main > div > div");
-        for (int y = 0; y < 2; y++) {
-          int i = 0;
-          List<Element> ols1 = divs[5].querySelectorAll(
-              "div > div > div.social-box.social-bordered > div > div > div.dd > ol");
-          List<Element> ols = ols1[y].querySelector("li").children;
-          for (int yy = 1; yy < ols.length; yy++) {
-            Element ol = ols[yy];
-            Map<String, dynamic> elem = {
-              "module": "",
-              "moy": 0.0,
-              "nf": 0.0,
-              "moyP": 0.0,
-              "matieres": []
-            };
-            Element li = ol.querySelector("li");
-            Element ddhandle = ol.querySelector("div");
-            List<String> texts = ddhandle.text.split("\n");
-            JsonEncoder encoder = new JsonEncoder.withIndent('  ');
-            // String prettyprint = encoder.convert(texts);
-            // print(prettyprint);
-            elem["module"] =
-                texts[2].replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-
-            elem["moy"] = null;
-            elem["nf"] = null;
-            elem["moyP"] = null;
-            if (texts[5]
-                    .indexOf("Vous devez compléter toutes les évaluations") <
-                0) {
-              elem["moy"] = double.parse(texts[6]
-                  .replaceAllMapped(RegExp(r'\s\s+'), (match) => "")
-                  .split("/")[0]);
-              elem["nf"] = double.parse(
-                  RegExp(r': (.*?)"').firstMatch(texts[7] + '"').group(1));
-              elem["moyP"] = double.parse(
-                  RegExp(r': (.*?)"').firstMatch(texts[9] + '"').group(1));
-            }
-            this.notes["s${y + 1}"].add(elem);
-            Element ddlist = li.querySelector("ol");
-            int j = 0;
-            ddlist.children.forEach((lii) {
-              ddhandle = lii.querySelector("div");
-              texts = ddhandle.text.split("\n");
-              //String prettyprint = encoder.convert(texts);
-              // print(prettyprint);
-              elem = {
-                "matiere": "",
-                "moy": 0.0,
-                "moyP": 0.0,
-                "notes": [],
-                "c": true
-              };
-
-              elem["matiere"] =
-                  texts[2].replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-              elem["moy"] = null;
-              elem["moyP"] = null;
-              if (texts[3].indexOf("Evaluer") < 0) {
-                elem["moy"] = double.parse(texts[6]
-                    .replaceAllMapped(RegExp(r'\s\s+'), (match) => "")
-                    .split("/")[0]);
-                //print(elem["moy"]);
-
-                if (texts[9].indexOf("Rattrapage") < 0) {
-                  try {
-                    elem["moyP"] = double.parse(RegExp(r': (.*?)"')
-                        .firstMatch(texts[10] + '"')
-                        .group(1));
-                  } catch (e) {
-                    elem["moyP"] = null;
-                  }
-                } else {
-                  double noteR = double.parse(
-                      RegExp(r': (.*?)"').firstMatch(texts[9] + '"').group(1));
-                  if (noteR > elem["moy"]) {
-                    if (noteR > 10) {
-                      elem["moy"] = 10.0;
-                    } else {
-                      elem["moy"] = noteR;
-                    }
-                  }
-                  elem["notes"].add({
-                    "nom": "MESIMF120419-CC-1 Rattrapage",
-                    "note": noteR,
-                    "noteP": null
-                  });
-                  elem["moyP"] = double.parse(
-                      RegExp(r': (.*?)"').firstMatch(texts[11] + '"').group(1));
-                }
-              }
-              this.notes["s${y + 1}"][i]["matieres"].add(elem);
-              ddlist = lii.querySelector("ol");
-              ddlist.children.forEach((liii) {
-                ddhandle = liii.querySelector("div");
-                texts = ddhandle.text.split("\n");
-                elem = {"nom": "", "note": 0.0, "noteP": 0.0};
-                elem["nom"] =
-                    texts[2].replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-                if (texts.length < 7) {
-                  elem["note"] = null;
-                  elem["noteP"] = null;
-                } else {
-                  elem["note"] = double.parse(texts[6]
-                      .replaceAllMapped(RegExp(r'\s\s+'), (match) => "")
-                      .split("/")[0]);
-                  elem["noteP"] = null;
-                  try {
-                    elem["noteP"] = double.parse(RegExp(r': (.*?)"')
-                        .firstMatch(texts[10] + '"')
-                        .group(1));
-                  } catch (e) {}
-                }
-                this.notes["s${y + 1}"][i]["matieres"][j]["notes"].add(elem);
-              });
-              j++;
-            });
-            i++;
-          }
-        }
-      } else {
-        this.error = true;
-        this.code = res.statusCode;
-        throw Exception("unhandled exception");
-      }
-    } else {
-      this.error = true;
-      this.code = 400;
-
-      throw Exception("missing parameters => " +
-          this.tokens["SimpleSAML"] +
-          " | " +
-          this.tokens["alv"] +
-          " | " +
-          this.tokens["SimpleSAMLAuthToken"] +
-          " | " +
-          this.tokens["uids"] +
-          " | " +
-          this.error.toString());
-    }
-    return;
-  }
-
-  Future<void> getDocuments() async {
-    HttpClient client = new HttpClient();
-    if (this.tokens["SimpleSAML"] != "" &&
-        this.tokens["alv"] != "" &&
-        this.tokens["uids"] != "" &&
-        this.tokens["SimpleSAMLAuthToken"] != "") {
-      HttpClientRequest req = await client.getUrl(
-        Uri.parse("https://www.leonard-de-vinci.net/?my=docs"),
-      );
-      req.followRedirects = false;
-      req.cookies.addAll([
-        new Cookie('alv', this.tokens["alv"]),
-        new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-        new Cookie('uids', this.tokens["uids"]),
-        new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-      ]);
-      HttpClientResponse res = await req.close();
-      if (res.statusCode == 200) {
-        String body = await res.transform(utf8.decoder).join();
-        var doc = parse(body);
-        //Element cert = doc.querySelector("#main > div > div:nth-child(5) > div:nth-child(2) > div > table > tbody > tr > td:nth-child(2)");
-        int certIndex = 1;
-        int imaginrIndex = 1;
-        for (int i = 1;
-            i <
-                doc
-                    .querySelectorAll(".social-box.social-bordered.span6")[1]
-                    .querySelectorAll("tr")
-                    .length;
-            i++) {
-          print(doc
-              .querySelectorAll(".social-box.social-bordered.span6")[1]
-              .querySelectorAll("tr")[i]
-              .querySelectorAll("td")[1]
-              .text);
-          if (doc
-                  .querySelectorAll(".social-box.social-bordered.span6")[1]
-                  .querySelectorAll("tr")[i]
-                  .querySelectorAll("td")[0]
-                  .text
-                  .indexOf("scolarité") >
-              -1) {
-            certIndex = i;
-          } else if (doc
-                  .querySelectorAll(".social-box.social-bordered.span6")[1]
-                  .querySelectorAll("tr")[i]
-                  .querySelectorAll("td")[0]
-                  .text
-                  .indexOf("ImaginR") >
-              -1) {
-            imaginrIndex = i;
-          }
-        }
-        List<Element> certElements = doc
-            .querySelectorAll(".social-box.social-bordered.span6")[1]
-            .querySelectorAll("tr")[certIndex]
-            .querySelectorAll("td");
-
-        this.documents["certificat"]["annee"] = certElements[1].text;
-        this.documents["certificat"]["fr_url"] =
-            "https://www.leonard-de-vinci.net" +
-                certElements[2].querySelectorAll("a")[0].attributes["href"];
-        this.documents["certificat"]["en_url"] =
-            "https://www.leonard-de-vinci.net" +
-                certElements[2].querySelectorAll("a")[1].attributes["href"];
-
-        print(this.documents["certificat"]["annee"]);
-        print(this.documents["certificat"]["fr_url"]);
-        print(this.documents["certificat"]["en_url"]);
-
-        List<Element> imaginrElements = doc
-            .querySelectorAll(".social-box.social-bordered.span6")[1]
-            .querySelectorAll("tr")[imaginrIndex]
-            .querySelectorAll("td");
-
-        this.documents["imaginr"]["annee"] = imaginrElements[1].text;
-        this.documents["imaginr"]["url"] = "https://www.leonard-de-vinci.net" +
-            imaginrElements[2].querySelectorAll("a")[0].attributes["href"];
-
-        int calendrierIndex = 4;
-        for (int i = 0;
-            i <
-                doc
-                    .querySelectorAll(".social-box.social-bordered.span6")[0]
-                    .querySelectorAll("a")
-                    .length;
-            i++) {
-          if (doc
-                      .querySelectorAll(".social-box.social-bordered.span6")[0]
-                      .querySelectorAll("a")[i]
-                      .text
-                      .indexOf("CALENDRIER ACADEMIQUE") >
-                  -1 &&
-              doc
-                      .querySelectorAll(".social-box.social-bordered.span6")[0]
-                      .querySelectorAll("a")[i]
-                      .text
-                      .indexOf("APPRENTISSAGE") <
-                  0) {
-            calendrierIndex = i;
-          }
-        }
-
-        this.documents["calendrier"]["url"] =
-            "https://www.leonard-de-vinci.net" +
-                doc
-                    .querySelectorAll(".social-box.social-bordered.span6")[0]
-                    .querySelectorAll("a")[calendrierIndex]
-                    .attributes["href"];
-        this.documents["calendrier"]["annee"] = RegExp(r"\d{4}-\d{4}")
-            .firstMatch(doc
-                .querySelectorAll(".social-box.social-bordered.span6")[0]
-                .querySelectorAll("a")[calendrierIndex]
-                .text)
-            .group(0);
-
-        print(
-            "calendrier : ${this.documents["calendrier"]["annee"]}|${this.documents["calendrier"]["url"]}");
-
-        //documents liés aux notes :
-        req = await client.getUrl(
-          Uri.parse("https://www.leonard-de-vinci.net/?my=notes"),
+    if (globals.isConnected) {
+      HttpClient client = new HttpClient();
+      if (this.tokens["SimpleSAML"] != "" &&
+          this.tokens["alv"] != "" &&
+          this.tokens["uids"] != "" &&
+          this.tokens["SimpleSAMLAuthToken"] != "") {
+        HttpClientRequest req = await client.getUrl(
+          Uri.parse("https://www.leonard-de-vinci.net/?my=abs"),
+          //Uri.parse("https://www.araulin.tech/devinci/absences.html"),
         );
         req.followRedirects = false;
         req.cookies.addAll([
@@ -950,46 +718,655 @@ class User {
           new Cookie('uids', this.tokens["uids"]),
           new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
         ]);
-        res = await req.close();
+        HttpClientResponse res = await req.close();
         if (res.statusCode == 200) {
-          body = await res.transform(utf8.decoder).join();
-          doc = parse(body);
-          List<Element> filesA = doc
-              .querySelectorAll(
-                  "div.body")[doc.querySelectorAll("div.body").length - 2]
-              .querySelectorAll("a:not(.label)");
-          print(filesA);
-          for (int i = 0; i < filesA.length; i += 2) {
-            this.documents["bulletins"].add({
-              "name": filesA[i].text.substring(1, filesA[i].text.length - 1),
-              "fr_url": "https://www.leonard-de-vinci.net" +
-                  filesA[i].attributes["href"],
-              "en_url": "https://www.leonard-de-vinci.net" +
-                  filesA[i + 1].attributes["href"],
-              "sub": RegExp(r'\s\s+(.*?)\s\s+')
-                  .firstMatch(doc
-                      .querySelectorAll("div.body")[
-                          doc.querySelectorAll("div.body").length - 2]
-                      .querySelector("header")
-                      .text
-                      .split("\n")
-                      .last)
-                  .group(1)
+          print("got absences");
+          String body = await res.transform(utf8.decoder).join();
+          var doc = parse(body);
+          //print(doc.outerHtml);
+          List<Element> spans =
+              doc.querySelectorAll(".tab-pane > header > span");
+          Element nTB = doc
+              .querySelector(".tab-pane > header > span.label.label-warning");
+          //print(nTB);
+          String nTM =
+              new RegExp(r': (.*?)"').firstMatch(nTB.text + '"').group(1);
+          this.absences["nT"] = int.parse(nTM);
+
+          String s1M =
+              new RegExp(r': (.*?)"').firstMatch(spans[0].text + '"').group(1);
+          this.absences["s1"] = int.parse(s1M);
+
+          Element s2B = doc
+              .querySelector(".tab-pane > header > span.label.label-success");
+          String s2M =
+              new RegExp(r': (.*?)"').firstMatch(s2B.text + '"').group(1);
+          this.absences["s2"] = int.parse(s2M);
+
+          String seanceM = new RegExp(r'"(.*?) séance')
+              .firstMatch('"' + spans[3].text)
+              .group(1);
+          this.absences["seances"] = int.parse(seanceM);
+          List<Element> trs =
+              doc.querySelectorAll(".tab-pane.active > table > tbody > tr");
+          trs.forEach((tr) {
+            Map<String, String> elem = {
+              "cours": "",
+              "type": "",
+              "jour": "",
+              "creneau": "",
+              "duree": "",
+              "modalite": ""
+            };
+
+            List<Element> tds = tr.querySelectorAll("td");
+            elem["cours"] = tds[1]
+                .text
+                .replaceAll(tds[1].querySelector("span").text, "")
+                .replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
+            elem["type"] =
+                tds[2].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
+            elem["jour"] =
+                tds[3].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
+            elem["creneau"] =
+                tds[4].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
+            elem["duree"] =
+                tds[5].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
+            elem["modalite"] =
+                tds[6].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
+            this.absences["liste"].add(elem);
+          });
+          print(this.absences["liste"]);
+          this.absences["done"] = true;
+          await globals.store.record('absences').put(globals.db, this.absences);
+        } else {
+          this.error = true;
+          this.code = res.statusCode;
+          throw Exception("unhandled exception");
+        }
+      } else {
+        this.error = true;
+        this.code = 400;
+
+        throw Exception("missing parameters => " +
+            this.tokens["SimpleSAML"] +
+            " | " +
+            this.tokens["alv"] +
+            " | " +
+            this.tokens["SimpleSAMLAuthToken"] +
+            " | " +
+            this.tokens["uids"] +
+            " | " +
+            this.error.toString());
+      }
+    } else {
+      this.absences =
+          await globals.store.record('absences').get(globals.db) as Map;
+    }
+
+    return;
+  }
+
+  Future<void> getNotes({bool load = false}) async {
+    if (globals.isConnected) {
+      List added = [];
+      List changed = [];
+      Map<String, dynamic> nn = {"s1": [], "s2": []};
+      var timestamp = DateTime.now().millisecondsSinceEpoch;
+      Map<String, dynamic> before = {"s1": [], "s2": []};
+      before.copy(this.notes);
+      HttpClient client = new HttpClient();
+      if (this.tokens["SimpleSAML"] != "" &&
+          this.tokens["alv"] != "" &&
+          this.tokens["uids"] != "" &&
+          this.tokens["SimpleSAMLAuthToken"] != "") {
+        int timestamp = DateTime.now().millisecondsSinceEpoch;
+
+        HttpClientRequest req = await client.getUrl(
+          Uri.parse(
+            //'http://192.168.1.140:5500/devinci_n.html',
+            'https://www.leonard-de-vinci.net/?my=notes',
+          ),
+        );
+        req.followRedirects = false;
+        req.cookies.addAll([
+          new Cookie('alv', this.tokens["alv"]),
+          new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
+          new Cookie('uids', this.tokens["uids"]),
+          new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
+        ]);
+        HttpClientResponse res = await req.close();
+        l("NOTES - STATUS CODE : ${res.statusCode}");
+        if (res.statusCode == 200) {
+          String body = await res.transform(utf8.decoder).join();
+          var doc = parse(body);
+
+          List<Element> divs =
+              doc.querySelectorAll(this.notesConfig['mainDivs']);
+          for (int y = 0; y < 2; y++) {
+            int i = 0;
+            List<Element> ols1 =
+                divs[5].querySelectorAll(this.notesConfig['modules']['ols']);
+            List<Element> ols = ols1[y]
+                .querySelector(this.notesConfig['modules']['olsBis'])
+                .children;
+            for (int yy = 1; yy < ols.length; yy++) {
+              Element ol = ols[yy];
+              Map<String, dynamic> elem = {
+                "module": "",
+                "moy": 0.0,
+                "nf": 0.0,
+                "moyP": 0.0,
+                "matieres": []
+              };
+              Element li = ol.querySelector("li");
+              Element ddhandle = ol.querySelector("div");
+              List<String> texts = ddhandle.text.split("\n");
+              elem["module"] = texts[this.notesConfig['modules']['item']['m']]
+                  .replaceAllMapped(
+                      RegExp(this.notesConfig['modules']['item']['mR']),
+                      (match) => "");
+
+              elem["moy"] = null;
+              elem["nf"] = null;
+              elem["moyP"] = null;
+              if (texts[this.notesConfig['modules']['item']['eI']]
+                      .indexOf(this.notesConfig['modules']['item']['eStr']) <
+                  0) {
+                elem["moy"] = double.parse(
+                    texts[this.notesConfig['modules']['item']['!e']['moy']['i']]
+                            .replaceAllMapped(
+                                RegExp(this.notesConfig['modules']['item']['!e']
+                                    ['moy']['r']),
+                                (match) => "")
+                            .split(this.notesConfig['modules']['item']['!e']['moy']['s'])[
+                        this.notesConfig['modules']['item']['!e']['moy']
+                            ['si']]);
+                elem["nf"] = double.parse(
+                    RegExp(this.notesConfig['modules']['item']['!e']['nf']['r'])
+                        .firstMatch(texts[this.notesConfig['modules']['item']
+                                ['!e']['nf']['i']] +
+                            this.notesConfig['modules']['item']['!e']['nf']
+                                ['+'])
+                        .group(1));
+                elem["moyP"] = double.parse(RegExp(
+                        this.notesConfig['modules']['item']['!e']['moyP']['r'])
+                    .firstMatch(texts[this.notesConfig['modules']['item']['!e']
+                            ['moyP']['i']] +
+                        this.notesConfig['modules']['item']['!e']['moyP']['+'])
+                    .group(1));
+              }
+
+              nn["s${y + 1}"].add(elem);
+
+              Element ddlist = li.querySelector("ol");
+              int j = 0;
+              ddlist.children.forEach((lii) {
+                ddhandle = lii.querySelector("div");
+                texts = ddhandle.text.split("\n");
+                //String prettyprint = encoder.convert(texts);
+                // print(prettyprint);
+                elem = {
+                  "matiere": "",
+                  "moy": 0.0,
+                  "moyP": 0.0,
+                  "notes": [],
+                  "c": true
+                };
+
+                elem["matiere"] = texts[this.notesConfig['matieres']['mi']]
+                    .replaceAllMapped(
+                        RegExp(this.notesConfig['matieres']['mr']),
+                        (match) => "");
+                elem["moy"] = null;
+                elem["moyP"] = null;
+                if (texts[this.notesConfig['matieres']['ei']]
+                        .indexOf(this.notesConfig['matieres']['eStr']) <
+                    0) {
+                  elem["moy"] = double.parse(
+                      texts[this.notesConfig['matieres']['!e']['moy']['i']]
+                          .replaceAllMapped(
+                              RegExp(this.notesConfig['matieres']['!e']['moy']
+                                  ['r']),
+                              (match) => "")
+                          .split(this.notesConfig['matieres']['!e']['moy']
+                              ['s'])[this.notesConfig['matieres']['!e']['moy']
+                          ['si']]);
+                  //print(elem["moy"]);
+
+                  if (texts[this.notesConfig['matieres']['!e']['ri']]
+                          .indexOf(this.notesConfig['matieres']['!e']['rStr']) <
+                      0) {
+                    try {
+                      elem["moyP"] = double.parse(RegExp(this
+                              .notesConfig['matieres']['!e']['!r']['moyP']['r'])
+                          .firstMatch(texts[this.notesConfig['matieres']['!e']
+                                  ['!r']['moyP']['i']] +
+                              this.notesConfig['matieres']['!e']['!r']['moyP']
+                                  ['+'])
+                          .group(1));
+                    } catch (e) {
+                      elem["moyP"] = null;
+                    }
+                  } else {
+                    double noteR = double.parse(RegExp(this
+                            .notesConfig['matieres']['!e']['r']['noteR']['r'])
+                        .firstMatch(texts[this.notesConfig['matieres']['!e']
+                                ['r']['noteR']['i']] +
+                            this.notesConfig['matieres']['!e']['r']['noteR']
+                                ['+'])
+                        .group(1));
+                    if (noteR > elem["moy"]) {
+                      if (noteR > 10) {
+                        elem["moy"] = 10.0;
+                      } else {
+                        elem["moy"] = noteR;
+                      }
+                    }
+                    var e = {
+                      "nom": "MESIMF120419-CC-1 Rattrapage",
+                      "note": noteR,
+                      "noteP": null,
+                      "date": timestamp
+                    };
+
+                    elem["notes"].add(e);
+
+                    elem["moyP"] = double.parse(RegExp(this
+                            .notesConfig['matieres']['!e']['r']['moyP']['r'])
+                        .firstMatch(texts[this.notesConfig['matieres']['!e']
+                                ['r']['moyP']['i']] +
+                            this.notesConfig['matieres']['!e']['r']['moyP']
+                                ['+'])
+                        .group(1));
+                  }
+                }
+
+                nn["s${y + 1}"][i]["matieres"].add(elem);
+                ddlist = lii.querySelector("ol");
+                if (ddlist != null) {
+                  ddlist.children.forEach((liii) {
+                    ddhandle = liii.querySelector("div");
+                    texts = ddhandle.text.split("\n");
+                    elem = {
+                      "nom": "",
+                      "note": 0.0,
+                      "noteP": 0.0,
+                      "date": timestamp
+                    };
+                    elem["nom"] = texts[this.notesConfig['notes']['n']['i']]
+                        .replaceAllMapped(
+                            RegExp(this.notesConfig['notes']['n']['r']),
+                            (match) => "");
+                    if (texts.length < this.notesConfig['notes']['tl']) {
+                      elem["note"] = null;
+                      elem["noteP"] = null;
+                    } else {
+                      elem["note"] = double.parse(texts[
+                              this.notesConfig['notes']['note']['i']]
+                          .replaceAllMapped(
+                              RegExp(this.notesConfig['notes']['note']['r']),
+                              (match) => "")
+                          .split(this.notesConfig['notes']['note']
+                              ['s'])[this.notesConfig['notes']['note']['si']]);
+                      elem["noteP"] = null;
+                      try {
+                        elem["noteP"] = double.parse(RegExp(
+                                this.notesConfig['notes']['nP']['r'])
+                            .firstMatch(
+                                texts[this.notesConfig['notes']['nP']['i']] +
+                                    this.notesConfig['notes']['nP']['+'])
+                            .group(1));
+                      } catch (e) {}
+                    }
+
+                    nn["s${y + 1}"][i]["matieres"][j]["notes"].add(elem);
+                  });
+                }
+                j++;
+              });
+              i++;
+            }
+          }
+        } else {
+          this.error = true;
+          this.code = res.statusCode;
+          throw Exception("unhandled exception");
+        }
+      } else {
+        this.error = true;
+        this.code = 400;
+
+        throw Exception("missing parameters => " +
+            this.tokens["SimpleSAML"] +
+            " | " +
+            this.tokens["alv"] +
+            " | " +
+            this.tokens["SimpleSAMLAuthToken"] +
+            " | " +
+            this.tokens["uids"] +
+            " | " +
+            this.error.toString());
+      }
+      for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < before["s${i + 1}"].length; j++) {
+          for (int k = 0; k < before["s${i + 1}"][j]["matieres"].length; k++) {
+            var old = before["s${i + 1}"][j]["matieres"][k]["notes"];
+            var n = nn["s${i + 1}"][j]["matieres"][k]["notes"];
+            // print(
+            //     "old:${before["s${i + 1}"][j]["matieres"].length} | n:${nn["s${i + 1}"][j]["matieres"].length}");
+            // print(before["s${i + 1}"][j]["module"]);
+            before["s${i + 1}"][j]["matieres"][k]["moy"] =
+                nn["s${i + 1}"][j]["matieres"][k]["moy"];
+            before["s${i + 1}"][j]["matieres"][k]["moyP"] =
+                nn["s${i + 1}"][j]["matieres"][k]["moyP"];
+            Map<String, dynamic> comparaison = comparer(old, n);
+            comparaison['added'].forEach(
+              (item) {
+                before["s${i + 1}"][j]["matieres"][k]["notes"].add(
+                  {
+                    'nom': item['nom'],
+                    'note': item['note'],
+                    'noteP': item['noteP'],
+                    'date': timestamp,
+                  },
+                );
+                added.add(
+                  {
+                    'matieres': before["s${i + 1}"][j]["matieres"][k]
+                        ["matiere"],
+                    'nom': item['nom'],
+                    'note': item['note'],
+                  },
+                );
+              },
+            );
+            comparaison['removed'].forEach(
+              (item) {
+                before["s${i + 1}"][j]["matieres"][k]["notes"]
+                    .removeWhere((element) => element["nom"] == item["nom"]);
+              },
+            );
+            comparaison['changed'].forEach((item) {
+              changed.add({
+                'matieres': before["s${i + 1}"][j]["matieres"][k]["matiere"],
+                'data': item
+              });
+              for (int y = 0;
+                  y < before["s${i + 1}"][j]["matieres"][k]["notes"].length;
+                  y++) {
+                if (before["s${i + 1}"][j]["matieres"][k]["notes"][y]["nom"] ==
+                    item["key"]) {
+                  item['v'].forEach((e) {
+                    before["s${i + 1}"][j]["matieres"][k]["notes"][y][e[0]] =
+                        e[1][1];
+                  });
+                  before["s${i + 1}"][j]["matieres"][k]["notes"][y]['date'] =
+                      timestamp;
+                  break;
+                }
+              }
             });
           }
-          print(this.documents["bulletins"]);
         }
       }
+      if (before["s1"].isEmpty && before["s2"].isEmpty) {
+        this.notes.copy(nn);
+        await globals.store.record('notes').put(globals.db, this.notes);
+        this.notesFetched = true;
+        print("db updated");
+      } else {
+        this.notes = {"s1": [], "s2": []};
+        this.notes.copy(before);
+        this.notesEvolution["added"] = added;
+        this.notesEvolution["changed"] = changed;
+        await globals.store.record('notes').put(globals.db, this.notes);
+        this.notesFetched = true;
+        print("db updated");
+      }
+    } else {
+      this.notesFetched = true;
     }
+    return;
   }
-}
 
-class Cours {
-  Cours(this.eventName, this.from, this.to, this.background, this.isAllDay);
+  Future<void> getDocuments() async {
+    if (globals.isConnected) {
+      HttpClient client = new HttpClient();
+      if (this.tokens["SimpleSAML"] != "" &&
+          this.tokens["alv"] != "" &&
+          this.tokens["uids"] != "" &&
+          this.tokens["SimpleSAMLAuthToken"] != "") {
+        HttpClientRequest req = await client.getUrl(
+          Uri.parse(
+            "https://www.leonard-de-vinci.net/?my=docs",
+          ),
+        );
+        req.followRedirects = false;
+        req.cookies.addAll([
+          new Cookie('alv', this.tokens["alv"]),
+          new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
+          new Cookie('uids', this.tokens["uids"]),
+          new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
+        ]);
+        HttpClientResponse res = await req.close();
+        if (res.statusCode == 200) {
+          String body = await res.transform(utf8.decoder).join();
+          var doc = parse(body);
+          //Element cert = doc.querySelector("#main > div > div:nth-child(5) > div:nth-child(2) > div > table > tbody > tr > td:nth-child(2)");
+          int certIndex = 1;
+          int imaginrIndex = 1;
+          for (int i = 1;
+              i <
+                  doc
+                      .querySelectorAll(".social-box.social-bordered.span6")[1]
+                      .querySelectorAll("tr")
+                      .length;
+              i++) {
+            print('[1]' +
+                doc
+                    .querySelectorAll(".social-box.social-bordered.span6")[1]
+                    .querySelectorAll("tr")[i]
+                    .querySelectorAll("td")[1]
+                    .text);
+            if (doc
+                    .querySelectorAll(".social-box.social-bordered.span6")[1]
+                    .querySelectorAll("tr")[i]
+                    .querySelectorAll("td")[0]
+                    .text
+                    .indexOf("scolarité") >
+                -1) {
+              certIndex = i;
+            } else if (doc
+                    .querySelectorAll(".social-box.social-bordered.span6")[1]
+                    .querySelectorAll("tr")[i]
+                    .querySelectorAll("td")[0]
+                    .text
+                    .indexOf("ImaginR") >
+                -1) {
+              imaginrIndex = i;
+            }
+          }
+          List<Element> certElements = doc
+              .querySelectorAll(".social-box.social-bordered.span6")[1]
+              .querySelectorAll("tr")[certIndex]
+              .querySelectorAll("td");
 
-  String eventName;
-  DateTime from;
-  DateTime to;
-  material.Color background;
-  bool isAllDay;
+          this.documents["certificat"]["annee"] = certElements[1].text;
+          this.documents["certificat"]["fr_url"] =
+              "https://www.leonard-de-vinci.net" +
+                  certElements[2].querySelectorAll("a")[0].attributes["href"];
+          this.documents["certificat"]["en_url"] =
+              "https://www.leonard-de-vinci.net" +
+                  certElements[2].querySelectorAll("a")[1].attributes["href"];
+
+          print('[2]' + this.documents["certificat"]["annee"]);
+          print('[3]' + this.documents["certificat"]["fr_url"]);
+          print('[4]' + this.documents["certificat"]["en_url"]);
+
+          List<Element> imaginrElements = doc
+              .querySelectorAll(".social-box.social-bordered.span6")[1]
+              .querySelectorAll("tr")[imaginrIndex]
+              .querySelectorAll("td");
+
+          this.documents["imaginr"]["annee"] = imaginrElements[1].text;
+          this.documents["imaginr"]["url"] =
+              "https://www.leonard-de-vinci.net" +
+                  imaginrElements[2]
+                      .querySelectorAll("a")[0]
+                      .attributes["href"];
+
+          int calendrierIndex = 4;
+          for (int i = 0;
+              i <
+                  doc
+                      .querySelectorAll(".social-box.social-bordered.span6")[0]
+                      .querySelectorAll("a")
+                      .length;
+              i++) {
+            if (doc
+                        .querySelectorAll(
+                            ".social-box.social-bordered.span6")[0]
+                        .querySelectorAll("a")[i]
+                        .text
+                        .indexOf("CALENDRIER ACADEMIQUE") >
+                    -1 &&
+                doc
+                        .querySelectorAll(
+                            ".social-box.social-bordered.span6")[0]
+                        .querySelectorAll("a")[i]
+                        .text
+                        .indexOf("APPRENTISSAGE") <
+                    0) {
+              calendrierIndex = i;
+            }
+          }
+
+          this.documents["calendrier"]["url"] =
+              "https://www.leonard-de-vinci.net" +
+                  doc
+                      .querySelectorAll(".social-box.social-bordered.span6")[0]
+                      .querySelectorAll("a")[calendrierIndex]
+                      .attributes["href"];
+          this.documents["calendrier"]["annee"] = RegExp(r"\d{4}-\d{4}")
+              .firstMatch(doc
+                  .querySelectorAll(".social-box.social-bordered.span6")[0]
+                  .querySelectorAll("a")[calendrierIndex]
+                  .text)
+              .group(0);
+
+          print('[5]' +
+              "calendrier : ${this.documents["calendrier"]["annee"]}|${this.documents["calendrier"]["url"]}");
+
+          //documents liés aux notes :
+          req = await client.getUrl(
+            Uri.parse("https://www.leonard-de-vinci.net/?my=notes"),
+          );
+          req.followRedirects = false;
+          req.cookies.addAll([
+            new Cookie('alv', this.tokens["alv"]),
+            new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
+            new Cookie('uids', this.tokens["uids"]),
+            new Cookie(
+                'SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
+          ]);
+          res = await req.close();
+          if (res.statusCode == 200) {
+            body = await res.transform(utf8.decoder).join();
+            doc = parse(body);
+            List<Element> filesA = doc
+                .querySelectorAll(
+                    "div.body")[doc.querySelectorAll("div.body").length - 2]
+                .querySelectorAll("a:not(.label)");
+            print('[6]' + filesA.toString());
+            this.documents["bulletins"].clear();
+            for (int i = 0; i < filesA.length; i += 2) {
+              this.documents["bulletins"].add({
+                "name": filesA[i].text.substring(1, filesA[i].text.length - 1),
+                "fr_url": "https://www.leonard-de-vinci.net" +
+                    filesA[i].attributes["href"],
+                "en_url": "https://www.leonard-de-vinci.net" +
+                    filesA[i + 1].attributes["href"],
+                "sub": RegExp(r'\s\s+(.*?)\s\s+')
+                    .firstMatch(doc
+                        .querySelectorAll("div.body")[
+                            doc.querySelectorAll("div.body").length - 2]
+                        .querySelector("header")
+                        .text
+                        .split("\n")
+                        .last)
+                    .group(1)
+              });
+            }
+            print('[7]' + this.documents["bulletins"].toString());
+          }
+        }
+      }
+      await globals.store.record('documents').put(globals.db, this.documents);
+    } else {
+      this.documents =
+          await globals.store.record('documents').get(globals.db) as Map;
+    }
+    return;
+  }
+
+  //TODO getPresence()
+
+  Future<void> setPresence({bool force = false}) async {
+    if (globals.isConnected || force) {
+      HttpClient client = new HttpClient();
+      if (this.tokens["SimpleSAML"] != "" &&
+          this.tokens["alv"] != "" &&
+          this.tokens["uids"] != "" &&
+          this.tokens["SimpleSAMLAuthToken"] != "" &&
+          this.presence["seance_pk"] != "") {
+        HttpClientRequest req = await client.postUrl(
+          Uri.parse(
+            "https://www.leonard-de-vinci.net/student/presences/upload.php",
+          ),
+        );
+        req.followRedirects = false;
+        req.cookies.addAll([
+          new Cookie('alv', this.tokens["alv"]),
+          new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
+          new Cookie('uids', this.tokens["uids"]),
+          new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
+        ]);
+        req.headers.set('Connection', 'keep-alive');
+        req.headers.set('Accept', '*/*');
+        req.headers.set('DNT', '1');
+        req.headers.set('X-Requested-With', 'XMLHttpRequest');
+        req.headers.set('User-Agent',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36 Edg/81.0.416.64');
+        req.headers.set(
+            'Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        req.headers.set('Origin', 'https://www.leonard-de-vinci.net');
+        req.headers.set('Sec-Fetch-Site', 'same-origin');
+        req.headers.set('Sec-Fetch-Mode', 'cors');
+        req.headers.set('Sec-Fetch-Dest', 'empty');
+        req.headers.set(
+            'Referer',
+            'https://www.leonard-de-vinci.net/student/presences/' +
+                Uri.encodeComponent(this.presence["seance_pk"]));
+        req.headers.set('Accept-Language',
+            'fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6');
+        req.write(
+          "act=set_present&seance_pk=" +
+              Uri.encodeComponent(this.presence["seance_pk"]),
+        );
+        HttpClientResponse res = await req.close();
+        if (res.statusCode == 200) {
+          String body = await res.transform(utf8.decoder).join();
+          //TODO que faire du body
+        } else {
+          throw Exception(res.statusCode);
+        }
+      } else {
+        throw Exception(400); //missing parameters
+      }
+    } else {
+      throw Exception(503); //service unavailable
+    }
+    return;
+  }
 }

@@ -2,7 +2,6 @@
  * Copyright (c) 2018 Larry Aasen. All rights reserved.
  */
 
-import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -219,7 +218,7 @@ class UpgradeCard extends _UpgradeBase {
           if (processed.connectionState == ConnectionState.done) {
             if (Upgrader().shouldDisplayUpgrade()) {
               return Card(
-                  color: getColor("background", context),
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   margin: margin,
                   child: _AlertStyleWidget(
                       title: Text(Upgrader().title),
@@ -245,7 +244,6 @@ class UpgradeCard extends _UpgradeBase {
                                 Upgrader().onUserIgnored(context, false);
                                 state.forceUpdateState();
                               }),
-                        
                         FlatButton(
                             child: Text(Upgrader().buttonTitleUpdate),
                             onPressed: () {

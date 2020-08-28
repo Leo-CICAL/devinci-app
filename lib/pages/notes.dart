@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sembast/sembast.dart';
+
+Map<String, dynamic> notes;
 
 class NotesPage extends StatefulWidget {
   NotesPage({Key key}) : super(key: key);
@@ -20,58 +23,160 @@ class _NotesPageState extends State<NotesPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  String currentSemester = "s2";
+  String currentSemester = "s1";
+  bool changed = false;
 
   void initState() {
     super.initState();
+    globals.isLoading.addListener(() async {
+      print("isLoading2");
+      if (globals.isLoading.state(1)) {
+        if (!globals.noteLocked) {
+          globals.noteLocked = true;
+          try {
+            await globals.user.getNotes(load: true);
+          } catch (exception, stacktrace) {
+            if (globals.isConnected) {
+              HttpClient client = new HttpClient();
+              HttpClientRequest req = await client.getUrl(
+                Uri.parse('https://www.leonard-de-vinci.net/?my=notes'),
+              );
+              req.followRedirects = false;
+              req.cookies.addAll([
+                new Cookie('alv', globals.user.tokens["alv"]),
+                new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
+                new Cookie('uids', globals.user.tokens["uids"]),
+                new Cookie('SimpleSAMLAuthToken',
+                    globals.user.tokens["SimpleSAMLAuthToken"]),
+              ]);
+              HttpClientResponse res = await req.close();
+              globals.feedbackNotes = await res.transform(utf8.decoder).join();
+
+              await reportError(
+                  "notes.dart | _NotesPageState | runBeforeBuild() | user.getNotes() => $exception",
+                  stacktrace);
+            }
+          }
+          globals.noteLocked = false;
+        }
+        if (mounted) {
+          setState(() {
+            if (!globals.user.notes["s2"].isEmpty && !changed)
+              currentSemester = "s2";
+          });
+        }
+        globals.isLoading.setState(1, false);
+      }
+    });
+
     SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
   }
 
   void changeCurrentSemester(String sem) {
-    //print("change semester");
     setState(() {
       currentSemester = sem;
+      if (!changed) changed = true;
     });
   }
 
   void _onRefresh() async {
+    print("refresh");
     // monitor network fetch
-    await Future.delayed(Duration(milliseconds: 1000));
-    // if failed,use refreshFailed()
-    _refreshController.refreshCompleted();
+    if (!globals.noteLocked) {
+      globals.noteLocked = true;
+      try {
+        await globals.user.getNotes(load: true);
+      } catch (exception, stacktrace) {
+        if (globals.isConnected) {
+          HttpClient client = new HttpClient();
+          HttpClientRequest req = await client.getUrl(
+            Uri.parse('https://www.leonard-de-vinci.net/?my=notes'),
+          );
+          req.followRedirects = false;
+          req.cookies.addAll([
+            new Cookie('alv', globals.user.tokens["alv"]),
+            new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
+            new Cookie('uids', globals.user.tokens["uids"]),
+            new Cookie('SimpleSAMLAuthToken',
+                globals.user.tokens["SimpleSAMLAuthToken"]),
+          ]);
+          HttpClientResponse res = await req.close();
+          globals.feedbackNotes = await res.transform(utf8.decoder).join();
+
+          await reportError(
+              "notes.dart | _NotesPageState | runBeforeBuild() | user.getNotes() => $exception",
+              stacktrace);
+        }
+      }
+      globals.noteLocked = false;
+    }
+    if (mounted) {
+      setState(() {
+        if (!globals.user.notes["s2"].isEmpty && !changed)
+          currentSemester = "s2";
+        _refreshController.refreshCompleted();
+      });
+    }
   }
 
   void runBeforeBuild() async {
-    if (globals.user.notes["s1"].isEmpty) {
-      try {
-        await globals.user.getNotes();
-      } catch (exception, stacktrace) {
-        HttpClient client = new HttpClient();
-        HttpClientRequest req = await client.getUrl(
-          Uri.parse('https://www.leonard-de-vinci.net/?my=notes'),
-          //Uri.parse('http://araulin.tech/devinci/tete_notes_1.html'),
-        );
-        req.followRedirects = false;
-        req.cookies.addAll([
-          new Cookie('alv', globals.user.tokens["alv"]),
-          new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
-          new Cookie('uids', globals.user.tokens["uids"]),
-          new Cookie('SimpleSAMLAuthToken',
-              globals.user.tokens["SimpleSAMLAuthToken"]),
-        ]);
-        HttpClientResponse res = await req.close();
-        globals.feedbackNotes = await res.transform(utf8.decoder).join();
+    print(globals.user.notesFetched);
+    if (!globals.user.notesFetched) {
+      notes = await globals.store.record('notes').get(globals.db)
+          as Map<String, dynamic>;
+      if (notes == null) {
+        //il n'existe pas de backup hors connexion des notes
+        try {
+          await globals.user.getNotes(load: true);
+        } catch (exception, stacktrace) {
+          if (globals.isConnected) {
+            HttpClient client = new HttpClient();
+            HttpClientRequest req = await client.getUrl(
+              Uri.parse('https://www.leonard-de-vinci.net/?my=notes'),
+            );
+            req.followRedirects = false;
+            req.cookies.addAll([
+              new Cookie('alv', globals.user.tokens["alv"]),
+              new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
+              new Cookie('uids', globals.user.tokens["uids"]),
+              new Cookie('SimpleSAMLAuthToken',
+                  globals.user.tokens["SimpleSAMLAuthToken"]),
+            ]);
+            HttpClientResponse res = await req.close();
+            globals.feedbackNotes = await res.transform(utf8.decoder).join();
 
-        await reportError(
-            "notes.dart | _NotesPageState | runBeforeBuild() | user.getNotes() => $exception",
-            stacktrace);
+            await reportError(
+                "notes.dart | _NotesPageState | runBeforeBuild() | user.getNotes() => $exception",
+                stacktrace);
+          }
+        }
       }
+      if (mounted)
+        setState(() {
+          if (!globals.user.notes["s2"].isEmpty && !changed)
+            currentSemester = "s2";
+          show = true;
+        });
+      globals.user.notes.copy(notes);
 
-      setState(() {
-        show = true;
-      });
+      if (!globals.noteLocked) {
+        if (globals.user.notesFetched) {
+          if (mounted)
+            setState(() {
+              if (!globals.user.notes["s2"].isEmpty && !changed)
+                currentSemester = "s2";
+              show = true;
+            });
+        } else {
+          globals.isLoading.setState(1, true);
+        }
+      } else {
+        globals.isLoading.setState(1, true);
+      }
     } else {
       setState(() {
+        if (!globals.user.notes["s2"].isEmpty && !changed)
+          currentSemester = "s2";
         show = true;
       });
     }
@@ -81,25 +186,7 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     globals.currentContext = context;
 
-    Widget TitleSection(String title) {
-      return Padding(
-          padding: const EdgeInsets.only(top: 20.0, left: 20),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Text(
-                  title,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: getColor("text", context),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
-                ),
-              )
-            ],
-          ));
-    }
-
+    // ignore: non_constant_identifier_names
     Widget SemestreSelection(String sem, String subtitle) {
       return Expanded(
         child: Padding(
@@ -108,16 +195,13 @@ class _NotesPageState extends State<NotesPage> {
               top: 0,
               right: sem == "s2" ? 20.0 : 10.0),
           child: Card(
-            elevation:
-                MediaQuery.of(context).platformBrightness == Brightness.dark
-                    ? 4
-                    : 2,
-            color: getColor("card", context),
+            elevation: globals.currentTheme.isDark() ? 4 : 2,
+            color: Theme.of(context).cardColor,
             shape: currentSemester == sem
                 ? RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     side: new BorderSide(
-                        color: getColor("primary", context), width: 2.0))
+                        color: Theme.of(context).accentColor, width: 2.0))
                 : RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0)),
             child: InkWell(
@@ -130,10 +214,8 @@ class _NotesPageState extends State<NotesPage> {
                     padding: const EdgeInsets.only(left: 0.0, top: 6, right: 0),
                     child: Text(
                       sem.toUpperCase(),
-                      style: TextStyle(
-                          color: getColor("text", context),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 40),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
                     ),
                   ),
                   Padding(
@@ -142,8 +224,7 @@ class _NotesPageState extends State<NotesPage> {
                     child: Text(
                       subtitle,
                       style: TextStyle(
-                          color: MediaQuery.of(context).platformBrightness ==
-                                  Brightness.dark
+                          color: globals.currentTheme.isDark()
                               ? Color(0xffE1E2E1)
                               : Color(0xffACACAC),
                           fontSize: 16),
@@ -157,22 +238,30 @@ class _NotesPageState extends State<NotesPage> {
       );
     }
 
+    // ignore: non_constant_identifier_names
     Widget MatiereTile(int i, int j) {
       return Padding(
         padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
         child: Card(
-            elevation:
-                MediaQuery.of(context).platformBrightness == Brightness.dark
-                    ? 4
-                    : 2,
-            color: getColor("card", context),
+            elevation: globals.currentTheme.isDark() ? 4 : 2,
+            color: Theme.of(context).cardColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)),
             child: InkWell(
-              onTap: () => setState(() {
-                globals.user.notes[currentSemester][i]["matieres"][j]["c"] =
-                    !globals.user.notes[currentSemester][i]["matieres"][j]["c"];
-              }), // handle your onTap here
+              onTap: globals.user
+                      .notes[currentSemester][i]["matieres"][j]['notes'].isEmpty
+                  ? null
+                  : () => setState(() {
+                        if (globals.user.notesFetched) {
+                          globals.user.notes[currentSemester][i]["matieres"][j]
+                                  ["c"] =
+                              !globals.user.notes[currentSemester][i]
+                                  ["matieres"][j]["c"];
+                        } else {
+                          notes[currentSemester][i]["matieres"][j]["c"] =
+                              !notes[currentSemester][i]["matieres"][j]["c"];
+                        }
+                      }), // handle your onTap here
               child: Column(
                 children: <Widget>[
                   Padding(
@@ -186,42 +275,47 @@ class _NotesPageState extends State<NotesPage> {
                             child: new Container(
                               padding: new EdgeInsets.only(right: 12),
                               child: Text(
-                                removeGarbage(
-                                    globals.user.notes[currentSemester][i]
-                                        ["matieres"][j]["matiere"]),
+                                removeGarbage(globals.user.notesFetched
+                                    ? globals.user.notes[currentSemester][i]
+                                        ["matieres"][j]["matiere"]
+                                    : notes[currentSemester][i]["matieres"][j]
+                                        ["matiere"]),
                                 //overflow: TextOverflow.ellipsis,
                                 style: new TextStyle(
-                                    color: getColor("text", context),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
+                                    fontWeight: FontWeight.bold, fontSize: 20),
                               ),
                             ),
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 6),
                             child: Text(
-                              getMatMoy(globals.user.notes[currentSemester][i]
-                                          ["matieres"][j]) ==
+                              getMatMoy(globals.user.notesFetched
+                                          ? globals.user.notes[currentSemester]
+                                              [i]["matieres"][j]
+                                          : notes[currentSemester][i]
+                                              ["matieres"][j]) ==
                                       null
                                   ? ""
-                                  : getMatMoy(
-                                          globals.user.notes[currentSemester][i]
+                                  : getMatMoy(globals.user.notesFetched
+                                          ? globals.user.notes[currentSemester]
+                                              [i]["matieres"][j]
+                                          : notes[currentSemester][i]
                                               ["matieres"][j])
                                       .toString(),
                               style: new TextStyle(
-                                  color: (getMatMoy(globals.user
-                                                      .notes[currentSemester][i]
-                                                  ["matieres"][j]) ??
+                                  color: (getMatMoy(globals.user.notesFetched
+                                                  ? globals.user
+                                                          .notes[currentSemester]
+                                                      [i]["matieres"][j]
+                                                  : notes[currentSemester][i]
+                                                      ["matieres"][j]) ??
                                               11) >=
                                           10
-                                      ? getColor("primary", context)
-                                      : getMatMoy(globals.user.notes[currentSemester]
-                                                  [i]["matieres"][j]) ==
+                                      ? Theme.of(context).accentColor
+                                      : getMatMoy(globals.user.notesFetched ? globals.user.notes[currentSemester][i]["matieres"][j] : notes[currentSemester][i]["matieres"][j]) ==
                                               0
                                           ? Color(0xffCA3E47)
-                                          : (MediaQuery.of(context)
-                                                      .platformBrightness ==
-                                                  Brightness.dark
+                                          : (globals.currentTheme.isDark()
                                               ? Color(0xffFFDE03)
                                               : Color(0xffFF8A5C)),
                                   fontWeight: FontWeight.bold,
@@ -232,10 +326,19 @@ class _NotesPageState extends State<NotesPage> {
                             alignment: Alignment.topRight,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 10),
-                              child: Icon(globals.user.notes[currentSemester][i]
-                                      ["matieres"][j]["c"]
-                                  ? Icons.expand_more
-                                  : Icons.expand_less),
+                              child: globals
+                                      .user
+                                      .notes[currentSemester][i]["matieres"][j]
+                                          ['notes']
+                                      .isEmpty
+                                  ? SizedBox.shrink()
+                                  : Icon((globals.user.notesFetched
+                                          ? globals.user.notes[currentSemester]
+                                              [i]["matieres"][j]["c"]
+                                          : notes[currentSemester][i]
+                                              ["matieres"][j]["c"])
+                                      ? Icons.expand_more
+                                      : Icons.expand_less),
                             ),
                           ),
                         ],
@@ -248,18 +351,18 @@ class _NotesPageState extends State<NotesPage> {
       );
     }
 
+    // ignore: non_constant_identifier_names
     Widget NoteTile(int i, int j, int y) {
       return Visibility(
-        visible: !globals.user.notes[currentSemester][i]["matieres"][j]["c"],
+        visible: globals.user.notesFetched
+            ? !globals.user.notes[currentSemester][i]["matieres"][j]["c"]
+            : !notes[currentSemester][i]["matieres"][j]["c"],
         //true,
         child: Padding(
           padding: const EdgeInsets.only(left: 24.0, bottom: 5, right: 0),
           child: Card(
-            elevation:
-                MediaQuery.of(context).platformBrightness == Brightness.dark
-                    ? 4
-                    : 1,
-            color: getColor("card", context),
+            elevation: globals.currentTheme.isDark() ? 4 : 1,
+            color: Theme.of(context).cardColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)),
             child: Container(
@@ -279,9 +382,11 @@ class _NotesPageState extends State<NotesPage> {
                             child: new Container(
                               padding: new EdgeInsets.only(right: 10),
                               child: Text(
-                                removeGarbage(
-                                    globals.user.notes[currentSemester][i]
-                                        ["matieres"][j]["notes"][y]["nom"]),
+                                removeGarbage(globals.user.notesFetched
+                                    ? globals.user.notes[currentSemester][i]
+                                        ["matieres"][j]["notes"][y]["nom"]
+                                    : notes[currentSemester][i]["matieres"][j]
+                                        ["notes"][y]["nom"]),
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.w600),
@@ -292,34 +397,43 @@ class _NotesPageState extends State<NotesPage> {
                               alignment: Alignment.topRight,
                               child: Padding(
                                   padding: const EdgeInsets.only(right: 10),
-                                  child: globals.user.notes[currentSemester][i]
-                                                  ["matieres"][j]["notes"][y]
-                                              ["note"] ==
+                                  child: (globals.user.notesFetched
+                                              ? globals.user.notes[
+                                                          currentSemester][i]
+                                                      ["matieres"][j]["notes"]
+                                                  [y]["note"]
+                                              : notes[currentSemester][i]
+                                                      ["matieres"][j]["notes"]
+                                                  [y]["note"]) ==
                                           null
                                       ? null
                                       : Text(
-                                          globals
-                                              .user
-                                              .notes[currentSemester][i]
-                                                  ["matieres"][j]["notes"][y]
-                                                  ["note"]
+                                          (globals.user.notesFetched
+                                                  ? globals.user.notes[
+                                                              currentSemester]
+                                                          [i]["matieres"][j]
+                                                      ["notes"][y]["note"]
+                                                  : notes[currentSemester][i]
+                                                          ["matieres"][j]
+                                                      ["notes"][y]["note"])
                                               .toString(),
                                           style: TextStyle(
                                             fontSize: 24,
                                             fontWeight: FontWeight.w900,
-                                            color: globals.user.notes[currentSemester]
-                                                            [i]["matieres"][j]
-                                                        ["notes"][y]["note"] >=
-                                                    10
-                                                ? getColor("primary", context)
-                                                : (globals.user.notes[currentSemester]
-                                                                    [i]["matieres"]
+                                            color: (globals.user.notesFetched
+                                                        ? globals.user.notes[currentSemester]
+                                                                [i]["matieres"][j]
+                                                            ["notes"][y]["note"]
+                                                        : notes[currentSemester]
+                                                                        [i]
+                                                                    ["matieres"]
                                                                 [j]["notes"][y]
-                                                            ["note"] ==
-                                                        0
+                                                            ["note"]) >=
+                                                    10
+                                                ? Theme.of(context).accentColor
+                                                : ((globals.user.notesFetched ? globals.user.notes[currentSemester][i]["matieres"][j]["notes"][y]["note"] : notes[currentSemester][i]["matieres"][j]["notes"][y]["note"]) == 0
                                                     ? Color(0xffCA3E47)
-                                                    : (MediaQuery.of(context).platformBrightness ==
-                                                            Brightness.dark
+                                                    : (globals.currentTheme.isDark()
                                                         ? Color(0xffFFDE03)
                                                         : Color(0xffFF8A5C))),
                                           ),
@@ -335,8 +449,11 @@ class _NotesPageState extends State<NotesPage> {
                         padding: const EdgeInsets.only(right: 10),
                         child: RichText(
                           text: TextSpan(
-                            text: globals.user.notes[currentSemester][i]
-                                        ["matieres"][j]["notes"][y]["noteP"] ==
+                            text: (globals.user.notesFetched
+                                        ? globals.user.notes[currentSemester][i]
+                                            ["matieres"][j]["notes"][y]["noteP"]
+                                        : notes[currentSemester][i]["matieres"]
+                                            [j]["notes"][y]["noteP"]) ==
                                     null
                                 ? ''
                                 : 'moy. de la promo : ',
@@ -344,15 +461,19 @@ class _NotesPageState extends State<NotesPage> {
                                 color: Color(0xff787878), fontSize: 12),
                             children: <TextSpan>[
                               TextSpan(
-                                  text: globals.user.notes[currentSemester][i]
-                                                  ["matieres"][j]["notes"][y]
-                                              ["noteP"] ==
+                                  text: (globals.user.notesFetched
+                                              ? globals.user.notes[currentSemester][i]["matieres"]
+                                                  [j]["notes"][y]["noteP"]
+                                              : notes[currentSemester][i]["matieres"]
+                                                  [j]["notes"][y]["noteP"]) ==
                                           null
                                       ? ''
-                                      : globals
-                                          .user
-                                          .notes[currentSemester][i]["matieres"]
-                                              [j]["notes"][y]["noteP"]
+                                      : (globals.user.notesFetched
+                                              ? globals.user.notes[currentSemester]
+                                                      [i]["matieres"][j]
+                                                  ["notes"][y]["noteP"]
+                                              : notes[currentSemester][i]["matieres"]
+                                                  [j]["notes"][y]["noteP"])
                                           .toString(),
                                   style: TextStyle(fontSize: 14)),
                             ],
@@ -371,64 +492,78 @@ class _NotesPageState extends State<NotesPage> {
 
     return show
         ? CupertinoScrollbar(
-            child: ListView(
-              shrinkWrap: true,
-              children: <Widget>[
-                TitleSection("Semestres"),
+            child: SmartRefresher(
+              enablePullDown: true,
+              header: ClassicHeader(),
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              child: ListView(
+                shrinkWrap: true,
+                children: <Widget>[
+                  TitleSection("Semestres"),
 
-                Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Row(
-                      children: <Widget>[
-                        SemestreSelection("s1", "Sept. - Janvier"),
-                        SemestreSelection("s2", "janvier - Juin")
-                      ],
-                    )),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Row(
+                        children: <Widget>[
+                          SemestreSelection("s1", "Sept. - Janvier"),
+                          SemestreSelection("s2", "Janvier - Juin")
+                        ],
+                      )),
 
-                TitleSection("Notes"),
+                  TitleSection("Notes"),
 
-                Padding(
-                  padding:
-                      const EdgeInsets.only(top: 20.0, left: 20, right: 20),
-                  child: new ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    itemCount: globals.user.notes[currentSemester].length,
-                    itemBuilder: (BuildContext ctxt, int i) {
-                      return new ListView.builder(
-                        shrinkWrap: true,
-                        primary: false,
-                        scrollDirection: Axis.vertical,
-                        itemCount: globals
-                            .user.notes[currentSemester][i]["matieres"].length,
-                        itemBuilder: (BuildContext ctxt, int j) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              MatiereTile(i, j),
-                              new ListView.builder(
-                                shrinkWrap: true,
-                                primary: false,
-                                scrollDirection: Axis.vertical,
-                                itemCount: globals
-                                    .user
-                                    .notes[currentSemester][i]["matieres"][j]
-                                        ["notes"]
-                                    .length,
-                                itemBuilder: (BuildContext ctxt, int y) {
-                                  return NoteTile(i, j, y);
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 20.0, left: 20, right: 20),
+                    child: new ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      itemCount: globals.user.notesFetched
+                          ? globals.user.notes[currentSemester].length
+                          : notes[currentSemester].length,
+                      itemBuilder: (BuildContext ctxt, int i) {
+                        return new ListView.builder(
+                          shrinkWrap: true,
+                          primary: false,
+                          scrollDirection: Axis.vertical,
+                          itemCount: globals.user.notesFetched
+                              ? globals.user
+                                  .notes[currentSemester][i]["matieres"].length
+                              : notes[currentSemester][i]["matieres"].length,
+                          itemBuilder: (BuildContext ctxt, int j) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                MatiereTile(i, j),
+                                new ListView.builder(
+                                  shrinkWrap: true,
+                                  primary: false,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: globals.user.notesFetched
+                                      ? globals
+                                          .user
+                                          .notes[currentSemester][i]["matieres"]
+                                              [j]["notes"]
+                                          .length
+                                      : notes[currentSemester][i]["matieres"][j]
+                                              ["notes"]
+                                          .length,
+                                  itemBuilder: (BuildContext ctxt, int y) {
+                                    return NoteTile(i, j, y);
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
-                //!SECTION
-              ],
+                  //!SECTION
+                ],
+              ),
             ),
           )
         : Center(

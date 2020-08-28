@@ -1,7 +1,7 @@
 name: devinci
 description: devinci portail app
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.6+2
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+version: 1.2.0+1
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -9,33 +9,48 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.12.1
-  flutter_secure_storage: ^3.3.3
-  #cupertino_icons: ^0.1.3
+  http: ^0.12.2
+  intl: ^0.16.1
+  flutter_secure_storage: ^3.3.3 # permet l'accès au secure storage de l'appareil pour stocker les identifiants de l'utilisateur et les tokens de connection
+  cupertino_icons: ^0.1.3
   html: ^0.14.0+3
+  characters: ^1.0.0
   outline_material_icons: ^0.1.1
-  syncfusion_flutter_core: ^18.1.56
-  syncfusion_flutter_calendar: ^18.1.56-beta
-  syncfusion_localizations: ^18.1.56
-  pull_to_refresh: ^1.5.8
-  flutter_statusbarcolor: ^0.2.3
-  property_change_notifier: ^0.2.0
-  sentry: ^3.0.1
-  device_info: '>=0.4.2+4 <2.0.0'
-  package_info: '>=0.4.1 <2.0.0'
-  flutter_email_sender: ^3.0.1
-  path_provider: ^1.6.10
-  version: ^1.0.3
-  shared_preferences: ^0.5.2
-  ota_update: ^2.3.0
-  flutter_markdown: ^0.4.2
-  modal_bottom_sheet: ^0.1.6+1
-  flutter_phoenix: ^0.1.0
-  flutter_full_pdf_viewer: ^1.0.6
-  share_extend: ^1.1.9
-  flutter_svg: ^0.17.4
-  recase: ^3.0.0
-  diacritic: ^0.1.1
+  syncfusion_flutter_core: ^18.2.54
+  syncfusion_flutter_calendar: ^18.2.54
+  syncfusion_localizations: ^18.2.54
+  pull_to_refresh: ^1.6.1
+  flutter_statusbarcolor: ^0.2.3 # permet de changer la couleur de la barre d'état et de navifation sur android et ios
+  property_change_notifier: ^0.2.0 # permet de rebuild une interface si une variable change de valeur
+  sentry: ^3.0.1 # permet de faire remonter les bug/erreur
+  device_info: ^0.4.2+7
+  package_info: ^0.4.3
+  flutter_email_sender: ^3.0.1 # permet d'appeler les fonctions d'envoi de mail natives
+  path_provider: ^1.6.14 # permet de sauvegarder des fichiers dans des dossiers approprié au sein des appareils
+  version: ^1.2.0 # permet de récupérer des informations de bases sur l'application
+  shared_preferences: ^0.5.10 # permet de modifier les shared_preferences
+  ota_update: ^2.4.1 # [Android Only] permet de télécharger une mise à jour de l'application et de l'installer sans passer par le play store
+  flutter_markdown: ^0.4.3 # permet de convertir du Markdown en RichText, utilisé pour l'affichage du changelog des mise à jour
+  modal_bottom_sheet: ^0.2.0+1 # permet d'afficher un modal bottom sheet, utilisé pour afficher la page de paramètres
+  flutter_phoenix: ^0.1.0 # permet de relancer l'application sans véritablement la quitter, une sorte de refresh, utile lorsque l'utilisateur se déconnecte
+  flutter_full_pdf_viewer: ^1.0.6 # permet d'afficher des pdf dans l'application
+  share_extend: ^1.1.9 # permet d'appeler le volet de partage natif des différents os et de partager des fichiers.
+  flutter_svg: ^0.18.1 # permet l'affichage d'image svg
+  recase: ^3.0.0 # permet de transformer n'importe quelle phrase en camelCase
+  diacritic: ^0.1.1 # permet de supprimer les accents et autres caractères ambigu dans les nom de fichier pour l'enregistrement dans les fichiers de l'appareil
+  background_fetch: ^0.6.0 # permet de lancer des tâches en arrière plan, comme récupérer les notifications en attente ou les nouvelles notes
+  flutter_local_notifications: ^1.4.4+4 # permet d'émettre des notifications
+  rxdart: ^0.24.1 # dépendance de flutter_local_notification pour récupérer les notifications cliquées
+  app_settings: ^4.0.3 # permet d'ouvrir les réglages de notifications dans les paramètres du téléphone
+  badges: ^1.1.1 # permet d'afficher des faux badges de notifications sur des éléments de l'interface
+  flutter_app_badger: ^1.1.2 # est utilisé pour retirer le badge de notification lorsque qu'on clique sur une notif (pourrait être remplacé par du code natif)
+  sembast: ^2.4.7+6 # sembast db stands for Simple Embedded Application Store database | système de base de donnée NoSQL pour sauvegarder les notes et determiner quelles notes sont nouvelles.
+  quick_actions: ^0.4.0+8 # Permet d'avoir des quick actions (iOS) ou des App Shortcuts (Android) sur l'écran d'accueil
+  about: ^1.2.0 # Affiche une page A propos, qui décrit l'application et les différentes licenses.
+  connectivity: ^0.4.9+2 # permet de connaître l'état de la connection internet de l'appareil
+  flutter_siri_suggestions: ^1.0.2+hotfix1 #Flutter plugin for exposure on Siri Suggestions.
+  slide_popup_dialog: ^0.0.2
+  url_launcher: ^5.5.0
   flutter_localizations:
     sdk: flutter
 
@@ -43,13 +58,43 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-flutter: 
+flutter:
   uses-material-design: true
 
   assets:
     - assets/
 
   fonts:
-  - family:  DevinciIcons
-    fonts:
-    - asset: fonts/DevinciIcons.ttf
+    - family: DevinciIcons
+      fonts:
+        - asset: fonts/DevinciIcons.ttf
+    - family: ProductSans
+      fonts:
+        - asset: fonts/ProductSans/ProductSans-Black.ttf
+          weight: 900
+        - asset: fonts/ProductSans/ProductSans-BlackItalic.ttf
+          weight: 900
+          style: italic
+        - asset: fonts/ProductSans/ProductSans-Bold.ttf
+          weight: 700
+        - asset: fonts/ProductSans/ProductSans-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: fonts/ProductSans/ProductSans-Italic.ttf
+          style: italic
+        - asset: fonts/ProductSans/ProductSans-Light.ttf
+          weight: 300
+        - asset: fonts/ProductSans/ProductSans-LightItalic.ttf
+          style: italic
+          weight: 300
+        - asset: fonts/ProductSans/ProductSans-Medium.ttf
+          weight: 500
+        - asset: fonts/ProductSans/ProductSans-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: fonts/ProductSans/ProductSans-Regular.ttf
+        - asset: fonts/ProductSans/ProductSans-Thin.ttf
+          weight: 100
+        - asset: fonts/ProductSans/ProductSans-ThinItalic.ttf
+          weight: 100
+          style: italic
