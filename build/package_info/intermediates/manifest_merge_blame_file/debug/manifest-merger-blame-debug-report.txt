@@ -3,6 +3,6 @@
 3    package="io.flutter.plugins.packageinfo" >
 4
 5    <uses-sdk android:minSdkVersion="16" />
-5-->/home/antoine/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/package_info-0.4.1/android/src/main/AndroidManifest.xml
+5-->C:\src\flutter\.pub-cache\hosted\pub.dartlang.org\package_info-0.4.3\android\src\main\AndroidManifest.xml
 6
 7</manifest>

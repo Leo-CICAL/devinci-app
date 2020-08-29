@@ -1,4 +1,7 @@
-#Thu Jul 16 16:21:51 CEST 2020
-base.0=/home/antoine/Documents/devinci/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
+#Fri Aug 28 18:43:36 CEST 2020
+base.0=C\:\\Users\\antoi\\Documents\\Dev\\devinci\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
+path.1=classes2.dex
+renamed.1=classes2.dex
 path.0=classes.dex
 renamed.0=classes.dex
+base.1=C\:\\Users\\antoi\\Documents\\Dev\\devinci\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes2.dex
