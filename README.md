@@ -12,7 +12,7 @@
 
 ## Présentation
 
-**Devinci** est une application qui a pour but de faciliter l'utilisation du portail étudiant du pôle Léonard Devinci. Cela passe notamment par la connexion automatique, sans devoir entrer ses identifiants à chaque utilisation, des informations accessibles facilement, des notifications pour prévenir d'une nouvelle note, la possibilité de se marquer présent depuis l'application, un mode nuit ou encore l'accès aux documents importants.
+**Devinci** est une application qui a pour but de faciliter l'utilisation du portail étudiant du pôle Léonard De Vinci. Cela passe notamment par la connexion automatique, sans devoir entrer ses identifiants à chaque utilisation, des informations accessibles facilement, des notifications pour prévenir d'une nouvelle note, la possibilité de se marquer présent depuis l'application, un mode nuit ou encore l'accès aux documents importants.
 
 <a href="https://devinci.araulin.tech/" style="cursor: pointer;display: inline-block;text-align: center;white-space: nowrap;font-size: 12px;line-height: 1.17648;font-weight: 400;letter-spacing: -0.022em;min-width: 28px;padding-left: 16px;padding-right: 16px;padding-top: 8px;padding-bottom: 8px;border-radius: 18px;background: #0071e3;color: white;text-decoration: none;">En savoir plus</a>
 
