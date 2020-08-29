@@ -1,9 +1,9 @@
 {
     "app":"Devinci",
-    "last":"1.1.0",
+    "last":"1.2.0",
     "otas":{
-        "1.1.0":{
-            "description":"# Changelog\nLa version 1.1.0 de Devinci apporte des changements majeurs :\n- L'app recherche en arrière-plan (toutes les heures normalement) les nouvelles notes et vous avertit avec une notification le cas échéant.\n- Un mode hors-ligne fait son apparition, que vous n'ayez pas de réseau (en amphi) ou que vous le choisissez dans les réglages de l'app.\n- L'app présente maintenant d'abord les données qui ont été sauvegardées hors-ligne la dernière fois avant de charger les nouvelles données pour que nous n'attendions plus de longues secondes sans info devant une animation de chargement.\n- Une nouvelle police d'écriture fait son apparition : Google Sans.\n- Possibilité de choisir le thème de l'application dans les réglages.\n- Des raccourcis sont présents sur l'icône de l'app pour accéder plus rapidement aux sections.\n- Sur les pages *notes* et *absences* vous pouvez maintenant tirer la page vers le bas pour refresh\n- La page *paramètres* a été restructurée.",
+        "1.2.0":{
+            "description":"# Changelog\n- [**NEW**] l'onglet *Restaurant* fait son apparition, vous pourrez y voir votre solde de carte de cantine ainsi que vos transactions.\n- [**BUG FIX**] Correction d'un bug affectant l'affichage des notes de rattrapages et les matières sans notes.",
             "url":"https://github.com/antoineraulin/devinci-app/releases/latest/download/Devinci.apk",
             "size":"42.6 MB"
         }
