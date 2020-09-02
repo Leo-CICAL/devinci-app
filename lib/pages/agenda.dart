@@ -108,7 +108,8 @@ class _AgendaPageState extends State<AgendaPage> {
                     return Expanded(
                       child: SfCalendar(
                         view: globals.agendaView.calendarView,
-                        monthViewSettings: MonthViewSettings(showAgenda: true),
+                        monthViewSettings: MonthViewSettings(
+                            showAgenda: true, appointmentDisplayCount: 6),
                         dataSource: MeetingDataSource(globals.cours),
                         headerHeight: 0,
                         timeSlotViewSettings: TimeSlotViewSettings(
@@ -164,12 +165,40 @@ class MeetingDataSource extends CalendarDataSource {
 
   @override
   String getSubject(int index) {
-    return appointments[index].eventName;
+    String title = '';
+    if (appointments[index].type != 'NR')
+      title += '(${appointments[index].type}) ';
+    title += appointments[index].title;
+    if (globals.agendaView.calendarView == CalendarView.day) {
+      title += '\n${appointments[index].location}';
+      if (appointments[index].site != '' &&
+          appointments[index].site != 'La Défense' &&
+          appointments[index].site != 'Online') {
+        title += '- site: ' + appointments[index].site;
+      }
+      title += '\n${appointments[index].prof}';
+    } else if (globals.agendaView.calendarView == CalendarView.month) {
+      appointments[index].location = appointments[index].location.split('-')[0];
+      title += ' - ${appointments[index].location}';
+    } else {
+      appointments[index].location = appointments[index].location.split('-')[0];
+      title += '\n${appointments[index].location}';
+    }
+    return title;
   }
 
   @override
   Color getColor(int index) {
-    return appointments[index].background;
+    Color color =
+        (globals.currentTheme.isDark() ? Colors.blueAccent : Colors.blue);
+    if (appointments[index].flag == 'distanciel') {
+      color = (globals.currentTheme.isDark()
+          ? Colors.deepOrangeAccent.shade400
+          : Colors.deepOrange);
+    } else if (appointments[index].flag == 'presentiel') {
+      color = Colors.teal;
+    }
+    return color;
   }
 
   @override

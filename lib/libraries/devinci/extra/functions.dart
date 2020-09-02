@@ -128,7 +128,7 @@ Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
       //print("new   ");
       String veventBody = vevent.group(1);
       //print(veventBody);
-      String dtstart, dtend, location, site, prof, title, typecours;
+      String dtstart, dtend, location, site, prof, title, typecours, flag;
       dtstart = new RegExp(r'DTSTART:.*')
           .firstMatch(veventBody)
           .group(0)
@@ -158,21 +158,30 @@ Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
           .firstMatch(veventBody)
           .group(0)
           .replaceFirst("TYPECOURS:", "");
-      if (site != "") {
-        site = "- site : $site";
-      }
+      flag = new RegExp(r'FLAGPRESENTIEL:.*')
+          .firstMatch(veventBody)
+          .group(0)
+          .replaceFirst("FLAGPRESENTIEL:", "");
       if (location == "SANS SALLE") {
         site = "";
       }
-      results.add(new Cours(
-          "($typecours) $title" +
-              (prof != "" ? "\n$prof\n" : "\n") +
-              "$location $site",
-          DateTime.parse(dtstart),
-          DateTime.parse(dtend),
-          Colors.teal,
-          false));
+      Color color = (globals.currentTheme.isDark()
+          ? Colors.redAccent
+          : Colors.red.shade700);
+      if (flag == 'distanciel') {
+        color = (globals.currentTheme.isDark()
+            ? Color(0xffFFDE03)
+            : Color(0xffFF8A5C));
+      } else if (flag == 'presentiel') {
+        color = Colors.teal;
+      }
+      results.add(new Cours(typecours, title, prof, location, site,
+          DateTime.parse(dtstart), DateTime.parse(dtend), color, false, flag));
     });
+    //(typecours == 'NR' ? '' : '($typecours) ') +
+    //          "$title" +
+    //          (prof != "" ? "\n$prof\n" : "\n") +
+    //          "$location $site"
   } else {
     throw Exception("no vevents in body");
   }

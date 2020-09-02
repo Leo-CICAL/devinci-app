@@ -63,15 +63,20 @@ class _MainPageState extends State<MainPage> {
                 IconButton(
                   icon: IconTheme(
                     data: Theme.of(context).accentIconTheme,
-                    child: Icon(
-                        globals.agendaView.calendarView == CalendarView.day
-                            ? OMIcons.dateRange
-                            : Icons.date_range),
+                    child: Icon(globals.agendaView.calendarView ==
+                            CalendarView.day
+                        ? OMIcons.dateRange
+                        : (globals.agendaView.calendarView == CalendarView.month
+                            ? Icons.date_range
+                            : OMIcons.eventNote)),
                   ),
                   onPressed: () {
                     setState(() {
                       if (globals.agendaView.calendarView == CalendarView.day)
                         globals.agendaView.calendarView = CalendarView.month;
+                      else if (globals.agendaView.calendarView ==
+                          CalendarView.month)
+                        globals.agendaView.calendarView = CalendarView.workWeek;
                       else
                         globals.agendaView.calendarView = CalendarView.day;
                     });

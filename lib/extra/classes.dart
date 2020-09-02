@@ -6,13 +6,19 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:share_extend/share_extend.dart';
 
 class Cours {
-  Cours(this.eventName, this.from, this.to, this.background, this.isAllDay);
+  Cours(this.type, this.title, this.prof, this.location, this.site, this.from,
+      this.to, this.background, this.isAllDay, this.flag);
 
-  String eventName;
+  String type;
+  String title;
+  String prof;
+  String location;
+  String site;
   DateTime from;
   DateTime to;
   Color background;
   bool isAllDay;
+  String flag;
 }
 
 class ReceivedNotification {
