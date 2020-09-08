@@ -183,7 +183,25 @@ class TimeChefUser {
         var resJson = json.decode(body);
         tFetched = true;
         if (resJson.isNotEmpty) {
-          //TODO faire qqchose
+          for (int i = 0; i < resJson.length; i++) {
+            double montant = resJson[i]['montant'];
+            DateTime date = DateTime.parse(resJson[i]['date']);
+            var details = resJson[i]['ticketDetail'];
+            String txt = '';
+            for (int j = 0; j < details.length; j++) {
+              txt += '${details[j]['libelle']} : ${details[j]['price']}€';
+              if (j != details.length - 1) {
+                txt += '\n';
+              }
+            }
+            transactions.add({
+              "montant": montant,
+              "date": date,
+              "details": details,
+              'detailsTxt': txt
+            });
+          }
+          print(transactions);
         } else {}
       }
     } else {

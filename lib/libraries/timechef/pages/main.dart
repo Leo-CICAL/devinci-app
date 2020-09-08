@@ -20,7 +20,11 @@ class _MainPageState extends State<MainPage> {
   List<bool> tCardDetail = new List<bool>();
   void runBeforeBuild() async {
     try {
+      await globals.timeChefUser.getData();
       await globals.timeChefUser.getTransactions();
+      for (int i = 0; i < globals.timeChefUser.transactions.length; i++) {
+        tCardDetail.add(false);
+      }
       if (mounted) setState(() {});
     } catch (e) {}
   }
@@ -31,6 +35,9 @@ class _MainPageState extends State<MainPage> {
     try {
       await globals.timeChefUser.getData();
       await globals.timeChefUser.getTransactions();
+      for (int i = 0; i < globals.timeChefUser.transactions.length; i++) {
+        tCardDetail.add(false);
+      }
     } catch (e) {}
     globals.timeChefUser.fetched = true;
     globals.timeChefUser.tFetched = true;
@@ -104,7 +111,7 @@ class _MainPageState extends State<MainPage> {
                             child: Padding(
                               padding: const EdgeInsets.only(right: 10),
                               child: Text(
-                                prix,
+                                prix + '€',
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w900,
@@ -157,6 +164,21 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
       );
+    }
+
+    List<Widget> t = new List<Widget>();
+    if (globals.timeChefUser.tFetched &&
+        globals.timeChefUser.transactions.isNotEmpty) {
+      for (int i = 0; i < globals.timeChefUser.transactions.length; i++) {
+        t.add(TransactionTile(
+            globals.timeChefUser.transactions[i]['details'][0]['libelle'],
+            globals.timeChefUser.transactions[i]['date']
+                .toString()
+                .split('.')[0],
+            globals.timeChefUser.transactions[i]['montant'].toString(),
+            globals.timeChefUser.transactions[i]['detailsTxt'],
+            0));
+      }
     }
 
     return CupertinoScrollbar(
@@ -238,7 +260,7 @@ class _MainPageState extends State<MainPage> {
                             padding: const EdgeInsets.only(
                                 top: 16, left: 20, right: 20),
                             child: Column(
-                              children: [],
+                              children: t,
                             ),
                           )
                         : Padding(

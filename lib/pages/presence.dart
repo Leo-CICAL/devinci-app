@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:devinci/libraries/flutter_progress_button/flutter_progress_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 
@@ -14,13 +15,30 @@ class PresencePage extends StatefulWidget {
 }
 
 class _PresencePageState extends State<PresencePage> {
-  bool show = true;
+  bool show = false;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ButtonState buttonState = ButtonState.normal;
 
+  void runBeforeBuild() async {
+    await globals.user.getPresence(force: true);
+    if (mounted)
+      setState(() {
+        show = true;
+      });
+  }
+
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
+  }
+
   void _onRefresh() async {
-    print("refresh");
+    await globals.user.getPresence(force: true);
+    if (mounted)
+      setState(() {
+        show = true;
+      });
     if (mounted) {
       setState(() {
         _refreshController.refreshCompleted();
@@ -30,6 +48,8 @@ class _PresencePageState extends State<PresencePage> {
 
   @override
   Widget build(BuildContext context) {
+    globals.user.presence["title"] =
+        'Réductions d\'endomorphismes et autres truc';
     return show
         ? CupertinoScrollbar(
             child: SmartRefresher(
@@ -41,12 +61,13 @@ class _PresencePageState extends State<PresencePage> {
                 shrinkWrap: true,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(top: 62),
+                    padding: const EdgeInsets.only(top: 62, left: 8, right: 8),
                     child: Center(
                       child: Text(
                           globals.user.presence['type'] == 'none'
                               ? 'Pas de cours prévu.'
                               : globals.user.presence["title"],
+                          overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.headline2),
                     ),
                   ),
@@ -64,10 +85,25 @@ class _PresencePageState extends State<PresencePage> {
                       child: Text(
                           globals.user.presence['type'] == 'none'
                               ? ''
-                              : globals.user.presence["prof"],
-                          style: Theme.of(context).textTheme.bodyText2),
+                              : (globals.user.presence["prof"] == ''
+                                  ? globals.user.presence["horaires"]
+                                  : globals.user.presence["prof"]),
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyText1),
                     ),
                   ),
+                  globals.user.presence["prof"] != ''
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Center(
+                            child: Text(
+                                globals.user.presence['type'] == 'none'
+                                    ? ''
+                                    : globals.user.presence["horaires"],
+                                style: Theme.of(context).textTheme.bodyText2),
+                          ),
+                        )
+                      : SizedBox.shrink(),
                   Padding(
                     padding:
                         const EdgeInsets.only(top: 112, left: 48, right: 48),
@@ -90,6 +126,10 @@ class _PresencePageState extends State<PresencePage> {
                           setState(() {
                             buttonState = ButtonState.inProgress;
                           });
+
+                          try {
+                            await globals.user.setPresence();
+                          } catch (exception) {}
                           new Timer(const Duration(milliseconds: 2000), () {
                             setState(() {
                               buttonState = ButtonState.error;

@@ -70,11 +70,11 @@ class User {
   var promotion = {};
 
   Map<String, dynamic> presence = {
-    "type": "none", //5 types : ongoing / done / notOpen / none / closed
-    "title": "Espaces vectoriels",
-    "horaires": DateTime.now().millisecondsSinceEpoch,
-    "prof": "M. Prof",
-    "seance_pk": "azertyuiop"
+    'type': 'none', //5 types : ongoing / done / notOpen / none / closed
+    'title': '',
+    'horaires': '',
+    'prof': '',
+    'seance_pk': ''
   };
 
   Map<String, dynamic> documents = {
@@ -1310,7 +1310,101 @@ class User {
     return;
   }
 
-  //TODO getPresence()
+  Future<void> getPresence({bool force = false}) async {
+    if (globals.isConnected || force) {
+      HttpClient client = new HttpClient();
+      if (this.tokens["SimpleSAML"] != "" &&
+          this.tokens["alv"] != "" &&
+          this.tokens["uids"] != "" &&
+          this.tokens["SimpleSAMLAuthToken"] != "") {
+        HttpClientRequest req = await client.getUrl(
+          Uri.parse(
+            "https://www.leonard-de-vinci.net/student/presences/",
+            //'http://10.188.132.73:5500/pr%C3%A9sence-1cours%20dans%20la%20journ%C3%A9e.html',
+          ),
+        );
+        req.followRedirects = false;
+        req.cookies.addAll([
+          new Cookie('alv', this.tokens["alv"]),
+          new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
+          new Cookie('uids', this.tokens["uids"]),
+          new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
+        ]);
+        HttpClientResponse res = await req.close();
+        if (res.statusCode == 200) {
+          String body = await res.transform(utf8.decoder).join();
+          if (body.indexOf('Pas de cours de prévu') > -1) {
+            this.presence['type'] = 'none';
+          } else {
+            var doc = parse(body);
+            List<Element> trs = doc.querySelectorAll('table > tbody > tr');
+            int index = 0;
+            for (int i = 0; i < trs.length; i++) {
+              Element tr = trs[i];
+              String classe = tr.attributes['class'];
+              if (classe == '' || classe == 'warning') {
+                index = i;
+                break;
+              }
+            }
+            List<Element> tds = trs[index].querySelectorAll('td');
+            this.presence['horaires'] =
+                tds[0].text.replaceAllMapped(RegExp(r' '), (match) {
+              return '';
+            });
+            this.presence['title'] = tds[1].text;
+            this.presence['prof'] = tds[2].text;
+            String nextLink = tds[3].querySelector('a').attributes['href'];
+            print(nextLink);
+            print(this.presence);
+            req = await client.getUrl(
+              Uri.parse('https://www.leonard-de-vinci.net' + nextLink),
+            );
+            req.followRedirects = false;
+            req.cookies.addAll([
+              new Cookie('alv', this.tokens["alv"]),
+              new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
+              new Cookie('uids', this.tokens["uids"]),
+              new Cookie(
+                  'SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
+            ]);
+            res = await req.close();
+            if (res.statusCode == 200) {
+              print("go");
+              String body = await res.transform(utf8.decoder).join();
+              if (body.indexOf('pas encore ouvert') > -1) {
+                this.presence['type'] = 'notOpen';
+              } else {
+                if (body.indexOf('Valider') > -1) {
+                  this.presence['type'] = 'ongoing';
+                  this.presence['seance_pk'] =
+                      new RegExp(r"seance_pk : '(.*?)'")
+                          .firstMatch(body)
+                          .group(1);
+                } else if (body.indexOf('clôturé') > -1) {
+                  this.presence['type'] = 'closed';
+                } else if (body.indexOf('Vous avez été noté présent') > -1) {
+                  this.presence['type'] = 'done';
+                }
+              }
+            } else {
+              this.presence['type'] = 'none';
+            }
+          }
+        } else {
+          this.error = true;
+          this.code = res.statusCode;
+          throw Exception("unhandled exception");
+        }
+      } else {
+        throw Exception(400); //missing parameters
+      }
+    } else {
+      throw Exception(503); //service unavailable
+    }
+    print(this.presence);
+    return;
+  }
 
   Future<void> setPresence({bool force = false}) async {
     if (globals.isConnected || force) {
@@ -1356,8 +1450,7 @@ class User {
         );
         HttpClientResponse res = await req.close();
         if (res.statusCode == 200) {
-          String body = await res.transform(utf8.decoder).join();
-          //TODO que faire du body
+          this.presence["type"] = 'done';
         } else {
           throw Exception(res.statusCode);
         }
