@@ -1338,7 +1338,7 @@ class User {
           } else {
             var doc = parse(body);
             List<Element> trs = doc.querySelectorAll('table > tbody > tr');
-            int index = 0;
+            int index = -1;
             for (int i = 0; i < trs.length; i++) {
               Element tr = trs[i];
               String classe = tr.attributes['class'];
@@ -1347,48 +1347,52 @@ class User {
                 break;
               }
             }
-            List<Element> tds = trs[index].querySelectorAll('td');
-            this.presence['horaires'] =
-                tds[0].text.replaceAllMapped(RegExp(r' '), (match) {
-              return '';
-            });
-            this.presence['title'] = tds[1].text;
-            this.presence['prof'] = tds[2].text;
-            String nextLink = tds[3].querySelector('a').attributes['href'];
-            print(nextLink);
-            print(this.presence);
-            req = await client.getUrl(
-              Uri.parse('https://www.leonard-de-vinci.net' + nextLink),
-            );
-            req.followRedirects = false;
-            req.cookies.addAll([
-              new Cookie('alv', this.tokens["alv"]),
-              new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-              new Cookie('uids', this.tokens["uids"]),
-              new Cookie(
-                  'SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-            ]);
-            res = await req.close();
-            if (res.statusCode == 200) {
-              print("go");
-              String body = await res.transform(utf8.decoder).join();
-              if (body.indexOf('pas encore ouvert') > -1) {
-                this.presence['type'] = 'notOpen';
-              } else {
-                if (body.indexOf('Valider') > -1) {
-                  this.presence['type'] = 'ongoing';
-                  this.presence['seance_pk'] =
-                      new RegExp(r"seance_pk : '(.*?)'")
-                          .firstMatch(body)
-                          .group(1);
-                } else if (body.indexOf('clôturé') > -1) {
-                  this.presence['type'] = 'closed';
-                } else if (body.indexOf('Vous avez été noté présent') > -1) {
-                  this.presence['type'] = 'done';
-                }
-              }
-            } else {
+            if (index == -1) {
               this.presence['type'] = 'none';
+            } else {
+              List<Element> tds = trs[index].querySelectorAll('td');
+              this.presence['horaires'] =
+                  tds[0].text.replaceAllMapped(RegExp(r' '), (match) {
+                return '';
+              });
+              this.presence['title'] = tds[1].text;
+              this.presence['prof'] = tds[2].text;
+              String nextLink = tds[3].querySelector('a').attributes['href'];
+              print(nextLink);
+              print(this.presence);
+              req = await client.getUrl(
+                Uri.parse('https://www.leonard-de-vinci.net' + nextLink),
+              );
+              req.followRedirects = false;
+              req.cookies.addAll([
+                new Cookie('alv', this.tokens["alv"]),
+                new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
+                new Cookie('uids', this.tokens["uids"]),
+                new Cookie(
+                    'SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
+              ]);
+              res = await req.close();
+              if (res.statusCode == 200) {
+                print("go");
+                String body = await res.transform(utf8.decoder).join();
+                if (body.indexOf('pas encore ouvert') > -1) {
+                  this.presence['type'] = 'notOpen';
+                } else {
+                  if (body.indexOf('Valider') > -1) {
+                    this.presence['type'] = 'ongoing';
+                    this.presence['seance_pk'] =
+                        new RegExp(r"seance_pk : '(.*?)'")
+                            .firstMatch(body)
+                            .group(1);
+                  } else if (body.indexOf('clôturé') > -1) {
+                    this.presence['type'] = 'closed';
+                  } else if (body.indexOf('Vous avez été noté présent') > -1) {
+                    this.presence['type'] = 'done';
+                  }
+                }
+              } else {
+                this.presence['type'] = 'none';
+              }
             }
           }
         } else {
