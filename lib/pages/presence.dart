@@ -48,8 +48,6 @@ class _PresencePageState extends State<PresencePage> {
 
   @override
   Widget build(BuildContext context) {
-    globals.user.presence["title"] =
-        'Réductions d\'endomorphismes et autres truc';
     return show
         ? CupertinoScrollbar(
             child: SmartRefresher(
