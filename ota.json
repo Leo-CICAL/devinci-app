@@ -1,11 +1,11 @@
 {
     "app":"Devinci",
-    "last":"1.2.0",
+    "last":"1.2.1",
     "otas":{
-        "1.2.0":{
-            "description":"# Changelog\n- [**NEW**] l'onglet *Restaurant* fait son apparition, vous pourrez y voir votre solde de carte de cantine ainsi que vos transactions.\n- [**BUG FIX**] Correction d'un bug affectant l'affichage des notes de rattrapages et les matières sans notes.",
+        "1.2.1":{
+            "description":"## Changelog\n- [Fix] la présence fonctionne.",
             "url":"https://github.com/antoineraulin/devinci-app/releases/latest/download/Devinci.apk",
-            "size":"42.6 MB"
+            "size":"43.6 MB"
         }
     }
 }
