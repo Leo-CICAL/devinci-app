@@ -127,17 +127,22 @@ class _PresencePageState extends State<PresencePage> {
 
                           try {
                             await globals.user.setPresence();
-                          } catch (exception) {}
-                          new Timer(const Duration(milliseconds: 2000), () {
+                            setState(() {
+                              buttonState = ButtonState.normal;
+                            });
+                          } catch (exception) {
                             setState(() {
                               buttonState = ButtonState.error;
                             });
-                            Timer(
-                                Duration(milliseconds: 500),
-                                () => setState(() {
-                                      buttonState = ButtonState.normal;
-                                    }));
-                          });
+                            final snackBar = SnackBar(
+                              content: Text("Une erreur est survenue"),
+                              duration: const Duration(seconds: 6),
+                            );
+
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+                            Scaffold.of(globals.currentContext)
+                                .showSnackBar(snackBar);
+                          }
                         },
                         buttonState: buttonState,
                         backgroundColor: Theme.of(context).accentColor,
