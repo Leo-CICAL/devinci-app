@@ -184,20 +184,20 @@ class User {
   Future<void> init() async {
     //fetch notesConfig
     print(json.encode(this.notesConfig));
-    //try {
-    //  HttpClient client = new HttpClient();
-    //  client.connectionTimeout = const Duration(seconds: 4);
-    //  HttpClientRequest req = await client.getUrl(
-    //    Uri.parse(
-    //      "https://devinci.araulin.tech/nc.json",
-    //    ),
-    //  );
-    //  HttpClientResponse res = await req.close();
-    //  if (res.statusCode == 200) {
-    //    String body = await res.transform(utf8.decoder).join();
-    //    this.notesConfig = json.decode(body);
-    //  }
-    //} catch (exception) {}
+    try {
+      HttpClient client = new HttpClient();
+      client.connectionTimeout = const Duration(seconds: 4);
+      HttpClientRequest req = await client.getUrl(
+        Uri.parse(
+          "https://devinci.araulin.tech/nc.json",
+        ),
+      );
+      HttpClientResponse res = await req.close();
+      if (res.statusCode == 200) {
+        String body = await res.transform(utf8.decoder).join();
+        this.notesConfig = json.decode(body);
+      }
+    } catch (exception) {}
     //init sembast db
     Directory directory;
     if (Platform.isAndroid) {
@@ -297,9 +297,11 @@ class User {
       await globals.storage.write(key: "password", value: this.password);
       this.password =
           null; //if tokens are still valid we'll never need the password again in this session, so it is useless to keep it in the object and risk it to be leaked or displayed
+      print('edt : ' + globals.user.data["edtUrl"]);
       if (globals.user.data["edtUrl"] == "") {
         //edtUrl being the last information we retrieve from the getData() function, if it doesn't exist it means that the getData() function didn't work or was never run and must be run at least once.
         try {
+          print("let's go try");
           await globals.user.getData();
         } catch (exception) {
           //print(exception);
@@ -611,21 +613,25 @@ class User {
 
         List<Element> ds = ns[ns.length - 1].querySelectorAll(
             "div.social-box.social-blue.social-bordered > div > div");
-        //print(ds);
-        //print("ds 0 : " + ds[0].innerHtml);
-        //print("ds 1 : " + ds[1].innerHtml);
-        //print("ds 2 : " + ds[2].innerHtml);
+        print(ds);
+        print("ds 0 : " + ds[0].innerHtml);
+        print("ds 1 : " + ds[1].innerHtml);
+        print("ds 2 : " + ds[2].innerHtml);
         String d;
         if (ds[1].innerHtml.indexOf("Identifiant") > -1) {
-          //print("ds1 choosen");
-          //print(ds[1]
-          //    .querySelector("div"));
+          print("ds1 choosen");
+          print(ds[1].querySelector("div"));
           d = ds[1]
               .querySelector("div > div > div.span4 > div > div > address")
               .text;
           l("d : $d");
-        } else {
+        } else if (ds[2].innerHtml.indexOf("Identifiant") > -1) {
           d = ds[2]
+              .querySelector("div > div > div.span4 > div > div > address")
+              .text;
+          l("d : $d");
+        } else {
+          d = ds[3]
               .querySelector("div > div > div.span4 > div > div > address")
               .text;
           l("d : $d");
