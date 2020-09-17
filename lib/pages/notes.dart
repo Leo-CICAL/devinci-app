@@ -406,16 +406,21 @@ class _NotesPageState extends State<NotesPage> {
                                                       ["matieres"][j]["notes"]
                                                   [y]["note"]) ==
                                           null
-                                      ? null
+                                      ? SizedBox.shrink()
                                       : Text(
                                           (globals.user.notesFetched
-                                                  ? globals.user.notes[
-                                                              currentSemester]
+                                                  ? globals.user.notes[currentSemester]
                                                           [i]["matieres"][j]
                                                       ["notes"][y]["note"]
-                                                  : notes[currentSemester][i]
-                                                          ["matieres"][j]
-                                                      ["notes"][y]["note"])
+                                                  : (notes[currentSemester][i]
+                                                                      ["matieres"]
+                                                                  [j]["notes"]
+                                                              [y]["note"] ==
+                                                          0.12345
+                                                      ? "Absence"
+                                                      : notes[currentSemester]
+                                                              [i]["matieres"][j]
+                                                          ["notes"][y]["note"]))
                                               .toString(),
                                           style: TextStyle(
                                             fontSize: 24,

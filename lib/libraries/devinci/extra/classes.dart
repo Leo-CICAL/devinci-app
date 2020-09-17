@@ -1008,13 +1008,24 @@ class User {
                       elem["note"] = null;
                       elem["noteP"] = null;
                     } else {
-                      elem["note"] = double.parse(texts[
-                              this.notesConfig['notes']['note']['i']]
+                      String temp = texts[this.notesConfig['notes']['note']
+                              ['i']]
                           .replaceAllMapped(
                               RegExp(this.notesConfig['notes']['note']['r']),
                               (match) => "")
                           .split(this.notesConfig['notes']['note']
-                              ['s'])[this.notesConfig['notes']['note']['si']]);
+                              ['s'])[this.notesConfig['notes']['note']['si']];
+                      if (temp.indexOf('Absence') > -1) {
+                        elem["note"] = 0.12345;
+                      } else {
+                        elem["note"] = double.parse(texts[
+                                this.notesConfig['notes']['note']['i']]
+                            .replaceAllMapped(
+                                RegExp(this.notesConfig['notes']['note']['r']),
+                                (match) => "")
+                            .split(this.notesConfig['notes']['note'][
+                                's'])[this.notesConfig['notes']['note']['si']]);
+                      }
                       elem["noteP"] = null;
                       try {
                         elem["noteP"] = double.parse(RegExp(
