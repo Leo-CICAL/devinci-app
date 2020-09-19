@@ -8,6 +8,7 @@ import 'package:html/dom.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class User {
   //constructor
@@ -233,7 +234,9 @@ class User {
 
     //retrieve data from secure storage
     globals.crashConsent = globals.prefs.getString('crashConsent');
-    this.data["badge"] = await globals.storage.read(key: "badge") ?? "";
+    bool calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
+    globals.agendaView.calendarView = calendarViewDay ? CalendarView.day : CalendarView.workWeek;
+        this.data["badge"] = await globals.storage.read(key: "badge") ?? "";
     this.data["client"] = await globals.storage.read(key: "client") ?? "";
     this.data["idAdmin"] = await globals.storage.read(key: "idAdmin") ?? "";
     this.data["ine"] = await globals.storage.read(key: "ine") ?? "";
@@ -1484,3 +1487,4 @@ class User {
     return;
   }
 }
+

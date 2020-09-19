@@ -6,11 +6,29 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/extra/classes.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:sembast/sembast.dart';
 
 Function setAgendaHeaderState;
+Color _selectedColor;
+MeetingDataSource _events;
+Cours _selectedCours;
+DateTime _from;
+TimeOfDay _startTime;
+DateTime _to;
+TimeOfDay _endTime;
+bool _isAllDay;
+String _title = '';
+String _location = '';
+String _prof = '';
+String _flag = '';
+String flag = '';
+String _uid = '';
+String _groupe = '';
 
 class AgendaHeader extends StatefulWidget {
   AgendaHeader({Key key}) : super(key: key);
@@ -71,6 +89,8 @@ class _AgendaPageState extends State<AgendaPage> {
 
   void initState() {
     Intl.defaultLocale = "fr_FR";
+    _selectedCours = null;
+    _title = '';
     super.initState();
     globals.isLoading.addListener(() async {
       print("isLoading");
@@ -93,6 +113,56 @@ class _AgendaPageState extends State<AgendaPage> {
     SchedulerBinding.instance.addPostFrameCallback((_) => getCalendar());
   }
 
+  void onCalendarTapped(CalendarTapDetails calendarTapDetails) {
+    /// Condition added to open the editor, when the calendar elements tapped
+    /// other than the header.
+    if (calendarTapDetails.targetElement == CalendarElement.header) {
+      return;
+    }
+
+    _selectedCours = null;
+    _isAllDay = false;
+    _title = '';
+    _location = '';
+    _prof = '';
+    _flag = '';
+    _uid = '';
+    _groupe = '';
+
+    if (calendarTapDetails.appointments != null &&
+        calendarTapDetails.targetElement == CalendarElement.appointment) {
+      final Cours appointment = calendarTapDetails.appointments[0];
+      _from = appointment.from;
+      _to = appointment.to;
+      _isAllDay = appointment.isAllDay;
+      _prof = appointment.prof;
+      _flag = appointment.flag;
+      flag = _flag == 'distanciel'
+          ? 'Distanciel'
+          : (_flag == 'presentiel' ? 'Présentiel' : 'Non spécifié');
+      _selectedColor = appointment.background;
+      _title = appointment.title == '' ? '' : appointment.title;
+      _uid = appointment.uid;
+      _groupe = appointment.groupe;
+      _location = appointment.location;
+      _selectedCours = appointment;
+    } else {
+      final DateTime date = calendarTapDetails.date;
+      _from = date;
+      _to = date.add(const Duration(hours: 1));
+      flag = 'Non spécifié';
+    }
+
+    _startTime = TimeOfDay(hour: _from.hour, minute: _from.minute);
+    _endTime = TimeOfDay(hour: _to.hour, minute: _to.minute);
+
+    Navigator.push<Widget>(
+      context,
+      // ignore: always_specify_types
+      MaterialPageRoute(builder: (BuildContext context) => CoursEditor()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     globals.currentContext = context;
@@ -108,6 +178,7 @@ class _AgendaPageState extends State<AgendaPage> {
                     return Expanded(
                       child: SfCalendar(
                         view: globals.agendaView.calendarView,
+                        onTap: onCalendarTapped,
                         monthViewSettings: MonthViewSettings(
                             showAgenda: true, appointmentDisplayCount: 6),
                         dataSource: MeetingDataSource(globals.cours),
@@ -121,9 +192,13 @@ class _AgendaPageState extends State<AgendaPage> {
                         firstDayOfWeek: 1,
                         selectionDecoration: BoxDecoration(
                           color: Colors.transparent,
-                          border: Border.all(width: 2),
+                          border: Border.all(
+                              color: globals.currentTheme.isDark()
+                                  ? Colors.white
+                                  : Colors.black,
+                              width: 2),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(3)),
+                              const BorderRadius.all(Radius.circular(4)),
                           shape: BoxShape.rectangle,
                         ),
                         onViewChanged: (ViewChangedDetails viewChangedDetails) {
@@ -204,5 +279,574 @@ class MeetingDataSource extends CalendarDataSource {
   @override
   bool isAllDay(int index) {
     return appointments[index].isAllDay;
+  }
+}
+
+class CoursEditor extends StatefulWidget {
+  @override
+  CoursEditorState createState() => CoursEditorState();
+}
+
+class CoursEditorState extends State<CoursEditor> {
+  Widget _getAppointmentEditor(
+      BuildContext context, Color backgroundColor, Color defaultColor) {
+    if (_startTime == null) {
+      final DateTime date = DateTime.now();
+      _from = date;
+      _to = date.add(const Duration(hours: 1));
+      flag = 'Non spécifié';
+
+      _startTime = TimeOfDay(hour: _from.hour, minute: _from.minute);
+      _endTime = TimeOfDay(hour: _to.hour, minute: _to.minute);
+    }
+    Color color =
+        (globals.currentTheme.isDark() ? Colors.blueAccent : Colors.blue);
+    if (flag == 'Distanciel') {
+      color = (globals.currentTheme.isDark()
+          ? Colors.deepOrangeAccent.shade400
+          : Colors.deepOrange);
+    } else if (flag == 'Présentiel') {
+      color = Colors.teal;
+    }
+
+    return Container(
+        color: backgroundColor,
+        child: ListView(
+          padding: const EdgeInsets.all(0),
+          children: <Widget>[
+            ListTile(
+              contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+              leading: const Text(''),
+              title: TextField(
+                controller: TextEditingController(text: _title),
+                onChanged: (String value) {
+                  _title = value;
+                },
+                enabled: _uid.indexOf(':') > -1 ? false : true,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                style: TextStyle(
+                    fontSize: 20,
+                    color: defaultColor,
+                    fontWeight: FontWeight.w400),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Titre',
+                ),
+              ),
+            ),
+            ListTile(
+              contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+              leading: IconTheme(
+                data: Theme.of(context).accentIconTheme,
+                child: Icon(
+                  Icons.perm_identity,
+                ),
+              ),
+              title: TextField(
+                controller: TextEditingController(text: _prof),
+                onChanged: (String value) {
+                  _prof = value;
+                },
+                enabled: _uid.indexOf(':') > -1 ? false : true,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                style: TextStyle(
+                    fontSize: 16,
+                    color: defaultColor,
+                    fontWeight: FontWeight.w400),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Professeur',
+                ),
+              ),
+            ),
+            ListTile(
+              contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+              leading: IconTheme(
+                data: Theme.of(context).accentIconTheme,
+                child: Icon(
+                  OMIcons.locationOn,
+                ),
+              ),
+              title: TextField(
+                controller: TextEditingController(text: _location),
+                onChanged: (String value) {
+                  _location = value;
+                },
+                enabled: _uid.indexOf(':') > -1 ? false : true,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                style: TextStyle(
+                    fontSize: 16,
+                    color: defaultColor,
+                    fontWeight: FontWeight.w400),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Emplacement',
+                ),
+              ),
+            ),
+            ListTile(
+              contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+              leading: IconTheme(
+                data: Theme.of(context).accentIconTheme,
+                child: Icon(
+                  OMIcons.group,
+                ),
+              ),
+              title: TextField(
+                controller: TextEditingController(text: _groupe),
+                onChanged: (String value) {
+                  _groupe = value;
+                },
+                enabled: _uid.indexOf(':') > -1 ? false : true,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                style: TextStyle(
+                    fontSize: 16,
+                    color: defaultColor,
+                    fontWeight: FontWeight.w400),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Groupe',
+                ),
+              ),
+            ),
+            const Divider(
+              height: 1.0,
+              thickness: 1,
+            ),
+            ListTile(
+                contentPadding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+                leading: IconTheme(
+                  data: Theme.of(context).accentIconTheme,
+                  child: Icon(
+                    Icons.restore,
+                  ),
+                ),
+                title: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 7,
+                        child: GestureDetector(
+                            child: Text(
+                                DateFormat('EEEE dd MMM yyyy').format(_from),
+                                textAlign: TextAlign.left),
+                            onTap: _uid.indexOf(':') > -1
+                                ? null
+                                : () async {
+                                    final DateTime date = await showDatePicker(
+                                        context: context,
+                                        initialDate: _from,
+                                        firstDate: DateTime(1900),
+                                        lastDate: DateTime(2100),
+                                        builder: (BuildContext context,
+                                            Widget child) {
+                                          return Theme(
+                                            data: ThemeData(
+                                              brightness:
+                                                  globals.currentTheme.isDark()
+                                                      ? Brightness.dark
+                                                      : Brightness.light,
+                                              // colorScheme:
+                                              //     _getColorScheme(widget.model),
+                                              accentColor:
+                                                  Theme.of(context).accentColor,
+                                              primaryColor: Theme.of(context)
+                                                  .primaryColor,
+                                            ),
+                                            child: child,
+                                          );
+                                        });
+
+                                    if (date != null && date != _from) {
+                                      setState(() {
+                                        final Duration difference =
+                                            _to.difference(_from);
+                                        _from = DateTime(
+                                            date.year,
+                                            date.month,
+                                            date.day,
+                                            _startTime.hour,
+                                            _startTime.minute,
+                                            0);
+                                        _to = _from.add(difference);
+                                        _endTime = TimeOfDay(
+                                            hour: _to.hour, minute: _to.minute);
+                                      });
+                                    }
+                                  }),
+                      ),
+                      Expanded(
+                          flex: 3,
+                          child: GestureDetector(
+                              child: Text(
+                                DateFormat('HH:mm').format(_from),
+                                textAlign: TextAlign.right,
+                              ),
+                              onTap: _uid.indexOf(':') > -1
+                                  ? null
+                                  : () async {
+                                      final TimeOfDay time =
+                                          await showTimePicker(
+                                              context: context,
+                                              initialTime: TimeOfDay(
+                                                  hour: _startTime.hour,
+                                                  minute: _startTime.minute),
+                                              builder: (BuildContext context,
+                                                  Widget child) {
+                                                return Theme(
+                                                  data: ThemeData(
+                                                    brightness: globals
+                                                            .currentTheme
+                                                            .isDark()
+                                                        ? Brightness.dark
+                                                        : Brightness.light,
+                                                    // colorScheme:
+                                                    //     _getColorScheme(widget.model),
+                                                    accentColor:
+                                                        Theme.of(context)
+                                                            .accentColor,
+                                                    primaryColor:
+                                                        Theme.of(context)
+                                                            .primaryColor,
+                                                  ),
+                                                  child: child,
+                                                );
+                                              });
+
+                                      if (time != null && time != _startTime) {
+                                        setState(() {
+                                          _startTime = time;
+                                          final Duration difference =
+                                              _to.difference(_from);
+                                          _from = DateTime(
+                                              _from.year,
+                                              _from.month,
+                                              _from.day,
+                                              _startTime.hour,
+                                              _startTime.minute,
+                                              0);
+                                          _to = _from.add(difference);
+                                          _endTime = TimeOfDay(
+                                              hour: _to.hour,
+                                              minute: _to.minute);
+                                        });
+                                      }
+                                    })),
+                    ])),
+            ListTile(
+                contentPadding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+                leading: IconTheme(
+                  data: Theme.of(context).accentIconTheme,
+                  child: Icon(
+                    Icons.update,
+                  ),
+                ),
+                title: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 7,
+                        child: GestureDetector(
+                            child: Text(
+                              DateFormat('EEEE dd MMM yyyy').format(_to),
+                              textAlign: TextAlign.left,
+                            ),
+                            onTap: _uid.indexOf(':') > -1
+                                ? null
+                                : () async {
+                                    final DateTime date = await showDatePicker(
+                                        context: context,
+                                        initialDate: _to,
+                                        firstDate: DateTime(1900),
+                                        lastDate: DateTime(2100),
+                                        builder: (BuildContext context,
+                                            Widget child) {
+                                          return Theme(
+                                            data: ThemeData(
+                                              brightness:
+                                                  globals.currentTheme.isDark()
+                                                      ? Brightness.dark
+                                                      : Brightness.light,
+                                              // colorScheme:
+                                              //     _getColorScheme(widget.model),
+                                              accentColor:
+                                                  Theme.of(context).accentColor,
+                                              primaryColor: Theme.of(context)
+                                                  .primaryColor,
+                                            ),
+                                            child: child,
+                                          );
+                                        });
+
+                                    if (date != null && date != _to) {
+                                      setState(() {
+                                        final Duration difference =
+                                            _to.difference(_from);
+                                        _to = DateTime(
+                                            date.year,
+                                            date.month,
+                                            date.day,
+                                            _endTime.hour,
+                                            _endTime.minute,
+                                            0);
+                                        if (_to.isBefore(_from)) {
+                                          _from = _to.subtract(difference);
+                                          _startTime = TimeOfDay(
+                                              hour: _from.hour,
+                                              minute: _from.minute);
+                                        }
+                                      });
+                                    }
+                                  }),
+                      ),
+                      Expanded(
+                          flex: 3,
+                          child: GestureDetector(
+                              child: Text(
+                                DateFormat('HH:mm').format(_to),
+                                textAlign: TextAlign.right,
+                              ),
+                              onTap: _uid.indexOf(':') > -1
+                                  ? null
+                                  : () async {
+                                      final TimeOfDay time =
+                                          await showTimePicker(
+                                              context: context,
+                                              initialTime: TimeOfDay(
+                                                  hour: _endTime.hour,
+                                                  minute: _endTime.minute),
+                                              builder: (BuildContext context,
+                                                  Widget child) {
+                                                return Theme(
+                                                  data: ThemeData(
+                                                    brightness: globals
+                                                            .currentTheme
+                                                            .isDark()
+                                                        ? Brightness.dark
+                                                        : Brightness.light,
+                                                    // colorScheme:
+                                                    //     _getColorScheme(widget.model),
+                                                    accentColor:
+                                                        Theme.of(context)
+                                                            .accentColor,
+                                                    primaryColor:
+                                                        Theme.of(context)
+                                                            .primaryColor,
+                                                  ),
+                                                  child: child,
+                                                );
+                                              });
+
+                                      if (time != null && time != _endTime) {
+                                        setState(() {
+                                          _endTime = time;
+                                          final Duration difference =
+                                              _to.difference(_from);
+                                          _to = DateTime(
+                                              _to.year,
+                                              _to.month,
+                                              _to.day,
+                                              _endTime.hour,
+                                              _endTime.minute,
+                                              0);
+                                          if (_to.isBefore(_from)) {
+                                            _from = _to.subtract(difference);
+                                            _startTime = TimeOfDay(
+                                                hour: _from.hour,
+                                                minute: _from.minute);
+                                          }
+                                        });
+                                      }
+                                    })),
+                    ])),
+            const Divider(
+              height: 1.0,
+              thickness: 1,
+            ),
+            ListTile(
+              contentPadding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+              leading: Icon(Icons.lens, color: color),
+              title: _uid.indexOf(':') > -1
+                  ? Text(flag)
+                  : DropdownButton<String>(
+                      value: flag,
+                      icon: Icon(OMIcons.expandMore),
+                      iconSize: 24,
+                      elevation: 16,
+                      style: Theme.of(context).textTheme.subtitle1,
+                      underline: Container(
+                        height: 0,
+                        color: Colors.transparent,
+                      ),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          flag = newValue;
+                          _flag = flag == 'Distanciel'
+                              ? 'distanciel'
+                              : (flag == 'Présentiel' ? 'presentiel' : '');
+                        });
+                      },
+                      items: <String>[
+                        'Distanciel',
+                        'Présentiel',
+                        'Non spécifié',
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+            ),
+            const Divider(
+              height: 1.0,
+              thickness: 1,
+            ),
+            _selectedCours != null && _uid.indexOf(':') < 0
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: OutlineButton(
+                        onPressed: () {
+                          if (_selectedCours != null && _uid.indexOf(':') < 0) {
+                            globals.cours.removeAt(
+                                globals.cours.indexOf(_selectedCours));
+                            globals.customCours.removeAt(
+                                globals.customCours.indexOf(_selectedCours));
+                          }
+                          globals.store
+                              .record('customCours')
+                              .put(globals.db, coursListToJson());
+                          _selectedCours = null;
+                          globals.agendaView.calendarView =
+                              globals.agendaView.calendarView ==
+                                      CalendarView.day
+                                  ? CalendarView.workWeek
+                                  : CalendarView.day;
+                          globals.agendaView.calendarView =
+                              globals.agendaView.calendarView ==
+                                      CalendarView.workWeek
+                                  ? CalendarView.day
+                                  : CalendarView.workWeek;
+
+                          Navigator.pop(context);
+                        },
+                        borderSide: BorderSide(
+                            color: globals.currentTheme.isDark()
+                                ? Colors.redAccent
+                                : Colors.red.shade700,
+                            width: 2),
+                        child: Text('Supprimer l\'événement',
+                            style: TextStyle(
+                                color: globals.currentTheme.isDark()
+                                    ? Colors.redAccent
+                                    : Colors.red.shade700))),
+                  )
+                : Container(),
+            Container(),
+          ],
+        ));
+  }
+
+  @override
+  Widget build([BuildContext context]) {
+    globals.currentContext = context;
+    FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(
+        globals.currentTheme.isDark());
+    FlutterStatusbarcolor.setNavigationBarColor(
+        Theme.of(context).scaffoldBackgroundColor);
+    FlutterStatusbarcolor.setNavigationBarWhiteForeground(
+        globals.currentTheme.isDark());
+    return Theme(
+        data: Theme.of(context),
+        child: Scaffold(
+          backgroundColor: Theme.of(context).cardColor,
+          appBar: AppBar(
+            //backgroundColor: _colorCollection[_selectedColorIndex],
+            title: Text(
+                _title == '' ? 'Nouvel événement' : 'Détail de l\'événement',
+                style: Theme.of(context).textTheme.bodyText2),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            leading: IconTheme(
+                data: Theme.of(context).accentIconTheme,
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.close,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                )),
+            actions: _uid.indexOf(':') > -1
+                ? null
+                : <Widget>[
+                    IconTheme(
+                        data: Theme.of(context).accentIconTheme,
+                        child: IconButton(
+                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            icon: const Icon(
+                              Icons.done,
+                            ),
+                            onPressed: () {
+                              final List<Cours> appointment = <Cours>[];
+                              print(_selectedCours);
+                              if (_selectedCours != null &&
+                                  _uid.indexOf(':') < 0) {
+                                globals.cours.removeAt(
+                                    globals.cours.indexOf(_selectedCours));
+                              }
+                              Cours c = new Cours(
+                                  'NR',
+                                  _title,
+                                  _prof,
+                                  _location,
+                                  '',
+                                  _from,
+                                  _to,
+                                  Colors.blue,
+                                  false,
+                                  _flag,
+                                  '',
+                                  _groupe);
+                              globals.cours.add(c);
+                              globals.customCours.add(c);
+                              globals.store
+                                  .record('customCours')
+                                  .put(globals.db, coursListToJson());
+                              // _events.notifyListeners(
+                              //     CalendarDataSourceAction.add, appointment);
+                              _selectedCours = null;
+                              globals.agendaView.calendarView =
+                                  globals.agendaView.calendarView ==
+                                          CalendarView.day
+                                      ? CalendarView.workWeek
+                                      : CalendarView.day;
+                              globals.agendaView.calendarView =
+                                  globals.agendaView.calendarView ==
+                                          CalendarView.workWeek
+                                      ? CalendarView.day
+                                      : CalendarView.workWeek;
+                              Navigator.pop(context);
+                            })),
+                  ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+            child: Stack(
+              children: <Widget>[
+                _getAppointmentEditor(
+                    context,
+                    Theme.of(context).cardColor,
+                    globals.currentTheme.isDark()
+                        ? Colors.white
+                        : Colors.black87)
+              ],
+            ),
+          ),
+        ));
   }
 }

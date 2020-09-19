@@ -136,3 +136,5 @@ IsLoading isLoading = IsLoading();
 bool noteLocked = false;
 
 PageChanger pageChanger = new PageChanger();
+
+List<Cours> customCours = new List<Cours>();

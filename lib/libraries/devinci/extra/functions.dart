@@ -128,7 +128,16 @@ Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
       //print("new   ");
       String veventBody = vevent.group(1);
       //print(veventBody);
-      String dtstart, dtend, location, site, prof, title, typecours, flag;
+      String dtstart,
+          dtend,
+          location,
+          site,
+          prof,
+          title,
+          typecours,
+          flag,
+          uid,
+          groupe;
       dtstart = new RegExp(r'DTSTART:.*')
           .firstMatch(veventBody)
           .group(0)
@@ -162,6 +171,15 @@ Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
           .firstMatch(veventBody)
           .group(0)
           .replaceFirst("FLAGPRESENTIEL:", "");
+      uid = new RegExp(r'UID:.*')
+          .firstMatch(veventBody)
+          .group(0)
+          .replaceFirst("UID:", "");
+      groupe = new RegExp(r'GROUPE:.*')
+          .firstMatch(veventBody)
+          .group(0)
+          .replaceFirst("GROUPE:", "");
+
       if (location == "SANS SALLE") {
         site = "";
       }
@@ -175,9 +193,21 @@ Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
       } else if (flag == 'presentiel') {
         color = Colors.teal;
       }
-      results.add(new Cours(typecours, title, prof, location, site,
-          DateTime.parse(dtstart), DateTime.parse(dtend), color, false, flag));
+      results.add(new Cours(
+          typecours,
+          title,
+          prof,
+          location,
+          site,
+          DateTime.parse(dtstart),
+          DateTime.parse(dtend),
+          color,
+          false,
+          flag,
+          uid,
+          groupe));
     });
+
     //(typecours == 'NR' ? '' : '($typecours) ') +
     //          "$title" +
     //          (prof != "" ? "\n$prof\n" : "\n") +
@@ -185,7 +215,7 @@ Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
   } else {
     throw Exception("no vevents in body");
   }
-
+  results.addAll(await jsonToCoursList());
   return results;
 }
 
@@ -811,4 +841,53 @@ extension StringExtension on String {
   String capitalize() {
     return "${this[0].toUpperCase()}${this.substring(1)}";
   }
+}
+
+String coursListToJson() {
+  String j = '[';
+  for (int i = 0; i < globals.customCours.length; i++) {
+    Cours c = globals.customCours[i];
+    j += json.encode({
+      'type': c.type,
+      'title': c.title,
+      'prof': c.prof,
+      'location': c.location,
+      'site': c.site,
+      'from': c.from.millisecondsSinceEpoch,
+      'to': c.to.millisecondsSinceEpoch,
+      'isAllDay': c.isAllDay,
+      'flag': c.flag,
+      'uid': c.uid,
+      'groupe': c.groupe
+    });
+    if (i != globals.customCours.length - 1) j += ",";
+  }
+  j += ']';
+  return j;
+}
+
+Future<List<Cours>> jsonToCoursList() async {
+  globals.customCours = new List<Cours>();
+  String j =
+      await globals.store.record('customCours').get(globals.db) as String ??
+          "[]";
+  List<dynamic> jj = json.decode(j);
+  for (int i = 0; i < jj.length; i++) {
+    Map<String, dynamic> jjj = jj[i];
+    Cours c = new Cours(
+        jjj['type'],
+        jjj['title'],
+        jjj['prof'],
+        jjj['location'],
+        jjj['site'],
+        DateTime.fromMillisecondsSinceEpoch(jjj['from']),
+        DateTime.fromMillisecondsSinceEpoch(jjj['to']),
+        Colors.blue,
+        jjj['isAllDay'],
+        jjj['flag'],
+        jjj['uid'],
+        jjj['groupe']);
+    globals.customCours.add(c);
+  }
+  return globals.customCours;
 }

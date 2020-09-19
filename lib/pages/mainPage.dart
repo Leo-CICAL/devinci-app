@@ -63,22 +63,42 @@ class _MainPageState extends State<MainPage> {
                 IconButton(
                   icon: IconTheme(
                     data: Theme.of(context).accentIconTheme,
-                    child: Icon(globals.agendaView.calendarView ==
-                            CalendarView.day
-                        ? OMIcons.dateRange
-                        : (globals.agendaView.calendarView == CalendarView.month
-                            ? Icons.date_range
-                            : OMIcons.eventNote)),
+                    child: Icon(Icons.add),
+                  ),
+                  onPressed: () {
+                    Navigator.push<Widget>(
+                      context,
+                      // ignore: always_specify_types
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => CoursEditor()),
+                    );
+                  },
+                ),
+                SizedBox.shrink(),
+                SizedBox.shrink(),
+                SizedBox.shrink(),
+                SizedBox.shrink(),
+                SizedBox.shrink(),
+                SizedBox.shrink(),
+              ].elementAt(globals.selectedPage),
+              <Widget>[
+                IconButton(
+                  icon: IconTheme(
+                    data: Theme.of(context).accentIconTheme,
+                    child: Icon(
+                        globals.agendaView.calendarView == CalendarView.day
+                            ? OMIcons.dateRange
+                            : Icons.date_range),
                   ),
                   onPressed: () {
                     setState(() {
-                      if (globals.agendaView.calendarView == CalendarView.day)
-                        globals.agendaView.calendarView = CalendarView.month;
-                      else if (globals.agendaView.calendarView ==
-                          CalendarView.month)
+                      if (globals.agendaView.calendarView == CalendarView.day) {
                         globals.agendaView.calendarView = CalendarView.workWeek;
-                      else
+                        globals.prefs.setBool('calendarViewDay', false);
+                      } else {
                         globals.agendaView.calendarView = CalendarView.day;
+                        globals.prefs.setBool('calendarViewDay', true);
+                      }
                     });
                   },
                 ),
