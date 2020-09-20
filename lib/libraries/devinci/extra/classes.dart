@@ -235,8 +235,9 @@ class User {
     //retrieve data from secure storage
     globals.crashConsent = globals.prefs.getString('crashConsent');
     bool calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
-    globals.agendaView.calendarView = calendarViewDay ? CalendarView.day : CalendarView.workWeek;
-        this.data["badge"] = await globals.storage.read(key: "badge") ?? "";
+    globals.agendaView.calendarView =
+        calendarViewDay ? CalendarView.day : CalendarView.workWeek;
+    this.data["badge"] = await globals.storage.read(key: "badge") ?? "";
     this.data["client"] = await globals.storage.read(key: "client") ?? "";
     this.data["idAdmin"] = await globals.storage.read(key: "idAdmin") ?? "";
     this.data["ine"] = await globals.storage.read(key: "ine") ?? "";
@@ -848,204 +849,208 @@ class User {
         l("NOTES - STATUS CODE : ${res.statusCode}");
         if (res.statusCode == 200) {
           String body = await res.transform(utf8.decoder).join();
-          var doc = parse(body);
+          if (body.indexOf('Aucune note') < 0) {
+            var doc = parse(body);
 
-          List<Element> divs =
-              doc.querySelectorAll(this.notesConfig['mainDivs']);
-          for (int y = 0; y < 2; y++) {
-            int i = 0;
-            List<Element> ols1 =
-                divs[5].querySelectorAll(this.notesConfig['modules']['ols']);
-            List<Element> ols = ols1[y]
-                .querySelector(this.notesConfig['modules']['olsBis'])
-                .children;
-            for (int yy = 1; yy < ols.length; yy++) {
-              Element ol = ols[yy];
-              Map<String, dynamic> elem = {
-                "module": "",
-                "moy": 0.0,
-                "nf": 0.0,
-                "moyP": 0.0,
-                "matieres": []
-              };
-              Element li = ol.querySelector("li");
-              Element ddhandle = ol.querySelector("div");
-              List<String> texts = ddhandle.text.split("\n");
-              elem["module"] = texts[this.notesConfig['modules']['item']['m']]
-                  .replaceAllMapped(
-                      RegExp(this.notesConfig['modules']['item']['mR']),
-                      (match) => "");
-
-              elem["moy"] = null;
-              elem["nf"] = null;
-              elem["moyP"] = null;
-              if (texts[this.notesConfig['modules']['item']['eI']]
-                      .indexOf(this.notesConfig['modules']['item']['eStr']) <
-                  0) {
-                elem["moy"] = double.parse(
-                    texts[this.notesConfig['modules']['item']['!e']['moy']['i']]
-                            .replaceAllMapped(
-                                RegExp(this.notesConfig['modules']['item']['!e']
-                                    ['moy']['r']),
-                                (match) => "")
-                            .split(this.notesConfig['modules']['item']['!e']['moy']['s'])[
-                        this.notesConfig['modules']['item']['!e']['moy']
-                            ['si']]);
-                elem["nf"] = double.parse(
-                    RegExp(this.notesConfig['modules']['item']['!e']['nf']['r'])
-                        .firstMatch(texts[this.notesConfig['modules']['item']
-                                ['!e']['nf']['i']] +
-                            this.notesConfig['modules']['item']['!e']['nf']
-                                ['+'])
-                        .group(1));
-                elem["moyP"] = double.parse(RegExp(
-                        this.notesConfig['modules']['item']['!e']['moyP']['r'])
-                    .firstMatch(texts[this.notesConfig['modules']['item']['!e']
-                            ['moyP']['i']] +
-                        this.notesConfig['modules']['item']['!e']['moyP']['+'])
-                    .group(1));
-              }
-
-              nn["s${y + 1}"].add(elem);
-
-              Element ddlist = li.querySelector("ol");
-              int j = 0;
-              ddlist.children.forEach((lii) {
-                ddhandle = lii.querySelector("div");
-                texts = ddhandle.text.split("\n");
-                //String prettyprint = encoder.convert(texts);
-                // print(prettyprint);
-                elem = {
-                  "matiere": "",
+            List<Element> divs =
+                doc.querySelectorAll(this.notesConfig['mainDivs']);
+            for (int y = 0; y < 2; y++) {
+              int i = 0;
+              List<Element> ols1 =
+                  divs[5].querySelectorAll(this.notesConfig['modules']['ols']);
+              List<Element> ols = ols1[y]
+                  .querySelector(this.notesConfig['modules']['olsBis'])
+                  .children;
+              for (int yy = 1; yy < ols.length; yy++) {
+                Element ol = ols[yy];
+                Map<String, dynamic> elem = {
+                  "module": "",
                   "moy": 0.0,
+                  "nf": 0.0,
                   "moyP": 0.0,
-                  "notes": [],
-                  "c": true
+                  "matieres": []
                 };
-
-                elem["matiere"] = texts[this.notesConfig['matieres']['mi']]
+                Element li = ol.querySelector("li");
+                Element ddhandle = ol.querySelector("div");
+                List<String> texts = ddhandle.text.split("\n");
+                elem["module"] = texts[this.notesConfig['modules']['item']['m']]
                     .replaceAllMapped(
-                        RegExp(this.notesConfig['matieres']['mr']),
+                        RegExp(this.notesConfig['modules']['item']['mR']),
                         (match) => "");
+
                 elem["moy"] = null;
+                elem["nf"] = null;
                 elem["moyP"] = null;
-                if (texts[this.notesConfig['matieres']['ei']]
-                        .indexOf(this.notesConfig['matieres']['eStr']) <
+                if (texts[this.notesConfig['modules']['item']['eI']]
+                        .indexOf(this.notesConfig['modules']['item']['eStr']) <
                     0) {
                   elem["moy"] = double.parse(
-                      texts[this.notesConfig['matieres']['!e']['moy']['i']]
-                          .replaceAllMapped(
-                              RegExp(this.notesConfig['matieres']['!e']['moy']
-                                  ['r']),
-                              (match) => "")
-                          .split(this.notesConfig['matieres']['!e']['moy']
-                              ['s'])[this.notesConfig['matieres']['!e']['moy']
-                          ['si']]);
-                  //print(elem["moy"]);
-
-                  if (texts[this.notesConfig['matieres']['!e']['ri']]
-                          .indexOf(this.notesConfig['matieres']['!e']['rStr']) <
-                      0) {
-                    try {
-                      elem["moyP"] = double.parse(RegExp(this
-                              .notesConfig['matieres']['!e']['!r']['moyP']['r'])
-                          .firstMatch(texts[this.notesConfig['matieres']['!e']
-                                  ['!r']['moyP']['i']] +
-                              this.notesConfig['matieres']['!e']['!r']['moyP']
-                                  ['+'])
-                          .group(1));
-                    } catch (e) {
-                      elem["moyP"] = null;
-                    }
-                  } else {
-                    double noteR = double.parse(RegExp(this
-                            .notesConfig['matieres']['!e']['r']['noteR']['r'])
-                        .firstMatch(texts[this.notesConfig['matieres']['!e']
-                                ['r']['noteR']['i']] +
-                            this.notesConfig['matieres']['!e']['r']['noteR']
-                                ['+'])
-                        .group(1));
-                    if (noteR > elem["moy"]) {
-                      if (noteR > 10) {
-                        elem["moy"] = 10.0;
-                      } else {
-                        elem["moy"] = noteR;
-                      }
-                    }
-                    var e = {
-                      "nom": "MESIMF120419-CC-1 Rattrapage",
-                      "note": noteR,
-                      "noteP": null,
-                      "date": timestamp
-                    };
-
-                    elem["notes"].add(e);
-
-                    elem["moyP"] = double.parse(RegExp(this
-                            .notesConfig['matieres']['!e']['r']['moyP']['r'])
-                        .firstMatch(texts[this.notesConfig['matieres']['!e']
-                                ['r']['moyP']['i']] +
-                            this.notesConfig['matieres']['!e']['r']['moyP']
-                                ['+'])
-                        .group(1));
-                  }
+                      texts[this.notesConfig['modules']['item']['!e']['moy']['i']]
+                              .replaceAllMapped(
+                                  RegExp(this.notesConfig['modules']['item']
+                                      ['!e']['moy']['r']),
+                                  (match) => "")
+                              .split(this.notesConfig['modules']['item']['!e']['moy']['s'])[
+                          this.notesConfig['modules']['item']['!e']['moy']
+                              ['si']]);
+                  elem["nf"] = double.parse(RegExp(
+                          this.notesConfig['modules']['item']['!e']['nf']['r'])
+                      .firstMatch(texts[this.notesConfig['modules']['item']
+                              ['!e']['nf']['i']] +
+                          this.notesConfig['modules']['item']['!e']['nf']['+'])
+                      .group(1));
+                  elem["moyP"] = double.parse(RegExp(this.notesConfig['modules']
+                          ['item']['!e']['moyP']['r'])
+                      .firstMatch(texts[this.notesConfig['modules']['item']
+                              ['!e']['moyP']['i']] +
+                          this.notesConfig['modules']['item']['!e']['moyP']
+                              ['+'])
+                      .group(1));
                 }
 
-                nn["s${y + 1}"][i]["matieres"].add(elem);
-                ddlist = lii.querySelector("ol");
-                if (ddlist != null) {
-                  ddlist.children.forEach((liii) {
-                    ddhandle = liii.querySelector("div");
-                    texts = ddhandle.text.split("\n");
-                    elem = {
-                      "nom": "",
-                      "note": 0.0,
-                      "noteP": 0.0,
-                      "date": timestamp
-                    };
-                    elem["nom"] = texts[this.notesConfig['notes']['n']['i']]
-                        .replaceAllMapped(
-                            RegExp(this.notesConfig['notes']['n']['r']),
-                            (match) => "");
-                    if (texts.length < this.notesConfig['notes']['tl']) {
-                      elem["note"] = null;
-                      elem["noteP"] = null;
+                nn["s${y + 1}"].add(elem);
+
+                Element ddlist = li.querySelector("ol");
+                int j = 0;
+                ddlist.children.forEach((lii) {
+                  ddhandle = lii.querySelector("div");
+                  texts = ddhandle.text.split("\n");
+                  //String prettyprint = encoder.convert(texts);
+                  // print(prettyprint);
+                  elem = {
+                    "matiere": "",
+                    "moy": 0.0,
+                    "moyP": 0.0,
+                    "notes": [],
+                    "c": true
+                  };
+
+                  elem["matiere"] = texts[this.notesConfig['matieres']['mi']]
+                      .replaceAllMapped(
+                          RegExp(this.notesConfig['matieres']['mr']),
+                          (match) => "");
+                  elem["moy"] = null;
+                  elem["moyP"] = null;
+                  if (texts[this.notesConfig['matieres']['ei']]
+                          .indexOf(this.notesConfig['matieres']['eStr']) <
+                      0) {
+                    elem["moy"] = double.parse(texts[
+                                this.notesConfig['matieres']['!e']['moy']['i']]
+                            .replaceAllMapped(
+                                RegExp(this.notesConfig['matieres']['!e']['moy']
+                                    ['r']),
+                                (match) => "")
+                            .split(this.notesConfig['matieres']['!e']['moy']['s'])[
+                        this.notesConfig['matieres']['!e']['moy']['si']]);
+                    //print(elem["moy"]);
+
+                    if (texts[this.notesConfig['matieres']['!e']['ri']].indexOf(
+                            this.notesConfig['matieres']['!e']['rStr']) <
+                        0) {
+                      try {
+                        elem["moyP"] = double.parse(RegExp(
+                                this.notesConfig['matieres']['!e']['!r']['moyP']
+                                    ['r'])
+                            .firstMatch(texts[this.notesConfig['matieres']['!e']
+                                    ['!r']['moyP']['i']] +
+                                this.notesConfig['matieres']['!e']['!r']['moyP']
+                                    ['+'])
+                            .group(1));
+                      } catch (e) {
+                        elem["moyP"] = null;
+                      }
                     } else {
-                      String temp = texts[this.notesConfig['notes']['note']
-                              ['i']]
+                      double noteR = double.parse(RegExp(this
+                              .notesConfig['matieres']['!e']['r']['noteR']['r'])
+                          .firstMatch(texts[this.notesConfig['matieres']['!e']
+                                  ['r']['noteR']['i']] +
+                              this.notesConfig['matieres']['!e']['r']['noteR']
+                                  ['+'])
+                          .group(1));
+                      if (noteR > elem["moy"]) {
+                        if (noteR > 10) {
+                          elem["moy"] = 10.0;
+                        } else {
+                          elem["moy"] = noteR;
+                        }
+                      }
+                      var e = {
+                        "nom": "MESIMF120419-CC-1 Rattrapage",
+                        "note": noteR,
+                        "noteP": null,
+                        "date": timestamp
+                      };
+
+                      elem["notes"].add(e);
+
+                      elem["moyP"] = double.parse(RegExp(this
+                              .notesConfig['matieres']['!e']['r']['moyP']['r'])
+                          .firstMatch(texts[this.notesConfig['matieres']['!e']
+                                  ['r']['moyP']['i']] +
+                              this.notesConfig['matieres']['!e']['r']['moyP']
+                                  ['+'])
+                          .group(1));
+                    }
+                  }
+
+                  nn["s${y + 1}"][i]["matieres"].add(elem);
+                  ddlist = lii.querySelector("ol");
+                  if (ddlist != null) {
+                    ddlist.children.forEach((liii) {
+                      ddhandle = liii.querySelector("div");
+                      texts = ddhandle.text.split("\n");
+                      elem = {
+                        "nom": "",
+                        "note": 0.0,
+                        "noteP": 0.0,
+                        "date": timestamp
+                      };
+                      elem["nom"] = texts[this.notesConfig['notes']['n']['i']]
                           .replaceAllMapped(
-                              RegExp(this.notesConfig['notes']['note']['r']),
-                              (match) => "")
-                          .split(this.notesConfig['notes']['note']
-                              ['s'])[this.notesConfig['notes']['note']['si']];
-                      if (temp.indexOf('Absence') > -1) {
-                        elem["note"] = 0.12345;
+                              RegExp(this.notesConfig['notes']['n']['r']),
+                              (match) => "");
+                      if (texts.length < this.notesConfig['notes']['tl']) {
+                        elem["note"] = null;
+                        elem["noteP"] = null;
                       } else {
-                        elem["note"] = double.parse(texts[
-                                this.notesConfig['notes']['note']['i']]
+                        String temp = texts[this.notesConfig['notes']['note']
+                                ['i']]
                             .replaceAllMapped(
                                 RegExp(this.notesConfig['notes']['note']['r']),
                                 (match) => "")
-                            .split(this.notesConfig['notes']['note'][
-                                's'])[this.notesConfig['notes']['note']['si']]);
+                            .split(this.notesConfig['notes']['note']
+                                ['s'])[this.notesConfig['notes']['note']['si']];
+                        if (temp.indexOf('Absence') > -1) {
+                          elem["note"] = 0.12345;
+                        } else {
+                          elem["note"] = double.parse(
+                              texts[this.notesConfig['notes']['note']['i']]
+                                  .replaceAllMapped(
+                                      RegExp(this.notesConfig['notes']['note']
+                                          ['r']),
+                                      (match) => "")
+                                  .split(this.notesConfig['notes']['note']
+                                      ['s'])[this.notesConfig['notes']['note']
+                                  ['si']]);
+                        }
+                        elem["noteP"] = null;
+                        try {
+                          elem["noteP"] = double.parse(RegExp(
+                                  this.notesConfig['notes']['nP']['r'])
+                              .firstMatch(
+                                  texts[this.notesConfig['notes']['nP']['i']] +
+                                      this.notesConfig['notes']['nP']['+'])
+                              .group(1));
+                        } catch (e) {}
                       }
-                      elem["noteP"] = null;
-                      try {
-                        elem["noteP"] = double.parse(RegExp(
-                                this.notesConfig['notes']['nP']['r'])
-                            .firstMatch(
-                                texts[this.notesConfig['notes']['nP']['i']] +
-                                    this.notesConfig['notes']['nP']['+'])
-                            .group(1));
-                      } catch (e) {}
-                    }
 
-                    nn["s${y + 1}"][i]["matieres"][j]["notes"].add(elem);
-                  });
-                }
-                j++;
-              });
-              i++;
+                      nn["s${y + 1}"][i]["matieres"][j]["notes"].add(elem);
+                    });
+                  }
+                  j++;
+                });
+                i++;
+              }
             }
           }
         } else {
@@ -1487,4 +1492,3 @@ class User {
     return;
   }
 }
-

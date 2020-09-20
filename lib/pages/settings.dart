@@ -427,7 +427,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         applicationLegalese:
                             'Copyright © Antoine Raulin, {{ year }}',
                         applicationDescription: const Text(
-                          "Devinci est une application qui a pour but de faciliter l'utilisation du portail étudiant du pôle Léonard Devinci.",
+                          "Devinci est une application qui a pour but de faciliter l'utilisation du portail étudiant du pôle Léonard De Vinci.",
                           textAlign: TextAlign.justify,
                         ),
                         children: <Widget>[
@@ -499,109 +499,118 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      slideDialog.showSlideDialog(
-                        context: context,
-                        backgroundColor: Theme.of(context).cardColor,
-                        child: Column(children: <Widget>[
-                          Container(
-                            width: 72,
-                            height: 72,
-                            child: SvgPicture.asset(
-                              'assets/bocal.svg',
-                              color: globals.currentTheme.isDark()
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text('Bocal à pourboires',
-                                style: Theme.of(context).textTheme.headline2),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 12, left: 24, right: 24),
-                            child: Text(
-                              "Si vous vous sentez particulièrement gentil et que vous souhaitez soutenir le développement de Devinci, n'importe quel don nous aideras beaucoup.",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 17,
-                                color: globals.currentTheme.isDark()
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 12, left: 24, right: 24),
-                            child: Text(
-                              Platform.isIOS
-                                  ? "Les fonds récoltés serviront principalement à mettre suffisamment de côté pour payer les frais de l'App Store et permettre dans un futur proche d'y proposer l'application."
-                                  : "Les fonds récoltés serviront principalement à mettre suffisamment de côté pour payer les frais du Play Store et permettre dans un futur proche d'y proposer l'application.",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 17,
-                                color: globals.currentTheme.isDark()
-                                    ? Colors.white
-                                    : Colors.black,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 48, left: 24, right: 24),
-                            child: OutlineButton(
-                              onPressed: () async {
-                                const url =
-                                    'https://www.paypal.com/paypalme/antoinraulin';
-                                if (await canLaunch(url)) {
-                                  await launch(url);
-                                } else {
-                                  throw 'Could not launch $url';
-                                }
-                              },
-                              highlightedBorderColor:
-                                  globals.currentTheme.isDark()
-                                      ? Colors.white
-                                      : Colors.black,
-                              borderSide: BorderSide(
-                                  width: 1.5,
-                                  color: Theme.of(context).accentColor),
-                              child: Container(
-                                width: double.infinity,
-                                height: 50,
-                                child: Center(
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 28,
-                                        width: 28,
-                                        child: SvgPicture.asset(
-                                          'assets/paypal.svg',
-                                          color: globals.currentTheme.isDark()
-                                              ? Colors.white
-                                              : Colors.black,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Center(
-                                          child: Text('Supporter',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ]),
-                      );
+                      const url =
+                          'https://github.com/antoineraulin/devinci-app';
+                      if (await canLaunch(url)) {
+                        await launch(
+                          url,
+                        );
+                      } else {
+                        throw 'Could not launch $url';
+                      }
+                      // slideDialog.showSlideDialog(
+                      //   context: context,
+                      //   backgroundColor: Theme.of(context).cardColor,
+                      //   child: Column(children: <Widget>[
+                      //     Container(
+                      //       width: 72,
+                      //       height: 72,
+                      //       child: SvgPicture.asset(
+                      //         'assets/bocal.svg',
+                      //         color: globals.currentTheme.isDark()
+                      //             ? Colors.white
+                      //             : Colors.black,
+                      //       ),
+                      //     ),
+                      //     Padding(
+                      //       padding: const EdgeInsets.only(top: 8),
+                      //       child: Text('Bocal à pourboires',
+                      //           style: Theme.of(context).textTheme.headline2),
+                      //     ),
+                      //     Padding(
+                      //       padding: const EdgeInsets.only(
+                      //           top: 12, left: 24, right: 24),
+                      //       child: Text(
+                      //         "Si vous vous sentez particulièrement gentil et que vous souhaitez soutenir le développement de Devinci, n'importe quel don nous aideras beaucoup.",
+                      //         textAlign: TextAlign.left,
+                      //         style: TextStyle(
+                      //           fontWeight: FontWeight.normal,
+                      //           fontSize: 17,
+                      //           color: globals.currentTheme.isDark()
+                      //               ? Colors.white
+                      //               : Colors.black,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     Padding(
+                      //       padding: const EdgeInsets.only(
+                      //           top: 12, left: 24, right: 24),
+                      //       child: Text(
+                      //         Platform.isIOS
+                      //             ? "Les fonds récoltés serviront principalement à mettre suffisamment de côté pour payer les frais de l'App Store et permettre dans un futur proche d'y proposer l'application."
+                      //             : "Les fonds récoltés serviront principalement à mettre suffisamment de côté pour payer les frais du Play Store et permettre dans un futur proche d'y proposer l'application.",
+                      //         textAlign: TextAlign.left,
+                      //         style: TextStyle(
+                      //           fontWeight: FontWeight.normal,
+                      //           fontSize: 17,
+                      //           color: globals.currentTheme.isDark()
+                      //               ? Colors.white
+                      //               : Colors.black,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     Padding(
+                      //       padding: const EdgeInsets.only(
+                      //           top: 48, left: 24, right: 24),
+                      //       child: OutlineButton(
+                      //         onPressed: () async {
+                      //           const url =
+                      //               'https://www.paypal.com/paypalme/antoinraulin';
+                      //           if (await canLaunch(url)) {
+                      //             await launch(url);
+                      //           } else {
+                      //             throw 'Could not launch $url';
+                      //           }
+                      //         },
+                      //         highlightedBorderColor:
+                      //             globals.currentTheme.isDark()
+                      //                 ? Colors.white
+                      //                 : Colors.black,
+                      //         borderSide: BorderSide(
+                      //             width: 1.5,
+                      //             color: Theme.of(context).accentColor),
+                      //         child: Container(
+                      //           width: double.infinity,
+                      //           height: 50,
+                      //           child: Center(
+                      //             child: Row(
+                      //               children: [
+                      //                 Container(
+                      //                   height: 28,
+                      //                   width: 28,
+                      //                   child: SvgPicture.asset(
+                      //                     'assets/paypal.svg',
+                      //                     color: globals.currentTheme.isDark()
+                      //                         ? Colors.white
+                      //                         : Colors.black,
+                      //                   ),
+                      //                 ),
+                      //                 Expanded(
+                      //                   child: Center(
+                      //                     child: Text('Supporter',
+                      //                         style: Theme.of(context)
+                      //                             .textTheme
+                      //                             .bodyText1),
+                      //                   ),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ]),
+                      // );
                     }, // handle your onTap here
                     child: Container(
                       height: 46,
@@ -667,6 +676,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ]),
               ),
+              Text('Développé avec ❤ par Antoine Raulin'),
             ],
           ),
         ),

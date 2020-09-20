@@ -739,7 +739,7 @@ class CoursEditorState extends State<CoursEditor> {
                                 ? Colors.redAccent
                                 : Colors.red.shade700,
                             width: 2),
-                        child: Text('Supprimer l\'événement',
+                        child: Text('Supprimer l\'évènement',
                             style: TextStyle(
                                 color: globals.currentTheme.isDark()
                                     ? Colors.redAccent
@@ -768,7 +768,7 @@ class CoursEditorState extends State<CoursEditor> {
           appBar: AppBar(
             //backgroundColor: _colorCollection[_selectedColorIndex],
             title: Text(
-                _title == '' ? 'Nouvel événement' : 'Détail de l\'événement',
+                _title == '' ? 'Nouvel évènement' : 'Détail de l\'évènement',
                 style: Theme.of(context).textTheme.bodyText2),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             leading: IconTheme(
