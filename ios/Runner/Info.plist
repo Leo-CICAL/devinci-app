@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.transistorsoft.fetch</string>
@@ -76,8 +78,8 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>N'accepter pas cette demande, cette app n'est pas censé avoir accès a votre localisation</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>N&apos;accepter pas cette demande, cette app n&apos;est pas censé avoir accès a votre localisation</string>
 	<key>CFBundleName</key>
 	<string>Devinci</string>
 	<key>CFBundlePackageType</key>
