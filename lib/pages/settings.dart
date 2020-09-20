@@ -372,7 +372,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   right: 16,
                   top: 28,
                 ),
-                height: (5 * 46).toDouble(),
+                height: (6 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -662,6 +662,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   Container(
                     height: 46,
                     margin: EdgeInsets.only(left: 24),
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                      width: 0.2,
+                      color: Color(0xffACACAC),
+                    ))),
                     child: Row(
                       children: <Widget>[
                         Expanded(
@@ -674,9 +680,23 @@ class _SettingsPageState extends State<SettingsPage> {
                       ],
                     ),
                   ),
+                  Container(
+                    height: 46,
+                    margin: EdgeInsets.only(left: 24),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text("Développé avec ❤ par Antoine Raulin",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w300,
+                              )),
+                        ),
+                      ],
+                    ),
+                  ),
                 ]),
               ),
-              Text('Développé avec ❤ par Antoine Raulin'),
             ],
           ),
         ),
