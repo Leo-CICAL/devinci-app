@@ -765,6 +765,7 @@ class User {
           this.absences["seances"] = int.parse(seanceM);
           List<Element> trs =
               doc.querySelectorAll(".tab-pane.active > table > tbody > tr");
+          this.absences["liste"].clear();
           trs.forEach((tr) {
             Map<String, String> elem = {
               "cours": "",
