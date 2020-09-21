@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';
 import 'package:path_provider/path_provider.dart';
@@ -234,8 +235,11 @@ class User {
 
     //retrieve data from secure storage
     globals.crashConsent = globals.prefs.getString('crashConsent');
-    globals.analyticsConsent = globals.prefs.getBool('analyticsConsent') ?? true;
-    await globals.analytics.setAnalyticsCollectionEnabled(globals.analyticsConsent);
+
+    globals.analyticsConsent =
+        globals.prefs.getBool('analyticsConsent') ?? true;
+    await globals.analytics
+        .setAnalyticsCollectionEnabled(globals.analyticsConsent);
     bool calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
     globals.agendaView.calendarView =
         calendarViewDay ? CalendarView.day : CalendarView.workWeek;
@@ -1181,68 +1185,72 @@ class User {
           String body = await res.transform(utf8.decoder).join();
           var doc = parse(body);
           //Element cert = doc.querySelector("#main > div > div:nth-child(5) > div:nth-child(2) > div > table > tbody > tr > td:nth-child(2)");
-          int certIndex = 1;
-          int imaginrIndex = 1;
-          for (int i = 1;
-              i <
+          try {
+            int certIndex = 1;
+            int imaginrIndex = 1;
+            for (int i = 1;
+                i <
+                    doc
+                        .querySelectorAll(
+                            ".social-box.social-bordered.span6")[1]
+                        .querySelectorAll("tr")
+                        .length;
+                i++) {
+              print('[1]' +
                   doc
                       .querySelectorAll(".social-box.social-bordered.span6")[1]
-                      .querySelectorAll("tr")
-                      .length;
-              i++) {
-            print('[1]' +
-                doc
-                    .querySelectorAll(".social-box.social-bordered.span6")[1]
-                    .querySelectorAll("tr")[i]
-                    .querySelectorAll("td")[1]
-                    .text);
-            if (doc
-                    .querySelectorAll(".social-box.social-bordered.span6")[1]
-                    .querySelectorAll("tr")[i]
-                    .querySelectorAll("td")[0]
-                    .text
-                    .indexOf("scolarité") >
-                -1) {
-              certIndex = i;
-            } else if (doc
-                    .querySelectorAll(".social-box.social-bordered.span6")[1]
-                    .querySelectorAll("tr")[i]
-                    .querySelectorAll("td")[0]
-                    .text
-                    .indexOf("ImaginR") >
-                -1) {
-              imaginrIndex = i;
+                      .querySelectorAll("tr")[i]
+                      .querySelectorAll("td")[1]
+                      .text);
+              if (doc
+                      .querySelectorAll(".social-box.social-bordered.span6")[1]
+                      .querySelectorAll("tr")[i]
+                      .querySelectorAll("td")[0]
+                      .text
+                      .indexOf("scolarité") >
+                  -1) {
+                certIndex = i;
+              } else if (doc
+                      .querySelectorAll(".social-box.social-bordered.span6")[1]
+                      .querySelectorAll("tr")[i]
+                      .querySelectorAll("td")[0]
+                      .text
+                      .indexOf("ImaginR") >
+                  -1) {
+                imaginrIndex = i;
+              }
             }
+            List<Element> certElements = doc
+                .querySelectorAll(".social-box.social-bordered.span6")[1]
+                .querySelectorAll("tr")[certIndex]
+                .querySelectorAll("td");
+
+            this.documents["certificat"]["annee"] = certElements[1].text;
+            this.documents["certificat"]["fr_url"] =
+                "https://www.leonard-de-vinci.net" +
+                    certElements[2].querySelectorAll("a")[0].attributes["href"];
+            this.documents["certificat"]["en_url"] =
+                "https://www.leonard-de-vinci.net" +
+                    certElements[2].querySelectorAll("a")[1].attributes["href"];
+
+            print('[2]' + this.documents["certificat"]["annee"]);
+            print('[3]' + this.documents["certificat"]["fr_url"]);
+            print('[4]' + this.documents["certificat"]["en_url"]);
+
+            List<Element> imaginrElements = doc
+                .querySelectorAll(".social-box.social-bordered.span6")[1]
+                .querySelectorAll("tr")[imaginrIndex]
+                .querySelectorAll("td");
+
+            this.documents["imaginr"]["annee"] = imaginrElements[1].text;
+            this.documents["imaginr"]["url"] =
+                "https://www.leonard-de-vinci.net" +
+                    imaginrElements[2]
+                        .querySelectorAll("a")[0]
+                        .attributes["href"];
+          } catch (e) {
+            Crashlytics.instance.recordError(e, e.stacktrace);
           }
-          List<Element> certElements = doc
-              .querySelectorAll(".social-box.social-bordered.span6")[1]
-              .querySelectorAll("tr")[certIndex]
-              .querySelectorAll("td");
-
-          this.documents["certificat"]["annee"] = certElements[1].text;
-          this.documents["certificat"]["fr_url"] =
-              "https://www.leonard-de-vinci.net" +
-                  certElements[2].querySelectorAll("a")[0].attributes["href"];
-          this.documents["certificat"]["en_url"] =
-              "https://www.leonard-de-vinci.net" +
-                  certElements[2].querySelectorAll("a")[1].attributes["href"];
-
-          print('[2]' + this.documents["certificat"]["annee"]);
-          print('[3]' + this.documents["certificat"]["fr_url"]);
-          print('[4]' + this.documents["certificat"]["en_url"]);
-
-          List<Element> imaginrElements = doc
-              .querySelectorAll(".social-box.social-bordered.span6")[1]
-              .querySelectorAll("tr")[imaginrIndex]
-              .querySelectorAll("td");
-
-          this.documents["imaginr"]["annee"] = imaginrElements[1].text;
-          this.documents["imaginr"]["url"] =
-              "https://www.leonard-de-vinci.net" +
-                  imaginrElements[2]
-                      .querySelectorAll("a")[0]
-                      .attributes["href"];
-
           int calendrierIndex = 4;
           for (int i = 0;
               i <
@@ -1284,48 +1292,52 @@ class User {
 
           print('[5]' +
               "calendrier : ${this.documents["calendrier"]["annee"]}|${this.documents["calendrier"]["url"]}");
-
-          //documents liés aux notes :
-          req = await client.getUrl(
-            Uri.parse("https://www.leonard-de-vinci.net/?my=notes"),
-          );
-          req.followRedirects = false;
-          req.cookies.addAll([
-            new Cookie('alv', this.tokens["alv"]),
-            new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-            new Cookie('uids', this.tokens["uids"]),
-            new Cookie(
-                'SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-          ]);
-          res = await req.close();
-          if (res.statusCode == 200) {
-            body = await res.transform(utf8.decoder).join();
-            doc = parse(body);
-            List<Element> filesA = doc
-                .querySelectorAll(
-                    "div.body")[doc.querySelectorAll("div.body").length - 2]
-                .querySelectorAll("a:not(.label)");
-            print('[6]' + filesA.toString());
-            this.documents["bulletins"].clear();
-            for (int i = 0; i < filesA.length; i += 2) {
-              this.documents["bulletins"].add({
-                "name": filesA[i].text.substring(1, filesA[i].text.length - 1),
-                "fr_url": "https://www.leonard-de-vinci.net" +
-                    filesA[i].attributes["href"],
-                "en_url": "https://www.leonard-de-vinci.net" +
-                    filesA[i + 1].attributes["href"],
-                "sub": RegExp(r'\s\s+(.*?)\s\s+')
-                    .firstMatch(doc
-                        .querySelectorAll("div.body")[
-                            doc.querySelectorAll("div.body").length - 2]
-                        .querySelector("header")
-                        .text
-                        .split("\n")
-                        .last)
-                    .group(1)
-              });
+          try {
+            //documents liés aux notes :
+            req = await client.getUrl(
+              Uri.parse("https://www.leonard-de-vinci.net/?my=notes"),
+            );
+            req.followRedirects = false;
+            req.cookies.addAll([
+              new Cookie('alv', this.tokens["alv"]),
+              new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
+              new Cookie('uids', this.tokens["uids"]),
+              new Cookie(
+                  'SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
+            ]);
+            res = await req.close();
+            if (res.statusCode == 200) {
+              body = await res.transform(utf8.decoder).join();
+              doc = parse(body);
+              List<Element> filesA = doc
+                  .querySelectorAll(
+                      "div.body")[doc.querySelectorAll("div.body").length - 2]
+                  .querySelectorAll("a:not(.label)");
+              print('[6]' + filesA.toString());
+              this.documents["bulletins"].clear();
+              for (int i = 0; i < filesA.length; i += 2) {
+                this.documents["bulletins"].add({
+                  "name":
+                      filesA[i].text.substring(1, filesA[i].text.length - 1),
+                  "fr_url": "https://www.leonard-de-vinci.net" +
+                      filesA[i].attributes["href"],
+                  "en_url": "https://www.leonard-de-vinci.net" +
+                      filesA[i + 1].attributes["href"],
+                  "sub": RegExp(r'\s\s+(.*?)\s\s+')
+                      .firstMatch(doc
+                          .querySelectorAll("div.body")[
+                              doc.querySelectorAll("div.body").length - 2]
+                          .querySelector("header")
+                          .text
+                          .split("\n")
+                          .last)
+                      .group(1)
+                });
+              }
+              print('[7]' + this.documents["bulletins"].toString());
             }
-            print('[7]' + this.documents["bulletins"].toString());
+          } catch (e) {
+            Crashlytics.instance.recordError(e, e.stacktrace);
           }
         }
       }

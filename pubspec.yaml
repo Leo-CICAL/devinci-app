@@ -1,7 +1,7 @@
 name: devinci
 description: devinci portail app
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.2.3+2
+version: 1.2.4+1
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -22,7 +22,7 @@ dependencies:
   pull_to_refresh: ^1.6.1
   flutter_statusbarcolor: ^0.2.3 # permet de changer la couleur de la barre d'état et de navifation sur android et ios
   property_change_notifier: ^0.2.0 # permet de rebuild une interface si une variable change de valeur
-  sentry: ^3.0.1 # permet de faire remonter les bug/erreur
+  #sentry: ^3.0.1 # permet de faire remonter les bug/erreur
   device_info: ^0.4.2+7
   package_info: ^0.4.3
   flutter_email_sender: ^3.0.1 # permet d'appeler les fonctions d'envoi de mail natives

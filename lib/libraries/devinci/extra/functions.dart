@@ -4,6 +4,7 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:devinci/libraries/json_diff/json_diff.dart';
 import 'package:diacritic/diacritic.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -14,7 +15,6 @@ import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sentry/sentry.dart' as Sentry;
 import 'package:device_info/device_info.dart';
 import 'dart:io' show Platform;
 import 'package:package_info/package_info.dart';
@@ -262,21 +262,21 @@ Future<Null> reportError(dynamic error, dynamic stackTrace) async {
       callback: (bool res) async {
         if (res) {
           await globals.prefs.setString('crashConsent', 'true');
-          reportToSentry(err, stackTrace);
+          reportToCrash(err, stackTrace);
         } else {
           await globals.prefs.setString('crashConsent', 'false');
         }
       },
     );
   } else if (consent == "true") {
-    reportToSentry(err, stackTrace);
+    reportToCrash(err, stackTrace);
   } else {
     final snackBar = SnackBar(
       content: Text(
           "Une erreur est survenue, mais nous n'avons pas envoyer de rapport d'incident"),
       action: SnackBarAction(
         label: 'Envoyer',
-        onPressed: () => reportToSentry(err, stackTrace),
+        onPressed: () => reportToCrash(err, stackTrace),
       ),
       duration: const Duration(seconds: 6),
     );
@@ -286,7 +286,7 @@ Future<Null> reportError(dynamic error, dynamic stackTrace) async {
   }
 }
 
-void reportToSentry(String err, StackTrace stackTrace) async {
+void reportToCrash(String err, StackTrace stackTrace) async {
   final snackBar = SnackBar(
     content: Text('Une erreur est survenue'),
     action: SnackBarAction(
@@ -303,23 +303,12 @@ void reportToSentry(String err, StackTrace stackTrace) async {
   // the report.
   if (isInDebugMode) {
     print(stackTrace);
-    print('In dev mode. Not sending report to Sentry.io.');
+    print('In dev mode. Not sending report to Crashlytics.');
     return;
   }
 
-  print('Reporting to Sentry.io...');
-
-  final Sentry.SentryResponse response = await globals.sentry.captureException(
-    exception: err,
-    stackTrace: stackTrace,
-  );
-
-  if (response.isSuccessful) {
-    print('Success! Event ID: ${response.eventId}');
-    globals.eventId = response.eventId;
-  } else {
-    print('Failed to report to Sentry.io: ${response.error}');
-  }
+  print('Reporting to Crashlytics...');
+  Crashlytics.instance.recordError(err, stackTrace);
 }
 
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);

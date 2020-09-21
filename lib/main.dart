@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:isolate';
 import 'package:devinci/pages/login.dart';
 import 'package:devinci/libraries/feedback/feedback.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -22,12 +23,16 @@ import './config.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
+  Crashlytics.instance.enableInDevMode = true;
+  // Pass all uncaught errors from the framework to Crashlytics.
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+
+  runApp(MyApp());
 
   globals.prefs = await SharedPreferences.getInstance();
   String setTheme = globals.prefs.getString("theme") ?? "Système";
@@ -68,28 +73,6 @@ Future<Null> main() async {
 
   // Fin init notifications
 
-  // // Ceci capture les erreurs renvoyées par Flutter
-  // FlutterError.onError = (FlutterErrorDetails details) async {
-  //   if (isInDebugMode) {
-  //     // en développement on print dans la console
-  //     FlutterError.dumpErrorToConsole(details);
-  //   } else {
-  //     // En mode production on renvoie les données à la Zone qui va s'occuper de les transferer a Sentry.
-  //     Zone.current.handleUncaughtError(details.exception, details.stack);
-  //   }
-  // };
-
-  Crashlytics.instance.enableInDevMode = true;
-
-  // Pass all uncaught errors from the framework to Crashlytics.
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
-  Isolate.current.addErrorListener(RawReceivePort((pair) async {
-    final List<dynamic> errorAndStacktrace = pair;
-    await Crashlytics.instance.recordError(
-      errorAndStacktrace.first,
-      errorAndStacktrace.last,
-    );
-  }).sendPort);
   runApp(
     BetterFeedback(
         // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
@@ -99,7 +82,6 @@ Future<Null> main() async {
         ),
         onFeedback: betterFeedbackOnFeedback),
   );
-
   // Register to receive BackgroundFetch events after app is terminated.
   // Requires {stopOnTerminate: false, enableHeadless: true}
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);

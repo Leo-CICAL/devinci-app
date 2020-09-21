@@ -10,15 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
 import 'package:sembast/sembast.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:sentry/sentry.dart' as Sentry;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:devinci/extra/classes.dart';
-
-final Sentry.SentryClient sentry = Sentry.SentryClient(
-    dsn:
-        "https://d90bf661f0ef48d29264be594b6ad954@o400644.ingest.sentry.io/5279681");
 
 final storage = new FlutterSecureStorage();
 

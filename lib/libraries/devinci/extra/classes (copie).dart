@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:html/parser.dart' show parse;
@@ -10,7 +11,6 @@ import 'package:html/dom.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
-import 'package:sentry/sentry.dart' as Sentry;
 
 class User {
   //constructor
@@ -196,19 +196,11 @@ class User {
           await globals.storage
               .deleteAll(); //remove all sensitive data from the phone if the user can't connect
           //the exception was thrown because credentials are wrong
-          final Sentry.SentryResponse response =
-              await globals.sentry.captureException(
-            exception:
-                "classes.dart | getToken | wrong credentials => '${this.username}':'${this.password}'",
-            stackTrace: StackTrace.fromString(""),
+          Crashlytics.instance.recordError(
+            "classes.dart | getToken | wrong credentials => '${this.username}':'${this.password}'",
+            StackTrace.fromString(""),
           );
 
-          if (response.isSuccessful) {
-            //print('Success! Event ID: ${response.eventId}');
-            globals.eventId = response.eventId;
-          } else {
-            //print('Failed to report to Sentry.io: ${response.error}');
-          }
           throw Exception(
               "wrong credentials : $exception"); //throw an exception to indicate to the parent process that credentials are wrong and may need to be changed
         } else {
