@@ -49,6 +49,8 @@ dependencies:
   about: ^1.2.0 # Affiche une page A propos, qui décrit l'application et les différentes licenses.
   connectivity: ^0.4.9+2 # permet de connaître l'état de la connection internet de l'appareil
   flutter_siri_suggestions: ^1.0.2+hotfix1 #Flutter plugin for exposure on Siri Suggestions.
+  firebase_core: "0.5.0"
+  firebase_analytics: ^5.0.2
   slide_popup_dialog: ^0.0.2
   url_launcher: ^5.5.0
   flutter_localizations:

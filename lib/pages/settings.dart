@@ -162,7 +162,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   right: 16,
                   top: 16,
                 ),
-                height: (5 * 46).toDouble(),
+                height: (6 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -327,6 +327,45 @@ class _SettingsPageState extends State<SettingsPage> {
                                     globals.crashConsent = "false";
                                     globals.prefs
                                         .setString('crashConsent', 'false');
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 46,
+                      margin: EdgeInsets.only(left: 24),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                        width: 0.2,
+                        color: Color(0xffACACAC),
+                      ))),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              "Suivi d'utilisation",
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Switch.adaptive(
+                              value: globals.analyticsConsent,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  if (globals.analyticsConsent) {
+                                    globals.analyticsConsent = true;
+                                    globals.prefs
+                                        .setBool('analyticsConsent', true);
+                                  } else {
+                                    globals.analyticsConsent = false;
+                                    globals.prefs
+                                        .setBool('analyticsConsent', false);
                                   }
                                 });
                               },

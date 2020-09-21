@@ -17,8 +17,16 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:quick_actions/quick_actions.dart';
 import './config.dart';
 
+//firebase
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
+
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
+
   globals.prefs = await SharedPreferences.getInstance();
   String setTheme = globals.prefs.getString("theme") ?? "Système";
   if (setTheme != "Système") {
@@ -112,6 +120,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       print("changes");
       setState(() {});
     });
+    globals.analytics = FirebaseAnalytics();
+    globals.observer = FirebaseAnalyticsObserver(analytics: globals.analytics);
     WidgetsBinding.instance.addObserver(this);
     initPlatformState();
   }
@@ -148,6 +158,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ],
       locale: const Locale('fr'),
       title: 'Devinci',
+      navigatorObservers: <NavigatorObserver>[globals.observer],
       theme: ThemeData(
         primarySwatch: Colors.teal,
         primaryColor: Colors.teal,

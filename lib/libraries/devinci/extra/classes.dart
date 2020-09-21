@@ -234,6 +234,8 @@ class User {
 
     //retrieve data from secure storage
     globals.crashConsent = globals.prefs.getString('crashConsent');
+    globals.analyticsConsent = globals.prefs.getBool('analyticsConsent') ?? true;
+    await globals.analytics.setAnalyticsCollectionEnabled(globals.analyticsConsent);
     bool calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
     globals.agendaView.calendarView =
         calendarViewDay ? CalendarView.day : CalendarView.workWeek;

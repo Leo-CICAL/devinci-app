@@ -2,6 +2,8 @@ library my_prj.globals;
 
 import 'package:devinci/libraries/timechef/classes.dart';
 import 'package:devinci/libraries/timechef/timechef.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:devinci/libraries/devinci/extra/classes.dart';
 import 'package:flutter/material.dart';
@@ -138,3 +140,9 @@ bool noteLocked = false;
 PageChanger pageChanger = new PageChanger();
 
 List<Cours> customCours = new List<Cours>();
+
+bool analyticsConsent = true;
+
+FirebaseAnalytics analytics;
+
+FirebaseAnalyticsObserver observer;
