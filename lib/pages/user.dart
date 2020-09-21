@@ -10,7 +10,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:ota_update/ota_update.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:package_info/package_info.dart';
 import 'package:recase/recase.dart';
@@ -28,14 +27,6 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   bool show = false;
-  bool showUpdate = false;
-  String updateTitle = "Une mise à jour est disponible";
-  String updateNumber = "";
-  String moreText = "en savoir plus";
-  String updateContent = "";
-  String updateDescription = "";
-  String updateSize = "";
-  String updateUrl = "";
   double cardSize = 85;
   List<bool> docCardDetail = new List<bool>();
   List<Map<String, dynamic>> docCardData = new List<Map<String, dynamic>>();
@@ -120,34 +111,6 @@ class _UserPageState extends State<UserPage> {
         setState(() {
           show = true;
         });
-    }
-    if (Platform.isAndroid && globals.isConnected) {
-      HttpClient client = new HttpClient();
-      HttpClientRequest req = await client.getUrl(
-        Uri.parse('https://devinci.araulin.tech/ota.json'),
-      );
-      HttpClientResponse res = await req.close();
-      String body = await res.transform(utf8.decoder).join();
-      Map<String, dynamic> otas = json.decode(body);
-      print("last update : ${otas["last"]}");
-      updateNumber = otas["last"];
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      String version = packageInfo.version;
-      print(version + " :: " + otas["last"]);
-      if (version != otas["last"]) {
-        updateDescription = otas["otas"][otas["last"]]["description"];
-        updateSize = otas["otas"][otas["last"]]["size"];
-        print("there is a new version");
-
-        updateUrl = otas["otas"][otas["last"]]["url"];
-        String ignoredUpdate = globals.prefs.getString('ignored') ?? "";
-        if (ignoredUpdate != updateNumber) {
-          if (mounted)
-            setState(() {
-              showUpdate = true;
-            });
-        }
-      }
     }
   }
 
@@ -425,108 +388,6 @@ class _UserPageState extends State<UserPage> {
             child: ListView(
               controller: scroll,
               children: <Widget>[
-                Visibility(
-                  visible: showUpdate,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 8, right: 8, top: 8),
-                    child: Card(
-                      child: Container(
-                        height: cardSize,
-                        child: Column(
-                          children: <Widget>[
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 16, top: 12),
-                                child: Text(updateTitle,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20)),
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 0, top: 4),
-                                child: CupertinoScrollbar(
-                                  controller: scrollMark,
-                                  child: Markdown(
-                                    data: updateContent,
-                                    controller: scrollMark,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                FlatButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      showUpdate = false;
-                                      globals.prefs
-                                          .setString('ignored', updateNumber);
-                                    });
-                                  },
-                                  child: Text("ignorer"),
-                                ),
-                                Expanded(
-                                  child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: FlatButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          if (moreText == "installer") {
-                                            moreText = "updating";
-                                            OtaUpdate()
-                                                .execute(updateUrl,
-                                                    destinationFilename:
-                                                        'devinci-${updateNumber.replaceAll(".", "-")}.apk')
-                                                .listen(
-                                              (OtaEvent event) {
-                                                print(
-                                                    'EVENT: ${event.status} : ${event.value}');
-                                                if (event.status !=
-                                                    OtaStatus.DOWNLOADING) {
-                                                  setState(() {
-                                                    moreText = "installer";
-                                                  });
-                                                }
-                                              },
-                                            );
-                                          } else {
-                                            updateTitle =
-                                                "Version $updateNumber";
-                                            moreText = "installer";
-                                            cardSize = 250;
-                                            updateContent =
-                                                "Description :\n\n$updateDescription\n\nTaille : **$updateSize**";
-                                          }
-                                        });
-                                      },
-                                      child: moreText == "updating"
-                                          ? LinearProgressIndicator(
-                                              valueColor:
-                                                  new AlwaysStoppedAnimation<
-                                                      Color>(
-                                                Theme.of(context).accentColor,
-                                              ),
-                                            )
-                                          : Text(
-                                              moreText,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
                 TitleSection("Informations personnelles",
                     iconButton: IconButton(
                         icon: Icon(showPersonnalData

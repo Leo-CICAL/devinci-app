@@ -1,7 +1,7 @@
 name: devinci
 description: devinci portail app
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.2.4+1
+version: 1.2.4+2
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -29,7 +29,6 @@ dependencies:
   path_provider: ^1.6.14 # permet de sauvegarder des fichiers dans des dossiers approprié au sein des appareils
   version: ^1.2.0 # permet de récupérer des informations de bases sur l'application
   shared_preferences: ^0.5.10 # permet de modifier les shared_preferences
-  ota_update: ^2.4.1 # [Android Only] permet de télécharger une mise à jour de l'application et de l'installer sans passer par le play store
   flutter_markdown: ^0.4.3 # permet de convertir du Markdown en RichText, utilisé pour l'affichage du changelog des mise à jour
   modal_bottom_sheet: ^0.2.0+1 # permet d'afficher un modal bottom sheet, utilisé pour afficher la page de paramètres
   flutter_phoenix: ^0.1.0 # permet de relancer l'application sans véritablement la quitter, une sorte de refresh, utile lorsque l'utilisateur se déconnecte

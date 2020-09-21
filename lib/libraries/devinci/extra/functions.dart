@@ -490,7 +490,9 @@ Future<void> initPlatformState() async {
       HttpClient client = new HttpClient();
       client.connectionTimeout = const Duration(seconds: 4);
       HttpClientRequest req = await client.getUrl(
-        Uri.parse('https://devinci.araulin.tech/n.json'),
+        Uri.parse(Platform.isAndroid
+            ? 'https://devinci.araulin.tech/na.json'
+            : 'https://devinci.araulin.tech/ni.json'),
       );
       HttpClientResponse res = await req.close();
       String body = await res.transform(utf8.decoder).join();

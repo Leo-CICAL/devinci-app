@@ -378,13 +378,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0+1"
-  ota_update:
-    dependency: "direct main"
-    description:
-      name: ota_update
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.4.1"
   outline_material_icons:
     dependency: "direct main"
     description:
