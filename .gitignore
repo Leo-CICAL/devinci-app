@@ -8,3 +8,4 @@ lib/config.dart
 .flutter-plugins
 
 .flutter-plugins-dependencies
+android/key.properties
