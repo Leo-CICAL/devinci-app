@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:isolate';
 import 'package:devinci/pages/login.dart';
 import 'package:devinci/libraries/feedback/feedback.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,6 +22,7 @@ import './config.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,42 +68,38 @@ Future<Null> main() async {
 
   // Fin init notifications
 
-  // Ceci capture les erreurs renvoyées par Flutter
-  FlutterError.onError = (FlutterErrorDetails details) async {
-    if (isInDebugMode) {
-      // en développement on print dans la console
-      FlutterError.dumpErrorToConsole(details);
-    } else {
-      // En mode production on renvoie les données à la Zone qui va s'occuper de les transferer a Sentry.
-      Zone.current.handleUncaughtError(details.exception, details.stack);
-    }
-  };
+  // // Ceci capture les erreurs renvoyées par Flutter
+  // FlutterError.onError = (FlutterErrorDetails details) async {
+  //   if (isInDebugMode) {
+  //     // en développement on print dans la console
+  //     FlutterError.dumpErrorToConsole(details);
+  //   } else {
+  //     // En mode production on renvoie les données à la Zone qui va s'occuper de les transferer a Sentry.
+  //     Zone.current.handleUncaughtError(details.exception, details.stack);
+  //   }
+  // };
 
-  // This creates a [Zone] that contains the Flutter application and establishes
-  // an error handler that captures errors and reports them.
-  //
-  // Using a zone makes sure that as many errors as possible are captured,
-  // including those thrown from [Timer]s, microtasks, I/O, and those forwarded
-  // from the `FlutterError` handler.
-  //
-  // More about zones:
-  //
-  // - https://api.dartlang.org/stable/1.24.2/dart-async/Zone-class.html
-  // - https://www.dartlang.org/articles/libraries/zones
-  runZonedGuarded<Future<Null>>(() async {
-    runApp(
-      BetterFeedback(
-          // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
-          child: Phoenix(
-            // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
-            child: MyApp(),
-          ),
-          onFeedback: betterFeedbackOnFeedback),
+  Crashlytics.instance.enableInDevMode = true;
+
+  // Pass all uncaught errors from the framework to Crashlytics.
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+  Isolate.current.addErrorListener(RawReceivePort((pair) async {
+    final List<dynamic> errorAndStacktrace = pair;
+    await Crashlytics.instance.recordError(
+      errorAndStacktrace.first,
+      errorAndStacktrace.last,
     );
-  }, (error, stackTrace) async {
-    //si une erreur est détectée par la Zone
-    await reportError(error, stackTrace);
-  });
+  }).sendPort);
+  runApp(
+    BetterFeedback(
+        // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
+        child: Phoenix(
+          // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
+          child: MyApp(),
+        ),
+        onFeedback: betterFeedbackOnFeedback),
+  );
+
   // Register to receive BackgroundFetch events after app is terminated.
   // Requires {stopOnTerminate: false, enableHeadless: true}
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);

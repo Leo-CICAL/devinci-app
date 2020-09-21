@@ -182,6 +182,12 @@
       "languageVersion": "2.1"
     },
     {
+      "name": "firebase_crashlytics",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_crashlytics-0.1.4+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "flutter",
       "rootUri": "file:///C:/src/flutter/packages/flutter",
       "packageUri": "lib/",
@@ -674,7 +680,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-09-21T09:09:50.493674Z",
+  "generated": "2020-09-21T09:34:36.279578Z",
   "generator": "pub",
   "generatorVersion": "2.9.2"
 }
