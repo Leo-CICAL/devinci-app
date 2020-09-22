@@ -38,6 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void runBeforeBuild() async {
+    setScreen('Settings', '_SettingsPageState');
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     appVersion = packageInfo.version;
     int bgIntTime = globals.prefs.getInt('bgTime') ?? 0;

@@ -463,6 +463,48 @@ void betterFeedbackOnFeedback(
   await FlutterEmailSender.send(email);
 }
 
+Future<void> log(String name, Map<String, dynamic> params) async {
+  await globals.analytics.logEvent(
+    name: name,
+    parameters: params,
+  );
+  print('logged : ' + name + ' | ' + params.toString());
+}
+
+Future<void> loog(String eventName, {Map<String, dynamic> params = null}) {
+  switch (eventName) {
+    case 'AppOpen':
+      globals.analytics.logAppOpen();
+      print('logged : AppOpen');
+      break;
+    case 'Login':
+      globals.analytics.logLogin();
+      print('logged : Login');
+      break;
+    case 'Select':
+      if (params != null && params['type'] != null && params['item'] != null) {
+        globals.analytics.logSelectContent(
+          contentType: params['type'],
+          itemId: params['item'],
+        );
+        print('logged : Select | ' + params.toString());
+      } else {
+        print('error');
+      }
+      break;
+    default:
+      print('nothing logged for : ' + eventName);
+  }
+}
+
+Future<void> setScreen(String name, String classe) async {
+  await globals.analytics.setCurrentScreen(
+    screenName: name,
+    screenClassOverride: classe,
+  );
+  print('logged : setScreen | name : ' + name + ' | class : ' + classe);
+}
+
 Future<void> initPlatformState() async {
   // Configure BackgroundFetch.
   BackgroundFetch.configure(

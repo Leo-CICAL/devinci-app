@@ -33,8 +33,7 @@
       <change afterPath="$PROJECT_DIR$/.idea/modules/1020812990/path_provider.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/modules/1052669442/connectivity_macos.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/modules/525504520/connectivity_for_web.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/82172161/ota_update.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-anydpi/icon_absences.xml" afterDir="false" />
+       <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-anydpi/icon_absences.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-anydpi/icon_offline.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-anydpi/icon_presence.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/icon_absences.png" afterDir="false" />
@@ -65,7 +64,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/modules/-293789032/android-flutter_statusbarcolor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-293789032/android-flutter_statusbarcolor.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/-299235885/flutter_full_pdf_viewer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-299235885/flutter_full_pdf_viewer.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/-333525210/android-device_info.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-333525210/android-device_info.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/-608389313/android-ota_update.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/-729873311/flutter_local_notifications.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-729873311/flutter_local_notifications.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/-817814400/android-shared_preferences.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/1207715245/android-flutter_email_sender.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1207715245/android-flutter_email_sender.iml" afterDir="false" />

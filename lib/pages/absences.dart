@@ -25,6 +25,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
       RefreshController(initialRefresh: false);
 
   void runBeforeBuild() async {
+    setScreen('Absences', '_AbsencesPageState');
     if (!globals.user.absences["done"]) {
       absences = await globals.store.record('absences').get(globals.db);
       if (mounted)

@@ -69,11 +69,6 @@
     <remote-repository>
       <option name="id" value="maven6" />
       <option name="name" value="maven6" />
-      <option name="url" value="file:$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/ota_update-2.3.0/android/libs" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="maven6" />
-      <option name="name" value="maven6" />
       <option name="url" value="file:$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/package_info-0.4.1/android/libs" />
     </remote-repository>
     <remote-repository>
@@ -170,11 +165,6 @@
       <option name="id" value="maven6" />
       <option name="name" value="maven6" />
       <option name="url" value="file:$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_linux-0.0.2+1/android/libs" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="maven6" />
-      <option name="name" value="maven6" />
-      <option name="url" value="file:$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/ota_update-2.4.1/android/libs" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="maven6" />

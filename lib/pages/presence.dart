@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/libraries/flutter_progress_button/flutter_progress_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class _PresencePageState extends State<PresencePage> {
   ButtonState buttonState = ButtonState.normal;
 
   void runBeforeBuild() async {
+    setScreen('Presence', '_PresencePageState');
     await globals.user.getPresence(force: true);
     if (mounted)
       setState(() {

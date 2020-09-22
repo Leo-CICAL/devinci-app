@@ -31,8 +31,11 @@ class _LoginPageState extends State<LoginPage> {
   bool show = false;
 
   void runBeforeBuild() async {
+    loog('AppOpen');
+    setScreen('Login', '_LoginPageState');
     String username;
     String password;
+    //analytics will only be used as much as right now during test phase to have access to the full context of any error.
 
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (!globals.isConnected) {
@@ -49,10 +52,12 @@ class _LoginPageState extends State<LoginPage> {
     password = await globals.storage.read(key: "password");
 
     if (username != null && password != null) {
-      print("credentials exists");
+      print("credentials_exists");
+      log('login', {'credentials_exists': true});
       globals.user = new User(username, password);
       try {
         await globals.user.init();
+        log('login', {'credentials_good': true});
       } catch (exception, stacktrace) {
         setState(() {
           show = true;
@@ -63,6 +68,7 @@ class _LoginPageState extends State<LoginPage> {
         if (globals.user.code == 401) {
           //credentials are wrong
           myControllerPassword.text = "";
+          log('login', {'credentials_good': false});
         } else {
           await reportError(
               "main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception",
@@ -90,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
 
         _formKey.currentState.validate();
       }
+      loog('Login');
       Navigator.push(
         context,
         CupertinoPageRoute(
@@ -207,23 +214,83 @@ class _LoginPageState extends State<LoginPage> {
                                     if (globals.user != null)
                                       globals.user.error = false;
                                     if (_formKey.currentState.validate()) {
-                                      print("valid");
-                                      setState(() {
-                                        buttonState = ButtonState.inProgress;
+                                      loog('Select', params: {
+                                        'type': 'login',
+                                        'item': 'keyboard'
                                       });
-                                      globals.user = new User(
-                                          myControllerUsername.text,
-                                          myControllerPassword.text);
-                                      try {
-                                        await globals.user.init();
-                                        Navigator.push(
-                                          context,
-                                          CupertinoPageRoute(
-                                            builder: (context) => MainPage(),
-                                          ),
-                                        );
-                                      } catch (exception, stacktrace) {
-                                        print(exception);
+                                      if (globals.user != null)
+                                        globals.user.error = false;
+                                      if (_formKey.currentState.validate()) {
+                                        log('login',
+                                            {'credentials_valid': true});
+                                        print("valid");
+                                        setState(() {
+                                          buttonState = ButtonState.inProgress;
+                                        });
+                                        globals.user = new User(
+                                            myControllerUsername.text,
+                                            myControllerPassword.text);
+                                        try {
+                                          await globals.user.init();
+                                          log('login',
+                                              {'credentials_good': true});
+                                          Navigator.push(
+                                            context,
+                                            CupertinoPageRoute(
+                                              builder: (context) => MainPage(),
+                                            ),
+                                          );
+                                        } catch (exception, stacktrace) {
+                                          print(exception);
+                                          setState(() {
+                                            buttonState = ButtonState.error;
+                                          });
+                                          Timer(
+                                              Duration(milliseconds: 500),
+                                              () => setState(() {
+                                                    buttonState =
+                                                        ButtonState.normal;
+                                                  }));
+                                          //user.init() throw error if credentials are wrong or if an error occurred during the process
+                                          if (globals.user.code == 401) {
+                                            //credentials are wrong
+                                            myControllerPassword.text = "";
+                                            log('login',
+                                                {'credentials_good': false});
+                                          } else {
+                                            await reportError(
+                                                'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
+                                                stacktrace);
+
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                // return object of type Dialog
+                                                return AlertDialog(
+                                                  title: new Text("Erreur"),
+                                                  content: new Text(
+                                                      "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: $exception"),
+                                                  actions: <Widget>[
+                                                    // usually buttons at the bottom of the dialog
+                                                    new FlatButton(
+                                                      child: new Text("Fermer"),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          }
+
+                                          _formKey.currentState.validate();
+                                        }
+                                      } else {
+                                        log('login',
+                                            {'credentials_valid': false});
+                                        print("invalid");
                                         setState(() {
                                           buttonState = ButtonState.error;
                                         });
@@ -233,39 +300,6 @@ class _LoginPageState extends State<LoginPage> {
                                                   buttonState =
                                                       ButtonState.normal;
                                                 }));
-                                        //user.init() throw error if credentials are wrong or if an error occurred during the process
-                                        if (globals.user.code == 401) {
-                                          //credentials are wrong
-                                          myControllerPassword.text = "";
-                                        } else {
-                                          await reportError(
-                                              'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
-                                              stacktrace);
-
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              // return object of type Dialog
-                                              return AlertDialog(
-                                                title: new Text("Erreur"),
-                                                content: new Text(
-                                                    "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: $exception"),
-                                                actions: <Widget>[
-                                                  // usually buttons at the bottom of the dialog
-                                                  new FlatButton(
-                                                    child: new Text("Fermer"),
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        }
-
-                                        _formKey.currentState.validate();
                                       }
                                     } else {
                                       print("invalid");
@@ -310,9 +344,14 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   ),
                                   onPressed: () async {
+                                    loog('Select', params: {
+                                      'type': 'login',
+                                      'item': 'button'
+                                    });
                                     if (globals.user != null)
                                       globals.user.error = false;
                                     if (_formKey.currentState.validate()) {
+                                      log('login', {'credentials_valid': true});
                                       print("valid");
                                       setState(() {
                                         buttonState = ButtonState.inProgress;
@@ -322,6 +361,8 @@ class _LoginPageState extends State<LoginPage> {
                                           myControllerPassword.text);
                                       try {
                                         await globals.user.init();
+                                        log('login',
+                                            {'credentials_good': true});
                                         Navigator.push(
                                           context,
                                           CupertinoPageRoute(
@@ -343,6 +384,8 @@ class _LoginPageState extends State<LoginPage> {
                                         if (globals.user.code == 401) {
                                           //credentials are wrong
                                           myControllerPassword.text = "";
+                                          log('login',
+                                              {'credentials_good': false});
                                         } else {
                                           await reportError(
                                               'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
@@ -374,6 +417,8 @@ class _LoginPageState extends State<LoginPage> {
                                         _formKey.currentState.validate();
                                       }
                                     } else {
+                                      log('login',
+                                          {'credentials_valid': false});
                                       print("invalid");
                                       setState(() {
                                         buttonState = ButtonState.error;
@@ -406,6 +451,8 @@ class _LoginPageState extends State<LoginPage> {
                   FlatButton(
                       child: Text('CGU'),
                       onPressed: () {
+                        loog('Select',
+                            params: {'type': 'footer', 'item': 'CGU'});
                         showMarkdownPage(
                           applicationIcon: SizedBox(
                             width: 100,
@@ -431,6 +478,8 @@ class _LoginPageState extends State<LoginPage> {
                   FlatButton(
                       child: Text('Politique de confidentialité'),
                       onPressed: () {
+                        loog('Select',
+                            params: {'type': 'footer', 'item': 'privacy'});
                         showMarkdownPage(
                           applicationIcon: SizedBox(
                             width: 100,

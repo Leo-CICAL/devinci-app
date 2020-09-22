@@ -69,6 +69,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   void runBeforeBuild() async {
+    setScreen('User', '_UserPageState');
     for (int i = 0; i < 10; i++) {
       docCardDetail.add(false);
       docCardData.add({"frShowButton": true, "enShowButton": true});
