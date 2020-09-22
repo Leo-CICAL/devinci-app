@@ -10,6 +10,7 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:http/http.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_core/core.dart';
@@ -23,14 +24,15 @@ import './config.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
-  Crashlytics.instance.enableInDevMode = true;
+
   // Pass all uncaught errors from the framework to Crashlytics.
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
   runApp(MyApp());
 
@@ -93,15 +95,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  bool _isPerformanceCollectionEnabled = true;
   @override
   void initState() {
     super.initState();
     globals.currentTheme.addListener(() {
       print("changes");
-      setState(() {});
+      if (mounted) setState(() {});
     });
     globals.analytics = FirebaseAnalytics();
     globals.observer = FirebaseAnalyticsObserver(analytics: globals.analytics);
+    globals.performance = FirebasePerformance.instance;
+    _togglePerformanceCollection();
     WidgetsBinding.instance.addObserver(this);
     initPlatformState();
   }
@@ -110,6 +115,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  Future<void> _togglePerformanceCollection() async {
+    await globals.performance
+        .setPerformanceCollectionEnabled(!_isPerformanceCollectionEnabled);
+
+    final bool isEnabled =
+        await globals.performance.isPerformanceCollectionEnabled();
   }
 
   @override
@@ -155,7 +168,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         textTheme: TextTheme(
           headline1: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 36,
+            fontSize: 32,
             color: Colors.black,
           ),
           headline2: TextStyle(
@@ -197,7 +210,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         textTheme: TextTheme(
           headline1: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 36,
+            fontSize: 32,
             color: Colors.white,
           ),
           headline2: TextStyle(

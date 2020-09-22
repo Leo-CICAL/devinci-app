@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';
 import 'package:path_provider/path_provider.dart';
@@ -234,8 +235,9 @@ class User {
         await globals.storage.read(key: "SimpleSAMLAuthToken") ?? "";
 
     //retrieve data from secure storage
-    globals.crashConsent = globals.prefs.getString('crashConsent');
-
+    globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'true';
+    await FirebaseCrashlytics.instance
+        .setCrashlyticsCollectionEnabled(globals.crashConsent == 'true');
     globals.analyticsConsent =
         globals.prefs.getBool('analyticsConsent') ?? true;
     await globals.analytics
@@ -611,6 +613,7 @@ class User {
       //print("get Data");
       if (response.statusCode == 200) {
         //print(body);
+
         var doc = parse(body);
         //print(doc.outerHtml);
         List<Element> ns = doc.querySelectorAll("#main > div > .row-fluid");
@@ -738,62 +741,73 @@ class User {
         if (res.statusCode == 200) {
           print("got absences");
           String body = await res.transform(utf8.decoder).join();
-          var doc = parse(body);
-          //print(doc.outerHtml);
-          List<Element> spans =
-              doc.querySelectorAll(".tab-pane > header > span");
-          Element nTB = doc
-              .querySelector(".tab-pane > header > span.label.label-warning");
-          //print(nTB);
-          String nTM =
-              new RegExp(r': (.*?)"').firstMatch(nTB.text + '"').group(1);
-          this.absences["nT"] = int.parse(nTM);
+          if (body.indexOf('Validation des règlements') < 0) {
+            var doc = parse(body);
+            //print(doc.outerHtml);
+            List<Element> spans =
+                doc.querySelectorAll(".tab-pane > header > span");
+            Element nTB = doc
+                .querySelector(".tab-pane > header > span.label.label-warning");
+            //print(nTB);
+            String nTM =
+                new RegExp(r': (.*?)"').firstMatch(nTB.text + '"').group(1);
+            this.absences["nT"] = int.parse(nTM);
 
-          String s1M =
-              new RegExp(r': (.*?)"').firstMatch(spans[0].text + '"').group(1);
-          this.absences["s1"] = int.parse(s1M);
+            String s1M = new RegExp(r': (.*?)"')
+                .firstMatch(spans[0].text + '"')
+                .group(1);
+            this.absences["s1"] = int.parse(s1M);
 
-          Element s2B = doc
-              .querySelector(".tab-pane > header > span.label.label-success");
-          String s2M =
-              new RegExp(r': (.*?)"').firstMatch(s2B.text + '"').group(1);
-          this.absences["s2"] = int.parse(s2M);
+            Element s2B = doc
+                .querySelector(".tab-pane > header > span.label.label-success");
+            String s2M =
+                new RegExp(r': (.*?)"').firstMatch(s2B.text + '"').group(1);
+            this.absences["s2"] = int.parse(s2M);
 
-          String seanceM = new RegExp(r'"(.*?) séance')
-              .firstMatch('"' + spans[3].text)
-              .group(1);
-          this.absences["seances"] = int.parse(seanceM);
-          List<Element> trs =
-              doc.querySelectorAll(".tab-pane.active > table > tbody > tr");
-          this.absences["liste"].clear();
-          trs.forEach((tr) {
-            Map<String, String> elem = {
-              "cours": "",
-              "type": "",
-              "jour": "",
-              "creneau": "",
-              "duree": "",
-              "modalite": ""
-            };
+            String seanceM = new RegExp(r'"(.*?) séance')
+                .firstMatch('"' + spans[3].text)
+                .group(1);
+            this.absences["seances"] = int.parse(seanceM);
+            List<Element> trs =
+                doc.querySelectorAll(".tab-pane.active > table > tbody > tr");
+            this.absences["liste"].clear();
+            trs.forEach((tr) {
+              Map<String, String> elem = {
+                "cours": "",
+                "type": "",
+                "jour": "",
+                "creneau": "",
+                "duree": "",
+                "modalite": ""
+              };
 
-            List<Element> tds = tr.querySelectorAll("td");
-            elem["cours"] = tds[1]
-                .text
-                .replaceAll(tds[1].querySelector("span").text, "")
-                .replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-            elem["type"] =
-                tds[2].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-            elem["jour"] =
-                tds[3].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-            elem["creneau"] =
-                tds[4].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-            elem["duree"] =
-                tds[5].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-            elem["modalite"] =
-                tds[6].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-            this.absences["liste"].add(elem);
-          });
-          print(this.absences["liste"]);
+              List<Element> tds = tr.querySelectorAll("td");
+              elem["cours"] = tds[1]
+                  .text
+                  .replaceAll(tds[1].querySelector("span").text, "")
+                  .replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
+              elem["type"] =
+                  tds[2].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
+              elem["jour"] =
+                  tds[3].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
+              elem["creneau"] =
+                  tds[4].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
+              elem["duree"] =
+                  tds[5].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
+              elem["modalite"] =
+                  tds[6].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
+              this.absences["liste"].add(elem);
+            });
+            print(this.absences["liste"]);
+          } else if (body.indexOf('Validation des règlements') > -1) {
+            final snackBar = material.SnackBar(
+              content: material.Text(
+                  "Validation des règlements requise sur le portail."),
+              duration: const Duration(seconds: 10),
+            );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+            material.Scaffold.of(globals.currentContext).showSnackBar(snackBar);
+          }
           this.absences["done"] = true;
           await globals.store.record('absences').put(globals.db, this.absences);
         } else {
@@ -841,7 +855,7 @@ class User {
 
         HttpClientRequest req = await client.getUrl(
           Uri.parse(
-            //'http://192.168.1.140:5500/devinci_n.html',
+            //'http://172.24.112.1:5500/corentin.html',
             'https://www.leonard-de-vinci.net/?my=notes',
           ),
         );
@@ -856,7 +870,8 @@ class User {
         l("NOTES - STATUS CODE : ${res.statusCode}");
         if (res.statusCode == 200) {
           String body = await res.transform(utf8.decoder).join();
-          if (body.indexOf('Aucune note') < 0) {
+          if (body.indexOf('Aucune note') < 0 &&
+              body.indexOf('Validation des règlements') < 0) {
             var doc = parse(body);
 
             List<Element> divs =
@@ -1059,6 +1074,14 @@ class User {
                 i++;
               }
             }
+          } else if (body.indexOf('Validation des règlements') > -1) {
+            final snackBar = material.SnackBar(
+              content: material.Text(
+                  "Validation des règlements requise sur le portail."),
+              duration: const Duration(seconds: 10),
+            );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+            material.Scaffold.of(globals.currentContext).showSnackBar(snackBar);
           }
         } else {
           this.error = true;
@@ -1184,161 +1207,180 @@ class User {
         HttpClientResponse res = await req.close();
         if (res.statusCode == 200) {
           String body = await res.transform(utf8.decoder).join();
-          var doc = parse(body);
-          //Element cert = doc.querySelector("#main > div > div:nth-child(5) > div:nth-child(2) > div > table > tbody > tr > td:nth-child(2)");
-          try {
-            int certIndex = 1;
-            int imaginrIndex = 1;
-            for (int i = 1;
-                i <
+          if (body.indexOf('Validation des règlements') < 0) {
+            var doc = parse(body);
+            //Element cert = doc.querySelector("#main > div > div:nth-child(5) > div:nth-child(2) > div > table > tbody > tr > td:nth-child(2)");
+            try {
+              int certIndex = 1;
+              int imaginrIndex = 1;
+              for (int i = 1;
+                  i <
+                      doc
+                          .querySelectorAll(
+                              ".social-box.social-bordered.span6")[1]
+                          .querySelectorAll("tr")
+                          .length;
+                  i++) {
+                print('[1]' +
                     doc
                         .querySelectorAll(
                             ".social-box.social-bordered.span6")[1]
-                        .querySelectorAll("tr")
+                        .querySelectorAll("tr")[i]
+                        .querySelectorAll("td")[1]
+                        .text);
+                if (doc
+                        .querySelectorAll(
+                            ".social-box.social-bordered.span6")[1]
+                        .querySelectorAll("tr")[i]
+                        .querySelectorAll("td")[0]
+                        .text
+                        .indexOf("scolarité") >
+                    -1) {
+                  certIndex = i;
+                } else if (doc
+                        .querySelectorAll(
+                            ".social-box.social-bordered.span6")[1]
+                        .querySelectorAll("tr")[i]
+                        .querySelectorAll("td")[0]
+                        .text
+                        .indexOf("ImaginR") >
+                    -1) {
+                  imaginrIndex = i;
+                }
+              }
+              List<Element> certElements = doc
+                  .querySelectorAll(".social-box.social-bordered.span6")[1]
+                  .querySelectorAll("tr")[certIndex]
+                  .querySelectorAll("td");
+
+              this.documents["certificat"]["annee"] = certElements[1].text;
+              this.documents["certificat"]["fr_url"] =
+                  "https://www.leonard-de-vinci.net" +
+                      certElements[2]
+                          .querySelectorAll("a")[0]
+                          .attributes["href"];
+              this.documents["certificat"]["en_url"] =
+                  "https://www.leonard-de-vinci.net" +
+                      certElements[2]
+                          .querySelectorAll("a")[1]
+                          .attributes["href"];
+
+              print('[2]' + this.documents["certificat"]["annee"]);
+              print('[3]' + this.documents["certificat"]["fr_url"]);
+              print('[4]' + this.documents["certificat"]["en_url"]);
+
+              List<Element> imaginrElements = doc
+                  .querySelectorAll(".social-box.social-bordered.span6")[1]
+                  .querySelectorAll("tr")[imaginrIndex]
+                  .querySelectorAll("td");
+
+              this.documents["imaginr"]["annee"] = imaginrElements[1].text;
+              this.documents["imaginr"]["url"] =
+                  "https://www.leonard-de-vinci.net" +
+                      imaginrElements[2]
+                          .querySelectorAll("a")[0]
+                          .attributes["href"];
+            } catch (e) {
+              FirebaseCrashlytics.instance.recordError(e, e.stacktrace);
+            }
+            int calendrierIndex = 4;
+            for (int i = 0;
+                i <
+                    doc
+                        .querySelectorAll(
+                            ".social-box.social-bordered.span6")[0]
+                        .querySelectorAll("a")
                         .length;
                 i++) {
-              print('[1]' +
-                  doc
-                      .querySelectorAll(".social-box.social-bordered.span6")[1]
-                      .querySelectorAll("tr")[i]
-                      .querySelectorAll("td")[1]
-                      .text);
               if (doc
-                      .querySelectorAll(".social-box.social-bordered.span6")[1]
-                      .querySelectorAll("tr")[i]
-                      .querySelectorAll("td")[0]
-                      .text
-                      .indexOf("scolarité") >
-                  -1) {
-                certIndex = i;
-              } else if (doc
-                      .querySelectorAll(".social-box.social-bordered.span6")[1]
-                      .querySelectorAll("tr")[i]
-                      .querySelectorAll("td")[0]
-                      .text
-                      .indexOf("ImaginR") >
-                  -1) {
-                imaginrIndex = i;
-              }
-            }
-            List<Element> certElements = doc
-                .querySelectorAll(".social-box.social-bordered.span6")[1]
-                .querySelectorAll("tr")[certIndex]
-                .querySelectorAll("td");
-
-            this.documents["certificat"]["annee"] = certElements[1].text;
-            this.documents["certificat"]["fr_url"] =
-                "https://www.leonard-de-vinci.net" +
-                    certElements[2].querySelectorAll("a")[0].attributes["href"];
-            this.documents["certificat"]["en_url"] =
-                "https://www.leonard-de-vinci.net" +
-                    certElements[2].querySelectorAll("a")[1].attributes["href"];
-
-            print('[2]' + this.documents["certificat"]["annee"]);
-            print('[3]' + this.documents["certificat"]["fr_url"]);
-            print('[4]' + this.documents["certificat"]["en_url"]);
-
-            List<Element> imaginrElements = doc
-                .querySelectorAll(".social-box.social-bordered.span6")[1]
-                .querySelectorAll("tr")[imaginrIndex]
-                .querySelectorAll("td");
-
-            this.documents["imaginr"]["annee"] = imaginrElements[1].text;
-            this.documents["imaginr"]["url"] =
-                "https://www.leonard-de-vinci.net" +
-                    imaginrElements[2]
-                        .querySelectorAll("a")[0]
-                        .attributes["href"];
-          } catch (e) {
-            Crashlytics.instance.recordError(e, e.stacktrace);
-          }
-          int calendrierIndex = 4;
-          for (int i = 0;
-              i <
-                  doc
-                      .querySelectorAll(".social-box.social-bordered.span6")[0]
-                      .querySelectorAll("a")
-                      .length;
-              i++) {
-            if (doc
-                        .querySelectorAll(
-                            ".social-box.social-bordered.span6")[0]
-                        .querySelectorAll("a")[i]
-                        .text
-                        .indexOf("CALENDRIER ACADEMIQUE") >
-                    -1 &&
-                doc
-                        .querySelectorAll(
-                            ".social-box.social-bordered.span6")[0]
-                        .querySelectorAll("a")[i]
-                        .text
-                        .indexOf("APPRENTISSAGE") <
-                    0) {
-              calendrierIndex = i;
-            }
-          }
-
-          this.documents["calendrier"]["url"] =
-              "https://www.leonard-de-vinci.net" +
-                  doc
-                      .querySelectorAll(".social-box.social-bordered.span6")[0]
-                      .querySelectorAll("a")[calendrierIndex]
-                      .attributes["href"];
-          this.documents["calendrier"]["annee"] = RegExp(r"\d{4}-\d{4}")
-              .firstMatch(doc
-                  .querySelectorAll(".social-box.social-bordered.span6")[0]
-                  .querySelectorAll("a")[calendrierIndex]
-                  .text)
-              .group(0);
-
-          print('[5]' +
-              "calendrier : ${this.documents["calendrier"]["annee"]}|${this.documents["calendrier"]["url"]}");
-          try {
-            //documents liés aux notes :
-            req = await client.getUrl(
-              Uri.parse("https://www.leonard-de-vinci.net/?my=notes"),
-            );
-            req.followRedirects = false;
-            req.cookies.addAll([
-              new Cookie('alv', this.tokens["alv"]),
-              new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-              new Cookie('uids', this.tokens["uids"]),
-              new Cookie(
-                  'SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-            ]);
-            res = await req.close();
-            if (res.statusCode == 200) {
-              body = await res.transform(utf8.decoder).join();
-              doc = parse(body);
-              List<Element> filesA = doc
-                  .querySelectorAll(
-                      "div.body")[doc.querySelectorAll("div.body").length - 2]
-                  .querySelectorAll("a:not(.label)");
-              print('[6]' + filesA.toString());
-              this.documents["bulletins"].clear();
-              for (int i = 0; i < filesA.length; i += 2) {
-                this.documents["bulletins"].add({
-                  "name":
-                      filesA[i].text.substring(1, filesA[i].text.length - 1),
-                  "fr_url": "https://www.leonard-de-vinci.net" +
-                      filesA[i].attributes["href"],
-                  "en_url": "https://www.leonard-de-vinci.net" +
-                      filesA[i + 1].attributes["href"],
-                  "sub": RegExp(r'\s\s+(.*?)\s\s+')
-                      .firstMatch(doc
-                          .querySelectorAll("div.body")[
-                              doc.querySelectorAll("div.body").length - 2]
-                          .querySelector("header")
+                          .querySelectorAll(
+                              ".social-box.social-bordered.span6")[0]
+                          .querySelectorAll("a")[i]
                           .text
-                          .split("\n")
-                          .last)
-                      .group(1)
-                });
+                          .indexOf("CALENDRIER ACADEMIQUE") >
+                      -1 &&
+                  doc
+                          .querySelectorAll(
+                              ".social-box.social-bordered.span6")[0]
+                          .querySelectorAll("a")[i]
+                          .text
+                          .indexOf("APPRENTISSAGE") <
+                      0) {
+                calendrierIndex = i;
               }
-              print('[7]' + this.documents["bulletins"].toString());
             }
-          } catch (e) {
-            Crashlytics.instance.recordError(e, e.stacktrace);
+
+            this.documents["calendrier"]["url"] =
+                "https://www.leonard-de-vinci.net" +
+                    doc
+                        .querySelectorAll(
+                            ".social-box.social-bordered.span6")[0]
+                        .querySelectorAll("a")[calendrierIndex]
+                        .attributes["href"];
+            this.documents["calendrier"]["annee"] = RegExp(r"\d{4}-\d{4}")
+                .firstMatch(doc
+                    .querySelectorAll(".social-box.social-bordered.span6")[0]
+                    .querySelectorAll("a")[calendrierIndex]
+                    .text)
+                .group(0);
+
+            print('[5]' +
+                "calendrier : ${this.documents["calendrier"]["annee"]}|${this.documents["calendrier"]["url"]}");
+            try {
+              //documents liés aux notes :
+              req = await client.getUrl(
+                Uri.parse("https://www.leonard-de-vinci.net/?my=notes"),
+              );
+              req.followRedirects = false;
+              req.cookies.addAll([
+                new Cookie('alv', this.tokens["alv"]),
+                new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
+                new Cookie('uids', this.tokens["uids"]),
+                new Cookie(
+                    'SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
+              ]);
+              res = await req.close();
+              if (res.statusCode == 200) {
+                body = await res.transform(utf8.decoder).join();
+                doc = parse(body);
+                List<Element> filesA = doc
+                    .querySelectorAll(
+                        "div.body")[doc.querySelectorAll("div.body").length - 2]
+                    .querySelectorAll("a:not(.label)");
+                print('[6]' + filesA.toString());
+                this.documents["bulletins"].clear();
+                for (int i = 0; i < filesA.length; i += 2) {
+                  this.documents["bulletins"].add({
+                    "name":
+                        filesA[i].text.substring(1, filesA[i].text.length - 1),
+                    "fr_url": "https://www.leonard-de-vinci.net" +
+                        filesA[i].attributes["href"],
+                    "en_url": "https://www.leonard-de-vinci.net" +
+                        filesA[i + 1].attributes["href"],
+                    "sub": RegExp(r'\s\s+(.*?)\s\s+')
+                        .firstMatch(doc
+                            .querySelectorAll("div.body")[
+                                doc.querySelectorAll("div.body").length - 2]
+                            .querySelector("header")
+                            .text
+                            .split("\n")
+                            .last)
+                        .group(1)
+                  });
+                }
+                print('[7]' + this.documents["bulletins"].toString());
+              }
+            } catch (e) {
+              FirebaseCrashlytics.instance.recordError(e, e.stacktrace);
+            }
+          } else if (body.indexOf('Validation des règlements') > -1) {
+            final snackBar = material.SnackBar(
+              content: material.Text(
+                  "Validation des règlements requise sur le portail."),
+              duration: const Duration(seconds: 10),
+            );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+            material.Scaffold.of(globals.currentContext).showSnackBar(snackBar);
           }
         }
       }

@@ -147,7 +147,7 @@
     },
     {
       "name": "firebase_analytics",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_analytics-5.0.16",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_analytics-6.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.0"
     },
@@ -183,7 +183,19 @@
     },
     {
       "name": "firebase_crashlytics",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_crashlytics-0.1.4+1",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_crashlytics-0.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.8"
+    },
+    {
+      "name": "firebase_crashlytics_platform_interface",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_crashlytics_platform_interface-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "firebase_performance",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_performance-0.4.0",
       "packageUri": "lib/",
       "languageVersion": "2.0"
     },
@@ -662,7 +674,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-09-22T09:23:17.563968Z",
+  "generated": "2020-09-22T14:53:07.651846Z",
   "generator": "pub",
   "generatorVersion": "2.9.2"
 }

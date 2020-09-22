@@ -308,7 +308,7 @@ void reportToCrash(String err, StackTrace stackTrace) async {
   }
 
   print('Reporting to Crashlytics...');
-  Crashlytics.instance.recordError(err, stackTrace);
+  FirebaseCrashlytics.instance.recordError(err, stackTrace);
 }
 
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);

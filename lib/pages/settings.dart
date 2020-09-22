@@ -330,6 +330,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                     globals.prefs
                                         .setString('crashConsent', 'false');
                                   }
+                                  FirebaseCrashlytics.instance
+                                      .setCrashlyticsCollectionEnabled(
+                                          globals.crashConsent == 'true');
                                 });
                               },
                             ),
@@ -413,7 +416,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   right: 16,
                   top: 28,
                 ),
-                height: (7 * 46).toDouble(),
+                height: (6 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -526,36 +529,6 @@ class _SettingsPageState extends State<SettingsPage> {
                           Expanded(
                             child: Text(
                               "À Propos",
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.navigate_next,
-                                color: Color(0xffACACAC)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Crashlytics.instance.crash();
-                    }, // handle your onTap here
-                    child: Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              "Test erreur",
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
                           ),

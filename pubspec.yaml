@@ -20,7 +20,7 @@ dependencies:
   syncfusion_flutter_calendar: ^18.2.54
   syncfusion_localizations: ^18.2.54
   pull_to_refresh: ^1.6.1
-  flutter_statusbarcolor: ^0.2.3 # permet de changer la couleur de la barre d'état et de navifation sur android et ios
+  flutter_statusbarcolor: ^0.2.3 # permet de changer la couleur de la barre d'état et de navigation sur android et ios
   property_change_notifier: ^0.2.0 # permet de rebuild une interface si une variable change de valeur
   #sentry: ^3.0.1 # permet de faire remonter les bug/erreur
   device_info: ^0.4.2+7
@@ -49,8 +49,9 @@ dependencies:
   connectivity: ^0.4.9+2 # permet de connaître l'état de la connection internet de l'appareil
   flutter_siri_suggestions: ^1.0.2+hotfix1 #Flutter plugin for exposure on Siri Suggestions.
   firebase_core: "0.5.0"
-  firebase_analytics: ^5.0.2
-  firebase_crashlytics: ^0.1.4+1
+  firebase_analytics: ^6.0.0
+  firebase_crashlytics: ^0.2.0
+  firebase_performance: ^0.4.0
   slide_popup_dialog: ^0.0.2
   url_launcher: ^5.5.0
   flutter_localizations:
