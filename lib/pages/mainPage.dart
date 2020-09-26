@@ -60,46 +60,25 @@ class _MainPageState extends State<MainPage> {
             ),
             actions: <Widget>[
               <Widget>[
+                // IconButton(
+                //   icon: IconTheme(
+                //     data: Theme.of(context).accentIconTheme,
+                //     child: Icon(
+                //         globals.agendaView.calendarView == CalendarView.day
+                //             ? OMIcons.dateRange
+                //             : Icons.date_range),
+                //   ),
+                //   onPressed: () {
+
+                //   },
+                // ),
                 IconButton(
                   icon: IconTheme(
                     data: Theme.of(context).accentIconTheme,
-                    child: Icon(Icons.add),
+                    child: Icon(OMIcons.today),
                   ),
-                  onPressed: () {
-                    Navigator.push<Widget>(
-                      context,
-                      // ignore: always_specify_types
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => CoursEditor()),
-                    );
-                  },
-                ),
-                SizedBox.shrink(),
-                SizedBox.shrink(),
-                SizedBox.shrink(),
-                SizedBox.shrink(),
-                SizedBox.shrink(),
-                SizedBox.shrink(),
-              ].elementAt(globals.selectedPage),
-              <Widget>[
-                IconButton(
-                  icon: IconTheme(
-                    data: Theme.of(context).accentIconTheme,
-                    child: Icon(
-                        globals.agendaView.calendarView == CalendarView.day
-                            ? OMIcons.dateRange
-                            : Icons.date_range),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (globals.agendaView.calendarView == CalendarView.day) {
-                        globals.agendaView.calendarView = CalendarView.workWeek;
-                        globals.prefs.setBool('calendarViewDay', false);
-                      } else {
-                        globals.agendaView.calendarView = CalendarView.day;
-                        globals.prefs.setBool('calendarViewDay', true);
-                      }
-                    });
+                  onPressed: () async {
+                    globals.calendarController.displayDate = DateTime.now();
                   },
                 ),
                 SizedBox.shrink(),
@@ -136,22 +115,61 @@ class _MainPageState extends State<MainPage> {
                 ),
               ].elementAt(globals.selectedPage),
               <Widget>[
-                globals.isConnected
-                    ? (globals.isLoading.state(0)
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 14),
-                            child: CupertinoActivityIndicator(),
-                          )
-                        : IconButton(
-                            icon: IconTheme(
-                              data: Theme.of(context).accentIconTheme,
-                              child: Icon(OMIcons.refresh),
-                            ),
-                            onPressed: () {
-                              globals.isLoading.setState(0, true);
-                            },
-                          ))
-                    : SizedBox.shrink(),
+                // globals.isConnected
+                //     ? (globals.isLoading.state(0)
+                //         ? Padding(
+                //             padding: const EdgeInsets.symmetric(horizontal: 14),
+                //             child: CupertinoActivityIndicator(),
+                //           )
+                //         : IconButton(
+                //             icon: IconTheme(
+                //               data: Theme.of(context).accentIconTheme,
+                //               child: Icon(OMIcons.refresh),
+                //             ),
+                //             onPressed: () {
+                //
+                //             },
+                //           ))
+                //     : SizedBox.shrink(),
+                PopupMenuButton(
+                  captureInheritedThemes: true,
+                  icon: IconTheme(
+                    data: Theme.of(context).accentIconTheme,
+                    child: Icon(OMIcons.moreVert),
+                  ),
+                  onSelected: (String choice) {
+                    if (choice == "Rafraîchir") {
+                      globals.isLoading.setState(0, true);
+                    } else {
+                      setState(() {
+                        if (globals.agendaView.calendarView ==
+                            CalendarView.day) {
+                          globals.agendaView.calendarView =
+                              CalendarView.workWeek;
+                          globals.prefs.setBool('calendarViewDay', false);
+                        } else {
+                          globals.agendaView.calendarView = CalendarView.day;
+                          globals.prefs.setBool('calendarViewDay', true);
+                        }
+                      });
+                    }
+                  },
+                  padding: EdgeInsets.zero,
+                  // initialValue: choices[_selection],
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      globals.agendaView.calendarView == CalendarView.day
+                          ? "Semaine"
+                          : "Jour",
+                      "Rafraîchir"
+                    ].map((String choice) {
+                      return PopupMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
+                      );
+                    }).toList();
+                  },
+                ),
                 globals.isLoading.state(1)
                     ? Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -184,8 +202,10 @@ class _MainPageState extends State<MainPage> {
                         final snackBar =
                             SnackBar(content: Text('Vous êtes hors-ligne'));
 
-                        Scaffold.of(globals.currentContext)
-                            .showSnackBar(snackBar);
+                        try {
+                          Scaffold.of(globals.currentContext)
+                              .showSnackBar(snackBar);
+                        } catch (e) {}
                       },
                     ),
             ],
@@ -268,6 +288,24 @@ class _MainPageState extends State<MainPage> {
                 });
               }),
         ),
+        floatingActionButton: globals.selectedPage == 0
+            ? FloatingActionButton(
+                onPressed: () {
+                  Navigator.push<Widget>(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => CoursEditor(
+                              addButton: true,
+                            )),
+                  );
+                },
+                child: IconTheme(
+                  data: Theme.of(context).accentIconTheme,
+                  child: Icon(Icons.add, size: 32),
+                ),
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              )
+            : null,
       ),
     );
   }

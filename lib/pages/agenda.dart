@@ -14,6 +14,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:sembast/sembast.dart';
 
 Function setAgendaHeaderState;
+
 Color _selectedColor;
 MeetingDataSource _events;
 Cours _selectedCours;
@@ -94,6 +95,7 @@ class _AgendaPageState extends State<AgendaPage> {
     Intl.defaultLocale = "fr_FR";
     _selectedCours = null;
     _title = '';
+    globals.calendarController = CalendarController();
     super.initState();
     globals.isLoading.addListener(() async {
       print("isLoading");
@@ -184,6 +186,7 @@ class _AgendaPageState extends State<AgendaPage> {
                       child: SfCalendar(
                         view: globals.agendaView.calendarView,
                         onTap: onCalendarTapped,
+                        controller: globals.calendarController,
                         monthViewSettings: MonthViewSettings(
                             showAgenda: true, appointmentDisplayCount: 6),
                         dataSource: MeetingDataSource(globals.cours),
@@ -288,14 +291,28 @@ class MeetingDataSource extends CalendarDataSource {
 }
 
 class CoursEditor extends StatefulWidget {
+  final bool addButton;
+  const CoursEditor({Key key, this.addButton = false}) : super(key: key);
   @override
-  CoursEditorState createState() => CoursEditorState();
+  CoursEditorState createState() => CoursEditorState(this.addButton);
 }
 
 class CoursEditorState extends State<CoursEditor> {
+  final bool addButton;
+
+  CoursEditorState(this.addButton);
+
   Widget _getAppointmentEditor(
       BuildContext context, Color backgroundColor, Color defaultColor) {
-    if (_startTime == null) {
+    if (_startTime == null || addButton) {
+      _selectedCours = null;
+      _isAllDay = false;
+      _title = '';
+      _location = '';
+      _prof = '';
+      _flag = '';
+      _uid = '';
+      _groupe = '';
       final DateTime date = DateTime.now();
       _from = date;
       _to = date.add(const Duration(hours: 1));
@@ -773,7 +790,9 @@ class CoursEditorState extends State<CoursEditor> {
           appBar: AppBar(
             //backgroundColor: _colorCollection[_selectedColorIndex],
             title: Text(
-                _title == '' ? 'Nouvel évènement' : 'Détail de l\'évènement',
+                _title == '' || addButton
+                    ? 'Nouvel évènement'
+                    : 'Détail de l\'évènement',
                 style: Theme.of(context).textTheme.bodyText2),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             leading: IconTheme(
@@ -786,7 +805,7 @@ class CoursEditorState extends State<CoursEditor> {
                     Navigator.pop(context);
                   },
                 )),
-            actions: _uid.indexOf(':') > -1
+            actions: _uid.indexOf(':') > -1 && !addButton
                 ? null
                 : <Widget>[
                     IconTheme(
@@ -835,6 +854,7 @@ class CoursEditorState extends State<CoursEditor> {
                                           CalendarView.workWeek
                                       ? CalendarView.day
                                       : CalendarView.workWeek;
+
                               Navigator.pop(context);
                             })),
                   ],
