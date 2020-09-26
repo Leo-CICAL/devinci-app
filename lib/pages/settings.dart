@@ -17,6 +17,7 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:slide_popup_dialog/slide_popup_dialog.dart' as slideDialog;
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:in_app_review/in_app_review.dart';
 
 // ignore: must_be_immutable
 class SettingsPage extends StatefulWidget {
@@ -425,15 +426,20 @@ class _SettingsPageState extends State<SettingsPage> {
                     )),
                 child: Column(children: <Widget>[
                   GestureDetector(
-                    onTap: () async {
-                      final Email email = Email(
+                    onTap: () async { if (Platform.isAndroid) {
+                      final InAppReview inAppReview = InAppReview.instance;
+
+                      if (await inAppReview.isAvailable()) {
+                          inAppReview.requestReview();
+                      }
+                    } else { final Email email = Email(
                         body: '',
                         subject: 'Devinci - Feedback',
-                        recipients: ['antoine@araulin.eu'],
+                        recipients: ['devinci@araulin.eu'],
                         isHTML: false,
                       );
+                      await FlutterEmailSender.send(email); }
 
-                      await FlutterEmailSender.send(email);
                     }, // handle your onTap here
                     child: Container(
                       height: 46,

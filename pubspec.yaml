@@ -54,6 +54,7 @@ dependencies:
   firebase_performance: ^0.4.0
   slide_popup_dialog: ^0.0.2
   url_launcher: ^5.5.0
+  in_app_review: ^0.2.0+4
   flutter_localizations:
     sdk: flutter
 
