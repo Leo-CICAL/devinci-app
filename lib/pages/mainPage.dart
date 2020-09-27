@@ -60,18 +60,6 @@ class _MainPageState extends State<MainPage> {
             ),
             actions: <Widget>[
               <Widget>[
-                // IconButton(
-                //   icon: IconTheme(
-                //     data: Theme.of(context).accentIconTheme,
-                //     child: Icon(
-                //         globals.agendaView.calendarView == CalendarView.day
-                //             ? OMIcons.dateRange
-                //             : Icons.date_range),
-                //   ),
-                //   onPressed: () {
-
-                //   },
-                // ),
                 IconButton(
                   icon: IconTheme(
                     data: Theme.of(context).accentIconTheme,
@@ -115,22 +103,6 @@ class _MainPageState extends State<MainPage> {
                 ),
               ].elementAt(globals.selectedPage),
               <Widget>[
-                // globals.isConnected
-                //     ? (globals.isLoading.state(0)
-                //         ? Padding(
-                //             padding: const EdgeInsets.symmetric(horizontal: 14),
-                //             child: CupertinoActivityIndicator(),
-                //           )
-                //         : IconButton(
-                //             icon: IconTheme(
-                //               data: Theme.of(context).accentIconTheme,
-                //               child: Icon(OMIcons.refresh),
-                //             ),
-                //             onPressed: () {
-                //
-                //             },
-                //           ))
-                //     : SizedBox.shrink(),
                 PopupMenuButton(
                   captureInheritedThemes: true,
                   icon: IconTheme(
@@ -191,6 +163,17 @@ class _MainPageState extends State<MainPage> {
                       )
                     : SizedBox.shrink()
               ].elementAt(globals.selectedPage),
+              globals.selectedPage == 0
+                  ? globals.isConnected
+                      ? (globals.isLoading.state(0)
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 14),
+                              child: CupertinoActivityIndicator(),
+                            )
+                          : SizedBox.shrink())
+                      : SizedBox.shrink()
+                  : SizedBox.shrink(),
               globals.isConnected
                   ? SizedBox.shrink()
                   : IconButton(

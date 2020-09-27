@@ -10,6 +10,7 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:flutter_svg/svg.dart';
@@ -426,20 +427,22 @@ class _SettingsPageState extends State<SettingsPage> {
                     )),
                 child: Column(children: <Widget>[
                   GestureDetector(
-                    onTap: () async { if (Platform.isAndroid) {
-                      final InAppReview inAppReview = InAppReview.instance;
+                    onTap: () async {
+                      if (Platform.isAndroid) {
+                        final InAppReview inAppReview = InAppReview.instance;
 
-                      if (await inAppReview.isAvailable()) {
+                        if (await inAppReview.isAvailable()) {
                           inAppReview.requestReview();
+                        }
+                      } else {
+                        final Email email = Email(
+                          body: '',
+                          subject: 'Devinci - Feedback',
+                          recipients: ['devinci@araulin.eu'],
+                          isHTML: false,
+                        );
+                        await FlutterEmailSender.send(email);
                       }
-                    } else { final Email email = Email(
-                        body: '',
-                        subject: 'Devinci - Feedback',
-                        recipients: ['devinci@araulin.eu'],
-                        isHTML: false,
-                      );
-                      await FlutterEmailSender.send(email); }
-
                     }, // handle your onTap here
                     child: Container(
                       height: 46,
@@ -476,9 +479,14 @@ class _SettingsPageState extends State<SettingsPage> {
                             'Version {{ version }}, build #{{ buildNumber }}',
                         applicationLegalese:
                             'Copyright © Antoine Raulin, {{ year }}',
-                        applicationDescription: const Text(
-                          "Devinci est une application qui a pour but de faciliter l'utilisation du portail étudiant du pôle Léonard De Vinci.",
-                          textAlign: TextAlign.justify,
+                        applicationDescription: Container(
+                          height: 160,
+                          child: Markdown(
+                              padding: const EdgeInsets.all(0),
+                              styleSheet: MarkdownStyleSheet(
+                                  p: Theme.of(context).textTheme.bodyText2),
+                              data:
+                                  "Devinci est une application qui a pour but de faciliter l'utilisation du portail étudiant du pôle Léonard De Vinci.\n ## Remerciements : \n - Robin Bouchet \n - Antoine Tête (dev)"),
                         ),
                         children: <Widget>[
                           MarkdownPageListTile(
