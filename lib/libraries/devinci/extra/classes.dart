@@ -77,7 +77,8 @@ class User {
     'title': '',
     'horaires': '',
     'prof': '',
-    'seance_pk': ''
+    'seance_pk': '',
+    'zoom': '',
   };
 
   Map<String, dynamic> documents = {
@@ -1439,6 +1440,9 @@ class User {
               });
               this.presence['title'] = tds[1].text;
               this.presence['prof'] = tds[2].text;
+              if(tds[4].text.indexOf("href") > -1){
+                this.presence['zoom'] = tds[4].querySelector('a').attributes['href'];
+              }
               String nextLink = tds[3].querySelector('a').attributes['href'];
               print(nextLink);
               print(this.presence);
