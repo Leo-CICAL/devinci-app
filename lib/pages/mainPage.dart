@@ -25,8 +25,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  CalendarView calendarView = CalendarView.month;
-  String dropdownValue = "A1";
   @override
   void initState() {
     super.initState();
@@ -63,10 +61,16 @@ class _MainPageState extends State<MainPage> {
                 IconButton(
                   icon: IconTheme(
                     data: Theme.of(context).accentIconTheme,
-                    child: Icon(OMIcons.today),
+                    child: Icon(OMIcons.add),
                   ),
                   onPressed: () async {
-                    globals.calendarController.displayDate = DateTime.now();
+                    Navigator.push<Widget>(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => CoursEditor(
+                                addButton: true,
+                              )),
+                    );
                   },
                 ),
                 SizedBox.shrink(),
@@ -103,43 +107,13 @@ class _MainPageState extends State<MainPage> {
                 ),
               ].elementAt(globals.selectedPage),
               <Widget>[
-                PopupMenuButton(
-                  captureInheritedThemes: true,
+                IconButton(
                   icon: IconTheme(
                     data: Theme.of(context).accentIconTheme,
-                    child: Icon(OMIcons.moreVert),
+                    child: Icon(OMIcons.today),
                   ),
-                  onSelected: (String choice) {
-                    if (choice == "Rafraîchir") {
-                      globals.isLoading.setState(0, true);
-                    } else {
-                      setState(() {
-                        if (globals.agendaView.calendarView ==
-                            CalendarView.day) {
-                          globals.agendaView.calendarView =
-                              CalendarView.workWeek;
-                          globals.prefs.setBool('calendarViewDay', false);
-                        } else {
-                          globals.agendaView.calendarView = CalendarView.day;
-                          globals.prefs.setBool('calendarViewDay', true);
-                        }
-                      });
-                    }
-                  },
-                  padding: EdgeInsets.zero,
-                  // initialValue: choices[_selection],
-                  itemBuilder: (BuildContext context) {
-                    return [
-                      globals.agendaView.calendarView == CalendarView.day
-                          ? "Semaine"
-                          : "Jour",
-                      "Rafraîchir"
-                    ].map((String choice) {
-                      return PopupMenuItem<String>(
-                        value: choice,
-                        child: Text(choice),
-                      );
-                    }).toList();
+                  onPressed: () async {
+                    globals.calendarController.displayDate = DateTime.now();
                   },
                 ),
                 globals.isLoading.state(1)
@@ -163,6 +137,48 @@ class _MainPageState extends State<MainPage> {
                       )
                     : SizedBox.shrink()
               ].elementAt(globals.selectedPage),
+              globals.selectedPage == 0
+                  ? PopupMenuButton(
+                      captureInheritedThemes: true,
+                      icon: IconTheme(
+                        data: Theme.of(context).accentIconTheme,
+                        child: Icon(OMIcons.moreVert),
+                      ),
+                      onSelected: (String choice) {
+                        if (choice == "Rafraîchir") {
+                          globals.isLoading.setState(0, true);
+                        } else {
+                          setState(() {
+                            if (globals.agendaView.calendarView ==
+                                CalendarView.day) {
+                              globals.agendaView.calendarView =
+                                  CalendarView.workWeek;
+                              globals.prefs.setBool('calendarViewDay', false);
+                            } else {
+                              globals.agendaView.calendarView =
+                                  CalendarView.day;
+                              globals.prefs.setBool('calendarViewDay', true);
+                            }
+                          });
+                        }
+                      },
+                      padding: EdgeInsets.zero,
+                      // initialValue: choices[_selection],
+                      itemBuilder: (BuildContext context) {
+                        return [
+                          globals.agendaView.calendarView == CalendarView.day
+                              ? "Semaine"
+                              : "Jour",
+                          "Rafraîchir"
+                        ].map((String choice) {
+                          return PopupMenuItem<String>(
+                            value: choice,
+                            child: Text(choice),
+                          );
+                        }).toList();
+                      },
+                    )
+                  : SizedBox.shrink(),
               globals.selectedPage == 0
                   ? globals.isConnected
                       ? (globals.isLoading.state(0)
@@ -271,24 +287,6 @@ class _MainPageState extends State<MainPage> {
                 });
               }),
         ),
-        floatingActionButton: globals.selectedPage == 0
-            ? FloatingActionButton(
-                onPressed: () {
-                  Navigator.push<Widget>(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => CoursEditor(
-                              addButton: true,
-                            )),
-                  );
-                },
-                child: IconTheme(
-                  data: Theme.of(context).accentIconTheme,
-                  child: Icon(Icons.add, size: 32),
-                ),
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              )
-            : null,
       ),
     );
   }

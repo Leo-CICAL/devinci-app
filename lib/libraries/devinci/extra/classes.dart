@@ -79,6 +79,7 @@ class User {
     'prof': '',
     'seance_pk': '',
     'zoom': '',
+    'zoom_pwd': '',
   };
 
   Map<String, dynamic> documents = {
@@ -1194,9 +1195,8 @@ class User {
           this.tokens["uids"] != "" &&
           this.tokens["SimpleSAMLAuthToken"] != "") {
         HttpClientRequest req = await client.getUrl(
-          Uri.parse(
-            "https://www.leonard-de-vinci.net/?my=docs",
-          ),
+          Uri.parse("https://www.leonard-de-vinci.net/?my=docs"),
+          //"http://10.188.132.77:5500/documents.html"),
         );
         req.followRedirects = false;
         req.cookies.addAll([
@@ -1327,23 +1327,24 @@ class User {
 
             print('[5]' +
                 "calendrier : ${this.documents["calendrier"]["annee"]}|${this.documents["calendrier"]["url"]}");
-            try {
-              //documents liés aux notes :
-              req = await client.getUrl(
-                Uri.parse("https://www.leonard-de-vinci.net/?my=notes"),
-              );
-              req.followRedirects = false;
-              req.cookies.addAll([
-                new Cookie('alv', this.tokens["alv"]),
-                new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-                new Cookie('uids', this.tokens["uids"]),
-                new Cookie(
-                    'SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-              ]);
-              res = await req.close();
-              if (res.statusCode == 200) {
-                body = await res.transform(utf8.decoder).join();
-                doc = parse(body);
+            //documents liés aux notes :
+            req = await client.getUrl(
+              Uri.parse("https://www.leonard-de-vinci.net/?my=notes"),
+              //"http://10.188.132.77:5500/notes.html"),
+            );
+            req.followRedirects = false;
+            req.cookies.addAll([
+              new Cookie('alv', this.tokens["alv"]),
+              new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
+              new Cookie('uids', this.tokens["uids"]),
+              new Cookie(
+                  'SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
+            ]);
+            res = await req.close();
+            if (res.statusCode == 200) {
+              body = await res.transform(utf8.decoder).join();
+              doc = parse(body);
+              if (doc.querySelectorAll("div.body").length > 1) {
                 List<Element> filesA = doc
                     .querySelectorAll(
                         "div.body")[doc.querySelectorAll("div.body").length - 2]
@@ -1369,10 +1370,8 @@ class User {
                         .group(1)
                   });
                 }
-                print('[7]' + this.documents["bulletins"].toString());
               }
-            } catch (e) {
-              FirebaseCrashlytics.instance.recordError(e, e.stacktrace);
+              print('[7]' + this.documents["bulletins"].toString());
             }
           } else if (body.indexOf('Validation des règlements') > -1) {
             final snackBar = material.SnackBar(
@@ -1403,7 +1402,7 @@ class User {
         HttpClientRequest req = await client.getUrl(
           Uri.parse(
             "https://www.leonard-de-vinci.net/student/presences/",
-            //'http://10.188.132.73:5500/pr%C3%A9sence-1cours%20dans%20la%20journ%C3%A9e.html',
+            //'http://10.188.132.77:5500/pr%C3%A9sence-zoom.html',
           ),
         );
         req.followRedirects = false;
@@ -1440,8 +1439,15 @@ class User {
               });
               this.presence['title'] = tds[1].text;
               this.presence['prof'] = tds[2].text;
-              if(tds[4].text.indexOf("href") > -1){
-                this.presence['zoom'] = tds[4].querySelector('a').attributes['href'];
+              try {
+                this.presence['zoom'] =
+                    tds[4].querySelector('a').attributes['href'];
+                this.presence['zoom_pwd'] = tds[4]
+                    .querySelector('span')
+                    .attributes['title']
+                    .split(': ')[1];
+              } catch (e) {
+                print(e);
               }
               String nextLink = tds[3].querySelector('a').attributes['href'];
               print(nextLink);

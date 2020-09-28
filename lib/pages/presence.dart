@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:url_launcher/url_launcher.dart';
 
 class PresencePage extends StatefulWidget {
   PresencePage({Key key}) : super(key: key);
@@ -202,6 +203,60 @@ class _PresencePageState extends State<PresencePage> {
                             : Colors.red.shade700,
                       ),
                     }[globals.user.presence["type"]]),
+                  ),
+                  Visibility(
+                    visible: globals.user.presence['zoom'] != '',
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(top: 32, left: 48, right: 48),
+                      child: ProgressButton(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 18),
+                          child: Text(
+                            "ZOOM".toUpperCase(),
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                        onPressed: () async {
+                          String url = globals.user.presence['zoom'];
+                          if (await canLaunch(url)) {
+                            await launch(
+                              url,
+                            );
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                        buttonState: buttonState,
+                        backgroundColor: globals.currentTheme.isDark()
+                            ? Colors.blueAccent.shade200
+                            : Color(0xFF2D8CFF),
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: globals.user.presence['zoom_pwd'] != '',
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(top: 12, left: 48, right: 48),
+                      child: Center(
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Mot de passe : ',
+                            style: DefaultTextStyle.of(context).style,
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: globals.user.presence['zoom_pwd'],
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
