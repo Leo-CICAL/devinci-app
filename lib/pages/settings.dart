@@ -418,7 +418,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   right: 16,
                   top: 28,
                 ),
-                height: (6 * 46).toDouble(),
+                height: (7 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -543,6 +543,41 @@ class _SettingsPageState extends State<SettingsPage> {
                           Expanded(
                             child: Text(
                               "À Propos",
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Icon(Icons.navigate_next,
+                                color: Color(0xffACACAC)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      const url = 'https://discord.gg/vvmHGQ';
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    child: Container(
+                      height: 46,
+                      margin: EdgeInsets.only(left: 24),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                        width: 0.2,
+                        color: Color(0xffACACAC),
+                      ))),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              "Rejoindre le Discord",
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
                           ),
