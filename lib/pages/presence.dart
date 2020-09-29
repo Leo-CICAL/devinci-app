@@ -230,7 +230,7 @@ class _PresencePageState extends State<PresencePage> {
                             throw 'Could not launch $url';
                           }
                         },
-                        buttonState: buttonState,
+                        buttonState: ButtonState.normal,
                         backgroundColor: globals.currentTheme.isDark()
                             ? Colors.blueAccent.shade200
                             : Color(0xFF2D8CFF),
