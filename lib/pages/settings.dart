@@ -557,7 +557,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      const url = 'https://discord.gg/vvmHGQ';
+                      const url = 'https://discord.gg/wttsfQP';
                       if (await canLaunch(url)) {
                         await launch(url);
                       } else {
