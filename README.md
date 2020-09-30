@@ -1,4 +1,10 @@
 [![Codemagic build status](https://api.codemagic.io/apps/5f1aaf9588aa90329c1b72a5/5f1aaf9588aa90329c1b72a4/status_badge.svg)](https://codemagic.io/apps/5f1aaf9588aa90329c1b72a5/5f1aaf9588aa90329c1b72a4/latest_build)
+![Discord](https://img.shields.io/discord/760489327305556049)
+<p align="center">
+<a href="https://github.com/antoineraulin/devinci-app"><img src="https://steverichey.github.io/google-play-badge-svg/img/fr_get.svg" height="100"></a>
+<a href="https://github.com/antoineraulin/devinci-app"><img src="https://is2-ssl.mzstatic.com/image/thumb/Purple124/v4/64/9d/f2/649df2df-1846-8a65-1252-57978dee1aaf/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-85-220.png/230x0w.png" height="100"></a>
+
+</p>
 
 <p align="center">
   <a href="https://github.com/antoineraulin/devinci-app"><img src="assets/icon_blanc_a.png" height="140"></a>
