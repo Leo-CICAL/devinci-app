@@ -1,8 +1,8 @@
 [![Codemagic build status](https://api.codemagic.io/apps/5f1aaf9588aa90329c1b72a5/5f1aaf9588aa90329c1b72a4/status_badge.svg)](https://codemagic.io/apps/5f1aaf9588aa90329c1b72a5/5f1aaf9588aa90329c1b72a4/latest_build)
 ![Discord](https://img.shields.io/discord/760489327305556049)
 <p align="center">
-<a href="https://github.com/antoineraulin/devinci-app"><img src="https://steverichey.github.io/google-play-badge-svg/img/fr_get.svg" height="100"></a>
-<a href="https://github.com/antoineraulin/devinci-app"><img src="https://devinci.araulin.tech/assets/testflight.png" height="100"></a>
+<a href="https://play.google.com/store/apps/details?id=eu.araulin.devinci"><img src="https://steverichey.github.io/google-play-badge-svg/img/fr_get.svg" height="100"></a>
+<a href="https://testflight.apple.com/join/HUgzMmbA"><img src="https://devinci.araulin.tech/assets/testflight.png" height="100"></a>
 
 </p>
 
