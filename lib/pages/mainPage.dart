@@ -226,38 +226,38 @@ class _MainPageState extends State<MainPage> {
                 BottomNavigationBarItem(
                   icon: Icon(
                       globals.selectedPage == 0 ? Icons.today : OMIcons.today),
-                  title: Text('EDT'),
+                  label: 'EDT',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(globals.selectedPage == 1
                       ? Icons.assignment
                       : OMIcons.assignment),
-                  title: Text('Notes'),
+                  label: 'Notes',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(globals.selectedPage == 2
                       ? Icons.watch_later
                       : OMIcons.watchLater),
-                  title: Text('Absences'),
+                  label: 'Absences',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(globals.selectedPage == 3
                       ? DevinciIcons.megaphone_filled
                       : DevinciIcons.megaphone_outlined),
-                  title: Text('Présence'),
+                  label: 'Présence',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(globals.selectedPage == 4
                       ? Icons.restaurant
                       : OMIcons.restaurant),
-                  title: Text('Restaurant'),
+                  label: 'Restaurant',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(globals.selectedPage == 5
                       ? Icons.person
                       : OMIcons.person),
                   //,
-                  title: Text(globals.user.data["name"]),
+                  label: globals.user.data["name"],
                 ),
               ],
               currentIndex: globals.selectedPage,
