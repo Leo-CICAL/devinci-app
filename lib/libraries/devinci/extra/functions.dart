@@ -11,8 +11,8 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter/material.dart';
 import 'package:devinci/libraries/devinci/extra/classes.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:device_info/device_info.dart';
@@ -414,8 +414,11 @@ Future<void> showNotification(
     var scheduledNotificationDateTime = DateTime.now().add(Duration(
         seconds:
             delay)); //On envoie la notif avec 5 secondes de retard pour être sur que l'app n'est plus en foreground
-    await globals.flutterLocalNotificationsPlugin.schedule(0, title, body,
-        scheduledNotificationDateTime, globals.platformChannelSpecifics);
+    await globals.flutterLocalNotificationsPlugin.zonedSchedule(0, title, body,
+        scheduledNotificationDateTime, globals.platformChannelSpecifics,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        androidAllowWhileIdle: true);
   }
 }
 
@@ -427,8 +430,6 @@ void backgroundFetchHeadlessTask(String taskId) async {
 
 Future<dynamic> onSelectNotification(String payload) async {
   if (payload != null) {
-    FlutterAppBadger
-        .removeBadge(); //on supprime le badge de notification lorsque la notification a été cliqué
     debugPrint('notification payload: ' + payload);
   }
   globals.selectNotificationSubject.add(payload);
@@ -461,48 +462,6 @@ void betterFeedbackOnFeedback(
   );
 
   await FlutterEmailSender.send(email);
-}
-
-Future<void> log(String name, Map<String, dynamic> params) async {
-  await globals.analytics.logEvent(
-    name: name,
-    parameters: params,
-  );
-  print('logged : ' + name + ' | ' + params.toString());
-}
-
-Future<void> loog(String eventName, {Map<String, dynamic> params = null}) {
-  switch (eventName) {
-    case 'AppOpen':
-      globals.analytics.logAppOpen();
-      print('logged : AppOpen');
-      break;
-    case 'Login':
-      globals.analytics.logLogin();
-      print('logged : Login');
-      break;
-    case 'Select':
-      if (params != null && params['type'] != null && params['item'] != null) {
-        globals.analytics.logSelectContent(
-          contentType: params['type'],
-          itemId: params['item'],
-        );
-        print('logged : Select | ' + params.toString());
-      } else {
-        print('error');
-      }
-      break;
-    default:
-      print('nothing logged for : ' + eventName);
-  }
-}
-
-Future<void> setScreen(String name, String classe) async {
-  await globals.analytics.setCurrentScreen(
-    screenName: name,
-    screenClassOverride: classe,
-  );
-  print('logged : setScreen | name : ' + name + ' | class : ' + classe);
 }
 
 Future<void> initPlatformState() async {

@@ -13,9 +13,7 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:slide_popup_dialog/slide_popup_dialog.dart' as slideDialog;
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -40,7 +38,6 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void runBeforeBuild() async {
-    setScreen('Settings', '_SettingsPageState');
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     appVersion = packageInfo.version;
     int bgIntTime = globals.prefs.getInt('bgTime') ?? 0;
@@ -90,75 +87,83 @@ class _SettingsPageState extends State<SettingsPage> {
             shrinkWrap: true,
             controller: scrollController,
             children: <Widget>[
-              TitleSection("Changement d'icône"),
-              Container(
-                margin: EdgeInsets.only(top: 18, bottom: 18),
-                height: 100.0,
-                child: ListView(
-                  // This next line does the trick.
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(left: 18),
-                      child: InkWell(
-                        onTap: () => setState(() {
-                          changeIcon(0);
-                        }), // handle your onTap here
-                        child: CircleAvatar(
-                          backgroundImage:
-                              AssetImage('assets/icon_blanc_a.png'),
-                          radius: 50,
+              Platform.isIOS
+                  ? (Column(
+                      children: [
+                        TitleSection("Changement d'icône"),
+                        Container(
+                          margin: EdgeInsets.only(top: 18, bottom: 18),
+                          height: 100.0,
+                          child: ListView(
+                            // This next line does the trick.
+                            scrollDirection: Axis.horizontal,
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(left: 18),
+                                child: InkWell(
+                                  onTap: () => setState(() {
+                                    changeIcon(0);
+                                  }), // handle your onTap here
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('assets/icon_blanc_a.png'),
+                                    radius: 50,
+                                  ),
+                                ),
+                                height: 100,
+                                width: 100,
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(left: 18),
+                                child: InkWell(
+                                  onTap: () => setState(() {
+                                    changeIcon(1);
+                                  }), // handle your onTap here
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('assets/icon_noir_a.png'),
+                                    radius: 50,
+                                  ),
+                                ),
+                                height: 100,
+                                width: 100,
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(left: 18),
+                                child: InkWell(
+                                  onTap: () => setState(() {
+                                    changeIcon(2);
+                                  }), // handle your onTap here
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('assets/icon_blanc_b.png'),
+                                    radius: 50,
+                                  ),
+                                ),
+                                height: 100,
+                                width: 100,
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(left: 18, right: 18),
+                                child: InkWell(
+                                  onTap: () => setState(() {
+                                    changeIcon(3);
+                                  }), // handle your onTap here
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('assets/icon_noir_b.png'),
+                                    radius: 50,
+                                  ),
+                                ),
+                                height: 100,
+                                width: 100,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      height: 100,
-                      width: 100,
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 18),
-                      child: InkWell(
-                        onTap: () => setState(() {
-                          changeIcon(1);
-                        }), // handle your onTap here
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage('assets/icon_noir_a.png'),
-                          radius: 50,
-                        ),
-                      ),
-                      height: 100,
-                      width: 100,
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 18),
-                      child: InkWell(
-                        onTap: () => setState(() {
-                          changeIcon(2);
-                        }), // handle your onTap here
-                        child: CircleAvatar(
-                          backgroundImage:
-                              AssetImage('assets/icon_blanc_b.png'),
-                          radius: 50,
-                        ),
-                      ),
-                      height: 100,
-                      width: 100,
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 18, right: 18),
-                      child: InkWell(
-                        onTap: () => setState(() {
-                          changeIcon(3);
-                        }), // handle your onTap here
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage('assets/icon_noir_b.png'),
-                          radius: 50,
-                        ),
-                      ),
-                      height: 100,
-                      width: 100,
-                    ),
-                  ],
-                ),
-              ),
+                      ],
+                    ))
+                  : SizedBox.shrink(),
               //TitleSection("Paramètres avancés"),
               Container(
                 margin: EdgeInsets.only(

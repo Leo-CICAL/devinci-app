@@ -31,8 +31,6 @@ class _LoginPageState extends State<LoginPage> {
   bool show = false;
 
   void runBeforeBuild() async {
-    loog('AppOpen');
-    setScreen('Login', '_LoginPageState');
     String username;
     String password;
     //analytics will only be used as much as right now during test phase to have access to the full context of any error.
@@ -53,11 +51,9 @@ class _LoginPageState extends State<LoginPage> {
 
     if (username != null && password != null) {
       print("credentials_exists");
-      log('login', {'credentials_exists': true});
       globals.user = new User(username, password);
       try {
         await globals.user.init();
-        log('login', {'credentials_good': true});
       } catch (exception, stacktrace) {
         setState(() {
           show = true;
@@ -68,7 +64,6 @@ class _LoginPageState extends State<LoginPage> {
         if (globals.user.code == 401) {
           //credentials are wrong
           myControllerPassword.text = "";
-          log('login', {'credentials_good': false});
         } else {
           await reportError(
               "main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception",
@@ -96,7 +91,6 @@ class _LoginPageState extends State<LoginPage> {
 
         _formKey.currentState.validate();
       }
-      loog('Login');
       Navigator.push(
         context,
         CupertinoPageRoute(
@@ -214,15 +208,11 @@ class _LoginPageState extends State<LoginPage> {
                                     if (globals.user != null)
                                       globals.user.error = false;
                                     if (_formKey.currentState.validate()) {
-                                      loog('Select', params: {
-                                        'type': 'login',
-                                        'item': 'keyboard'
-                                      });
+                                      
                                       if (globals.user != null)
                                         globals.user.error = false;
                                       if (_formKey.currentState.validate()) {
-                                        log('login',
-                                            {'credentials_valid': true});
+                                        
                                         print("valid");
                                         setState(() {
                                           buttonState = ButtonState.inProgress;
@@ -232,8 +222,7 @@ class _LoginPageState extends State<LoginPage> {
                                             myControllerPassword.text);
                                         try {
                                           await globals.user.init();
-                                          log('login',
-                                              {'credentials_good': true});
+                                          
                                           Navigator.push(
                                             context,
                                             CupertinoPageRoute(
@@ -255,8 +244,7 @@ class _LoginPageState extends State<LoginPage> {
                                           if (globals.user.code == 401) {
                                             //credentials are wrong
                                             myControllerPassword.text = "";
-                                            log('login',
-                                                {'credentials_good': false});
+                                            
                                           } else {
                                             await reportError(
                                                 'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
@@ -288,8 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                                           _formKey.currentState.validate();
                                         }
                                       } else {
-                                        log('login',
-                                            {'credentials_valid': false});
+                                        
                                         print("invalid");
                                         setState(() {
                                           buttonState = ButtonState.error;
@@ -344,14 +331,11 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   ),
                                   onPressed: () async {
-                                    loog('Select', params: {
-                                      'type': 'login',
-                                      'item': 'button'
-                                    });
+                                    
                                     if (globals.user != null)
                                       globals.user.error = false;
                                     if (_formKey.currentState.validate()) {
-                                      log('login', {'credentials_valid': true});
+                                      
                                       print("valid");
                                       setState(() {
                                         buttonState = ButtonState.inProgress;
@@ -361,8 +345,7 @@ class _LoginPageState extends State<LoginPage> {
                                           myControllerPassword.text);
                                       try {
                                         await globals.user.init();
-                                        log('login',
-                                            {'credentials_good': true});
+                                        
                                         Navigator.push(
                                           context,
                                           CupertinoPageRoute(
@@ -384,8 +367,7 @@ class _LoginPageState extends State<LoginPage> {
                                         if (globals.user.code == 401) {
                                           //credentials are wrong
                                           myControllerPassword.text = "";
-                                          log('login',
-                                              {'credentials_good': false});
+                                          
                                         } else {
                                           await reportError(
                                               'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
@@ -417,8 +399,7 @@ class _LoginPageState extends State<LoginPage> {
                                         _formKey.currentState.validate();
                                       }
                                     } else {
-                                      log('login',
-                                          {'credentials_valid': false});
+                                      
                                       print("invalid");
                                       setState(() {
                                         buttonState = ButtonState.error;
@@ -451,8 +432,7 @@ class _LoginPageState extends State<LoginPage> {
                   FlatButton(
                       child: Text('CGU'),
                       onPressed: () {
-                        loog('Select',
-                            params: {'type': 'footer', 'item': 'CGU'});
+                        
                         showMarkdownPage(
                           applicationIcon: SizedBox(
                             width: 100,
@@ -478,8 +458,7 @@ class _LoginPageState extends State<LoginPage> {
                   FlatButton(
                       child: Text('Politique de confidentialité'),
                       onPressed: () {
-                        loog('Select',
-                            params: {'type': 'footer', 'item': 'privacy'});
+                        
                         showMarkdownPage(
                           applicationIcon: SizedBox(
                             width: 100,

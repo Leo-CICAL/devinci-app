@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
 import 'package:devinci/pages/login.dart';
 import 'package:devinci/libraries/feedback/feedback.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -10,21 +9,19 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:http/http.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:syncfusion_flutter_core/core.dart';
+//import 'package:syncfusion_flutter_core/core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:quick_actions/quick_actions.dart';
-import './config.dart';
+//import './config.dart';
 
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
-import 'package:firebase_performance/firebase_performance.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,8 +67,8 @@ Future<Null> main() async {
       globals.initializationSettings,
       onSelectNotification: onSelectNotification);
 
-  SyncfusionLicense.registerLicense(
-      Config.syncfusionLicense); //initialisation des widgets
+  // SyncfusionLicense.registerLicense(
+  //     Config.syncfusionLicense); //initialisation des widgets
 
   // Fin init notifications
 
@@ -95,7 +92,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  bool _isPerformanceCollectionEnabled = true;
   @override
   void initState() {
     super.initState();
@@ -105,8 +101,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     });
     globals.analytics = FirebaseAnalytics();
     globals.observer = FirebaseAnalyticsObserver(analytics: globals.analytics);
-    globals.performance = FirebasePerformance.instance;
-    _togglePerformanceCollection();
     WidgetsBinding.instance.addObserver(this);
     initPlatformState();
   }
@@ -115,14 +109,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  Future<void> _togglePerformanceCollection() async {
-    await globals.performance
-        .setPerformanceCollectionEnabled(!_isPerformanceCollectionEnabled);
-
-    final bool isEnabled =
-        await globals.performance.isPerformanceCollectionEnabled();
   }
 
   @override

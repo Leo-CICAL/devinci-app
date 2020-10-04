@@ -1,4 +1,3 @@
-import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/libraries/timechef/pages/login.dart';
 import 'package:devinci/libraries/timechef/pages/main.dart';
 import 'package:devinci/libraries/timechef/timechef.dart';
@@ -18,7 +17,6 @@ class _TimeChefPageState extends State<TimeChefPage> {
   bool show = false;
 
   runBeforeBuild() async {
-    setScreen('TimeChef', '_TimeChefPageState');
     if (globals.timeChefUser == null || !globals.timeChefUser.fetched) {
       String username = await globals.storage.read(key: "timechefusername");
       String password = await globals.storage.read(key: "timechefpassword");

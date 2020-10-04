@@ -120,7 +120,7 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   void runBeforeBuild() async {
-    setScreen('Notes', '_NotesPageState');
+    
     print(globals.user.notesFetched);
     if (!globals.user.notesFetched) {
       notes = await globals.store.record('notes').get(globals.db)

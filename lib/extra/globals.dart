@@ -4,7 +4,6 @@ import 'package:devinci/libraries/timechef/classes.dart';
 import 'package:devinci/libraries/timechef/timechef.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
-import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:devinci/libraries/devinci/extra/classes.dart';
 import 'package:flutter/material.dart';
@@ -93,8 +92,8 @@ var androidPlatformChannelSpecifics = AndroidNotificationDetails(
     'eu.araulin.devinci.notifications',
     'Notifications',
     'Permet de recevoir des notifications lors de mise à jour de l\'application ou lorsque de nouvelles notes sont détéctées.',
-    importance: Importance.Max,
-    priority: Priority.High,
+    importance: Importance.max,
+    priority: Priority.high,
     channelShowBadge: true,
     ticker: 'ticker');
 
@@ -112,12 +111,12 @@ var initializationSettingsIOS = IOSInitializationSettings(
     });
 
 var initializationSettings = InitializationSettings(
-    initializationSettingsAndroid, initializationSettingsIOS);
+    android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
 var iOSPlatformChannelSpecifics =
     IOSNotificationDetails(badgeNumber: 1, presentBadge: true);
 var platformChannelSpecifics = NotificationDetails(
-    androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
 
 bool showUserBadge = false;
 
@@ -142,7 +141,5 @@ bool analyticsConsent = true;
 FirebaseAnalytics analytics;
 
 FirebaseAnalyticsObserver observer;
-
-FirebasePerformance performance;
 
 CalendarController calendarController;

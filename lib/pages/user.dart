@@ -9,9 +9,7 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter/scheduler.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:package_info/package_info.dart';
 import 'package:recase/recase.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:sembast/sembast.dart';
@@ -69,7 +67,6 @@ class _UserPageState extends State<UserPage> {
   }
 
   void runBeforeBuild() async {
-    setScreen('User', '_UserPageState');
     for (int i = 0; i < 10; i++) {
       docCardDetail.add(false);
       docCardData.add({"frShowButton": true, "enShowButton": true});

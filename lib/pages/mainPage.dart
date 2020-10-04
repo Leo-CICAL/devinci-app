@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart';
 import 'package:devinci/extra/devinci_icons_icons.dart';
 import 'package:devinci/pages/absences.dart';
 import 'package:devinci/pages/agenda.dart';
@@ -227,54 +226,38 @@ class _MainPageState extends State<MainPage> {
                 BottomNavigationBarItem(
                   icon: Icon(
                       globals.selectedPage == 0 ? Icons.today : OMIcons.today),
-                  title: Text('EDT'),
+                  label: 'EDT',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(globals.selectedPage == 1
                       ? Icons.assignment
                       : OMIcons.assignment),
-                  title: Text('Notes'),
+                  label: 'Notes',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(globals.selectedPage == 2
                       ? Icons.watch_later
                       : OMIcons.watchLater),
-                  title: Text('Absences'),
+                  label: 'Absences',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(globals.selectedPage == 3
                       ? DevinciIcons.megaphone_filled
                       : DevinciIcons.megaphone_outlined),
-                  title: Text('Présence'),
+                  label: 'Présence',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(globals.selectedPage == 4
                       ? Icons.restaurant
                       : OMIcons.restaurant),
-                  title: Text('Restaurant'),
+                  label: 'Restaurant',
                 ),
                 BottomNavigationBarItem(
-                  icon: globals.showUserBadge && globals.selectedPage != 5
-                      ? Badge(
-                          shape: BadgeShape.circle,
-                          borderRadius: 100,
-                          child: Icon(globals.selectedPage == 5
-                              ? Icons.person
-                              : OMIcons.person),
-                          badgeContent: Container(
-                            height: 5,
-                            width: 5,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor),
-                          ),
-                        )
-                      : Icon(globals.selectedPage == 5
-                          ? Icons.person
-                          : OMIcons.person),
+                  icon: Icon(globals.selectedPage == 5
+                      ? Icons.person
+                      : OMIcons.person),
                   //,
-                  title: Text(globals.user.data["name"]),
+                  label: globals.user.data["name"],
                 ),
               ],
               currentIndex: globals.selectedPage,

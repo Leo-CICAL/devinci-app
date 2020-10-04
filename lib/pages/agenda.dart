@@ -65,9 +65,7 @@ class _AgendaPageState extends State<AgendaPage> {
   _AgendaPageState();
 
   Future<void> getCalendar() async {
-    setScreen('Agenda', '_AgendaPageState');
     if (globals.lastFetchAgenda == null) {
-      log('agenda', {'lastFetchAgenda': globals.lastFetchAgenda ?? 0});
       globals.lastFetchAgenda = DateTime.now();
       String icalUrl = globals.user.data["edtUrl"];
       try {
@@ -83,7 +81,6 @@ class _AgendaPageState extends State<AgendaPage> {
       });
       globals.isLoading.setState(0, true);
     } else {
-      log('agenda', {'lastFetchAgenda': globals.lastFetchAgenda ?? 0});
       setState(() {
         show = true;
       });
@@ -100,7 +97,6 @@ class _AgendaPageState extends State<AgendaPage> {
     globals.isLoading.addListener(() async {
       print("isLoading");
       if (globals.isLoading.state(0)) {
-        loog('Select', params: {'type': 'agenda', 'item': 'refresh'});
         try {
           globals.cours =
               await parseIcal(globals.user.data["edtUrl"], load: true);
@@ -125,7 +121,6 @@ class _AgendaPageState extends State<AgendaPage> {
     if (calendarTapDetails.targetElement == CalendarElement.header) {
       return;
     }
-    loog('Select', params: {'type': 'agenda', 'item': 'calendarTapDetails'});
 
     _selectedCours = null;
     _isAllDay = false;
@@ -816,7 +811,6 @@ class CoursEditorState extends State<CoursEditor> {
                               Icons.done,
                             ),
                             onPressed: () {
-                              final List<Cours> appointment = <Cours>[];
                               print(_selectedCours);
                               if (_selectedCours != null &&
                                   _uid.indexOf(':') < 0) {

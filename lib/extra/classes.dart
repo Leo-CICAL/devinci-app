@@ -1,9 +1,7 @@
-import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:devinci/extra/globals.dart' as globals;
-import 'package:http/http.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -181,33 +179,5 @@ class ContextEntryState extends State<ContextEntry> {
         ),
       ],
     );
-  }
-}
-
-class MetricHttpClient extends BaseClient {
-  MetricHttpClient(this._inner);
-
-  final Client _inner;
-
-  @override
-  Future<StreamedResponse> send(BaseRequest request) async {
-    final HttpMetric metric = FirebasePerformance.instance
-        .newHttpMetric(request.url.toString(), HttpMethod.Get);
-
-    await metric.start();
-
-    StreamedResponse response;
-    try {
-      response = await _inner.send(request);
-      metric
-        ..responsePayloadSize = response.contentLength
-        ..responseContentType = response.headers['Content-Type']
-        ..requestPayloadSize = request.contentLength
-        ..httpResponseCode = response.statusCode;
-    } finally {
-      await metric.stop();
-    }
-
-    return response;
   }
 }

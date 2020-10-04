@@ -1,5 +1,4 @@
 import 'package:devinci/extra/CommonWidgets.dart';
-import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
