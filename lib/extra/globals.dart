@@ -29,16 +29,18 @@ BuildContext currentContext;
 
 String crashConsent;
 
-class AgendaView extends PropertyChangeNotifier<String> {
-  CalendarView _calendarView = CalendarView.day;
+// class AgendaView extends PropertyChangeNotifier<String> {
+//   CalendarView _calendarView = CalendarView.day;
 
-  CalendarView get calendarView => _calendarView;
+//   CalendarView get calendarView => _calendarView;
 
-  set calendarView(CalendarView value) {
-    _calendarView = value;
-    notifyListeners('calendarView');
-  }
-}
+//   set calendarView(CalendarView value) {
+//     _calendarView = value;
+//     notifyListeners('calendarView');
+//   }
+// }
+
+CalendarView calendarView = CalendarView.workWeek;
 
 class AgendaTitle extends PropertyChangeNotifier<String> {
   String _headerText = "";
@@ -56,7 +58,6 @@ StackTrace feedbackStackTrace = StackTrace.fromString("");
 String eventId = "";
 String feedbackNotes = "";
 
-final agendaView = AgendaView();
 final agendaTitle = AgendaTitle();
 
 DateTime lastFetchAgenda;

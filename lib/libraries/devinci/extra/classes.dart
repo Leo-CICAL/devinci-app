@@ -47,6 +47,7 @@ class User {
     "ine": "",
     "edtUrl": "",
     "name": "",
+    "ecole": "",
   };
 
   Map<String, dynamic> absences = {
@@ -245,7 +246,7 @@ class User {
     await globals.analytics
         .setAnalyticsCollectionEnabled(globals.analyticsConsent);
     bool calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
-    globals.agendaView.calendarView =
+    globals.calendarView =
         calendarViewDay ? CalendarView.day : CalendarView.workWeek;
     this.data["badge"] = await globals.storage.read(key: "badge") ?? "";
     this.data["client"] = await globals.storage.read(key: "client") ?? "";
@@ -312,7 +313,8 @@ class User {
       this.password =
           null; //if tokens are still valid we'll never need the password again in this session, so it is useless to keep it in the object and risk it to be leaked or displayed
       print('edt : ' + globals.user.data["edtUrl"]);
-      if (globals.user.data["edtUrl"] == "") {
+      if (globals.user.data['ecole'] == "" ||
+          globals.user.data['edtUrl'] == "") {
         //edtUrl being the last information we retrieve from the getData() function, if it doesn't exist it means that the getData() function didn't work or was never run and must be run at least once.
         try {
           print("let's go try");
@@ -660,7 +662,21 @@ class User {
         this.data["ine"] =
             new RegExp(r"INE/BEA : (.*?)\n").firstMatch(d).group(1);
         l("data : ${this.data["badge"]}|${this.data["client"]}|${this.data["idAdmin"]}|${this.data["ine"]}");
+        Element imgDiv = doc
+            .querySelectorAll('#main > div > div')[1]
+            .querySelector('div > div > img');
 
+        if (imgDiv.attributes['src'].indexOf('esilv') > -1) {
+          this.data['ecole'] = 'esilv';
+        } else if (imgDiv.attributes['src'].indexOf('iim') > -1) {
+          this.data['ecole'] = 'iim';
+        } else if (imgDiv.attributes['src'].indexOf('emlv') > -1) {
+          this.data['ecole'] = 'emlv';
+        } else {
+          this.data['ecole'] = 'na';
+        }
+        await globals.analytics
+            .setUserProperty(name: 'ecole', value: this.data['ecole']);
         request = await client
             .getUrl(Uri.parse("https://www.leonard-de-vinci.net/?my=edt"));
         request.followRedirects = false;

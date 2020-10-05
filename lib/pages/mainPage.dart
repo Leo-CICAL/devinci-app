@@ -148,15 +148,16 @@ class _MainPageState extends State<MainPage> {
                           globals.isLoading.setState(0, true);
                         } else {
                           setState(() {
-                            if (globals.agendaView.calendarView ==
-                                CalendarView.day) {
-                              globals.agendaView.calendarView =
-                                  CalendarView.workWeek;
+                            if (globals.calendarView == CalendarView.day) {
+                              globals.calendarView = CalendarView.workWeek;
                               globals.prefs.setBool('calendarViewDay', false);
+                              globals.calendarController.view =
+                                  CalendarView.workWeek;
                             } else {
-                              globals.agendaView.calendarView =
-                                  CalendarView.day;
+                              globals.calendarView = CalendarView.day;
                               globals.prefs.setBool('calendarViewDay', true);
+                              globals.calendarController.view =
+                                  CalendarView.day;
                             }
                           });
                         }
@@ -165,7 +166,7 @@ class _MainPageState extends State<MainPage> {
                       // initialValue: choices[_selection],
                       itemBuilder: (BuildContext context) {
                         return [
-                          globals.agendaView.calendarView == CalendarView.day
+                          globals.calendarView == CalendarView.day
                               ? "Semaine"
                               : "Jour",
                           "Rafraîchir"

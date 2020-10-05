@@ -172,54 +172,42 @@ class _AgendaPageState extends State<AgendaPage> {
     return show
         ? Column(children: <Widget>[
             AgendaHeader(),
-            PropertyChangeProvider(
-              value: globals.agendaView,
-              child: PropertyChangeConsumer<globals.AgendaView>(
-                  properties: ['calendarView'],
-                  builder: (context, model, properties) {
-                    return Expanded(
-                      child: SfCalendar(
-                        view: globals.agendaView.calendarView,
-                        onTap: onCalendarTapped,
-                        controller: globals.calendarController,
-                        monthViewSettings: MonthViewSettings(
-                            showAgenda: true, appointmentDisplayCount: 6),
-                        dataSource: MeetingDataSource(globals.cours),
-                        headerHeight: 0,
-                        timeSlotViewSettings: TimeSlotViewSettings(
-                          startHour: 7,
-                          endHour: 23,
-                          nonWorkingDays: <int>[DateTime.sunday],
-                          timeFormat: 'HH:mm',
-                        ),
-                        firstDayOfWeek: 1,
-                        selectionDecoration: BoxDecoration(
-                          color: Colors.transparent,
-                          border: Border.all(
-                              color: globals.currentTheme.isDark()
-                                  ? Colors.white
-                                  : Colors.black,
-                              width: 2),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(4)),
-                          shape: BoxShape.rectangle,
-                        ),
-                        onViewChanged: (ViewChangedDetails viewChangedDetails) {
-                          globals.agendaTitle.headerText =
-                              DateFormat('MMMM yyyy')
-                                  .format(viewChangedDetails.visibleDates[
-                                      viewChangedDetails.visibleDates.length ~/
-                                          2])
-                                  .toString()
-                                  .capitalize();
-                          SchedulerBinding.instance
-                              .addPostFrameCallback((duration) {
-                            setAgendaHeaderState(() {});
-                          });
-                        },
-                      ),
-                    );
-                  }),
+            Expanded(
+              child: SfCalendar(
+                view: globals.calendarView,
+                onTap: onCalendarTapped,
+                controller: globals.calendarController,
+                dataSource: MeetingDataSource(globals.cours),
+                headerHeight: 0,
+                timeSlotViewSettings: TimeSlotViewSettings(
+                  startHour: 7,
+                  endHour: 23,
+                  nonWorkingDays: <int>[DateTime.sunday],
+                  timeFormat: 'HH:mm',
+                ),
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                firstDayOfWeek: 1,
+                selectionDecoration: BoxDecoration(
+                  color: Colors.transparent,
+                  border: Border.all(
+                      color: globals.currentTheme.isDark()
+                          ? Colors.white
+                          : Colors.black,
+                      width: 2),
+                  borderRadius: const BorderRadius.all(Radius.circular(4)),
+                  shape: BoxShape.rectangle,
+                ),
+                onViewChanged: (ViewChangedDetails viewChangedDetails) {
+                  globals.agendaTitle.headerText = DateFormat('MMMM yyyy')
+                      .format(viewChangedDetails.visibleDates[
+                          viewChangedDetails.visibleDates.length ~/ 2])
+                      .toString()
+                      .capitalize();
+                  SchedulerBinding.instance.addPostFrameCallback((duration) {
+                    setAgendaHeaderState(() {});
+                  });
+                },
+              ),
             )
           ])
         : Center(child: CupertinoActivityIndicator());
@@ -247,7 +235,7 @@ class MeetingDataSource extends CalendarDataSource {
     if (appointments[index].type != 'NR')
       title += '(${appointments[index].type}) ';
     title += appointments[index].title;
-    if (globals.agendaView.calendarView == CalendarView.day) {
+    if (globals.calendarView == CalendarView.day) {
       title += '\n${appointments[index].location}';
       if (appointments[index].site != '' &&
           appointments[index].site != 'La Défense' &&
@@ -255,7 +243,7 @@ class MeetingDataSource extends CalendarDataSource {
         title += '- site: ' + appointments[index].site;
       }
       title += '\n${appointments[index].prof}';
-    } else if (globals.agendaView.calendarView == CalendarView.month) {
+    } else if (globals.calendarView == CalendarView.month) {
       appointments[index].location = appointments[index].location.split('-')[0];
       title += ' - ${appointments[index].location}';
     } else {
@@ -738,14 +726,12 @@ class CoursEditorState extends State<CoursEditor> {
                               .record('customCours')
                               .put(globals.db, coursListToJson());
                           _selectedCours = null;
-                          globals.agendaView.calendarView =
-                              globals.agendaView.calendarView ==
-                                      CalendarView.day
+                          globals.calendarView =
+                              globals.calendarView == CalendarView.day
                                   ? CalendarView.workWeek
                                   : CalendarView.day;
-                          globals.agendaView.calendarView =
-                              globals.agendaView.calendarView ==
-                                      CalendarView.workWeek
+                          globals.calendarView =
+                              globals.calendarView == CalendarView.workWeek
                                   ? CalendarView.day
                                   : CalendarView.workWeek;
 
@@ -838,13 +824,13 @@ class CoursEditorState extends State<CoursEditor> {
                               // _events.notifyListeners(
                               //     CalendarDataSourceAction.add, appointment);
                               _selectedCours = null;
-                              globals.agendaView.calendarView =
-                                  globals.agendaView.calendarView ==
+                              globals.calendarController.view =
+                                  globals.calendarController.view ==
                                           CalendarView.day
                                       ? CalendarView.workWeek
                                       : CalendarView.day;
-                              globals.agendaView.calendarView =
-                                  globals.agendaView.calendarView ==
+                              globals.calendarController.view =
+                                  globals.calendarController.view ==
                                           CalendarView.workWeek
                                       ? CalendarView.day
                                       : CalendarView.workWeek;
