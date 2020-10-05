@@ -34,14 +34,8 @@
 
 1. Installer la dernière version de [Flutter](https://flutter.dev/docs/get-started/install).
 2. Pour Android vous devez avoir installé Android-Studio, pour iOS vous devez avoir un Mac avec Xcode et les [Xcode developer tools](https://developer.apple.com/xcode/downloads/) installés. Normalement tout est très bien détaillé sur le site de Flutter.
-3. Obtenir une clé de license pour le widget de Syncfusion : [ici](https://www.syncfusion.com/products/communitylicense), elle est gratuite.
+3. ~~Obtenir une clé de license pour le widget de Syncfusion : [ici](https://www.syncfusion.com/products/communitylicense), elle est gratuite.~~ elle n'est plus nécessaire
 4. Ouvrez le projet dans votre IDE (VS Code ou Android Studio), ils doivent être configuré pour supporter Flutter.
-5. Créer le fichier **`lib/config.dart`** :
-   ```dart
-   abstract class Config {
-     static String syncfusionLicense = 'NT8mJyc2I****************************'; //remplacer par la clé de license de Syncfusion
-   }
-   ```
 6. Récupérer les dépendances : ouvrez un terminal de commande au niveau du dossier racine du projet et faites :
    ```console
    pub get
