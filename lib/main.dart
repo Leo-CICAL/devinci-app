@@ -96,7 +96,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     globals.currentTheme.addListener(() {
-      print("changes");
       if (mounted) setState(() {});
     });
     globals.analytics = FirebaseAnalytics();

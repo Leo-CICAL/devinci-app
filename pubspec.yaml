@@ -1,7 +1,7 @@
 name: devinci
 description: devinci portail app
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.2.4+9
+version: 1.2.4+11
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -19,6 +19,7 @@ dependencies:
   syncfusion_flutter_core: ^18.3.35
   syncfusion_flutter_calendar: ^18.3.35
   syncfusion_localizations: ^18.3.35
+  syncfusion_flutter_datagrid: ^18.3.35-beta
   pull_to_refresh: ^1.6.2
   flutter_statusbarcolor: ^0.2.3 # permet de changer la couleur de la barre d'état et de navigation sur android et ios
   property_change_notifier: ^0.2.0 # permet de rebuild une interface si une variable change de valeur
@@ -53,8 +54,10 @@ dependencies:
   firebase_crashlytics: ^0.2.1
   url_launcher: ^5.7.2
   in_app_review: ^0.2.0+4
+  webview_flutter: ^1.0.1
   flutter_localizations:
     sdk: flutter
+
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
+import 'package:devinci/extra/classes.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -99,6 +100,9 @@ class User {
     },
     "bulletins": []
   };
+
+  List<Salle> salles = [];
+  List<String> sallesStr = [];
 
   Map<String, dynamic> notesConfig = {
     //note : cette config est téléchargée depuis github a chaque démarrage de l'app pour s'assurer que les notes soient toujours bien parsé, cette map doit donc etre la plus petite possible pour ne pas impacter le chargement de l'app. Actuellement le json associé à cette map fait 751 Bytes
@@ -635,33 +639,35 @@ class User {
         print("ds 1 : " + ds[1].innerHtml);
         print("ds 2 : " + ds[2].innerHtml);
         String d;
-        if (ds[1].innerHtml.indexOf("Identifiant") > -1) {
-          print("ds1 choosen");
-          print(ds[1].querySelector("div"));
-          d = ds[1]
-              .querySelector("div > div > div.span4 > div > div > address")
-              .text;
-          l("d : $d");
-        } else if (ds[2].innerHtml.indexOf("Identifiant") > -1) {
-          d = ds[2]
-              .querySelector("div > div > div.span4 > div > div > address")
-              .text;
-          l("d : $d");
-        } else {
-          d = ds[3]
-              .querySelector("div > div > div.span4 > div > div > address")
-              .text;
-          l("d : $d");
-        }
-        this.data["badge"] =
-            new RegExp(r"badge : (.*?)\n").firstMatch(d).group(1);
-        this.data["client"] =
-            new RegExp(r"client (.*?)\n").firstMatch(d).group(1);
-        this.data["idAdmin"] =
-            new RegExp(r"Administratif (.*?)\n").firstMatch(d).group(1);
-        this.data["ine"] =
-            new RegExp(r"INE/BEA : (.*?)\n").firstMatch(d).group(1);
-        l("data : ${this.data["badge"]}|${this.data["client"]}|${this.data["idAdmin"]}|${this.data["ine"]}");
+        try {
+          if (ds[1].innerHtml.indexOf("Identifiant") > -1) {
+            print("ds1 choosen");
+            print(ds[1].querySelector("div"));
+            d = ds[1]
+                .querySelector("div > div > div.span4 > div > div > address")
+                .text;
+            l("d : $d");
+          } else if (ds[2].innerHtml.indexOf("Identifiant") > -1) {
+            d = ds[2]
+                .querySelector("div > div > div.span4 > div > div > address")
+                .text;
+            l("d : $d");
+          } else {
+            d = ds[3]
+                .querySelector("div > div > div.span4 > div > div > address")
+                .text;
+            l("d : $d");
+          }
+          this.data["badge"] =
+              new RegExp(r"badge : (.*?)\n").firstMatch(d).group(1);
+          this.data["client"] =
+              new RegExp(r"client (.*?)\n").firstMatch(d).group(1);
+          this.data["idAdmin"] =
+              new RegExp(r"Administratif (.*?)\n").firstMatch(d).group(1);
+          this.data["ine"] =
+              new RegExp(r"INE/BEA : (.*?)\n").firstMatch(d).group(1);
+          l("data : ${this.data["badge"]}|${this.data["client"]}|${this.data["idAdmin"]}|${this.data["ine"]}");
+        } catch (e) {}
         Element imgDiv = doc
             .querySelectorAll('#main > div > div')[1]
             .querySelector('div > div > img');
@@ -1571,6 +1577,78 @@ class User {
       }
     } else {
       throw Exception(503); //service unavailable
+    }
+    return;
+  }
+
+  Future<void> getSallesLibres() async {
+    print("getSallesLibres");
+    HttpClient client = new HttpClient();
+    if (this.tokens["SimpleSAML"] != "" &&
+        this.tokens["alv"] != "" &&
+        this.tokens["uids"] != "" &&
+        this.tokens["SimpleSAMLAuthToken"] != "") {
+      HttpClientRequest req = await client.postUrl(
+        Uri.parse(
+          "https://www.leonard-de-vinci.net/student/salles/",
+        ),
+      );
+      req.followRedirects = false;
+      req.cookies.addAll([
+        new Cookie('alv', this.tokens["alv"]),
+        new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
+        new Cookie('uids', this.tokens["uids"]),
+        new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
+      ]);
+
+      HttpClientResponse res = await req.close();
+      if (res.statusCode == 200) {
+        String body = await res.transform(utf8.decoder).join();
+        var doc = parse(body);
+        Element table = doc.querySelector("table");
+        Element tbody = table.querySelector("tbody");
+        Element thead = table.querySelector("thead > tr");
+        List<Element> headers = thead.querySelectorAll("td");
+        this.sallesStr.clear();
+        for (Element header in headers) {
+          this.sallesStr.add(header.text);
+        }
+        print(this.sallesStr.join(" | "));
+        List<Element> bodyTrs = tbody.querySelectorAll("tr");
+        for (Element tr in bodyTrs) {
+          String name = tr.querySelector("a").text;
+          name = name
+              .replaceAll('ALDV - ', '')
+              .replaceAll("Learning Center", "LC")
+              .replaceAll('Formeret', 'F');
+          if (name.indexOf("[") > -1) {
+            name = name.split("[")[0];
+          }
+          if (name.indexOf("(") > -1) {
+            name = name.split("(")[0];
+          }
+          List<bool> oc = [];
+          List<Element> tds = tr.querySelectorAll("td");
+          for (int i = 0; i < tds.length; i++) {
+            Element td = tds[i];
+            if (name.indexOf("103") > -1) {
+              print(td.outerHtml);
+            }
+            if (td.outerHtml.indexOf("slp_stab_cell") > -1) {
+              try {
+                String collspan = td.attributes['colspan'];
+                int coll = int.parse(collspan);
+                for (int j = 0; j < coll; j++) {
+                  oc.add(true);
+                }
+              } catch (e) {}
+            } else {
+              oc.add(false);
+            }
+          }
+          this.salles.add(new Salle(name, oc));
+        }
+      }
     }
     return;
   }

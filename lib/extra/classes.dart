@@ -181,3 +181,9 @@ class ContextEntryState extends State<ContextEntry> {
     );
   }
 }
+
+class Salle {
+  Salle(this.name, this.occupation);
+  final String name;
+  final List<bool> occupation;
+}

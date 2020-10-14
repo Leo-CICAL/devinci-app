@@ -168,6 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                               TextFormField(
                                 keyboardType: TextInputType.emailAddress,
                                 autocorrect: false,
+                                key: Key('login_username'),
                                 textInputAction: TextInputAction.next,
                                 focusNode: _usernameFocus,
                                 decoration: InputDecoration(
@@ -197,6 +198,7 @@ class _LoginPageState extends State<LoginPage> {
                                   obscureText: true,
                                   textInputAction: TextInputAction.done,
                                   focusNode: _passwordFocus,
+                                  key: Key('login_password'),
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(),
                                     labelText: 'Mot de passe',
@@ -208,11 +210,9 @@ class _LoginPageState extends State<LoginPage> {
                                     if (globals.user != null)
                                       globals.user.error = false;
                                     if (_formKey.currentState.validate()) {
-                                      
                                       if (globals.user != null)
                                         globals.user.error = false;
                                       if (_formKey.currentState.validate()) {
-                                        
                                         print("valid");
                                         setState(() {
                                           buttonState = ButtonState.inProgress;
@@ -222,7 +222,7 @@ class _LoginPageState extends State<LoginPage> {
                                             myControllerPassword.text);
                                         try {
                                           await globals.user.init();
-                                          
+
                                           Navigator.push(
                                             context,
                                             CupertinoPageRoute(
@@ -244,7 +244,6 @@ class _LoginPageState extends State<LoginPage> {
                                           if (globals.user.code == 401) {
                                             //credentials are wrong
                                             myControllerPassword.text = "";
-                                            
                                           } else {
                                             await reportError(
                                                 'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
@@ -276,7 +275,6 @@ class _LoginPageState extends State<LoginPage> {
                                           _formKey.currentState.validate();
                                         }
                                       } else {
-                                        
                                         print("invalid");
                                         setState(() {
                                           buttonState = ButtonState.error;
@@ -317,6 +315,7 @@ class _LoginPageState extends State<LoginPage> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 20.0),
                                 child: ProgressButton(
+                                  key: Key('login_connect'),
                                   child: Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 18),
@@ -331,11 +330,9 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   ),
                                   onPressed: () async {
-                                    
                                     if (globals.user != null)
                                       globals.user.error = false;
                                     if (_formKey.currentState.validate()) {
-                                      
                                       print("valid");
                                       setState(() {
                                         buttonState = ButtonState.inProgress;
@@ -345,7 +342,7 @@ class _LoginPageState extends State<LoginPage> {
                                           myControllerPassword.text);
                                       try {
                                         await globals.user.init();
-                                        
+
                                         Navigator.push(
                                           context,
                                           CupertinoPageRoute(
@@ -367,7 +364,6 @@ class _LoginPageState extends State<LoginPage> {
                                         if (globals.user.code == 401) {
                                           //credentials are wrong
                                           myControllerPassword.text = "";
-                                          
                                         } else {
                                           await reportError(
                                               'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
@@ -399,7 +395,6 @@ class _LoginPageState extends State<LoginPage> {
                                         _formKey.currentState.validate();
                                       }
                                     } else {
-                                      
                                       print("invalid");
                                       setState(() {
                                         buttonState = ButtonState.error;
@@ -430,9 +425,9 @@ class _LoginPageState extends State<LoginPage> {
           persistentFooterButtons: show
               ? [
                   FlatButton(
+                      key: Key('login_cgu'),
                       child: Text('CGU'),
                       onPressed: () {
-                        
                         showMarkdownPage(
                           applicationIcon: SizedBox(
                             width: 100,
@@ -456,9 +451,9 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       }),
                   FlatButton(
+                      key: Key('login_privacy'),
                       child: Text('Politique de confidentialité'),
                       onPressed: () {
-                        
                         showMarkdownPage(
                           applicationIcon: SizedBox(
                             width: 100,

@@ -3,6 +3,7 @@ import 'package:devinci/pages/absences.dart';
 import 'package:devinci/pages/agenda.dart';
 import 'package:devinci/pages/notes.dart';
 import 'package:devinci/pages/presence.dart';
+import 'package:devinci/pages/salles.dart';
 import 'package:devinci/pages/settings.dart';
 import 'package:devinci/pages/timechef.dart';
 import 'package:devinci/pages/user.dart';
@@ -146,6 +147,13 @@ class _MainPageState extends State<MainPage> {
                       onSelected: (String choice) {
                         if (choice == "Rafraîchir") {
                           globals.isLoading.setState(0, true);
+                        } else if (choice == 'Salles libres') {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => SallesPage(),
+                            ),
+                          );
                         } else {
                           setState(() {
                             if (globals.calendarView == CalendarView.day) {
@@ -169,7 +177,8 @@ class _MainPageState extends State<MainPage> {
                           globals.calendarView == CalendarView.day
                               ? "Semaine"
                               : "Jour",
-                          "Rafraîchir"
+                          "Rafraîchir",
+                          "Salles libres"
                         ].map((String choice) {
                           return PopupMenuItem<String>(
                             value: choice,

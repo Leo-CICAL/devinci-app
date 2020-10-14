@@ -555,7 +555,13 @@
     },
     {
       "name": "syncfusion_flutter_core",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_core-18.3.35",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_core-18.3.38",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "syncfusion_flutter_datagrid",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_datagrid-18.3.38-beta",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
@@ -650,6 +656,12 @@
       "languageVersion": "1.12"
     },
     {
+      "name": "webview_flutter",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.7"
+    },
+    {
       "name": "win32",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/win32-1.7.3",
       "packageUri": "lib/",
@@ -674,7 +686,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-10-05T07:43:29.086744Z",
+  "generated": "2020-10-14T10:29:36.724122Z",
   "generator": "pub",
   "generatorVersion": "2.10.0"
 }
