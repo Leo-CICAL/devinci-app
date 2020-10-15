@@ -21,7 +21,7 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
   final myControllerUsername = TextEditingController();
   final myControllerPassword = TextEditingController();
   final FocusNode _usernameFocus = FocusNode();
@@ -104,6 +104,82 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     //here we shall have valid tokens and basic data about the user such as name, badge id, etc
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    print("changed");
+    String username;
+    String password;
+    //analytics will only be used as much as right now during test phase to have access to the full context of any error.
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (!globals.isConnected) {
+      print("shortcut set offline");
+    } else {
+      globals.isConnected = globals.prefs.getBool("isConnected") ?? true;
+      if (!globals.isConnected) print("prefs set offline");
+      if (globals.isConnected) {
+        print("no pref nor shortcut set to offline");
+        globals.isConnected = connectivityResult != ConnectivityResult.none;
+      }
+    }
+    username = await globals.storage.read(key: "username");
+    password = await globals.storage.read(key: "password");
+
+    if (username != null && password != null) {
+      print("credentials_exists");
+      globals.user = new User(username, password);
+      try {
+        await globals.user.init();
+      } catch (exception, stacktrace) {
+        setState(() {
+          show = true;
+        });
+        print(exception);
+
+        //user.init() throw error if credentials are wrong or if an error occurred during the process
+        if (globals.user.code == 401) {
+          //credentials are wrong
+          myControllerPassword.text = "";
+        } else {
+          await reportError(
+              "main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception",
+              stacktrace);
+
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: new Text("Erreur"),
+                content: new Text(
+                    "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: $exception"),
+                actions: <Widget>[
+                  new FlatButton(
+                    child: new Text("Fermer"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+
+        _formKey.currentState.validate();
+      }
+      Navigator.push(
+        context,
+        CupertinoPageRoute(
+          builder: (context) => MainPage(),
+        ),
+      );
+    } else {
+      setState(() {
+        show = true;
+      });
+    }
   }
 
   void initState() {

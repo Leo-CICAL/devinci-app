@@ -23,6 +23,7 @@ import 'package:devinci/libraries/feedback/feedback.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sembast/sembast.dart';
 import 'package:devinci/extra/classes.dart';
+import 'package:timezone/timezone.dart';
 
 Cookie getCookie(List<Cookie> cookieJar, String name) {
   Cookie res;
@@ -411,9 +412,10 @@ Future<void> showNotification(
     {String title, String body, int delay = 5, int id = 0}) async {
   print("sending notification");
   if (title != null && body != null) {
-    var scheduledNotificationDateTime = DateTime.now().add(Duration(
-        seconds:
-            delay)); //On envoie la notif avec 5 secondes de retard pour être sur que l'app n'est plus en foreground
+    var scheduledNotificationDateTime =
+        TZDateTime.now(getLocation('Europe/Paris')).add(Duration(
+            seconds:
+                delay)); //On envoie la notif avec 5 secondes de retard pour être sur que l'app n'est plus en foreground
     await globals.flutterLocalNotificationsPlugin.zonedSchedule(0, title, body,
         scheduledNotificationDateTime, globals.platformChannelSpecifics,
         uiLocalNotificationDateInterpretation:

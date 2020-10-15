@@ -44,7 +44,9 @@ class _SallesPageState extends State<SallesPage> {
             .occupation[globals.user.sallesStr.indexOf(column.mappingName)];
         return Container(
           color: state
-              ? Theme.of(context).primaryColor
+              ? (globals.currentTheme.isDark()
+          ? Colors.deepOrangeAccent.shade400
+          : Colors.deepOrange)
               : Theme.of(context).scaffoldBackgroundColor,
         );
       } catch (e) {

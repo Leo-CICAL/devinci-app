@@ -879,7 +879,7 @@ class User {
 
         HttpClientRequest req = await client.getUrl(
           Uri.parse(
-            //'http://172.24.112.1:5500/corentin.html',
+            //'http://10.1.169.208:5500/robin_notes.html',
             'https://www.leonard-de-vinci.net/?my=notes',
           ),
         );
@@ -930,28 +930,34 @@ class User {
                 if (texts[this.notesConfig['modules']['item']['eI']]
                         .indexOf(this.notesConfig['modules']['item']['eStr']) <
                     0) {
-                  elem["moy"] = double.parse(
-                      texts[this.notesConfig['modules']['item']['!e']['moy']['i']]
-                              .replaceAllMapped(
-                                  RegExp(this.notesConfig['modules']['item']
-                                      ['!e']['moy']['r']),
-                                  (match) => "")
-                              .split(this.notesConfig['modules']['item']['!e']['moy']['s'])[
-                          this.notesConfig['modules']['item']['!e']['moy']
-                              ['si']]);
-                  elem["nf"] = double.parse(RegExp(
-                          this.notesConfig['modules']['item']['!e']['nf']['r'])
-                      .firstMatch(texts[this.notesConfig['modules']['item']
-                              ['!e']['nf']['i']] +
-                          this.notesConfig['modules']['item']['!e']['nf']['+'])
-                      .group(1));
-                  elem["moyP"] = double.parse(RegExp(this.notesConfig['modules']
-                          ['item']['!e']['moyP']['r'])
-                      .firstMatch(texts[this.notesConfig['modules']['item']
-                              ['!e']['moyP']['i']] +
-                          this.notesConfig['modules']['item']['!e']['moyP']
-                              ['+'])
-                      .group(1));
+                  try {
+                    elem["moy"] = double.parse(
+                        texts[this.notesConfig['modules']['item']['!e']['moy']['i']]
+                            .replaceAllMapped(
+                                RegExp(this.notesConfig['modules']['item']['!e']
+                                    ['moy']['r']),
+                                (match) => "")
+                            .split(this.notesConfig['modules']['item']['!e']['moy']
+                                ['s'])[this.notesConfig['modules']['item']['!e']['moy']['si']]);
+                  } catch (e) {}
+                  try {
+                    elem["nf"] = double.parse(RegExp(this.notesConfig['modules']
+                            ['item']['!e']['nf']['r'])
+                        .firstMatch(texts[this.notesConfig['modules']['item']
+                                ['!e']['nf']['i']] +
+                            this.notesConfig['modules']['item']['!e']['nf']
+                                ['+'])
+                        .group(1));
+                  } catch (e) {}
+                  try {
+                    elem["moyP"] = double.parse(RegExp(this
+                            .notesConfig['modules']['item']['!e']['moyP']['r'])
+                        .firstMatch(texts[this.notesConfig['modules']['item']
+                                ['!e']['moyP']['i']] +
+                            this.notesConfig['modules']['item']['!e']['moyP']
+                                ['+'])
+                        .group(1));
+                  } catch (e) {}
                 }
 
                 nn["s${y + 1}"].add(elem);
@@ -980,63 +986,70 @@ class User {
                   if (texts[this.notesConfig['matieres']['ei']]
                           .indexOf(this.notesConfig['matieres']['eStr']) <
                       0) {
-                    elem["moy"] = double.parse(texts[
-                                this.notesConfig['matieres']['!e']['moy']['i']]
-                            .replaceAllMapped(
-                                RegExp(this.notesConfig['matieres']['!e']['moy']
-                                    ['r']),
-                                (match) => "")
-                            .split(this.notesConfig['matieres']['!e']['moy']['s'])[
-                        this.notesConfig['matieres']['!e']['moy']['si']]);
+                    try {
+                      elem["moy"] = double.parse(
+                          texts[this.notesConfig['matieres']['!e']['moy']['i']]
+                                  .replaceAllMapped(
+                                      RegExp(this.notesConfig['matieres']['!e']
+                                          ['moy']['r']),
+                                      (match) => "")
+                                  .split(
+                                      this.notesConfig['matieres']['!e']['moy']['s'])[
+                              this.notesConfig['matieres']['!e']['moy']['si']]);
+                    } catch (e) {}
                     //print(elem["moy"]);
-
-                    if (texts[this.notesConfig['matieres']['!e']['ri']].indexOf(
-                            this.notesConfig['matieres']['!e']['rStr']) <
-                        0) {
-                      try {
-                        elem["moyP"] = double.parse(RegExp(
-                                this.notesConfig['matieres']['!e']['!r']['moyP']
+                    try {
+                      if (texts[this.notesConfig['matieres']['!e']['ri']]
+                              .indexOf(
+                                  this.notesConfig['matieres']['!e']['rStr']) <
+                          0) {
+                        try {
+                          elem["moyP"] = double.parse(RegExp(
+                                  this.notesConfig['matieres']['!e']['!r']
+                                      ['moyP']['r'])
+                              .firstMatch(texts[this.notesConfig['matieres']
+                                      ['!e']['!r']['moyP']['i']] +
+                                  this.notesConfig['matieres']['!e']['!r']
+                                      ['moyP']['+'])
+                              .group(1));
+                        } catch (e) {
+                          elem["moyP"] = null;
+                        }
+                      } else {
+                        double noteR = double.parse(RegExp(
+                                this.notesConfig['matieres']['!e']['r']['noteR']
                                     ['r'])
                             .firstMatch(texts[this.notesConfig['matieres']['!e']
-                                    ['!r']['moyP']['i']] +
-                                this.notesConfig['matieres']['!e']['!r']['moyP']
+                                    ['r']['noteR']['i']] +
+                                this.notesConfig['matieres']['!e']['r']['noteR']
                                     ['+'])
                             .group(1));
-                      } catch (e) {
-                        elem["moyP"] = null;
-                      }
-                    } else {
-                      double noteR = double.parse(RegExp(this
-                              .notesConfig['matieres']['!e']['r']['noteR']['r'])
-                          .firstMatch(texts[this.notesConfig['matieres']['!e']
-                                  ['r']['noteR']['i']] +
-                              this.notesConfig['matieres']['!e']['r']['noteR']
-                                  ['+'])
-                          .group(1));
-                      if (noteR > elem["moy"]) {
-                        if (noteR > 10) {
-                          elem["moy"] = 10.0;
-                        } else {
-                          elem["moy"] = noteR;
+                        if (noteR > elem["moy"]) {
+                          if (noteR > 10) {
+                            elem["moy"] = 10.0;
+                          } else {
+                            elem["moy"] = noteR;
+                          }
                         }
+                        var e = {
+                          "nom": "MESIMF120419-CC-1 Rattrapage",
+                          "note": noteR,
+                          "noteP": null,
+                          "date": timestamp
+                        };
+
+                        elem["notes"].add(e);
+
+                        elem["moyP"] = double.parse(RegExp(
+                                this.notesConfig['matieres']['!e']['r']['moyP']
+                                    ['r'])
+                            .firstMatch(texts[this.notesConfig['matieres']['!e']
+                                    ['r']['moyP']['i']] +
+                                this.notesConfig['matieres']['!e']['r']['moyP']
+                                    ['+'])
+                            .group(1));
                       }
-                      var e = {
-                        "nom": "MESIMF120419-CC-1 Rattrapage",
-                        "note": noteR,
-                        "noteP": null,
-                        "date": timestamp
-                      };
-
-                      elem["notes"].add(e);
-
-                      elem["moyP"] = double.parse(RegExp(this
-                              .notesConfig['matieres']['!e']['r']['moyP']['r'])
-                          .firstMatch(texts[this.notesConfig['matieres']['!e']
-                                  ['r']['moyP']['i']] +
-                              this.notesConfig['matieres']['!e']['r']['moyP']
-                                  ['+'])
-                          .group(1));
-                    }
+                    } catch (e) {}
                   }
 
                   nn["s${y + 1}"][i]["matieres"].add(elem);

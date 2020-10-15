@@ -28,8 +28,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url "https://jitpack.io"
-         }
+        
          maven {
            // [required] background_fetch
            url "${project(':background_fetch').projectDir}/libs"

@@ -17,9 +17,9 @@
         android:label="devinci"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
-        tools:replace="android:allowBackup,android:label"
+        android:fullBackupContent="false"
         tools:ignore="GoogleAppIndexingWarning"
-        android:fullBackupContent="false">
+        >
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

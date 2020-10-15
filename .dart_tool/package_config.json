@@ -656,12 +656,6 @@
       "languageVersion": "1.12"
     },
     {
-      "name": "webview_flutter",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-1.0.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.7"
-    },
-    {
       "name": "win32",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/win32-1.7.3",
       "packageUri": "lib/",
@@ -686,7 +680,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-10-14T10:29:36.724122Z",
+  "generated": "2020-10-15T16:06:48.841741Z",
   "generator": "pub",
   "generatorVersion": "2.10.0"
 }

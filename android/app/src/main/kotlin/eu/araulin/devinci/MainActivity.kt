@@ -1,6 +1,5 @@
 package eu.araulin.devinci
 
-import `in`.myinnos.library.AppIconNameChanger
 import android.util.Log
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
@@ -36,32 +35,9 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun changeIcon(iconId: Int): Boolean {
-        Log.d("changeIcon", "start")
-        var activeName = "eu.araulin.devinci.MainActivity"
-        when (iconId) {
-            1 -> activeName = "eu.araulin.devinci.MainActivity2"
-            2 -> activeName = "eu.araulin.devinci.MainActivity3"
-            3 -> activeName = "eu.araulin.devinci.MainActivity4"
-            else -> activeName = "eu.araulin.devinci.MainActivity"
-        }
+        
         val success: Boolean = false
-        val disableNames: MutableList<String> = ArrayList()
-        for (i in 0..3) {
-            if (i != iconId) {
-                if (i != 0) {
-                    disableNames.add("eu.araulin.devinci.MainActivity" + (i + 1))
-                } else {
-                    disableNames.add("eu.araulin.devinci.MainActivity")
-                }
-            }
-        }
-        AppIconNameChanger.Builder(this@MainActivity)
-                .activeName(activeName) // String
-                .disableNames(disableNames) // List<String>
-                .packageName(BuildConfig.APPLICATION_ID)
-                .build()
-                .setNow()
-        Log.d("changeIcon", "changed")
+        
         return success
     }
 
