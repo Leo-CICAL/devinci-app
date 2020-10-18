@@ -33,6 +33,252 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  List<Widget> bodyPages() {
+    if (globals.showRestaurant) {
+      return <Widget>[
+        AgendaPage(),
+        NotesPage(),
+        AbsencesPage(),
+        PresencePage(),
+        TimeChefPage(),
+        UserPage()
+      ];
+    } else {
+      return <Widget>[
+        AgendaPage(),
+        NotesPage(),
+        AbsencesPage(),
+        PresencePage(),
+        UserPage()
+      ];
+    }
+  }
+
+  List<BottomNavigationBarItem> bottomNavigationBarItem() {
+    if (globals.showRestaurant) {
+      return [
+        BottomNavigationBarItem(
+          icon: Icon(globals.selectedPage == 0 ? Icons.today : OMIcons.today),
+          label: 'EDT',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(globals.selectedPage == 1
+              ? Icons.assignment
+              : OMIcons.assignment),
+          label: 'Notes',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(globals.selectedPage == 2
+              ? Icons.watch_later
+              : OMIcons.watchLater),
+          label: 'Absences',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(globals.selectedPage == 3
+              ? DevinciIcons.megaphone_filled
+              : DevinciIcons.megaphone_outlined),
+          label: 'Présence',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(globals.selectedPage == 4
+              ? Icons.restaurant
+              : OMIcons.restaurant),
+          label: 'Restaurant',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(globals.selectedPage == 5 ? Icons.person : OMIcons.person),
+          //,
+          label: globals.user.data["name"],
+        ),
+      ];
+    } else {
+      return [
+        BottomNavigationBarItem(
+          icon: Icon(globals.selectedPage == 0 ? Icons.today : OMIcons.today),
+          label: 'EDT',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(globals.selectedPage == 1
+              ? Icons.assignment
+              : OMIcons.assignment),
+          label: 'Notes',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(globals.selectedPage == 2
+              ? Icons.watch_later
+              : OMIcons.watchLater),
+          label: 'Absences',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(globals.selectedPage == 3
+              ? DevinciIcons.megaphone_filled
+              : DevinciIcons.megaphone_outlined),
+          label: 'Présence',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(globals.selectedPage == 4 ? Icons.person : OMIcons.person),
+          //,
+          label: globals.user.data["name"],
+        ),
+      ];
+    }
+  }
+
+  List<Widget> actions1() {
+    if (globals.showRestaurant) {
+      return [
+        IconButton(
+          icon: IconTheme(
+            data: Theme.of(context).accentIconTheme,
+            child: Icon(OMIcons.add),
+          ),
+          onPressed: () async {
+            Navigator.push<Widget>(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => CoursEditor(
+                        addButton: true,
+                      )),
+            );
+          },
+        ),
+        SizedBox.shrink(),
+        SizedBox.shrink(),
+        SizedBox.shrink(),
+        IconButton(
+          icon: IconTheme(
+            data: Theme.of(context).accentIconTheme,
+            child: Icon(OMIcons.add),
+          ),
+          onPressed: () async {
+            const url = 'https://timechef.elior.com/#/recharger';
+            if (await canLaunch(url)) {
+              await launch(
+                url,
+              );
+            } else {
+              throw 'Could not launch $url';
+            }
+          },
+        ),
+        IconButton(
+          icon: IconTheme(
+            data: Theme.of(context).accentIconTheme,
+            child: Icon(OMIcons.settings),
+          ),
+          onPressed: () {
+            showCupertinoModalBottomSheet(
+                context: context,
+                builder: (context, scrollController) => SettingsPage(
+                      scrollController: scrollController,
+                    ));
+          },
+        ),
+      ];
+    } else {
+      return [
+        IconButton(
+          icon: IconTheme(
+            data: Theme.of(context).accentIconTheme,
+            child: Icon(OMIcons.add),
+          ),
+          onPressed: () async {
+            Navigator.push<Widget>(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => CoursEditor(
+                        addButton: true,
+                      )),
+            );
+          },
+        ),
+        SizedBox.shrink(),
+        SizedBox.shrink(),
+        SizedBox.shrink(),
+        IconButton(
+          icon: IconTheme(
+            data: Theme.of(context).accentIconTheme,
+            child: Icon(OMIcons.settings),
+          ),
+          onPressed: () {
+            showCupertinoModalBottomSheet(
+                context: context,
+                builder: (context, scrollController) => SettingsPage(
+                      scrollController: scrollController,
+                    ));
+          },
+        ),
+      ];
+    }
+  }
+
+  List<Widget> actions2() {
+    if (globals.showRestaurant) {
+      return [
+        IconButton(
+          icon: IconTheme(
+            data: Theme.of(context).accentIconTheme,
+            child: Icon(OMIcons.today),
+          ),
+          onPressed: () async {
+            globals.calendarController.displayDate = DateTime.now();
+          },
+        ),
+        globals.isLoading.state(1)
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: CupertinoActivityIndicator(),
+              )
+            : SizedBox.shrink(),
+        globals.isLoading.state(2)
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: CupertinoActivityIndicator(),
+              )
+            : SizedBox.shrink(),
+        SizedBox.shrink(),
+        SizedBox.shrink(),
+        globals.isLoading.state(4)
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: CupertinoActivityIndicator(),
+              )
+            : SizedBox.shrink()
+      ];
+    } else {
+      return [
+        IconButton(
+          icon: IconTheme(
+            data: Theme.of(context).accentIconTheme,
+            child: Icon(OMIcons.today),
+          ),
+          onPressed: () async {
+            globals.calendarController.displayDate = DateTime.now();
+          },
+        ),
+        globals.isLoading.state(1)
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: CupertinoActivityIndicator(),
+              )
+            : SizedBox.shrink(),
+        globals.isLoading.state(2)
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: CupertinoActivityIndicator(),
+              )
+            : SizedBox.shrink(),
+        SizedBox.shrink(),
+        globals.isLoading.state(4)
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: CupertinoActivityIndicator(),
+              )
+            : SizedBox.shrink()
+      ];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     globals.currentContext = context;
@@ -57,86 +303,8 @@ class _MainPageState extends State<MainPage> {
               style: Theme.of(context).textTheme.headline1,
             ),
             actions: <Widget>[
-              <Widget>[
-                IconButton(
-                  icon: IconTheme(
-                    data: Theme.of(context).accentIconTheme,
-                    child: Icon(OMIcons.add),
-                  ),
-                  onPressed: () async {
-                    Navigator.push<Widget>(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => CoursEditor(
-                                addButton: true,
-                              )),
-                    );
-                  },
-                ),
-                SizedBox.shrink(),
-                SizedBox.shrink(),
-                SizedBox.shrink(),
-                IconButton(
-                  icon: IconTheme(
-                    data: Theme.of(context).accentIconTheme,
-                    child: Icon(OMIcons.add),
-                  ),
-                  onPressed: () async {
-                    const url = 'https://timechef.elior.com/#/recharger';
-                    if (await canLaunch(url)) {
-                      await launch(
-                        url,
-                      );
-                    } else {
-                      throw 'Could not launch $url';
-                    }
-                  },
-                ),
-                IconButton(
-                  icon: IconTheme(
-                    data: Theme.of(context).accentIconTheme,
-                    child: Icon(OMIcons.settings),
-                  ),
-                  onPressed: () {
-                    showCupertinoModalBottomSheet(
-                        context: context,
-                        builder: (context, scrollController) => SettingsPage(
-                              scrollController: scrollController,
-                            ));
-                  },
-                ),
-              ].elementAt(globals.selectedPage),
-              <Widget>[
-                IconButton(
-                  icon: IconTheme(
-                    data: Theme.of(context).accentIconTheme,
-                    child: Icon(OMIcons.today),
-                  ),
-                  onPressed: () async {
-                    globals.calendarController.displayDate = DateTime.now();
-                  },
-                ),
-                globals.isLoading.state(1)
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
-                        child: CupertinoActivityIndicator(),
-                      )
-                    : SizedBox.shrink(),
-                globals.isLoading.state(2)
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
-                        child: CupertinoActivityIndicator(),
-                      )
-                    : SizedBox.shrink(),
-                SizedBox.shrink(),
-                SizedBox.shrink(),
-                globals.isLoading.state(4)
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
-                        child: CupertinoActivityIndicator(),
-                      )
-                    : SizedBox.shrink()
-              ].elementAt(globals.selectedPage),
+              actions1().elementAt(globals.selectedPage),
+              actions2().elementAt(globals.selectedPage),
               globals.selectedPage == 0
                   ? PopupMenuButton(
                       captureInheritedThemes: true,
@@ -218,58 +386,14 @@ class _MainPageState extends State<MainPage> {
                     ),
             ],
             automaticallyImplyLeading: false),
-        body: <Widget>[
-          AgendaPage(),
-          NotesPage(),
-          AbsencesPage(),
-          PresencePage(),
-          TimeChefPage(),
-          UserPage()
-        ].elementAt(globals.selectedPage),
+        body: bodyPages().elementAt(globals.selectedPage),
         bottomNavigationBar: new Theme(
           data: Theme.of(context).copyWith(
             // sets the background color of the `BottomNavigationBar`
             canvasColor: Theme.of(context).scaffoldBackgroundColor,
           ),
           child: new BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(
-                      globals.selectedPage == 0 ? Icons.today : OMIcons.today),
-                  label: 'EDT',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(globals.selectedPage == 1
-                      ? Icons.assignment
-                      : OMIcons.assignment),
-                  label: 'Notes',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(globals.selectedPage == 2
-                      ? Icons.watch_later
-                      : OMIcons.watchLater),
-                  label: 'Absences',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(globals.selectedPage == 3
-                      ? DevinciIcons.megaphone_filled
-                      : DevinciIcons.megaphone_outlined),
-                  label: 'Présence',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(globals.selectedPage == 4
-                      ? Icons.restaurant
-                      : OMIcons.restaurant),
-                  label: 'Restaurant',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(globals.selectedPage == 5
-                      ? Icons.person
-                      : OMIcons.person),
-                  //,
-                  label: globals.user.data["name"],
-                ),
-              ],
+              items: bottomNavigationBarItem(),
               currentIndex: globals.selectedPage,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               selectedItemColor: Theme.of(context).indicatorColor,

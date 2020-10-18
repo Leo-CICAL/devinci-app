@@ -74,15 +74,19 @@ class User {
 
   var promotion = {};
 
-  Map<String, dynamic> presence = {
-    'type': 'none', //5 types : ongoing / done / notOpen / none / closed
-    'title': '',
-    'horaires': '',
-    'prof': '',
-    'seance_pk': '',
-    'zoom': '',
-    'zoom_pwd': '',
-  };
+  List<Map<String, dynamic>> presence = [
+    // {
+    //   'type': 'none', //5 types : ongoing / done / notOpen / none / closed
+    //   'title': '',
+    //   'horaires': '',
+    //   'prof': '',
+    //   'seance_pk': '',
+    //   'zoom': '',
+    //   'zoom_pwd': '',
+    // }
+  ];
+
+  int presenceIndex = 0;
 
   Map<String, dynamic> documents = {
     "certificat": {
@@ -247,6 +251,7 @@ class User {
         .setCrashlyticsCollectionEnabled(globals.crashConsent == 'true');
     globals.analyticsConsent =
         globals.prefs.getBool('analyticsConsent') ?? true;
+    globals.showRestaurant = globals.prefs.getBool('showRestaurant') ?? true;
     await globals.analytics
         .setAnalyticsCollectionEnabled(globals.analyticsConsent);
     bool calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
@@ -1451,33 +1456,43 @@ class User {
         if (res.statusCode == 200) {
           String body = await res.transform(utf8.decoder).join();
           if (body.indexOf('Pas de cours de prévu') > -1) {
-            this.presence['type'] = 'none';
+            //this.presence[0]['type'] = 'none';
           } else {
             var doc = parse(body);
             List<Element> trs = doc.querySelectorAll('table > tbody > tr');
-            int index = -1;
+            this.presenceIndex = trs.length - 1;
+            this.presence.clear();
             for (int i = 0; i < trs.length; i++) {
               Element tr = trs[i];
+              this.presence.add({
+                'type':
+                    'none', //5 types : ongoing / done / notOpen / none / closed
+                'title': '',
+                'horaires': '',
+                'prof': '',
+                'seance_pk': '',
+                'zoom': '',
+                'zoom_pwd': '',
+              });
               String classe = tr.attributes['class'];
               if (classe == '' || classe == 'warning') {
-                index = i;
+                this.presenceIndex = i;
                 break;
               }
             }
-            if (index == -1) {
-              this.presence['type'] = 'none';
-            } else {
-              List<Element> tds = trs[index].querySelectorAll('td');
-              this.presence['horaires'] =
+
+            for (int i = 0; i < trs.length; i++) {
+              List<Element> tds = trs[i].querySelectorAll('td');
+              this.presence[i]['horaires'] =
                   tds[0].text.replaceAllMapped(RegExp(r' '), (match) {
                 return '';
               });
-              this.presence['title'] = tds[1].text;
-              this.presence['prof'] = tds[2].text;
+              this.presence[i]['title'] = tds[1].text;
+              this.presence[i]['prof'] = tds[2].text;
               try {
-                this.presence['zoom'] =
+                this.presence[i]['zoom'] =
                     tds[4].querySelector('a').attributes['href'];
-                this.presence['zoom_pwd'] = tds[4]
+                this.presence[i]['zoom_pwd'] = tds[4]
                     .querySelector('span')
                     .attributes['title']
                     .split(': ')[1];
@@ -1485,8 +1500,6 @@ class User {
                 print(e);
               }
               String nextLink = tds[3].querySelector('a').attributes['href'];
-              print(nextLink);
-              print(this.presence);
               req = await client.getUrl(
                 Uri.parse('https://www.leonard-de-vinci.net' + nextLink),
               );
@@ -1503,22 +1516,22 @@ class User {
                 print("go");
                 String body = await res.transform(utf8.decoder).join();
                 if (body.indexOf('pas encore ouvert') > -1) {
-                  this.presence['type'] = 'notOpen';
+                  this.presence[i]['type'] = 'notOpen';
                 } else {
                   if (body.indexOf('Valider') > -1) {
-                    this.presence['type'] = 'ongoing';
-                    this.presence['seance_pk'] =
+                    this.presence[i]['type'] = 'ongoing';
+                    this.presence[i]['seance_pk'] =
                         new RegExp(r"seance_pk : '(.*?)'")
                             .firstMatch(body)
                             .group(1);
-                  } else if (body.indexOf('clôturé') > -1) {
-                    this.presence['type'] = 'closed';
                   } else if (body.indexOf('Vous avez été noté présent') > -1) {
-                    this.presence['type'] = 'done';
+                    this.presence[i]['type'] = 'done';
+                  } else if (body.indexOf('clôturé') > -1) {
+                    this.presence[i]['type'] = 'closed';
                   }
                 }
               } else {
-                this.presence['type'] = 'none';
+                this.presence[i]['type'] = 'none';
               }
             }
           }
@@ -1537,14 +1550,14 @@ class User {
     return;
   }
 
-  Future<void> setPresence({bool force = false}) async {
+  Future<void> setPresence(int index, {bool force = false}) async {
     if (globals.isConnected || force) {
       HttpClient client = new HttpClient();
       if (this.tokens["SimpleSAML"] != "" &&
           this.tokens["alv"] != "" &&
           this.tokens["uids"] != "" &&
           this.tokens["SimpleSAMLAuthToken"] != "" &&
-          this.presence["seance_pk"] != "") {
+          this.presence[index]["seance_pk"] != "") {
         HttpClientRequest req = await client.postUrl(
           Uri.parse(
             "https://www.leonard-de-vinci.net/student/presences/upload.php",
@@ -1572,16 +1585,16 @@ class User {
         req.headers.set(
             'Referer',
             'https://www.leonard-de-vinci.net/student/presences/' +
-                Uri.encodeComponent(this.presence["seance_pk"]));
+                Uri.encodeComponent(this.presence[index]["seance_pk"]));
         req.headers.set('Accept-Language',
             'fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6');
         req.write(
           "act=set_present&seance_pk=" +
-              Uri.encodeComponent(this.presence["seance_pk"]),
+              Uri.encodeComponent(this.presence[index]["seance_pk"]),
         );
         HttpClientResponse res = await req.close();
         if (res.statusCode == 200) {
-          this.presence["type"] = 'done';
+          this.presence[index]["type"] = 'done';
         } else {
           throw Exception(res.statusCode);
         }

@@ -171,7 +171,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   right: 16,
                   top: 16,
                 ),
-                height: (6 * 46).toDouble(),
+                height: (7 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -270,6 +270,40 @@ class _SettingsPageState extends State<SettingsPage> {
                                   );
                                 }).toList(),
                               ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 46,
+                      margin: EdgeInsets.only(left: 24),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                        width: 0.2,
+                        color: Color(0xffACACAC),
+                      ))),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              "Page restaurant",
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Switch.adaptive(
+                              value: globals.showRestaurant,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  globals.showRestaurant =
+                                      !globals.showRestaurant;
+                                  globals.prefs.setBool(
+                                      "showRestaurant", globals.showRestaurant);
+                                });
+                              },
                             ),
                           ),
                         ],

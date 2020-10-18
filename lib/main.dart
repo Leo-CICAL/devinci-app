@@ -23,6 +23,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 
+import 'extra/classes.dart';
+
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -220,6 +222,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           ),
         ),
       ),
+      builder: (context, child) {
+        return ScrollConfiguration(
+          behavior: MyBehavior(),
+          child: child,
+        );
+      },
       themeMode: globals.currentTheme.currentTheme(),
       home: LoginPage(title: 'Devinci'),
       debugShowCheckedModeBanner: false,

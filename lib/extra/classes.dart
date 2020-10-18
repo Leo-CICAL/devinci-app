@@ -187,3 +187,11 @@ class Salle {
   final String name;
   final List<bool> occupation;
 }
+
+class MyBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
+  }
+}

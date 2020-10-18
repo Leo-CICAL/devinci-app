@@ -55,6 +55,7 @@ dependencies:
   url_launcher: ^5.7.2
   in_app_review: ^0.2.0+4
   timezone: ^0.5.7
+  smooth_page_indicator: ^0.2.0
   flutter_localizations:
     sdk: flutter
 

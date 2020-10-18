@@ -144,3 +144,5 @@ FirebaseAnalytics analytics;
 FirebaseAnalyticsObserver observer;
 
 CalendarController calendarController;
+
+bool showRestaurant = false;
