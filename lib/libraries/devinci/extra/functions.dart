@@ -749,6 +749,14 @@ Future<void> changeIcon(int iconId) async {
   }
 }
 
+Future<void> setICal(String url) async {
+  try {
+    await platform.invokeMethod('setICal', url);
+  } catch (exception, stacktrace) {
+    reportError(exception, stacktrace);
+  }
+}
+
 Future<void> dialog(
     {String title = "",
     String content = "",

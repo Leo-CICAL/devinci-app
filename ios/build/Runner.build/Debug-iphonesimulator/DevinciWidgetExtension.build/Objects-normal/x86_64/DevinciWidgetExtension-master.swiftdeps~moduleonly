@@ -1,5 +1,0 @@
-version: "Apple Swift version 5.3 (swiftlang-1200.0.16.9 clang-1200.0.22.5)"
-options: "8214ab8655733525653ab4eb778c8bca"
-build_time: [1597050505, 806119000]
-inputs:
-  "/Users/antoine/Documents/GitHub/devinci/ios/DevinciWidget/DevinciWidget.swift": [1597050116, 144391552]

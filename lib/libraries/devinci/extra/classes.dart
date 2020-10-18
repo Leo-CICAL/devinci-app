@@ -257,6 +257,9 @@ class User {
     this.data["idAdmin"] = await globals.storage.read(key: "idAdmin") ?? "";
     this.data["ine"] = await globals.storage.read(key: "ine") ?? "";
     this.data["edtUrl"] = await globals.storage.read(key: "edtUrl") ?? "";
+    if (this.data["edtUrl"] != "") {
+      await setICal(this.data["edtUrl"]);
+    }
     this.data["name"] = await globals.storage.read(key: "name") ?? "";
     if (globals.isConnected) {
       try {

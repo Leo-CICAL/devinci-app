@@ -37,6 +37,10 @@ import UserNotifications
                 let dic = call.arguments as! Dictionary<String, String>
                 self.showDialog(result:result, dic:dic)
                 return
+            case "setICal":
+                let url = call.arguments as! String
+                self.setICal(result: result, url: url)
+                return
             default:
                 result(FlutterMethodNotImplemented)
                 return
@@ -73,6 +77,13 @@ import UserNotifications
                     }
                 }
             }
+    }
+    
+    private func setICal(result: @escaping FlutterResult, url: String){
+        let defaults = UserDefaults(suiteName: "group.eu.araulin.devinciApp")
+        defaults?.set(url, forKey: "ical")
+        print("ical set");
+        result(true)
     }
 
     private func showDialog(result: @escaping FlutterResult, dic: Dictionary<String, String>){
