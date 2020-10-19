@@ -2,6 +2,7 @@ import 'package:devinci/libraries/flutter_progress_button/flutter_progress_butto
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -26,12 +27,12 @@ class _PresencePageState extends State<PresencePage> {
 
   void runBeforeBuild() async {
     await globals.user.getPresence(force: true);
-
     if (mounted)
       setState(() {
         show = true;
       });
-    _pageController.jumpToPage(globals.user.presenceIndex);
+    if (globals.user.presence.length > 0)
+      _pageController.jumpToPage(globals.user.presenceIndex);
   }
 
   void initState() {
@@ -268,30 +269,67 @@ class _PresencePageState extends State<PresencePage> {
   @override
   Widget build(BuildContext context) {
     return show
-        ? Column(
-            children: [
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  children: pageGen(),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: SmoothPageIndicator(
-                    controller: _pageController, // PageController
-                    count: globals.user.presence.length,
-                    effect: WormEffect(
-                        dotHeight: 10,
-                        dotWidth: 10,
-                        activeDotColor: Theme.of(context)
-                            .accentColor), // your preferred effect
-                    onDotClicked: (index) {
-                      _pageController.jumpToPage(index);
-                    }),
+        ? (globals.user.presence.length > 0
+            ? Column(
+                children: [
+                  Expanded(
+                    child: PageView(
+                      controller: _pageController,
+                      children: pageGen(),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: SmoothPageIndicator(
+                        controller: _pageController, // PageController
+                        count: globals.user.presence.length,
+                        effect: WormEffect(
+                            dotHeight: 10,
+                            dotWidth: 10,
+                            activeDotColor: Theme.of(context)
+                                .accentColor), // your preferred effect
+                        onDotClicked: (index) {
+                          _pageController.jumpToPage(index);
+                        }),
+                  )
+                ],
               )
-            ],
-          )
+            : CupertinoScrollbar(
+                child: SmartRefresher(
+                  enablePullDown: true,
+                  header: ClassicHeader(),
+                  controller: _refreshController,
+                  onRefresh: _onRefresh,
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 62, left: 8, right: 8),
+                        child: Center(
+                          child: Text('Pas de cours prévu.',
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.headline2),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 52),
+                        child: Container(
+                          height: 200,
+                          width: 200,
+                          child: Center(
+                            child: SvgPicture.asset(
+                              "assets/free.svg",
+                              color:
+                                  Theme.of(context).textTheme.bodyText1.color,
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ))
         : Center(
             child: CupertinoActivityIndicator(),
           );
