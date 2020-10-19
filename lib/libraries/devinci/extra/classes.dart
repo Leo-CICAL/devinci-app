@@ -1466,7 +1466,6 @@ class User {
             this.presenceIndex = trs.length - 1;
             this.presence.clear();
             for (int i = 0; i < trs.length; i++) {
-              Element tr = trs[i];
               this.presence.add({
                 'type':
                     'none', //5 types : ongoing / done / notOpen / none / closed
@@ -1477,6 +1476,9 @@ class User {
                 'zoom': '',
                 'zoom_pwd': '',
               });
+            }
+            for (int i = 0; i < trs.length; i++) {
+              Element tr = trs[i];
               String classe = tr.attributes['class'];
               if (classe == '' || classe == 'warning') {
                 this.presenceIndex = i;
