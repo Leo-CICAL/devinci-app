@@ -84,7 +84,11 @@ import WidgetKit
         let defaults = UserDefaults(suiteName: "group.eu.araulin.devinciApp")
         defaults?.set(url, forKey: "ical")
         print("ical set");
-        WidgetCenter.shared.reloadAllTimelines()
+        if #available(iOS 14, *) {
+            WidgetCenter.shared.reloadAllTimelines()
+        } else {
+            // show sad face emoji
+        }
         result(true)
     }
 
