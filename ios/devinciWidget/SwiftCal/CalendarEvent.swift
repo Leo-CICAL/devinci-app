@@ -68,6 +68,7 @@ public class CalendarEvent: NSObject {
     @objc public var eventIdentifier: String?
     
     @objc public var title: String?
+    @objc public var presentiel: String?
     @objc public var notes: String?
     public var hasNotes: Bool {
         get {

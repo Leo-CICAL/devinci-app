@@ -38,6 +38,7 @@ class ICSEventParser: NSObject {
         static let timezone = "TZID:"
         static let timezoneStartDateAndTimezone = "DTSTART;TZID="
         static let comment = "COMMENT;"
+        static let flag = "FLAGPRESENTIEL:"
     }
 
     static func event(from icsString: String, calendarTimezone: TimeZone? = nil) -> CalendarEvent? {
@@ -91,6 +92,7 @@ class ICSEventParser: NSObject {
 
         event.title = summary(from: icsString)
         event.notes = description(from: icsString)
+        event.presentiel = flag(from: icsString)
         
         event.location = location(from: icsString)
         
@@ -183,6 +185,17 @@ class ICSEventParser: NSObject {
         eventScanner.scanUpTo("\n", into: &summaryString)
         
         return summaryString?.replacingOccurrences(of: ICS.summary, with: "").trimmingCharacters(in: CharacterSet.newlines).fixIllegalICS()
+    }
+    
+    private static func flag(from icsString: String) -> String? {
+        
+        var flagString: NSString?
+        
+        let eventScanner = Scanner(string: icsString)
+        eventScanner.scanUpTo(ICS.flag, into: nil)
+        eventScanner.scanUpTo("\n", into: &flagString)
+        
+        return flagString?.replacingOccurrences(of: ICS.flag, with: "").trimmingCharacters(in: CharacterSet.newlines).fixIllegalICS()
     }
     
     private static func status(from icsString: String) -> String? {

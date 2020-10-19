@@ -12,11 +12,11 @@ import SwiftUI
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> DevinciData {
-        DevinciData(date: Date(), name: "Espaces Vectoriels", location:"L206", time: "8h15 - 11h15" , name2: "Calcul Intégral", location2: "E160", time2:"12h30 - 15h30")
+        DevinciData(date: Date(), name: "Espaces Vectoriels", location:"L206", time: "8h15 - 11h15" ,flag:"presentiel", name2: "Calcul Intégral", location2: "E160", time2:"12h30 - 15h30", flag2: "presentiel")
     }
     
     func getSnapshot(in context: Context, completion: @escaping (DevinciData) -> ()) {
-        let entry = DevinciData(date: Date(), name: "Espaces Vectoriels", location:"L206", time: "8h15 - 11h15" , name2: "Calcul Intégral", location2: "E160", time2:"12h30 - 15h30")
+        let entry = DevinciData(date: Date(), name: "Espaces Vectoriels", location:"L206", time: "8h15 - 11h15" ,flag:"presentiel", name2: "Calcul Intégral", location2: "E160", time2:"12h30 - 15h30", flag2: "presentiel")
         completion(entry)
     }
     
@@ -31,6 +31,8 @@ struct Provider: TimelineProvider {
         var title2 = ""
         var location2 = ""
         var hours2 = ""
+        var flag = ""
+        var flag2 = ""
         if(url != ""){
             guard let myURL = URL(string: url) else {
                 print("Error: \(url) doesn't seem to be a valid URL")
@@ -76,7 +78,9 @@ struct Provider: TimelineProvider {
                             if(location.contains("[")){
                                 location = String(location.split(separator: "[")[0])
                             }
+                            flag = event.presentiel ?? "presentiel"
                         }else{
+                            flag2 = event.presentiel ?? "presentiel"
                             title2 = event.title ?? "..."
                             if(title2.contains("]")){
                                 let s = title2.split(separator: "]")
@@ -115,7 +119,7 @@ struct Provider: TimelineProvider {
             title = "url"
         }
         
-        let entry = DevinciData(date: Date(), name: title, location:location, time:hours, name2: title2, location2: location2, time2: hours2)
+        let entry = DevinciData(date: Date(), name: title, location:location, time:hours,flag:flag, name2: title2, location2: location2, time2: hours2, flag2:flag2)
         
         let timeline = Timeline(entries: [entry], policy: .after(refreshDate))
         completion(timeline)
@@ -129,10 +133,12 @@ struct DevinciData: TimelineEntry {
     let name: String
     let location: String
     let time: String
+    let flag: String
     
     let name2: String
     let location2: String
     let time2: String
+    let flag2: String
 }
 
 struct devinciWidgetEntryView : View {
@@ -140,6 +146,17 @@ struct devinciWidgetEntryView : View {
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.widgetFamily) var family
+    
+    struct ExDivider: View {
+        @Environment(\.colorScheme) var colorScheme
+        let width: CGFloat = 0.5
+        var body: some View {
+            Rectangle()
+                .fill(colorScheme == .dark ?Color(red: 151/255, green: 151/255, blue:151/255):Color(red: 170/255, green: 170/255, blue:170/255))
+                .frame(width: width)
+                .edgesIgnoringSafeArea(.vertical)
+        }
+    }
     
     var body: some View {
         switch family {
@@ -162,10 +179,14 @@ struct devinciWidgetEntryView : View {
                         Image(systemName: "calendar")
                         Spacer()
                     }.padding(.bottom, 8)
-                    Text("Pas de cours prévu")
-                        .font(.system(size:12))
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(Color(UIColor.label))
+                    HStack{
+                        Spacer()
+                        Text("Pas de cours prévu")
+                            .font(.system(size:14))
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color(UIColor.label))
+                        Spacer()
+                    }
                 }
                 else{
                     Text(entry.name)
@@ -174,7 +195,7 @@ struct devinciWidgetEntryView : View {
                         .foregroundColor(Color(UIColor.label))
                     Text(entry.location)
                         .font(.system(size:26))
-                        .foregroundColor(entry.location.contains("ZOOM") ?  (colorScheme == .dark ? Color(red: 255/255, green: 112/255, blue: 67/255):Color(red: 255/255, green: 87/255, blue: 34/255)):(colorScheme == .dark ? Color(red: 100/255, green: 1, blue: 218/255):Color(red: 0, green: 150/255, blue: 136/255)))
+                        .foregroundColor(entry.flag == "distanciel" ?  (colorScheme == .dark ? Color(red: 255/255, green: 112/255, blue: 67/255):Color(red: 255/255, green: 87/255, blue: 34/255)):(colorScheme == .dark ? Color(red: 100/255, green: 1, blue: 218/255):Color(red: 0, green: 150/255, blue: 136/255)))
                         .fontWeight(.bold)
                     Spacer()
                     Text(entry.time)
@@ -225,16 +246,16 @@ struct devinciWidgetEntryView : View {
                                     .foregroundColor(Color(UIColor.label))
                                 Text(entry.location)
                                     .font(.system(size:26))
-                                    .foregroundColor(entry.location.contains("ZOOM") ?  (colorScheme == .dark ? Color(red: 255/255, green: 112/255, blue: 67/255):Color(red: 255/255, green: 87/255, blue: 34/255)):(colorScheme == .dark ? Color(red: 100/255, green: 1, blue: 218/255):Color(red: 0, green: 150/255, blue: 136/255)))
+                                    .foregroundColor(entry.flag == "distanciel" ?  (colorScheme == .dark ? Color(red: 255/255, green: 112/255, blue: 67/255):Color(red: 255/255, green: 87/255, blue: 34/255)):(colorScheme == .dark ? Color(red: 100/255, green: 1, blue: 218/255):Color(red: 0, green: 150/255, blue: 136/255)))
                                     .fontWeight(.bold)
                                 Spacer()
                                 Text(entry.time)
                                     .font(.system(size:14))
                                     .bold()
                                     .foregroundColor(Color(UIColor.label))
-                            }.frame(width: container.size.width / 2)
+                            }.frame(width: container.size.width / 2, alignment: .leading)
                             
-                            Divider()
+                            ExDivider()
                             VStack(alignment: .leading, spacing: 4){
                                 if(entry.name2 == ""){
                                     HStack{
@@ -251,7 +272,7 @@ struct devinciWidgetEntryView : View {
                                         .foregroundColor(colorScheme == .dark ?Color(red: 151/255, green: 151/255, blue:151/255):Color(red: 170/255, green: 170/255, blue:170/255))
                                     Text(entry.location2)
                                         .font(.system(size:26))
-                                        .foregroundColor(entry.location2.contains("ZOOM") ? (colorScheme == .dark ? Color(red: 207/255, green: 84/255, blue: 46/255):Color(red: 219/255, green: 122/255, blue: 91/255)):(colorScheme == .dark ? Color(red: 65/255, green: 193/255, blue: 163/255):Color(red: 97/255, green: 138/255, blue: 133/255)))
+                                        .foregroundColor(entry.flag2 == "distanciel" ? (colorScheme == .dark ? Color(red: 207/255, green: 84/255, blue: 46/255):Color(red: 219/255, green: 122/255, blue: 91/255)):(colorScheme == .dark ? Color(red: 65/255, green: 193/255, blue: 163/255):Color(red: 97/255, green: 138/255, blue: 133/255)))
                                         .fontWeight(.bold)
                                     Spacer()
                                     Text(entry.time2)
@@ -259,7 +280,7 @@ struct devinciWidgetEntryView : View {
                                         .bold()
                                         .foregroundColor(colorScheme == .dark ?Color(red: 151/255, green: 151/255, blue:151/255):Color(red: 170/255, green: 170/255, blue:170/255))
                                 }
-                            }.frame(width: container.size.width / 2)
+                            }.padding(.leading).frame(width: container.size.width / 2,alignment: .leading)
                         }
                     }
                 }
@@ -276,6 +297,8 @@ struct devinciWidgetEntryView : View {
         formatter.dateFormat = "dd/MM/yyyy HH:mm"
         return formatter.string(from: date)
     }
+    
+    
 }
 
 @main
@@ -293,7 +316,7 @@ struct devinciWidget: Widget {
 
 struct devinciWidget_Previews: PreviewProvider {
     static var previews: some View {
-        devinciWidgetEntryView(entry: DevinciData(date: Date(), name: "Espaces Vectoriels", location:"L206", time: "8h15 - 11h15" , name2: "Calcul Intégral", location2: "E160", time2:"12h30 - 15h30"))
+        devinciWidgetEntryView(entry: DevinciData(date: Date(), name: "Espaces Vectoriels", location:"L206", time: "8h15 - 11h15" ,flag:"presentiel", name2: "Calcul Intégral", location2: "E160", time2:"12h30 - 15h30", flag2: "presentiel"))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }
