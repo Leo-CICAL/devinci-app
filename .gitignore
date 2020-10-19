@@ -9,3 +9,7 @@ lib/config.dart
 
 .flutter-plugins-dependencies
 android/key.properties
+.DS_Store
+ios/Runner.xcodeproj/project.pbxproj
+ios/Runner/Runner.entitlements
+ios/Runner/Runner.entitlements
