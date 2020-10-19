@@ -1,6 +1,7 @@
 import UIKit
 import Flutter
 import UserNotifications
+import WidgetKit
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -83,6 +84,7 @@ import UserNotifications
         let defaults = UserDefaults(suiteName: "group.eu.araulin.devinciApp")
         defaults?.set(url, forKey: "ical")
         print("ical set");
+        WidgetCenter.shared.reloadAllTimelines()
         result(true)
     }
 
