@@ -751,7 +751,10 @@ Future<void> changeIcon(int iconId) async {
 
 Future<void> setICal(String url) async {
   try {
-    await platform.invokeMethod('setICal', url);
+    if (Platform.isIOS)
+      await platform.invokeMethod('setICal', url);
+    else
+      await globals.prefs.setString("ical", url);
   } catch (exception, stacktrace) {
     reportError(exception, stacktrace);
   }

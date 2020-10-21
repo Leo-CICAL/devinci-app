@@ -1,5 +1,6 @@
 package eu.araulin.devinci
 
+import android.content.Context
 import android.util.Log
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
@@ -29,6 +30,10 @@ class MainActivity : FlutterActivity() {
                 "showDialog" -> {
                     showDialog(call.argument("title"),call.argument("content"), call.argument("ok"),call.argument("cancel"), result)
                 }
+                "setICal" -> {
+                    setICal((call.arguments as? String) ?: "")
+                    result.success(true)
+                }
                 else -> result.notImplemented()
             }
         }
@@ -39,6 +44,16 @@ class MainActivity : FlutterActivity() {
         val success: Boolean = false
         
         return success
+    }
+
+    private fun setICal(url: String) {
+        val sharedPref = activity?.getSharedPreferences(
+                "widget", Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            putString("url", url)
+            apply()
+        }
+
     }
 
     private fun showDialog(title: String?, content: String?, okButtonText: String?, cancelButtonText: String?, result:io.flutter.plugin.common.MethodChannel.Result) {
