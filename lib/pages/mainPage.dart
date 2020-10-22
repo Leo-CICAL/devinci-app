@@ -32,7 +32,7 @@ class _MainPageState extends State<MainPage> {
       setState(() {});
     });
   }
-
+  var _pageController = PageController();
   List<Widget> bodyPages() {
     if (globals.showRestaurant) {
       return <Widget>[
@@ -386,7 +386,16 @@ class _MainPageState extends State<MainPage> {
                     ),
             ],
             automaticallyImplyLeading: false),
-        body: bodyPages().elementAt(globals.selectedPage),
+        body: PageView(
+            children: bodyPages(),
+            onPageChanged: (index){
+              setState(() {
+                globals.selectedPage = index;
+              });
+            },
+          controller: _pageController
+
+        ),
         bottomNavigationBar: new Theme(
           data: Theme.of(context).copyWith(
             // sets the background color of the `BottomNavigationBar`
@@ -401,6 +410,7 @@ class _MainPageState extends State<MainPage> {
               onTap: (index) {
                 setState(() {
                   globals.selectedPage = index;
+                  _pageController.animateToPage(globals.selectedPage, duration: Duration(milliseconds: 200), curve: Curves.linear);
                 });
               }),
         ),
