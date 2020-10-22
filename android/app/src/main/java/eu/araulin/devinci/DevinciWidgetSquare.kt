@@ -7,7 +7,8 @@ import android.util.Log
 import android.widget.RemoteViews
 import okhttp3.*
 import java.io.IOException
-
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Implementation of App Widget functionality.
@@ -50,45 +51,90 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
 
             override fun onResponse(call: Call?, response: Response?) {
                 val body=response?.body()?.string()
-                Log.d("ical", body);
+
                 if (body != null) {
-                    parseIcal(body)
+                   val events = parseIcal(body)
+                    var title = ""
+                    var location = ""
+                    var time = ""
+                    var flag = ""
+                    val date = addHoursToJavaUtilDate(Date(), 1)!!
+                    val begin = date.time
+                    date.hours = 23
+                    val end = date.time
+                    for(event in events){
+                        if(event.from?.time!! > begin && event.to?.time!! < end){
+                            title = event.title!!
+                            location = event.location!!
+                            if(location.contains("-")){
+                                location = location.split("-")[0]
+                            }
+                            if(location.contains("(")){
+                                location = location.split("(")[0]
+                            }
+                            if(location.contains("[")){
+                                location = location.split("[")[0]
+                            }
+                            val calendar = GregorianCalendar.getInstance() // creates a new calendar instance
+                            calendar.time = event.from
+                            val calendar2 = GregorianCalendar.getInstance()
+                            calendar2.time = event.to
+                            time = calendar.get(Calendar.HOUR_OF_DAY).toString()+"h"+calendar.get(Calendar.MINUTE).toString()+" - "+calendar2.get(Calendar.HOUR_OF_DAY).toString()+"h"+calendar2.get(Calendar.MINUTE).toString()
+                            break
+                        }
+                    }
+                    Log.d("title",title)
+                    views.setTextViewText(R.id.textView, title)
+                    views.setTextViewText(R.id.textView2, location)
+                    views.setTextViewText(R.id.textView3, time)
+                    appWidgetManager.updateAppWidget(appWidgetId, views)
                 }
             }
 
             override fun onFailure(call: Call?, e: IOException?) {
                 views.setTextViewText(R.id.textView2, "zbeub2")
+                appWidgetManager.updateAppWidget(appWidgetId, views)
             }
         })
 
     }else{
         views.setTextViewText(R.id.textView2, "zbeub")
+        appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
     // Instruct the widget manager to update the widget
-    appWidgetManager.updateAppWidget(appWidgetId, views)
+
 }
 
-fun parseIcal(ics: String) : Array<Cours> {
-    val res = arrayOf<Cours>()
+fun parseIcal(ics: String) : MutableList<Cours> {
+    val res = mutableListOf<Cours>()
     val mainReg = """BEGIN:VEVENT([\s\S]*?)END:VEVENT""".toRegex(RegexOption.MULTILINE)
     val foundResults = mainReg.findAll(ics)
     for (vevent in foundResults){
-        val dtstart: String
-        val dtend: String
-        val location: String
-        val title: String
-        val flag: String
-
-
-        Log.d("dt", vevent.value)
+        //Log.d("vevent", vevent.value);
+        val dtstart = Regex("""DTSTART:.*""").find(vevent.value)?.value?.replace("DTSTART:", "")
+        val dtend = Regex("""DTEND:.*""").find(vevent.value)?.value?.replace("DTEND:", "")
+        val location = Regex("""LOCATION:.*""").find(vevent.value)?.value?.replace("LOCATION:", "")
+        val title = Regex("""TITLE:.*""").find(vevent.value)?.value?.replace("TITLE:", "")
+        val flag = Regex("""FLAGPRESENTIEL:.*""").find(vevent.value)?.value?.replace("FLAGPRESENTIEL:", "")
+        val sdf = SimpleDateFormat("yyyyMMdd'T'HHmmss")
+        val from: Date = sdf.parse(dtstart)
+        val to: Date = sdf.parse(dtend)
+        res += Cours(title, location, from, to, flag)
     }
     return res
 }
 
 public class Cours(
-    var title: String,
-    var location: String,
-    var from: Int,
-    var to: Int,
-    var flag: String)
+        var title: String?,
+        var location: String?,
+        var from: Date?,
+        var to: Date?,
+        var flag: String?)
+
+fun addHoursToJavaUtilDate(date: Date?, hours: Int): Date? {
+    val calendar = Calendar.getInstance()
+    calendar.time = date
+    calendar.add(Calendar.HOUR_OF_DAY, hours)
+    return calendar.time
+}
