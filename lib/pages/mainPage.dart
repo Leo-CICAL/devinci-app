@@ -281,6 +281,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+
     globals.currentContext = context;
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
@@ -392,11 +393,13 @@ class _MainPageState extends State<MainPage> {
               setState(() {
                 globals.selectedPage = index;
               });
-            },
+             },
+
           controller: _pageController
 
         ),
-        bottomNavigationBar: new Theme(
+        bottomNavigationBar:
+        new Theme(
           data: Theme.of(context).copyWith(
             // sets the background color of the `BottomNavigationBar`
             canvasColor: Theme.of(context).scaffoldBackgroundColor,

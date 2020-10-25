@@ -11,3 +11,6 @@ lib/config.dart
 android/key.properties
 .DS_Store
 
+.flutter-plugins-dependencies
+*.xml
+*.xml
