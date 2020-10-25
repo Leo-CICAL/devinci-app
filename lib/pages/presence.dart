@@ -279,7 +279,7 @@ class _PresencePageState extends State<PresencePage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.only(top: 62, left: 8, right: 8, bottom: 12),
                     child: SmoothPageIndicator(
                         controller: _pageController, // PageController
                         count: globals.user.presence.length,
