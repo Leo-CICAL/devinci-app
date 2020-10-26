@@ -399,7 +399,7 @@
     },
     {
       "name": "pedantic",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.9.0",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.9.2",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
@@ -686,7 +686,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-10-19T15:35:41.036275Z",
+  "generated": "2020-10-24T14:48:38.816053Z",
   "generator": "pub",
   "generatorVersion": "2.10.0"
 }

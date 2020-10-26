@@ -2,6 +2,8 @@ library my_prj.globals;
 
 import 'package:devinci/libraries/timechef/classes.dart';
 import 'package:devinci/libraries/timechef/timechef.dart';
+import 'package:devinci/pages/ui/absences.dart';
+import 'package:devinci/pages/ui/notes.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -15,7 +17,7 @@ import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:devinci/extra/classes.dart';
 
-final storage = new FlutterSecureStorage();
+final storage = FlutterSecureStorage();
 
 // We use the database factory to open the database
 Database db;
@@ -43,7 +45,7 @@ String crashConsent;
 CalendarView calendarView = CalendarView.workWeek;
 
 class AgendaTitle extends PropertyChangeNotifier<String> {
-  String _headerText = "";
+  String _headerText = '';
 
   String get headerText => _headerText;
 
@@ -53,16 +55,16 @@ class AgendaTitle extends PropertyChangeNotifier<String> {
   }
 }
 
-String feedbackError = "";
-StackTrace feedbackStackTrace = StackTrace.fromString("");
-String eventId = "";
-String feedbackNotes = "";
+String feedbackError = '';
+StackTrace feedbackStackTrace = StackTrace.fromString('');
+String eventId = '';
+String feedbackNotes = '';
 
 final agendaTitle = AgendaTitle();
 
 DateTime lastFetchAgenda;
 
-List<Cours> cours = new List<Cours>();
+List<Cours> cours = <Cours>[];
 
 Map<int, Color> color = {
   50: Color.fromRGBO(136, 14, 79, .1),
@@ -92,7 +94,7 @@ NotificationAppLaunchDetails notificationAppLaunchDetails;
 var androidPlatformChannelSpecifics = AndroidNotificationDetails(
     'eu.araulin.devinci.notifications',
     'Notifications',
-    'Permet de recevoir des notifications lors de mise à jour de l\'application ou lorsque de nouvelles notes sont détéctées.',
+    "Permet de recevoir des notifications lors de mise à jour de l'application ou lorsque de nouvelles notes sont détectées.",
     importance: Importance.max,
     priority: Priority.high,
     channelShowBadge: true,
@@ -133,9 +135,9 @@ IsLoading isLoading = IsLoading();
 
 bool noteLocked = false;
 
-PageChanger pageChanger = new PageChanger();
+PageChanger pageChanger = PageChanger();
 
-List<Cours> customCours = new List<Cours>();
+List<Cours> customCours = <Cours>[];
 
 bool analyticsConsent = true;
 
@@ -146,3 +148,7 @@ FirebaseAnalyticsObserver observer;
 CalendarController calendarController;
 
 bool showRestaurant = false;
+
+//globalkeys
+final notesPageKey = GlobalKey<NotesPageState>();
+final absencesPageKey = GlobalKey<AbsencesPageState>();

@@ -1,11 +1,12 @@
 import 'package:devinci/extra/devinci_icons_icons.dart';
-import 'package:devinci/pages/absences.dart';
+
 import 'package:devinci/pages/agenda.dart';
-import 'package:devinci/pages/notes.dart';
 import 'package:devinci/pages/presence.dart';
 import 'package:devinci/pages/salles.dart';
 import 'package:devinci/pages/settings.dart';
 import 'package:devinci/pages/timechef.dart';
+import 'package:devinci/pages/ui/absences.dart';
+import 'package:devinci/pages/ui/notes.dart';
 import 'package:devinci/pages/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,13 +33,14 @@ class _MainPageState extends State<MainPage> {
       setState(() {});
     });
   }
+
   var _pageController = PageController();
   List<Widget> bodyPages() {
     if (globals.showRestaurant) {
       return <Widget>[
         AgendaPage(),
-        NotesPage(),
-        AbsencesPage(),
+        NotesPage(key: globals.notesPageKey),
+        AbsencesPage(key: globals.absencesPageKey),
         PresencePage(),
         TimeChefPage(),
         UserPage()
@@ -46,7 +48,7 @@ class _MainPageState extends State<MainPage> {
     } else {
       return <Widget>[
         AgendaPage(),
-        NotesPage(),
+        NotesPage(key: globals.notesPageKey),
         AbsencesPage(),
         PresencePage(),
         UserPage()
@@ -388,14 +390,12 @@ class _MainPageState extends State<MainPage> {
             automaticallyImplyLeading: false),
         body: PageView(
             children: bodyPages(),
-            onPageChanged: (index){
+            onPageChanged: (index) {
               setState(() {
                 globals.selectedPage = index;
               });
             },
-          controller: _pageController
-
-        ),
+            controller: _pageController),
         bottomNavigationBar: new Theme(
           data: Theme.of(context).copyWith(
             // sets the background color of the `BottomNavigationBar`
@@ -410,7 +410,9 @@ class _MainPageState extends State<MainPage> {
               onTap: (index) {
                 setState(() {
                   globals.selectedPage = index;
-                  _pageController.animateToPage(globals.selectedPage, duration: Duration(milliseconds: 200), curve: Curves.linear);
+                  _pageController.animateToPage(globals.selectedPage,
+                      duration: Duration(milliseconds: 200),
+                      curve: Curves.linear);
                 });
               }),
         ),

@@ -10,9 +10,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e152c72b-963c-47b0-9a0f-bc120c672086" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/../.dart_tool/package_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins-dependencies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.packages" beforeDir="false" afterPath="$PROJECT_DIR$/../.packages" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/eu/araulin/devinci/DevinciWidgetSquare.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/eu/araulin/devinci/DevinciWidgetSquare.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/libraries/devinci/extra/classes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/libraries/devinci/extra/classes.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/libraries/devinci/extra/functions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/libraries/devinci/extra/functions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/login.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/login.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/notes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/notes.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

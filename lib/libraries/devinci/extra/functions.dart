@@ -412,8 +412,8 @@ Future<void> showNotification(
     {String title, String body, int delay = 5, int id = 0}) async {
   print("sending notification");
   if (title != null && body != null) {
-    var scheduledNotificationDateTime =
-        TZDateTime.now(getLocation('Europe/Paris')).add(Duration(
+    var scheduledNotificationDateTime = TZDateTime.now(getLocation('CET')).add(
+        Duration(
             seconds:
                 delay)); //On envoie la notif avec 5 secondes de retard pour être sur que l'app n'est plus en foreground
     await globals.flutterLocalNotificationsPlugin.zonedSchedule(0, title, body,
@@ -522,170 +522,170 @@ Future<void> initPlatformState() async {
       }
 
       if (fetch) {
-        print("fetch");
-        globals.noteLocked = true;
+        // print("fetch");
+        // globals.noteLocked = true;
 
-        String username = await storage.read(key: 'username');
-        String password = await storage.read(key: 'password');
-        if (username != null && password != null) {
-          globals.user = new User(username, password);
-          await globals.user
-              .init(); //on récupère les tokens, et le backup des notes
-          print("connected");
-          await globals.user.getNotes().timeout(Duration(seconds: 8),
-              onTimeout: () {
-            BackgroundFetch.finish(taskId);
-          });
-          print(globals.user.notesEvolution);
-          String notifTitle = "";
-          String notifBody = "";
-          if (!globals.user.notesEvolution["added"].isEmpty &&
-              !globals.user.notesEvolution["changed"].isEmpty) {
-            notifTitle = "Evolutions des notes";
-            //added
-            if (globals.user.notesEvolution["added"].length > 1) {
-              notifBody += "Nouvelles notes : ";
-              print(notifTitle);
-              for (int i = 0;
-                  i < globals.user.notesEvolution["added"].length;
-                  i++) {
-                if (i == globals.user.notesEvolution["added"].length - 1) {
-                  notifBody += " et ";
-                }
-                if (globals.user.notesEvolution["added"][i]["notes"] != null) {
-                  notifBody +=
-                      "${removeGarbage(globals.user.notesEvolution["added"][i]["notes"][0]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][i]["matieres"])} : ${globals.user.notesEvolution["added"][i]["notes"][0]["note"]}";
-                } else {
-                  notifBody +=
-                      "${removeGarbage(globals.user.notesEvolution["added"][i]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][i]["matieres"])} : ${globals.user.notesEvolution["added"][i]["note"]}";
-                }
-                if (i < globals.user.notesEvolution["added"].length - 2) {
-                  notifBody += ", ";
-                }
-              }
-            } else {
-              notifBody += "Nouvelle note : ";
-              print(notifTitle);
-              if (globals.user.notesEvolution["added"][0]["notes"] != null) {
-                notifBody +=
-                    "${removeGarbage(globals.user.notesEvolution["added"][0]["notes"][0]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][0]["matieres"])} : ${globals.user.notesEvolution["added"][0]["notes"][0]["note"]}";
-              } else {
-                notifBody +=
-                    "${removeGarbage(globals.user.notesEvolution["added"][0]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][0]["matieres"])} : ${globals.user.notesEvolution["added"][0]["note"]}";
-              }
-            }
+        // String username = await storage.read(key: 'username');
+        // String password = await storage.read(key: 'password');
+        // if (username != null && password != null) {
+        //   globals.user = new User(username, password);
+        //   await globals.user
+        //       .init(); //on récupère les tokens, et le backup des notes
+        //   print("connected");
+        //   await globals.user.getNotes().timeout(Duration(seconds: 8),
+        //       onTimeout: () {
+        //     BackgroundFetch.finish(taskId);
+        //   });
+        //   print(globals.user.notesEvolution);
+        //   String notifTitle = "";
+        //   String notifBody = "";
+        //   if (!globals.user.notesEvolution["added"].isEmpty &&
+        //       !globals.user.notesEvolution["changed"].isEmpty) {
+        //     notifTitle = "Evolutions des notes";
+        //     //added
+        //     if (globals.user.notesEvolution["added"].length > 1) {
+        //       notifBody += "Nouvelles notes : ";
+        //       print(notifTitle);
+        //       for (int i = 0;
+        //           i < globals.user.notesEvolution["added"].length;
+        //           i++) {
+        //         if (i == globals.user.notesEvolution["added"].length - 1) {
+        //           notifBody += " et ";
+        //         }
+        //         if (globals.user.notesEvolution["added"][i]["notes"] != null) {
+        //           notifBody +=
+        //               "${removeGarbage(globals.user.notesEvolution["added"][i]["notes"][0]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][i]["matieres"])} : ${globals.user.notesEvolution["added"][i]["notes"][0]["note"]}";
+        //         } else {
+        //           notifBody +=
+        //               "${removeGarbage(globals.user.notesEvolution["added"][i]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][i]["matieres"])} : ${globals.user.notesEvolution["added"][i]["note"]}";
+        //         }
+        //         if (i < globals.user.notesEvolution["added"].length - 2) {
+        //           notifBody += ", ";
+        //         }
+        //       }
+        //     } else {
+        //       notifBody += "Nouvelle note : ";
+        //       print(notifTitle);
+        //       if (globals.user.notesEvolution["added"][0]["notes"] != null) {
+        //         notifBody +=
+        //             "${removeGarbage(globals.user.notesEvolution["added"][0]["notes"][0]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][0]["matieres"])} : ${globals.user.notesEvolution["added"][0]["notes"][0]["note"]}";
+        //       } else {
+        //         notifBody +=
+        //             "${removeGarbage(globals.user.notesEvolution["added"][0]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][0]["matieres"])} : ${globals.user.notesEvolution["added"][0]["note"]}";
+        //       }
+        //     }
 
-            //changed
-            notifBody += "\n";
-            if (globals.user.notesEvolution["changed"].length > 1) {
-              notifBody += "Notes qui ont évoluées : ";
-              print(notifTitle);
-              for (int i = 0;
-                  i < globals.user.notesEvolution["changed"].length;
-                  i++) {
-                if (i == globals.user.notesEvolution["changed"].length - 1) {
-                  notifBody += " et ";
-                }
+        //     //changed
+        //     notifBody += "\n";
+        //     if (globals.user.notesEvolution["changed"].length > 1) {
+        //       notifBody += "Notes qui ont évoluées : ";
+        //       print(notifTitle);
+        //       for (int i = 0;
+        //           i < globals.user.notesEvolution["changed"].length;
+        //           i++) {
+        //         if (i == globals.user.notesEvolution["changed"].length - 1) {
+        //           notifBody += " et ";
+        //         }
 
-                notifBody +=
-                    "${removeGarbage(globals.user.notesEvolution["changed"][i]["data"]["key"])} en ${removeGarbage(globals.user.notesEvolution["changed"][i]["matieres"])} : ${globals.user.notesEvolution["changed"][i]["data"]["v"][0][1][0]} -> ${globals.user.notesEvolution["changed"][i]["data"]["v"][0][1][1]}";
+        //         notifBody +=
+        //             "${removeGarbage(globals.user.notesEvolution["changed"][i]["data"]["key"])} en ${removeGarbage(globals.user.notesEvolution["changed"][i]["matieres"])} : ${globals.user.notesEvolution["changed"][i]["data"]["v"][0][1][0]} -> ${globals.user.notesEvolution["changed"][i]["data"]["v"][0][1][1]}";
 
-                if (i < globals.user.notesEvolution["changed"].length - 2) {
-                  notifBody += ", ";
-                }
-              }
-            } else {
-              notifBody += "Note qui a évoluée : ";
-              print(notifTitle);
-              notifBody +=
-                  "${removeGarbage(globals.user.notesEvolution["changed"][0]["data"]["key"])} en ${removeGarbage(globals.user.notesEvolution["changed"][0]["matieres"])} : ${globals.user.notesEvolution["changed"][0]["data"]["v"][0][1][0]} -> ${globals.user.notesEvolution["changed"][0]["data"]["v"][0][1][1]}";
-            }
-          } else if (!globals.user.notesEvolution["added"].isEmpty &&
-              globals.user.notesEvolution["changed"].isEmpty) {
-            if (globals.user.notesEvolution["added"].length > 1) {
-              notifTitle = "Nouvelles notes";
-              print(notifTitle);
-              for (int i = 0;
-                  i < globals.user.notesEvolution["added"].length;
-                  i++) {
-                if (i == globals.user.notesEvolution["added"].length - 1) {
-                  notifBody += " et ";
-                }
-                if (globals.user.notesEvolution["added"][i]["notes"] != null) {
-                  notifBody +=
-                      "${removeGarbage(globals.user.notesEvolution["added"][i]["notes"][0]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][i]["matieres"])} : ${globals.user.notesEvolution["added"][i]["notes"][0]["note"]}";
-                } else {
-                  notifBody +=
-                      "${removeGarbage(globals.user.notesEvolution["added"][i]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][i]["matieres"])} : ${globals.user.notesEvolution["added"][i]["note"]}";
-                }
-                if (i < globals.user.notesEvolution["added"].length - 2) {
-                  notifBody += ", ";
-                }
-              }
-            } else {
-              notifTitle = "Nouvelle note";
-              print(notifTitle);
-              if (globals.user.notesEvolution["added"][0]["notes"] != null) {
-                notifBody =
-                    "${removeGarbage(globals.user.notesEvolution["added"][0]["notes"][0]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][0]["matieres"])} : ${globals.user.notesEvolution["added"][0]["notes"][0]["note"]}";
-              } else {
-                notifBody =
-                    "${removeGarbage(globals.user.notesEvolution["added"][0]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][0]["matieres"])} : ${globals.user.notesEvolution["added"][0]["note"]}";
-              }
-            }
-          } else if (globals.user.notesEvolution["added"].isEmpty &&
-              !globals.user.notesEvolution["changed"].isEmpty) {
-            if (globals.user.notesEvolution["changed"].length > 1) {
-              notifTitle = "Des notes ont évoluées";
-              print(notifTitle);
-              for (int i = 0;
-                  i < globals.user.notesEvolution["changed"].length;
-                  i++) {
-                if (i == globals.user.notesEvolution["changed"].length - 1) {
-                  notifBody += " et ";
-                }
+        //         if (i < globals.user.notesEvolution["changed"].length - 2) {
+        //           notifBody += ", ";
+        //         }
+        //       }
+        //     } else {
+        //       notifBody += "Note qui a évoluée : ";
+        //       print(notifTitle);
+        //       notifBody +=
+        //           "${removeGarbage(globals.user.notesEvolution["changed"][0]["data"]["key"])} en ${removeGarbage(globals.user.notesEvolution["changed"][0]["matieres"])} : ${globals.user.notesEvolution["changed"][0]["data"]["v"][0][1][0]} -> ${globals.user.notesEvolution["changed"][0]["data"]["v"][0][1][1]}";
+        //     }
+        //   } else if (!globals.user.notesEvolution["added"].isEmpty &&
+        //       globals.user.notesEvolution["changed"].isEmpty) {
+        //     if (globals.user.notesEvolution["added"].length > 1) {
+        //       notifTitle = "Nouvelles notes";
+        //       print(notifTitle);
+        //       for (int i = 0;
+        //           i < globals.user.notesEvolution["added"].length;
+        //           i++) {
+        //         if (i == globals.user.notesEvolution["added"].length - 1) {
+        //           notifBody += " et ";
+        //         }
+        //         if (globals.user.notesEvolution["added"][i]["notes"] != null) {
+        //           notifBody +=
+        //               "${removeGarbage(globals.user.notesEvolution["added"][i]["notes"][0]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][i]["matieres"])} : ${globals.user.notesEvolution["added"][i]["notes"][0]["note"]}";
+        //         } else {
+        //           notifBody +=
+        //               "${removeGarbage(globals.user.notesEvolution["added"][i]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][i]["matieres"])} : ${globals.user.notesEvolution["added"][i]["note"]}";
+        //         }
+        //         if (i < globals.user.notesEvolution["added"].length - 2) {
+        //           notifBody += ", ";
+        //         }
+        //       }
+        //     } else {
+        //       notifTitle = "Nouvelle note";
+        //       print(notifTitle);
+        //       if (globals.user.notesEvolution["added"][0]["notes"] != null) {
+        //         notifBody =
+        //             "${removeGarbage(globals.user.notesEvolution["added"][0]["notes"][0]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][0]["matieres"])} : ${globals.user.notesEvolution["added"][0]["notes"][0]["note"]}";
+        //       } else {
+        //         notifBody =
+        //             "${removeGarbage(globals.user.notesEvolution["added"][0]["nom"])} en ${removeGarbage(globals.user.notesEvolution["added"][0]["matieres"])} : ${globals.user.notesEvolution["added"][0]["note"]}";
+        //       }
+        //     }
+        //   } else if (globals.user.notesEvolution["added"].isEmpty &&
+        //       !globals.user.notesEvolution["changed"].isEmpty) {
+        //     if (globals.user.notesEvolution["changed"].length > 1) {
+        //       notifTitle = "Des notes ont évoluées";
+        //       print(notifTitle);
+        //       for (int i = 0;
+        //           i < globals.user.notesEvolution["changed"].length;
+        //           i++) {
+        //         if (i == globals.user.notesEvolution["changed"].length - 1) {
+        //           notifBody += " et ";
+        //         }
 
-                notifBody +=
-                    "${removeGarbage(globals.user.notesEvolution["changed"][i]["data"]["key"])} en ${removeGarbage(globals.user.notesEvolution["changed"][i]["matieres"])} : ${globals.user.notesEvolution["changed"][i]["data"]["v"][0][1][0]} -> ${globals.user.notesEvolution["changed"][i]["data"]["v"][0][1][1]}";
+        //         notifBody +=
+        //             "${removeGarbage(globals.user.notesEvolution["changed"][i]["data"]["key"])} en ${removeGarbage(globals.user.notesEvolution["changed"][i]["matieres"])} : ${globals.user.notesEvolution["changed"][i]["data"]["v"][0][1][0]} -> ${globals.user.notesEvolution["changed"][i]["data"]["v"][0][1][1]}";
 
-                if (i < globals.user.notesEvolution["changed"].length - 2) {
-                  notifBody += ", ";
-                }
-              }
-            } else {
-              notifTitle = "Une note a évoluée";
-              print(notifTitle);
-              notifBody =
-                  "${removeGarbage(globals.user.notesEvolution["changed"][0]["data"]["key"])} en ${removeGarbage(globals.user.notesEvolution["changed"][0]["matieres"])} : ${globals.user.notesEvolution["changed"][0]["data"]["v"][0][1][0]} -> ${globals.user.notesEvolution["changed"][0]["data"]["v"][0][1][1]}";
-            }
-          }
-          print(notifTitle);
-          print(notifBody);
-          if (notifTitle != "" && notifBody != "") {
-            showNotification(title: notifTitle, body: notifBody, id: 1);
-          } else {
-            bool show = false;
-            if (nId == "") {
-              print("nId == empty");
-              nId = notif["id"];
-              show = true;
-              await prefs.setString('nid', nId);
-            } else if (nId != notif["id"]) {
-              print(
-                  "let show it : nId = $nId & notif[\"id\"] = ${notif["id"]}");
-              show = true;
-              nId = notif["id"];
-              await prefs.setString('nid', nId);
-            }
-            if (show)
-              showNotification(
-                  title: notif["title"],
-                  body: notif["content"],
-                  id: 3,
-                  delay: 5);
-          }
-        }
-        globals.noteLocked = false;
+        //         if (i < globals.user.notesEvolution["changed"].length - 2) {
+        //           notifBody += ", ";
+        //         }
+        //       }
+        //     } else {
+        //       notifTitle = "Une note a évoluée";
+        //       print(notifTitle);
+        //       notifBody =
+        //           "${removeGarbage(globals.user.notesEvolution["changed"][0]["data"]["key"])} en ${removeGarbage(globals.user.notesEvolution["changed"][0]["matieres"])} : ${globals.user.notesEvolution["changed"][0]["data"]["v"][0][1][0]} -> ${globals.user.notesEvolution["changed"][0]["data"]["v"][0][1][1]}";
+        //     }
+        //   }
+        //   print(notifTitle);
+        //   print(notifBody);
+        //   if (notifTitle != "" && notifBody != "") {
+        //     showNotification(title: notifTitle, body: notifBody, id: 1);
+        //   } else {
+        //     bool show = false;
+        //     if (nId == "") {
+        //       print("nId == empty");
+        //       nId = notif["id"];
+        //       show = true;
+        //       await prefs.setString('nid', nId);
+        //     } else if (nId != notif["id"]) {
+        //       print(
+        //           "let show it : nId = $nId & notif[\"id\"] = ${notif["id"]}");
+        //       show = true;
+        //       nId = notif["id"];
+        //       await prefs.setString('nid', nId);
+        //     }
+        //     if (show)
+        //       showNotification(
+        //           title: notif["title"],
+        //           body: notif["content"],
+        //           id: 3,
+        //           delay: 5);
+        //   }
+        // }
+        // globals.noteLocked = false;
       } else {
         bool show = false;
         if (nId == "") {

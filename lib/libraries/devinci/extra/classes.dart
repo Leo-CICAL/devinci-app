@@ -11,6 +11,7 @@ import 'package:html/dom.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
+import 'package:sembast/utils/value_utils.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class User {
@@ -60,10 +61,22 @@ class User {
     "done": false
   };
 
-  Map<String, dynamic> notes = {
-    "s1": [],
-    "s2": [],
-  };
+  // Map<String, dynamic> notes = {
+  //   "s1": [],
+  //   "s2": [],
+  // };
+
+  List<dynamic> notes = [
+    // {
+    //   "name": "", //ESILV A1
+    //   "s":[
+    //     [], //S1
+    //     []  //S2
+    //   ]
+    // }
+  ];
+  List<List<String>> notesList = [];
+  List<String> years = [];
 
   Map notesEvolution = {
     "added": [],
@@ -215,28 +228,26 @@ class User {
     //init sembast db
     Directory directory;
     if (Platform.isAndroid) {
-      directory = await getExternalStorageDirectory();
+      directory = await getApplicationDocumentsDirectory();
     } else {
       directory = await getApplicationDocumentsDirectory();
     }
     final String path = directory.path;
+
     // File path to a file in the current directory
     String dbPath = path + '/data/db.db';
+    print('dbpath ' + dbPath);
     DatabaseFactory dbFactory = databaseFactoryIo;
 
 // We use the database factory to open the database
     globals.db = await dbFactory.openDatabase(dbPath);
-    Map<String, dynamic> notes = await globals.store
-        .record('notes')
-        .get(globals.db) as Map<String, dynamic>;
+    List<dynamic> notes =
+        await globals.store.record('notes').get(globals.db) as List<dynamic>;
     if (notes == null) {
-      notes = {
-        "s1": [],
-        "s2": [],
-      };
+      notes = [];
       await globals.store.record('notes').put(globals.db, notes);
     }
-    //this.notes.copy(notes);
+    this.notes = cloneList(notes);
     //retrieve tokens from secure storage (if they exist)
     this.tokens["SimpleSAML"] = await globals.storage.read(key: "SimpleSAML") ??
         ""; //try to get token SimpleSAML from secure storage, if secure storage send back null (because the token does't exist yet) '??' means : if null, so if the token doesn't exist replace null by an empty string.
@@ -870,25 +881,100 @@ class User {
     return;
   }
 
-  Future<void> getNotes({bool load = false}) async {
+  Future<void> getNotesList() async {
+    HttpClient client = new HttpClient();
+    if (this.tokens["SimpleSAML"] != "" &&
+        this.tokens["alv"] != "" &&
+        this.tokens["uids"] != "" &&
+        this.tokens["SimpleSAMLAuthToken"] != "") {
+      HttpClientRequest req = await client.getUrl(
+        Uri.parse(
+          'https://www.leonard-de-vinci.net/?my=notes',
+        ),
+      );
+      req.followRedirects = false;
+      req.cookies.addAll([
+        new Cookie('alv', this.tokens["alv"]),
+        new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
+        new Cookie('uids', this.tokens["uids"]),
+        new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
+      ]);
+      HttpClientResponse res = await req.close();
+      if (res.statusCode == 200) {
+        String body = await res.transform(utf8.decoder).join();
+        if (body.indexOf('Validation des règlements') < 0) {
+          var doc = parse(body);
+          Element tbody = doc.querySelector('tbody');
+          List<Element> trs = tbody.querySelectorAll('tr');
+          this.notesList.clear();
+          this.years.clear();
+          for (Element tr in trs) {
+            this.notes.add({});
+            List<Element> tds = tr.querySelectorAll('td');
+            String name = tds[1].text;
+            years.add(name);
+            Element link = tr.querySelector('a');
+            String href = link.attributes['href'];
+            String p = href.split('p=')[1];
+            this.notesList.add([name, p]);
+          }
+        } else {
+          final snackBar = material.SnackBar(
+            content: material.Text(
+                "Validation des règlements requise sur le portail."),
+            duration: const Duration(seconds: 10),
+          );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+          material.Scaffold.of(globals.currentContext).showSnackBar(snackBar);
+        }
+      } else {
+        this.error = true;
+        this.code = res.statusCode;
+        throw Exception("unhandled exception");
+      }
+    } else {
+      this.error = true;
+      this.code = 400;
+
+      throw Exception("missing parameters => " +
+          this.tokens["SimpleSAML"] +
+          " | " +
+          this.tokens["alv"] +
+          " | " +
+          this.tokens["SimpleSAMLAuthToken"] +
+          " | " +
+          this.tokens["uids"] +
+          " | " +
+          this.error.toString());
+    }
+    return;
+  }
+
+  Future<void> getNotes(String p, int index) async {
     if (globals.isConnected) {
-      List added = [];
-      List changed = [];
-      Map<String, dynamic> nn = {"s1": [], "s2": []};
-      var timestamp = DateTime.now().millisecondsSinceEpoch;
-      Map<String, dynamic> before = {"s1": [], "s2": []};
-      before.copy(this.notes);
+      // List added = [];
+      // List changed = [];
+      Map<String, dynamic> nn = {
+        "name": 1,
+        "s": [
+          [],
+          [],
+        ],
+      };
+      // var timestamp = DateTime.now().millisecondsSinceEpoch;
+      // Map<String, dynamic> before = {"s1": [], "s2": []};
+      // before.copy(this.notes);
       HttpClient client = new HttpClient();
       if (this.tokens["SimpleSAML"] != "" &&
           this.tokens["alv"] != "" &&
           this.tokens["uids"] != "" &&
           this.tokens["SimpleSAMLAuthToken"] != "") {
-        int timestamp = DateTime.now().millisecondsSinceEpoch;
+        //int timestamp = DateTime.now().millisecondsSinceEpoch;
 
         HttpClientRequest req = await client.getUrl(
           Uri.parse(
             //'http://10.1.169.208:5500/robin_notes.html',
-            'https://www.leonard-de-vinci.net/?my=notes',
+            'https://www.leonard-de-vinci.net/?my=notes&p=' + p,
           ),
         );
         req.followRedirects = false;
@@ -905,6 +991,10 @@ class User {
           if (body.indexOf('Aucune note') < 0 &&
               body.indexOf('Validation des règlements') < 0) {
             var doc = parse(body);
+            List<Element> headers = doc.querySelectorAll("header");
+            String header = headers[headers.length - 1].text;
+            nn['name'] =
+                int.tryParse(RegExp(r'\d').firstMatch(header).group(0));
 
             List<Element> divs =
                 doc.querySelectorAll(this.notesConfig['mainDivs']);
@@ -967,8 +1057,9 @@ class User {
                         .group(1));
                   } catch (e) {}
                 }
+                nn['s'][y].add(elem);
 
-                nn["s${y + 1}"].add(elem);
+                //nn["s${y + 1}"].add(elem);
 
                 Element ddlist = li.querySelector("ol");
                 int j = 0;
@@ -1043,7 +1134,7 @@ class User {
                           "nom": "MESIMF120419-CC-1 Rattrapage",
                           "note": noteR,
                           "noteP": null,
-                          "date": timestamp
+                          //"date": timestamp
                         };
 
                         elem["notes"].add(e);
@@ -1059,8 +1150,8 @@ class User {
                       }
                     } catch (e) {}
                   }
-
-                  nn["s${y + 1}"][i]["matieres"].add(elem);
+                  nn['s'][y][i]["matieres"].add(elem);
+                  //nn["s${y + 1}"][i]["matieres"].add(elem);
                   ddlist = lii.querySelector("ol");
                   if (ddlist != null) {
                     ddlist.children.forEach((liii) {
@@ -1070,7 +1161,7 @@ class User {
                         "nom": "",
                         "note": 0.0,
                         "noteP": 0.0,
-                        "date": timestamp
+                        //"date": timestamp
                       };
                       elem["nom"] = texts[this.notesConfig['notes']['n']['i']]
                           .replaceAllMapped(
@@ -1110,8 +1201,8 @@ class User {
                               .group(1));
                         } catch (e) {}
                       }
-
-                      nn["s${y + 1}"][i]["matieres"][j]["notes"].add(elem);
+                      nn['s'][y][i]["matieres"][j]["notes"].add(elem);
+                      //nn["s${y + 1}"][i]["matieres"][j]["notes"].add(elem);
                     });
                   }
                   j++;
@@ -1148,82 +1239,11 @@ class User {
             " | " +
             this.error.toString());
       }
-      for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < before["s${i + 1}"].length; j++) {
-          for (int k = 0; k < before["s${i + 1}"][j]["matieres"].length; k++) {
-            var old = before["s${i + 1}"][j]["matieres"][k]["notes"];
-            var n = nn["s${i + 1}"][j]["matieres"][k]["notes"];
-            // print(
-            //     "old:${before["s${i + 1}"][j]["matieres"].length} | n:${nn["s${i + 1}"][j]["matieres"].length}");
-            // print(before["s${i + 1}"][j]["module"]);
-            before["s${i + 1}"][j]["matieres"][k]["moy"] =
-                nn["s${i + 1}"][j]["matieres"][k]["moy"];
-            before["s${i + 1}"][j]["matieres"][k]["moyP"] =
-                nn["s${i + 1}"][j]["matieres"][k]["moyP"];
-            Map<String, dynamic> comparaison = comparer(old, n);
-            comparaison['added'].forEach(
-              (item) {
-                before["s${i + 1}"][j]["matieres"][k]["notes"].add(
-                  {
-                    'nom': item['nom'],
-                    'note': item['note'],
-                    'noteP': item['noteP'],
-                    'date': timestamp,
-                  },
-                );
-                added.add(
-                  {
-                    'matieres': before["s${i + 1}"][j]["matieres"][k]
-                        ["matiere"],
-                    'nom': item['nom'],
-                    'note': item['note'],
-                  },
-                );
-              },
-            );
-            comparaison['removed'].forEach(
-              (item) {
-                before["s${i + 1}"][j]["matieres"][k]["notes"]
-                    .removeWhere((element) => element["nom"] == item["nom"]);
-              },
-            );
-            comparaison['changed'].forEach((item) {
-              changed.add({
-                'matieres': before["s${i + 1}"][j]["matieres"][k]["matiere"],
-                'data': item
-              });
-              for (int y = 0;
-                  y < before["s${i + 1}"][j]["matieres"][k]["notes"].length;
-                  y++) {
-                if (before["s${i + 1}"][j]["matieres"][k]["notes"][y]["nom"] ==
-                    item["key"]) {
-                  item['v'].forEach((e) {
-                    before["s${i + 1}"][j]["matieres"][k]["notes"][y][e[0]] =
-                        e[1][1];
-                  });
-                  before["s${i + 1}"][j]["matieres"][k]["notes"][y]['date'] =
-                      timestamp;
-                  break;
-                }
-              }
-            });
-          }
-        }
-      }
-      if (before["s1"].isEmpty && before["s2"].isEmpty) {
-        this.notes.copy(nn);
-        await globals.store.record('notes').put(globals.db, this.notes);
-        this.notesFetched = true;
-        print("db updated");
-      } else {
-        this.notes = {"s1": [], "s2": []};
-        this.notes.copy(before);
-        this.notesEvolution["added"] = added;
-        this.notesEvolution["changed"] = changed;
-        await globals.store.record('notes').put(globals.db, this.notes);
-        this.notesFetched = true;
-        print("db updated");
-      }
+
+      this.notes[index] = nn;
+      await globals.store.record('notes').put(globals.db, this.notes);
+      this.notesFetched = true;
+      print("db updated");
     } else {
       this.notesFetched = true;
     }

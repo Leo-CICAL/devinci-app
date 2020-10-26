@@ -55,9 +55,10 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
       try {
         await globals.user.init();
       } catch (exception, stacktrace) {
-        setState(() {
-          show = true;
-        });
+        if (mounted)
+          setState(() {
+            show = true;
+          });
         print(exception);
 
         //user.init() throw error if credentials are wrong or if an error occurred during the process
@@ -91,6 +92,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
 
         _formKey.currentState.validate();
       }
+      await Future.delayed(Duration(milliseconds: 400));
       Navigator.push(
         context,
         CupertinoPageRoute(
@@ -98,9 +100,10 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
         ),
       );
     } else {
-      setState(() {
-        show = true;
-      });
+      if (mounted)
+        setState(() {
+          show = true;
+        });
     }
 
     //here we shall have valid tokens and basic data about the user such as name, badge id, etc
@@ -205,6 +208,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
         globals.currentTheme.isDark());
     globals.currentContext = context;
+
     return new WillPopScope(
         onWillPop: () async => false,
         child: new Scaffold(
