@@ -1,11 +1,9 @@
 import UIKit
 import Flutter
-import UserNotifications
 import WidgetKit
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
-    let notificationCenter = UNUserNotificationCenter.current()
     let defaults = UserDefaults.standard
     
     
@@ -13,16 +11,6 @@ import WidgetKit
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
-        let options: UNAuthorizationOptions = [.alert, .sound, .badge]
-        notificationCenter.requestAuthorization(options: options) {
-            (didAllow, error) in
-            if !didAllow {
-                print("User has declined notifications")
-            }
-        }
-        UIApplication.shared.applicationIconBadgeNumber = 0
-        UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
         let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
         let channel = FlutterMethodChannel(name: "eu.araulin.devinci/channel",
                                            binaryMessenger: controller.binaryMessenger)

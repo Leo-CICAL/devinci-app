@@ -10,17 +10,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e152c72b-963c-47b0-9a0f-bc120c672086" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/../.dart_tool/package_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.packages" beforeDir="false" afterPath="$PROJECT_DIR$/../.packages" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_squareup_okhttp3_okhttp_3_12_12_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/calendar.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/calendar.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/calendar.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/calendar.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/calendar.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/app/app.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/libraries/devinci/extra/classes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/libraries/devinci/extra/classes.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/libraries/devinci/extra/functions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/libraries/devinci/extra/functions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/pages/login.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/login.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/pages/notes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/notes.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/eu/araulin/devinci/DevinciWidgetSquare.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/eu/araulin/devinci/DevinciWidgetSquare.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/devinci_widget_square.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/devinci_widget_square.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,27 +183,32 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="640" y="275" key="Downloadable.Font.Dialog.Size/-1920.140.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603283363992" />
-    <state x="426" y="299" width="424" height="491" key="FileChooserDialogImpl" timestamp="1603287129925">
+    <state x="426" y="299" width="424" height="491" key="FileChooserDialogImpl" timestamp="1603818764383">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="426" y="299" key="FileChooserDialogImpl/-1920.140.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603287129925" />
+    <state x="426" y="299" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1603818764383" />
     <state x="684" y="320" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1596896778791" />
-    <state width="1340" height="271" key="GridCell.Tab.0.bottom" timestamp="1603358833781">
+    <state width="1877" height="286" key="GridCell.Tab.0.bottom" timestamp="1603819537682">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1340" height="271" key="GridCell.Tab.0.bottom/-1920.140.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603358833781" />
-    <state width="1340" height="271" key="GridCell.Tab.0.center" timestamp="1603358833781">
+    <state width="1877" height="286" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1603819537682" />
+    <state width="1877" height="286" key="GridCell.Tab.0.center" timestamp="1603819537682">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1340" height="271" key="GridCell.Tab.0.center/-1920.140.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603358833781" />
-    <state width="1340" height="271" key="GridCell.Tab.0.left" timestamp="1603358833781">
+    <state width="1877" height="286" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1603819537682" />
+    <state width="1877" height="286" key="GridCell.Tab.0.left" timestamp="1603819537682">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1340" height="271" key="GridCell.Tab.0.left/-1920.140.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603358833781" />
-    <state width="1340" height="271" key="GridCell.Tab.0.right" timestamp="1603358833781">
+    <state width="1877" height="286" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1603819537682" />
+    <state width="1877" height="286" key="GridCell.Tab.0.right" timestamp="1603819537682">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1340" height="271" key="GridCell.Tab.0.right/-1920.140.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603358833781" />
+    <state width="1877" height="286" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1603819537682" />
     <state x="461" y="162" key="SettingsEditor" timestamp="1603279068224">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

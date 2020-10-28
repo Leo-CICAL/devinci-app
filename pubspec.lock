@@ -29,13 +29,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.0-nullsafety.1"
-  background_fetch:
-    dependency: "direct main"
-    description:
-      name: background_fetch
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.6.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -692,7 +685,7 @@ packages:
     source: hosted
     version: "0.2.19-nullsafety.2"
   timezone:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: timezone
       url: "https://pub.dartlang.org"

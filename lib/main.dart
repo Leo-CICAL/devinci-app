@@ -11,12 +11,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:syncfusion_flutter_core/core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
-import 'package:background_fetch/background_fetch.dart';
 import 'package:quick_actions/quick_actions.dart';
-//import './config.dart';
 
 //firebase
 import 'package:firebase_core/firebase_core.dart';
@@ -60,20 +57,6 @@ Future<Null> main() async {
         localizedTitle: 'Hors connexion',
         icon: 'icon_offline'),
   ]);
-  // initialisation du système de notifications.
-  globals.notificationAppLaunchDetails = await globals
-      .flutterLocalNotificationsPlugin
-      .getNotificationAppLaunchDetails();
-  // Note: Les permissions pour les notifications ne sont pas demandées à ce niveau parce qu'elles sont déjà demandées en bas niveau, en swift dans AppDelegate.swift pour iOS et en Kotlin dans MainActivity.kt lors du premier démarrage de l'app
-  await globals.flutterLocalNotificationsPlugin.initialize(
-      globals.initializationSettings,
-      onSelectNotification: onSelectNotification);
-
-  // SyncfusionLicense.registerLicense(
-  //     Config.syncfusionLicense); //initialisation des widgets
-
-  // Fin init notifications
-
   runApp(
     BetterFeedback(
         // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
@@ -83,9 +66,6 @@ Future<Null> main() async {
         ),
         onFeedback: betterFeedbackOnFeedback),
   );
-  // Register to receive BackgroundFetch events after app is terminated.
-  // Requires {stopOnTerminate: false, enableHeadless: true}
-  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
 
 class MyApp extends StatefulWidget {
@@ -103,7 +83,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     globals.analytics = FirebaseAnalytics();
     globals.observer = FirebaseAnalyticsObserver(analytics: globals.analytics);
     WidgetsBinding.instance.addObserver(this);
-    initPlatformState();
   }
 
   @override

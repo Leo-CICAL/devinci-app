@@ -3,11 +3,16 @@ package eu.araulin.devinci
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.opengl.Visibility
 import android.util.Log
+import android.view.View
 import android.widget.RemoteViews
+import androidx.core.content.ContextCompat
 import okhttp3.*
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 /**
@@ -58,7 +63,7 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
                     var location = ""
                     var time = ""
                     var flag = ""
-                    val date = addHoursToJavaUtilDate(Date(), 1)!!
+                    var date = addHoursToJavaUtilDate(Date(), -1)!
                     val begin = date.time
                     date.hours = 23
                     val end = date.time
@@ -80,10 +85,25 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
                             val calendar2 = GregorianCalendar.getInstance()
                             calendar2.time = event.to
                             time = calendar.get(Calendar.HOUR_OF_DAY).toString()+"h"+calendar.get(Calendar.MINUTE).toString()+" - "+calendar2.get(Calendar.HOUR_OF_DAY).toString()+"h"+calendar2.get(Calendar.MINUTE).toString()
+                            flag = event.flag!!
                             break
                         }
                     }
-                    Log.d("title",title)
+                    if(title == ""){
+                        views.setViewVisibility(R.id.textView, View.GONE)
+                        views.setViewVisibility(R.id.textView2, View.GONE)
+                        views.setViewVisibility(R.id.textView3, View.GONE)
+                        views.setViewVisibility(R.id.nothingTV, View.VISIBLE)
+                        views.setViewVisibility(R.id.imageView, View.VISIBLE)
+                    }else{
+                        views.setViewVisibility(R.id.nothingTV, View.GONE)
+                        views.setViewVisibility(R.id.imageView, View.GONE)
+                        views.setViewVisibility(R.id.textView, View.VISIBLE)
+                        views.setViewVisibility(R.id.textView2, View.VISIBLE)
+                        views.setViewVisibility(R.id.textView3, View.VISIBLE)
+                    }
+                    if(flag == "distanciel") views.setTextColor(R.id.textView2, ContextCompat.getColor(context, R.color.zoom))
+                    else views.setTextColor(R.id.textView2, ContextCompat.getColor(context, R.color.primary))
                     views.setTextViewText(R.id.textView, title)
                     views.setTextViewText(R.id.textView2, location)
                     views.setTextViewText(R.id.textView3, time)
@@ -92,13 +112,13 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
             }
 
             override fun onFailure(call: Call?, e: IOException?) {
-                views.setTextViewText(R.id.textView2, "zbeub2")
+                views.setTextViewText(R.id.textView, "error")
                 appWidgetManager.updateAppWidget(appWidgetId, views)
             }
         })
 
     }else{
-        views.setTextViewText(R.id.textView2, "zbeub")
+        views.setTextViewText(R.id.textView2, "error")
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
@@ -125,6 +145,8 @@ fun parseIcal(ics: String) : MutableList<Cours> {
     return res
 }
 
+
+
 public class Cours(
         var title: String?,
         var location: String?,
@@ -136,5 +158,12 @@ fun addHoursToJavaUtilDate(date: Date?, hours: Int): Date? {
     val calendar = Calendar.getInstance()
     calendar.time = date
     calendar.add(Calendar.HOUR_OF_DAY, hours)
+    return calendar.time
+}
+
+fun addDaysToJavaUtilDate(date: Date?, days: Int): Date? {
+    val calendar = Calendar.getInstance()
+    calendar.time = date
+    calendar.add(Calendar.DAY_OF_YEAR, days)
     return calendar.time
 }

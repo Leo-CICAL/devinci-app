@@ -105,7 +105,7 @@ void onRefresh() async {
   }
 }
 
-void catcher(Exception exception, StackTrace stacktrace) async {
+void catcher(var exception, StackTrace stacktrace) async {
   if (globals.isConnected) {
     var client = HttpClient();
     var req = await client.getUrl(
