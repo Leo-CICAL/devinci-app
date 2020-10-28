@@ -35,7 +35,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-
+    compileSdkVersion rootProject.ext.compileSdkVersion
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -51,6 +51,7 @@ android {
         versionName flutterVersionName
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
+        targetSdkVersion rootProject.ext.targetSdkVersion
     }
 
     signingConfigs {

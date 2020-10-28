@@ -206,18 +206,6 @@
       "languageVersion": "2.0"
     },
     {
-      "name": "flutter_local_notifications",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications-1.5.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.6"
-    },
-    {
-      "name": "flutter_local_notifications_platform_interface",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications_platform_interface-2.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.1"
-    },
-    {
       "name": "flutter_localizations",
       "rootUri": "file:///C:/src/flutter/packages/flutter_localizations",
       "packageUri": "lib/",
@@ -452,12 +440,6 @@
       "languageVersion": "2.6"
     },
     {
-      "name": "rxdart",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/rxdart-0.24.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.6"
-    },
-    {
       "name": "sembast",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/sembast-2.4.7+7",
       "packageUri": "lib/",
@@ -680,7 +662,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-10-28T10:27:04.404897Z",
+  "generated": "2020-10-28T11:03:07.630450Z",
   "generator": "pub",
   "generatorVersion": "2.10.0"
 }

@@ -63,12 +63,15 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
                     var location = ""
                     var time = ""
                     var flag = ""
-                    var date = addHoursToJavaUtilDate(Date(), -1)!
-                    val begin = date.time
-                    date.hours = 23
-                    val end = date.time
+                    val d= Date()
+                    var date = addHoursToJavaUtilDate(d, -1)
+                    val begin = date?.time
+                    if (date != null) {
+                        date.hours = 23
+                    }
+                    val end = date?.time
                     for(event in events){
-                        if(event.from?.time!! > begin && event.to?.time!! < end){
+                        if(event.from?.time!! > begin!! && event.to?.time!! < end!!){
                             title = event.title!!
                             location = event.location!!
                             if(location.contains("-")){

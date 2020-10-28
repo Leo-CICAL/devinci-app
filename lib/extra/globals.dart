@@ -12,8 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
 import 'package:sembast/sembast.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:devinci/extra/classes.dart';
 
@@ -78,50 +76,6 @@ Map<int, Color> color = {
   800: Color.fromRGBO(136, 14, 79, .9),
   900: Color.fromRGBO(136, 14, 79, 1),
 };
-
-//local notification part
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject =
-    BehaviorSubject<ReceivedNotification>();
-
-final BehaviorSubject<String> selectNotificationSubject =
-    BehaviorSubject<String>();
-
-NotificationAppLaunchDetails notificationAppLaunchDetails;
-
-var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-    'eu.araulin.devinci.notifications',
-    'Notifications',
-    "Permet de recevoir des notifications lors de mise à jour de l'application ou lorsque de nouvelles notes sont détectées.",
-    importance: Importance.max,
-    priority: Priority.high,
-    channelShowBadge: true,
-    ticker: 'ticker');
-
-var initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
-
-var initializationSettingsIOS = IOSInitializationSettings(
-    requestAlertPermission: false,
-    requestBadgePermission: false,
-    requestSoundPermission: false,
-    onDidReceiveLocalNotification:
-        (int id, String title, String body, String payload) async {
-      didReceiveLocalNotificationSubject.add(ReceivedNotification(
-          id: id, title: title, body: body, payload: payload));
-    });
-
-var initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-
-var iOSPlatformChannelSpecifics =
-    IOSNotificationDetails(badgeNumber: 1, presentBadge: true);
-var platformChannelSpecifics = NotificationDetails(
-    android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
-
-bool showUserBadge = false;
 
 int selectedPage = 0;
 

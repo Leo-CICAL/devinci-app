@@ -37,8 +37,6 @@ dependencies:
   flutter_svg: ^0.19.0 # permet l'affichage d'image svg
   recase: ^3.0.0 # permet de transformer n'importe quelle phrase en camelCase
   diacritic: ^0.1.1 # permet de supprimer les accents et autres caractères ambigu dans les nom de fichier pour l'enregistrement dans les fichiers de l'appareil
-  flutter_local_notifications: ^1.5.0 # permet d'émettre des notifications
-  rxdart: ^0.24.1 # dépendance de flutter_local_notification pour récupérer les notifications cliquées
   app_settings: ^4.0.4 # permet d'ouvrir les réglages de notifications dans les paramètres du téléphone
   sembast: ^2.4.7+7 # sembast db stands for Simple Embedded Application Store database | système de base de donnée NoSQL pour sauvegarder les notes et determiner quelles notes sont nouvelles.
   quick_actions: ^0.4.0+9 # Permet d'avoir des quick actions (iOS) ou des App Shortcuts (Android) sur l'écran d'accueil

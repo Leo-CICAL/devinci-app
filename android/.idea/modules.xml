@@ -3,12 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/android.iml" filepath="$PROJECT_DIR$/.idea/modules/android.iml" group="android" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-933594018/android-background_fetch.iml" filepath="$PROJECT_DIR$/.idea/modules/-933594018/android-background_fetch.iml" group="android/background_fetch" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/541068123/android-connectivity.iml" filepath="$PROJECT_DIR$/.idea/modules/541068123/android-connectivity.iml" group="android/connectivity" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1489849232/android-connectivity_for_web.iml" filepath="$PROJECT_DIR$/.idea/modules/-1489849232/android-connectivity_for_web.iml" group="android/connectivity_for_web" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1642729148/android-connectivity_macos.iml" filepath="$PROJECT_DIR$/.idea/modules/-1642729148/android-connectivity_macos.iml" group="android/connectivity_macos" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-339147278/android-flutter_full_pdf_viewer.iml" filepath="$PROJECT_DIR$/.idea/modules/-339147278/android-flutter_full_pdf_viewer.iml" group="android/flutter_full_pdf_viewer" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/22938582/android-flutter_local_notifications.iml" filepath="$PROJECT_DIR$/.idea/modules/22938582/android-flutter_local_notifications.iml" group="android/flutter_local_notifications" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-216729402/android-path_provider.iml" filepath="$PROJECT_DIR$/.idea/modules/-216729402/android-path_provider.iml" group="android/path_provider" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-926624452/android-quick_actions.iml" filepath="$PROJECT_DIR$/.idea/modules/-926624452/android-quick_actions.iml" group="android/quick_actions" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/233557364/android-share_extend.iml" filepath="$PROJECT_DIR$/.idea/modules/233557364/android-share_extend.iml" group="android/share_extend" />
