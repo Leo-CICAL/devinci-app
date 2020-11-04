@@ -25,9 +25,7 @@ int index = 0;
 
 //FUNCTIONS
 void changeCurrentSemester(int sem) {
-  // ignore: invalid_use_of_protected_member
-
-  globals.notesPageKey.currentState.setState(() {
+  setState(() {
     currentSemester = sem;
     if (!changed) changed = true;
   });
@@ -55,21 +53,18 @@ Future<void> getData({bool force = false}) async {
       }
     }
   }
-
-  if (globals.notesPageKey.currentState.mounted) {
+  try {
     if (globals.user.notes.isNotEmpty) {
-      try {
-        if (!globals.user.notes[index]['s'][1].isEmpty && !changed) {
-          currentSemester = 1;
-        }
-      } catch (e) {
-        print(e);
+      if (!globals.user.notes[index]['s'][1].isEmpty && !changed) {
+        currentSemester = 1;
       }
     }
 
-    globals.notesPageKey.currentState.setState(() {
+    setState(() {
       show = true;
     });
+  } catch (e) {
+    print(e);
   }
   if (!globals.user.notesFetched && globals.isConnected) {
     globals.isLoading.setState(1, true);
@@ -95,14 +90,13 @@ void onRefresh() async {
     }
     globals.noteLocked = false;
   }
-  if (globals.notesPageKey.currentState.mounted) {
-    globals.notesPageKey.currentState.setState(() {
-      if (!globals.user.notes[index]['s'][1].isEmpty && !changed) {
-        currentSemester = 1;
-      }
-      refreshController.refreshCompleted();
-    });
-  }
+
+  setState(() {
+    if (!globals.user.notes[index]['s'][1].isEmpty && !changed) {
+      currentSemester = 1;
+    }
+    refreshController.refreshCompleted();
+  });
 }
 
 void catcher(var exception, StackTrace stacktrace) async {
@@ -131,11 +125,28 @@ void runBeforeBuild() async {
   if (!globals.user.notesFetched) {
     await getData();
   } else {
-    globals.notesPageKey.currentState.setState(() {
+    setState(() {
       if (!globals.user.notes[index]['s'][1].isEmpty && !changed) {
         currentSemester = 1;
       }
       show = true;
     });
+  }
+}
+
+BuildContext getContext() {
+  if (globals.notesPageKey.currentState != null) {
+    return globals.notesPageKey.currentState.context;
+  } else {
+    return globals.currentContext;
+  }
+}
+
+void setState(void Function() fun, {bool condition = true}) {
+  if (globals.notesPageKey.currentState != null) {
+    if (globals.notesPageKey.currentState.mounted && condition) {
+      // ignore: invalid_use_of_protected_member
+      globals.notesPageKey.currentState.setState(fun);
+    }
   }
 }

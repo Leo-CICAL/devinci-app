@@ -1,4 +1,5 @@
 import 'package:devinci/extra/CommonWidgets.dart';
+import 'package:devinci/extra/measureSize.dart';
 import 'package:devinci/pages/components/notes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,14 @@ class NotesPageState extends State<NotesPage> {
               controller: scrollController,
               shrinkWrap: true,
               children: <Widget>[
-                YearsSelection(),
+                MeasureSize(
+                  child: YearsSelection(),
+                  onChange: (size) {
+                    scrollController.animateTo(size.height,
+                        duration: Duration(microseconds: 1),
+                        curve: Curves.linear);
+                  },
+                ),
                 TitleSection('Semestres',
                     padding:
                         const EdgeInsets.only(top: 20.0, left: 20, right: 20)),

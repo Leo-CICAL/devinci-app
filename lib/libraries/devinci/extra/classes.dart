@@ -235,7 +235,7 @@ class User {
     final String path = directory.path;
 
     // File path to a file in the current directory
-    String dbPath = path + '/data/db.db';
+    String dbPath = path + '/data/data.db';
     print('dbpath ' + dbPath);
     DatabaseFactory dbFactory = databaseFactoryIo;
 
@@ -710,7 +710,9 @@ class User {
 
   Future<void> getAbsences() async {
     if (globals.isConnected) {
-      var res = await devinciRequest(endpoint: '?my=abs');
+      var res = await devinciRequest(
+        endpoint: '?my=abs',
+      );
       if (res != null) {
         if (res.statusCode == 200) {
           print("got absences");

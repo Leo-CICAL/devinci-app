@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:devinci/libraries/devinci/extra/functions.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sembast/sembast.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -47,36 +48,45 @@ Future<void> getData({bool force = false}) async {
           stacktrace);
     }
   }
-
-  if (globals.absencesPageKey.currentState.mounted) {
-    globals.absencesPageKey.currentState.setState(() {
-      show = true;
-    });
-  }
-
+  setState(() {
+    show = true;
+  });
   return;
+}
+
+void setState(void Function() fun, {bool condition = true}) {
+  if (globals.absencesPageKey.currentState != null) {
+    if (globals.absencesPageKey.currentState.mounted && condition) {
+      // ignore: invalid_use_of_protected_member
+      globals.absencesPageKey.currentState.setState(fun);
+    }
+  }
 }
 
 void runBeforeBuild() async {
   if (globals.user.absences != null) {
-    if (!globals.user.absences["done"]) {
+    if (!globals.user.absences['done']) {
       await getData();
     }
   }
 
-  if (globals.absencesPageKey.currentState.mounted && !show) {
-    globals.absencesPageKey.currentState.setState(() {
-      show = true;
-    });
-  }
+  setState(() {
+    show = true;
+  }, condition: !show);
 }
 
 void onRefresh() async {
   await getData(force: true);
-  if (globals.absencesPageKey.currentState.mounted) {
-    globals.absencesPageKey.currentState.setState(() {
-      show = true;
-      refreshController.refreshCompleted();
-    });
+  setState(() {
+    show = true;
+    refreshController.refreshCompleted();
+  });
+}
+
+BuildContext getContext() {
+  if (globals.absencesPageKey.currentState != null) {
+    return globals.absencesPageKey.currentState.context;
+  } else {
+    return globals.currentContext;
   }
 }

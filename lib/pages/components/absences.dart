@@ -1,4 +1,5 @@
 import 'package:devinci/libraries/devinci/extra/functions.dart';
+import 'package:devinci/pages/logic/absences.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 
@@ -11,7 +12,7 @@ Widget SemestreSelection(String sem, String subtitle) {
           right: sem == 's2' ? 20.0 : 10.0),
       child: Card(
         elevation: globals.currentTheme.isDark() ? 4 : 2,
-        color: Theme.of(globals.absencesPageKey.currentState.context).cardColor,
+        color: Theme.of(getContext()).cardColor,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         child: Column(
@@ -62,13 +63,11 @@ Widget AbsenceTile(int i) {
     padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
     child: Card(
       elevation: globals.currentTheme.isDark() ? 4 : 1,
-      color: Theme.of(globals.absencesPageKey.currentState.context).cardColor,
+      color: Theme.of(getContext()).cardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       child: Container(
         height: 65,
-        width: MediaQuery.of(globals.absencesPageKey.currentState.context)
-            .size
-            .width,
+        width: MediaQuery.of(getContext()).size.width,
         child: Column(
           children: <Widget>[
             Padding(

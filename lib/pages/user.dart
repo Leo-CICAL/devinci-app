@@ -26,10 +26,11 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   bool show = false;
   double cardSize = 85;
-  List<bool> docCardDetail = new List<bool>();
-  List<Map<String, dynamic>> docCardData = new List<Map<String, dynamic>>();
+  List<bool> docCardDetail = <bool>[];
+  List<Map<String, dynamic>> docCardData = <Map<String, dynamic>>[];
   bool showPersonnalData = false;
   var _tapPosition;
+  @override
   void initState() {
     super.initState();
     globals.isLoading.addListener(() async {
@@ -37,29 +38,30 @@ class _UserPageState extends State<UserPage> {
         try {
           await globals.user.getDocuments();
         } catch (exception, stacktrace) {
-          HttpClient client = new HttpClient();
-          HttpClientRequest req = await client.getUrl(
+          var client = new HttpClient();
+          var req = await client.getUrl(
             Uri.parse('https://www.leonard-de-vinci.net/?my=docs'),
           );
           req.followRedirects = false;
           req.cookies.addAll([
-            new Cookie('alv', globals.user.tokens["alv"]),
-            new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
-            new Cookie('uids', globals.user.tokens["uids"]),
-            new Cookie('SimpleSAMLAuthToken',
-                globals.user.tokens["SimpleSAMLAuthToken"]),
+            Cookie('alv', globals.user.tokens['alv']),
+            Cookie('SimpleSAML', globals.user.tokens['SimpleSAML']),
+            Cookie('uids', globals.user.tokens['uids']),
+            Cookie('SimpleSAMLAuthToken',
+                globals.user.tokens['SimpleSAMLAuthToken']),
           ]);
-          HttpClientResponse res = await req.close();
+          var res = await req.close();
           globals.feedbackNotes = await res.transform(utf8.decoder).join();
 
           await reportError(
-              "user.dart | _UserPageState | runBeforeBuild() | user.getDocuments() => $exception",
+              'user.dart | _UserPageState | runBeforeBuild() | user.getDocuments() => $exception',
               stacktrace);
         }
-        if (mounted)
+        if (mounted) {
           setState(() {
             show = true;
           });
+        }
         globals.isLoading.setState(4, false);
       }
     });
@@ -67,26 +69,26 @@ class _UserPageState extends State<UserPage> {
   }
 
   void runBeforeBuild() async {
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       docCardDetail.add(false);
-      docCardData.add({"frShowButton": true, "enShowButton": true});
+      docCardData.add({'frShowButton': true, 'enShowButton': true});
     }
 
-    if (globals.user.documents["certificat"]["annee"] == "") {
+    if (globals.user.documents['certificat']['annee'] == '') {
       documents = await globals.store.record('documents').get(globals.db);
       if (documents == null) {
         try {
           await globals.user.getDocuments();
         } catch (exception, stacktrace) {
-          HttpClient client = new HttpClient();
-          HttpClientRequest req = await client.getUrl(
+          var client = new HttpClient();
+          var req = await client.getUrl(
             Uri.parse('https://www.leonard-de-vinci.net/?my=docs'),
           );
           req.followRedirects = false;
           req.cookies.addAll([
-            new Cookie('alv', globals.user.tokens["alv"]),
-            new Cookie('SimpleSAML', globals.user.tokens["SimpleSAML"]),
-            new Cookie('uids', globals.user.tokens["uids"]),
+            Cookie('alv', globals.user.tokens['alv']),
+            Cookie('SimpleSAML', globals.user.tokens['SimpleSAML']),
+            new Cookie('uids', globals.user.tokens['uids']),
             new Cookie('SimpleSAMLAuthToken',
                 globals.user.tokens["SimpleSAMLAuthToken"]),
           ]);
@@ -139,7 +141,7 @@ class _UserPageState extends State<UserPage> {
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
           Scaffold.of(context).showSnackBar(snackBar);
         } else {
-          ShareExtend.share(data, "text", sharePanelTitle: title);
+          ShareExtend.share(data, 'text', sharePanelTitle: title);
         }
       });
     });

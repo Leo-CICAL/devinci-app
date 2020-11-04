@@ -10,13 +10,12 @@ Widget SemestreSelection(int sem, String subtitle) {
           left: sem == 0 ? 20.0 : 10.0, top: 0, right: sem == 1 ? 20.0 : 10.0),
       child: Card(
         elevation: globals.currentTheme.isDark() ? 4 : 2,
-        color: Theme.of(globals.notesPageKey.currentState.context).cardColor,
+        color: Theme.of(getContext()).cardColor,
         shape: currentSemester == sem
             ? RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 side: BorderSide(
-                    color: Theme.of(globals.notesPageKey.currentState.context).accentColor,
-                    width: 2.0))
+                    color: Theme.of(getContext()).accentColor, width: 2.0))
             : RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         child: InkWell(
           onTap: () {
@@ -56,7 +55,7 @@ Widget MatiereTile(int i, int j) {
     padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
     child: Card(
         elevation: globals.currentTheme.isDark() ? 4 : 2,
-        color: Theme.of(globals.notesPageKey.currentState.context).cardColor,
+        color: Theme.of(getContext()).cardColor,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         child: InkWell(
@@ -65,7 +64,7 @@ Widget MatiereTile(int i, int j) {
                   .notes[index]['s'][currentSemester][i]['matieres'][j]['notes']
                   .isEmpty
               ? null
-              : () => globals.notesPageKey.currentState.setState(() {
+              : () => setState(() {
                     globals.user.notes[index]['s'][currentSemester][i]
                             ['matieres'][j]['c'] =
                         !globals.user.notes[index]['s'][currentSemester][i]
@@ -108,7 +107,7 @@ Widget MatiereTile(int i, int j) {
                                               ['matieres'][j]) ??
                                           11) >=
                                       10
-                                  ? Theme.of(globals.notesPageKey.currentState.context).accentColor
+                                  ? Theme.of(getContext()).accentColor
                                   : getMatMoy(globals.user.notes[index]['s']
                                                   [currentSemester][i]
                                               ['matieres'][j]) ==
@@ -156,12 +155,12 @@ Widget NoteTile(int i, int j, int y) {
       padding: const EdgeInsets.only(left: 24.0, bottom: 5, right: 0),
       child: Card(
         elevation: globals.currentTheme.isDark() ? 4 : 1,
-        color: Theme.of(globals.notesPageKey.currentState.context).cardColor,
+        color: Theme.of(getContext()).cardColor,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         child: Container(
           height: 65,
-          width: MediaQuery.of(globals.notesPageKey.currentState.context).size.width,
+          width: MediaQuery.of(getContext()).size.width,
           child: Column(
             children: <Widget>[
               Padding(
@@ -212,9 +211,9 @@ Widget NoteTile(int i, int j, int y) {
                                                         [currentSemester][i]['matieres']
                                                     [j]['notes'][y]['note'] >=
                                                 10
-                                            ? Theme.of(globals.notesPageKey.currentState.context)
-                                                .accentColor
-                                            : (globals.user.notes[index]['s'][currentSemester]
+                                            ? Theme.of(getContext()).accentColor
+                                            : (globals.user.notes[index]['s']
+                                                                [currentSemester]
                                                             [i]['matieres'][j]
                                                         ['notes'][y]['note'] ==
                                                     0
@@ -287,10 +286,10 @@ Widget YearsSelection() {
         ),
         underline: Container(
           height: 0,
-          color: Theme.of(globals.notesPageKey.currentState.context).accentColor,
+          color: Theme.of(getContext()).accentColor,
         ),
         onChanged: (String newValue) async {
-          globals.notesPageKey.currentState.setState(() {
+          setState(() {
             show = false;
           });
           currentYear = newValue;
@@ -307,7 +306,7 @@ Widget YearsSelection() {
           } catch (exception, stacktrace) {
             catcher(exception, stacktrace);
           }
-          globals.notesPageKey.currentState.setState(() {
+          setState(() {
             show = true;
           });
         },
