@@ -49,7 +49,7 @@ class _MainPageState extends State<MainPage> {
       return <Widget>[
         AgendaPage(),
         NotesPage(key: globals.notesPageKey),
-        AbsencesPage(),
+        AbsencesPage(key: globals.absencesPageKey),
         PresencePage(),
         UserPage()
       ];
