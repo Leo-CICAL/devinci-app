@@ -587,7 +587,9 @@ class User {
   }
 
   Future<void> getData() async {
-    var response = await devinciRequest();
+    l("getData");
+    var response = await devinciRequest(replacementUrl: 'https://www.leonard-de-vinci.net/',log:true);
+    l(response);
     if (response != null) {
       l('statusCode : ${response.statusCode}');
       l('headers : ${response.headers}');

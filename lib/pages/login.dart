@@ -92,13 +92,16 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
 
         _formKey.currentState.validate();
       }
-      await Future.delayed(Duration(milliseconds: 400));
+      try{
       Navigator.push(
         context,
         CupertinoPageRoute(
           builder: (context) => MainPage(),
         ),
       );
+      }catch(e){
+        
+      }
     } else {
       if (mounted)
         setState(() {

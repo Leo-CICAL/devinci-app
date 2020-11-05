@@ -509,17 +509,20 @@ Future<HttpClientResponse> devinciRequest(
     bool followRedirects = false,
     List<List<String>> headers,
     String data,
-    String replacementUrl = ''}) async {
+    String replacementUrl = '', bool log = false}) async {
   if (globals.user.tokens['SimpleSAML'] != '' &&
       globals.user.tokens['alv'] != '' &&
       globals.user.tokens['uids'] != '' &&
       globals.user.tokens['SimpleSAMLAuthToken'] != '') {
     var client = HttpClient();
+    if(log) print('[0]');
     var uri = Uri.parse(replacementUrl == ''
         ? 'https://www.leonard-de-vinci.net/' + endpoint
         : replacementUrl);
+        if(log) print('[1] ${endpoint}');
     var req =
         method == 'GET' ? await client.getUrl(uri) : await client.postUrl(uri);
+    if(log) print('[1] ${req}');
     req.followRedirects = followRedirects;
     req.cookies.addAll([
       Cookie('alv', globals.user.tokens['alv']),
@@ -535,6 +538,7 @@ Future<HttpClientResponse> devinciRequest(
     if (data != null) {
       req.write(data);
     }
+    if(log) print('[2]');
     return await req.close();
   } else {
     return null;

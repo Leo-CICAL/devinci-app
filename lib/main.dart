@@ -101,10 +101,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
+  final navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
     globals.currentContext = context;
     return MaterialApp(
+      navigatorKey: navigatorKey,
       localizationsDelegates: [
         RefreshLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

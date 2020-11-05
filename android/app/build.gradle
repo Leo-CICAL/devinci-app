@@ -36,6 +36,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion '29.0.0'
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
