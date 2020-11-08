@@ -10,7 +10,7 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import 'mainPage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -37,49 +37,54 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
 
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (!globals.isConnected) {
-      print("shortcut set offline");
+      print('shortcut set offline');
     } else {
-      globals.isConnected = globals.prefs.getBool("isConnected") ?? true;
-      if (!globals.isConnected) print("prefs set offline");
+      globals.isConnected = globals.prefs.getBool('isConnected') ?? true;
+      if (!globals.isConnected) print('prefs set offline');
       if (globals.isConnected) {
-        print("no pref nor shortcut set to offline");
+        print('no pref nor shortcut set to offline');
         globals.isConnected = connectivityResult != ConnectivityResult.none;
       }
     }
-    username = await globals.storage.read(key: "username");
-    password = await globals.storage.read(key: "password");
+    username = await globals.storage.read(key: 'username');
+    password = await globals.storage.read(key: 'password');
 
     if (username != null && password != null) {
-      print("credentials_exists");
-      globals.user = new User(username, password);
+      print('credentials_exists');
+      globals.user = User(username, password);
       try {
         await globals.user.init();
       } catch (exception, stacktrace) {
-        if (mounted)
+        if (mounted) {
           setState(() {
             show = true;
           });
+        }
         print(exception);
 
         //user.init() throw error if credentials are wrong or if an error occurred during the process
         if (globals.user.code == 401) {
           //credentials are wrong
-          myControllerPassword.text = "";
+          myControllerPassword.text = '';
         } else {
           await reportError(
-              "main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception",
+              'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
               stacktrace);
 
-          showDialog(
+          await showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: new Text("Erreur"),
-                content: new Text(
-                    "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: $exception"),
+                title: Text('error').tr(),
+                content: Text(
+                  'unknown_error'.tr(namedArgs: {
+                    'code': globals.user.code.toString(),
+                    'exception': exception
+                  }),
+                ),
                 actions: <Widget>[
-                  new FlatButton(
-                    child: new Text("Fermer"),
+                  FlatButton(
+                    child: Text('close').tr(),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -92,21 +97,21 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
 
         _formKey.currentState.validate();
       }
-      try{
-      Navigator.push(
-        context,
-        CupertinoPageRoute(
-          builder: (context) => MainPage(),
-        ),
-      );
-      }catch(e){
-        
-      }
+      try {
+        await Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => MainPage(),
+          ),
+        );
+        // ignore: empty_catches
+      } catch (e) {}
     } else {
-      if (mounted)
+      if (mounted) {
         setState(() {
           show = true;
         });
+      }
     }
 
     //here we shall have valid tokens and basic data about the user such as name, badge id, etc
@@ -114,28 +119,27 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    print("changed");
     String username;
     String password;
     //analytics will only be used as much as right now during test phase to have access to the full context of any error.
 
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (!globals.isConnected) {
-      print("shortcut set offline");
+      print('shortcut set offline');
     } else {
-      globals.isConnected = globals.prefs.getBool("isConnected") ?? true;
-      if (!globals.isConnected) print("prefs set offline");
+      globals.isConnected = globals.prefs.getBool('isConnected') ?? true;
+      if (!globals.isConnected) print('prefs set offline');
       if (globals.isConnected) {
-        print("no pref nor shortcut set to offline");
+        print('no pref nor shortcut set to offline');
         globals.isConnected = connectivityResult != ConnectivityResult.none;
       }
     }
-    username = await globals.storage.read(key: "username");
-    password = await globals.storage.read(key: "password");
+    username = await globals.storage.read(key: 'username');
+    password = await globals.storage.read(key: 'password');
 
     if (username != null && password != null) {
-      print("credentials_exists");
-      globals.user = new User(username, password);
+      print('credentials_exists');
+      globals.user = User(username, password);
       try {
         await globals.user.init();
       } catch (exception, stacktrace) {
@@ -147,22 +151,25 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
         //user.init() throw error if credentials are wrong or if an error occurred during the process
         if (globals.user.code == 401) {
           //credentials are wrong
-          myControllerPassword.text = "";
+          myControllerPassword.text = '';
         } else {
           await reportError(
-              "main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception",
+              'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
               stacktrace);
-
-          showDialog(
+          await showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: new Text("Erreur"),
-                content: new Text(
-                    "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: $exception"),
+                title: Text('error').tr(),
+                content: Text(
+                  'unknown_error'.tr(namedArgs: {
+                    'code': globals.user.code.toString(),
+                    'exception': exception
+                  }),
+                ),
                 actions: <Widget>[
-                  new FlatButton(
-                    child: new Text("Fermer"),
+                  FlatButton(
+                    child: Text('close').tr(),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -175,7 +182,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
 
         _formKey.currentState.validate();
       }
-      Navigator.push(
+      await Navigator.push(
         context,
         CupertinoPageRoute(
           builder: (context) => MainPage(),
@@ -188,6 +195,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
@@ -212,9 +220,9 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
         globals.currentTheme.isDark());
     globals.currentContext = context;
 
-    return new WillPopScope(
+    return WillPopScope(
         onWillPop: () async => false,
-        child: new Scaffold(
+        child: Scaffold(
           body: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle(
                 statusBarColor: Theme.of(context).scaffoldBackgroundColor,
@@ -226,7 +234,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                     child: CupertinoActivityIndicator(
                     animating: true,
                   ))
-                : new Container(
+                : Container(
                     alignment: Alignment.center,
                     margin: const EdgeInsets.only(left: 28.0, right: 28.0),
                     child: Column(
@@ -235,7 +243,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: Text(
-                            "Bienvenue",
+                            'welcome'.tr(),
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -256,7 +264,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                 focusNode: _usernameFocus,
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Utilisateur',
+                                  labelText: 'user'.tr(),
                                 ),
                                 controller: myControllerUsername,
                                 onFieldSubmitted: (term) {
@@ -266,11 +274,11 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                 validator: (value) {
                                   if (globals.user != null) {
                                     if (globals.user.error) {
-                                      return 'Identifiants incorrects';
+                                      return 'wrong_id'.tr();
                                     }
                                   }
                                   if (value.isEmpty) {
-                                    return 'Ne peut être vide';
+                                    return 'no_empty'.tr();
                                   }
                                   return null;
                                 },
@@ -284,29 +292,31 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                   key: Key('login_password'),
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(),
-                                    labelText: 'Mot de passe',
+                                    labelText: 'password'.tr(),
                                   ),
                                   controller: myControllerPassword,
                                   onFieldSubmitted: (value) async {
                                     _passwordFocus.unfocus();
 
-                                    if (globals.user != null)
+                                    if (globals.user != null) {
                                       globals.user.error = false;
+                                    }
                                     if (_formKey.currentState.validate()) {
-                                      if (globals.user != null)
+                                      if (globals.user != null) {
                                         globals.user.error = false;
+                                      }
                                       if (_formKey.currentState.validate()) {
-                                        print("valid");
+                                        print('valid');
                                         setState(() {
                                           buttonState = ButtonState.inProgress;
                                         });
-                                        globals.user = new User(
+                                        globals.user = User(
                                             myControllerUsername.text,
                                             myControllerPassword.text);
                                         try {
                                           await globals.user.init();
 
-                                          Navigator.push(
+                                          await Navigator.push(
                                             context,
                                             CupertinoPageRoute(
                                               builder: (context) => MainPage(),
@@ -326,24 +336,29 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                           //user.init() throw error if credentials are wrong or if an error occurred during the process
                                           if (globals.user.code == 401) {
                                             //credentials are wrong
-                                            myControllerPassword.text = "";
+                                            myControllerPassword.text = '';
                                           } else {
                                             await reportError(
                                                 'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
                                                 stacktrace);
 
-                                            showDialog(
+                                            await showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
                                                 // return object of type Dialog
                                                 return AlertDialog(
-                                                  title: new Text("Erreur"),
-                                                  content: new Text(
-                                                      "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: $exception"),
+                                                  title: Text('error').tr(),
+                                                  content: Text(
+                                                    'unknown_error'
+                                                        .tr(namedArgs: {
+                                                      'code': globals.user.code
+                                                          .toString(),
+                                                      'exception': exception
+                                                    }),
+                                                  ),
                                                   actions: <Widget>[
-                                                    // usually buttons at the bottom of the dialog
-                                                    new FlatButton(
-                                                      child: new Text("Fermer"),
+                                                    FlatButton(
+                                                      child: Text('close').tr(),
                                                       onPressed: () {
                                                         Navigator.of(context)
                                                             .pop();
@@ -358,7 +373,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                           _formKey.currentState.validate();
                                         }
                                       } else {
-                                        print("invalid");
+                                        print('invalid');
                                         setState(() {
                                           buttonState = ButtonState.error;
                                         });
@@ -370,7 +385,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                                 }));
                                       }
                                     } else {
-                                      print("invalid");
+                                      print('invalid');
                                       setState(() {
                                         buttonState = ButtonState.error;
                                       });
@@ -403,7 +418,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 18),
                                     child: Text(
-                                      "Connexion".toUpperCase(),
+                                      'login'.tr().toUpperCase(),
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
@@ -413,20 +428,21 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                     ),
                                   ),
                                   onPressed: () async {
-                                    if (globals.user != null)
+                                    if (globals.user != null) {
                                       globals.user.error = false;
+                                    }
                                     if (_formKey.currentState.validate()) {
-                                      print("valid");
+                                      print('valid');
                                       setState(() {
                                         buttonState = ButtonState.inProgress;
                                       });
-                                      globals.user = new User(
+                                      globals.user = User(
                                           myControllerUsername.text,
                                           myControllerPassword.text);
                                       try {
                                         await globals.user.init();
 
-                                        Navigator.push(
+                                        await Navigator.push(
                                           context,
                                           CupertinoPageRoute(
                                             builder: (context) => MainPage(),
@@ -446,24 +462,29 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                         //user.init() throw error if credentials are wrong or if an error occurred during the process
                                         if (globals.user.code == 401) {
                                           //credentials are wrong
-                                          myControllerPassword.text = "";
+                                          myControllerPassword.text = '';
                                         } else {
                                           await reportError(
                                               'main.dart | _LoginPageState | runBeforeBuild() | user.init() | else => $exception',
                                               stacktrace);
 
-                                          showDialog(
+                                          await showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
                                               // return object of type Dialog
                                               return AlertDialog(
-                                                title: new Text("Erreur"),
-                                                content: new Text(
-                                                    "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: $exception"),
+                                                title: Text('error').tr(),
+                                                content: Text(
+                                                  'unknown_error'
+                                                      .tr(namedArgs: {
+                                                    'code': globals.user.code
+                                                        .toString(),
+                                                    'exception': exception
+                                                  }),
+                                                ),
                                                 actions: <Widget>[
-                                                  // usually buttons at the bottom of the dialog
-                                                  new FlatButton(
-                                                    child: new Text("Fermer"),
+                                                  FlatButton(
+                                                    child: Text('close').tr(),
                                                     onPressed: () {
                                                       Navigator.of(context)
                                                           .pop();
@@ -478,7 +499,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                         _formKey.currentState.validate();
                                       }
                                     } else {
-                                      print("invalid");
+                                      print('invalid');
                                       setState(() {
                                         buttonState = ButtonState.error;
                                       });
@@ -509,7 +530,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
               ? [
                   FlatButton(
                       key: Key('login_cgu'),
-                      child: Text('CGU'),
+                      child: Text('TOS').tr(),
                       onPressed: () {
                         showMarkdownPage(
                           applicationIcon: SizedBox(
@@ -535,7 +556,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                       }),
                   FlatButton(
                       key: Key('login_privacy'),
-                      child: Text('Politique de confidentialité'),
+                      child: Text('PP').tr(),
                       onPressed: () {
                         showMarkdownPage(
                           applicationIcon: SizedBox(

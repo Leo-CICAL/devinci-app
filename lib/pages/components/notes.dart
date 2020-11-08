@@ -2,8 +2,9 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/pages/logic/notes.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:easy_localization/easy_localization.dart';
 
-Widget SemestreSelection(int sem, String subtitle) {
+Widget SemestreSelection(int sem) {
   return Expanded(
     child: Padding(
       padding: EdgeInsets.only(
@@ -34,13 +35,13 @@ Widget SemestreSelection(int sem, String subtitle) {
                 padding: const EdgeInsets.only(
                     left: 0.0, top: 3, right: 0, bottom: 14),
                 child: Text(
-                  subtitle,
+                  's$sem',
                   style: TextStyle(
                       color: globals.currentTheme.isDark()
                           ? Color(0xffE1E2E1)
                           : Color(0xffACACAC),
                       fontSize: 16),
-                ),
+                ).tr(),
               )
             ],
           ),
@@ -238,7 +239,7 @@ Widget NoteTile(int i, int j, int y) {
                                     ['matieres'][j]['notes'][y]['noteP'] ==
                                 null
                             ? ''
-                            : 'moy. de la promo : ',
+                            : 'promo_average'.tr(),
                         style:
                             TextStyle(color: Color(0xff787878), fontSize: 12),
                         children: <TextSpan>[
@@ -306,6 +307,7 @@ Widget YearsSelection() {
           } catch (exception, stacktrace) {
             catcher(exception, stacktrace);
           }
+          first = true;
           setState(() {
             show = true;
           });

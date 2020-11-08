@@ -6,10 +6,10 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/pages/logic/absences.dart';
 
-Map<String, dynamic> absences;
+// Map<String, dynamic> absences;
 
 class AbsencesPage extends StatefulWidget {
   AbsencesPage({Key key}) : super(key: key);
@@ -45,7 +45,7 @@ class AbsencesPageState extends State<AbsencesPage> {
               Icon(Icons.wifi_off_rounded, size: 32),
               Padding(
                 padding: const EdgeInsets.only(top: 8),
-                child: Text('Hors connexion'),
+                child: Text('offline').tr(),
               ),
             ],
           ),
@@ -54,7 +54,7 @@ class AbsencesPageState extends State<AbsencesPage> {
         result = CupertinoScrollbar(
           child: (globals.user.absences['done']
                       ? globals.user.absences['liste'].length
-                      : (absences == null ? 0 : absences['liste'].length)) >
+                      : 0) >
                   0
               ? SmartRefresher(
                   enablePullDown: true,
@@ -64,23 +64,27 @@ class AbsencesPageState extends State<AbsencesPage> {
                   child: ListView(
                     shrinkWrap: false,
                     children: <Widget>[
-                      TitleSection('Semestres'),
+                      TitleSection('semesters'),
 
                       //SECTION BLOCK selection du semestre
                       Padding(
                           padding: const EdgeInsets.only(top: 20.0),
                           child: Row(
                             children: <Widget>[
-                              SemestreSelection('s1',
-                                  "${(globals.user.absences["done"] ? globals.user.absences["s1"] : absences["s1"])} absence${(globals.user.absences["done"] ? globals.user.absences["s1"] : absences["s1"]) > 1 ? "s" : ""}"),
-                              SemestreSelection('s2',
-                                  "${(globals.user.absences["done"] ? globals.user.absences["s2"] : absences["s2"])} absence${(globals.user.absences["done"] ? globals.user.absences["s2"] : absences["s2"]) > 1 ? "s" : ""}"),
+                              SemestreSelection(
+                                  's1',
+                                  'nabsence'
+                                      .plural(globals.user.absences['s1'])),
+                              SemestreSelection(
+                                  's2',
+                                  'nabsence'
+                                      .plural(globals.user.absences['s2'])),
                             ],
                           )),
 
                       //!SECTION
                       //SECTION BLOCK Absences text
-                      TitleSection('Absences'),
+                      TitleSection('absences'),
 
                       //!SECTION
                       Padding(
@@ -90,9 +94,7 @@ class AbsencesPageState extends State<AbsencesPage> {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             scrollDirection: Axis.vertical,
-                            itemCount: (globals.user.absences['done']
-                                ? globals.user.absences['liste'].length
-                                : absences['liste'].length),
+                            itemCount: (globals.user.absences['liste'].length),
                             itemBuilder: (BuildContext ctxt, int i) {
                               return AbsenceTile(i);
                             }),
@@ -121,10 +123,10 @@ class AbsencesPageState extends State<AbsencesPage> {
                       Padding(
                         padding: EdgeInsets.only(top: 28),
                         child: Text(
-                          'Aucune absence',
+                          'no_absence',
                           style: TextStyle(
                               fontWeight: FontWeight.w400, fontSize: 20),
-                        ),
+                        ).tr(),
                       ),
                     ],
                   ),

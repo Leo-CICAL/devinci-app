@@ -9,19 +9,20 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:property_change_notifier/property_change_notifier.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:sembast/sembast.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 Function setAgendaHeaderState;
 
+// ignore: unused_element
 Color _selectedColor;
-MeetingDataSource _events;
 Cours _selectedCours;
 DateTime _from;
 TimeOfDay _startTime;
 DateTime _to;
 TimeOfDay _endTime;
+// ignore: unused_element
 bool _isAllDay;
 String _title = '';
 String _location = '';
@@ -40,6 +41,7 @@ class AgendaHeader extends StatefulWidget {
 class _AgendaHeaderState extends State<AgendaHeader> {
   _AgendaHeaderState();
 
+  @override
   void initState() {
     setAgendaHeaderState = setState;
     super.initState();
@@ -48,7 +50,8 @@ class _AgendaHeaderState extends State<AgendaHeader> {
   @override
   Widget build(BuildContext context) {
     return TitleSection(globals.agendaTitle.headerText,
-        padding: const EdgeInsets.only(top: 8.0, left: 16, bottom: 8));
+        padding: const EdgeInsets.only(top: 8.0, left: 16, bottom: 8),
+        noTr: true);
   }
 }
 
@@ -67,12 +70,12 @@ class _AgendaPageState extends State<AgendaPage> {
   Future<void> getCalendar() async {
     if (globals.lastFetchAgenda == null) {
       globals.lastFetchAgenda = DateTime.now();
-      String icalUrl = globals.user.data["edtUrl"];
+      var icalUrl = globals.user.data['edtUrl'];
       try {
         globals.cours = await parseIcal(icalUrl);
       } catch (exception, stacktrace) {
         await reportError(
-            "agenda.dart | _AgendaPageState | getCalendar() | parseIcal() => $exception",
+            'agenda.dart | _AgendaPageState | getCalendar() | parseIcal() => $exception',
             stacktrace);
         return;
       }
@@ -88,21 +91,21 @@ class _AgendaPageState extends State<AgendaPage> {
     return;
   }
 
+  @override
   void initState() {
-    Intl.defaultLocale = "fr_FR";
+    //Intl.defaultLocale = "fr_FR";
     _selectedCours = null;
     _title = '';
     globals.calendarController = CalendarController();
     super.initState();
     globals.isLoading.addListener(() async {
-      print("isLoading");
       if (globals.isLoading.state(0)) {
         try {
           globals.cours =
-              await parseIcal(globals.user.data["edtUrl"], load: true);
+              await parseIcal(globals.user.data['edtUrl'], load: true);
         } catch (exception, stacktrace) {
           await reportError(
-              "agenda.dart | _AgendaPageState | getCalendar() | parseIcal() => $exception",
+              'agenda.dart | _AgendaPageState | getCalendar() | parseIcal() => $exception',
               stacktrace);
           return;
         }
@@ -140,8 +143,8 @@ class _AgendaPageState extends State<AgendaPage> {
       _prof = appointment.prof;
       _flag = appointment.flag;
       flag = _flag == 'distanciel'
-          ? 'Distanciel'
-          : (_flag == 'presentiel' ? 'Présentiel' : 'Non spécifié');
+          ? 'remote'
+          : (_flag == 'presentiel' ? 'face_to_face' : 'unspecified');
       _selectedColor = appointment.background;
       _title = appointment.title == '' ? '' : appointment.title;
       _uid = appointment.uid;
@@ -149,10 +152,10 @@ class _AgendaPageState extends State<AgendaPage> {
       _location = appointment.location;
       _selectedCours = appointment;
     } else {
-      final DateTime date = calendarTapDetails.date;
+      final date = calendarTapDetails.date;
       _from = date;
       _to = date.add(const Duration(hours: 1));
-      flag = 'Non spécifié';
+      flag = 'unspecified';
     }
 
     _startTime = TimeOfDay(hour: _from.hour, minute: _from.minute);
@@ -160,7 +163,6 @@ class _AgendaPageState extends State<AgendaPage> {
 
     Navigator.push<Widget>(
       context,
-      // ignore: always_specify_types
       MaterialPageRoute(builder: (BuildContext context) => CoursEditor()),
     );
   }
@@ -231,16 +233,17 @@ class MeetingDataSource extends CalendarDataSource {
 
   @override
   String getSubject(int index) {
-    String title = '';
-    if (appointments[index].type != 'NR')
+    var title = '';
+    if (appointments[index].type != 'NR') {
       title += '(${appointments[index].type}) ';
+    }
     title += appointments[index].title;
     if (globals.calendarView == CalendarView.day) {
       title += '\n${appointments[index].location}';
       if (appointments[index].site != '' &&
           appointments[index].site != 'La Défense' &&
           appointments[index].site != 'Online') {
-        title += '- site: ' + appointments[index].site;
+        title += '- ${'location'.tr()}: ' + appointments[index].site;
       }
       title += '\n${appointments[index].prof}';
     } else if (globals.calendarView == CalendarView.month) {
@@ -277,7 +280,7 @@ class CoursEditor extends StatefulWidget {
   final bool addButton;
   const CoursEditor({Key key, this.addButton = false}) : super(key: key);
   @override
-  CoursEditorState createState() => CoursEditorState(this.addButton);
+  CoursEditorState createState() => CoursEditorState(addButton);
 }
 
 class CoursEditorState extends State<CoursEditor> {
@@ -296,21 +299,21 @@ class CoursEditorState extends State<CoursEditor> {
       _flag = '';
       _uid = '';
       _groupe = '';
-      final DateTime date = DateTime.now();
+      final date = DateTime.now();
       _from = date;
       _to = date.add(const Duration(hours: 1));
-      flag = 'Non spécifié';
+      flag = 'unspecified';
 
       _startTime = TimeOfDay(hour: _from.hour, minute: _from.minute);
       _endTime = TimeOfDay(hour: _to.hour, minute: _to.minute);
     }
     Color color =
         (globals.currentTheme.isDark() ? Colors.blueAccent : Colors.blue);
-    if (flag == 'Distanciel') {
+    if (flag == 'remote') {
       color = (globals.currentTheme.isDark()
           ? Colors.deepOrangeAccent.shade400
           : Colors.deepOrange);
-    } else if (flag == 'Présentiel') {
+    } else if (flag == 'face_to_face') {
       color = Colors.teal;
     }
 
@@ -327,16 +330,16 @@ class CoursEditorState extends State<CoursEditor> {
                 onChanged: (String value) {
                   _title = value;
                 },
-                enabled: _uid.indexOf(':') > -1 ? false : true,
+                enabled: _uid.contains(':') ? false : true,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 style: TextStyle(
                     fontSize: 20,
                     color: defaultColor,
                     fontWeight: FontWeight.w400),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Titre',
+                  hintText: 'title'.tr(),
                 ),
               ),
             ),
@@ -353,16 +356,16 @@ class CoursEditorState extends State<CoursEditor> {
                 onChanged: (String value) {
                   _prof = value;
                 },
-                enabled: _uid.indexOf(':') > -1 ? false : true,
+                enabled: _uid.contains(':') ? false : true,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 style: TextStyle(
                     fontSize: 16,
                     color: defaultColor,
                     fontWeight: FontWeight.w400),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Professeur',
+                  hintText: 'teacher'.tr(),
                 ),
               ),
             ),
@@ -379,16 +382,16 @@ class CoursEditorState extends State<CoursEditor> {
                 onChanged: (String value) {
                   _location = value;
                 },
-                enabled: _uid.indexOf(':') > -1 ? false : true,
+                enabled: _uid.contains(':') ? false : true,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 style: TextStyle(
                     fontSize: 16,
                     color: defaultColor,
                     fontWeight: FontWeight.w400),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Emplacement',
+                  hintText: 'varlocation'.tr(),
                 ),
               ),
             ),
@@ -405,16 +408,16 @@ class CoursEditorState extends State<CoursEditor> {
                 onChanged: (String value) {
                   _groupe = value;
                 },
-                enabled: _uid.indexOf(':') > -1 ? false : true,
+                enabled: _uid.contains(':') ? false : true,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 style: TextStyle(
                     fontSize: 16,
                     color: defaultColor,
                     fontWeight: FontWeight.w400),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Groupe',
+                  hintText: 'group'.tr(),
                 ),
               ),
             ),
@@ -439,10 +442,10 @@ class CoursEditorState extends State<CoursEditor> {
                             child: Text(
                                 DateFormat('EEEE dd MMM yyyy').format(_from),
                                 textAlign: TextAlign.left),
-                            onTap: _uid.indexOf(':') > -1
+                            onTap: _uid.contains(':')
                                 ? null
                                 : () async {
-                                    final DateTime date = await showDatePicker(
+                                    final date = await showDatePicker(
                                         context: context,
                                         initialDate: _from,
                                         firstDate: DateTime(1900),
@@ -468,7 +471,7 @@ class CoursEditorState extends State<CoursEditor> {
 
                                     if (date != null && date != _from) {
                                       setState(() {
-                                        final Duration difference =
+                                        final difference =
                                             _to.difference(_from);
                                         _from = DateTime(
                                             date.year,
@@ -491,41 +494,37 @@ class CoursEditorState extends State<CoursEditor> {
                                 DateFormat('HH:mm').format(_from),
                                 textAlign: TextAlign.right,
                               ),
-                              onTap: _uid.indexOf(':') > -1
+                              onTap: _uid.contains(':')
                                   ? null
                                   : () async {
-                                      final TimeOfDay time =
-                                          await showTimePicker(
-                                              context: context,
-                                              initialTime: TimeOfDay(
-                                                  hour: _startTime.hour,
-                                                  minute: _startTime.minute),
-                                              builder: (BuildContext context,
-                                                  Widget child) {
-                                                return Theme(
-                                                  data: ThemeData(
-                                                    brightness: globals
-                                                            .currentTheme
-                                                            .isDark()
-                                                        ? Brightness.dark
-                                                        : Brightness.light,
-                                                    // colorScheme:
-                                                    //     _getColorScheme(widget.model),
-                                                    accentColor:
-                                                        Theme.of(context)
-                                                            .accentColor,
-                                                    primaryColor:
-                                                        Theme.of(context)
-                                                            .primaryColor,
-                                                  ),
-                                                  child: child,
-                                                );
-                                              });
+                                      final time = await showTimePicker(
+                                          context: context,
+                                          initialTime: TimeOfDay(
+                                              hour: _startTime.hour,
+                                              minute: _startTime.minute),
+                                          builder: (BuildContext context,
+                                              Widget child) {
+                                            return Theme(
+                                              data: ThemeData(
+                                                brightness: globals.currentTheme
+                                                        .isDark()
+                                                    ? Brightness.dark
+                                                    : Brightness.light,
+                                                // colorScheme:
+                                                //     _getColorScheme(widget.model),
+                                                accentColor: Theme.of(context)
+                                                    .accentColor,
+                                                primaryColor: Theme.of(context)
+                                                    .primaryColor,
+                                              ),
+                                              child: child,
+                                            );
+                                          });
 
                                       if (time != null && time != _startTime) {
                                         setState(() {
                                           _startTime = time;
-                                          final Duration difference =
+                                          final difference =
                                               _to.difference(_from);
                                           _from = DateTime(
                                               _from.year,
@@ -560,10 +559,10 @@ class CoursEditorState extends State<CoursEditor> {
                               DateFormat('EEEE dd MMM yyyy').format(_to),
                               textAlign: TextAlign.left,
                             ),
-                            onTap: _uid.indexOf(':') > -1
+                            onTap: _uid.contains(':')
                                 ? null
                                 : () async {
-                                    final DateTime date = await showDatePicker(
+                                    final date = await showDatePicker(
                                         context: context,
                                         initialDate: _to,
                                         firstDate: DateTime(1900),
@@ -589,7 +588,7 @@ class CoursEditorState extends State<CoursEditor> {
 
                                     if (date != null && date != _to) {
                                       setState(() {
-                                        final Duration difference =
+                                        final difference =
                                             _to.difference(_from);
                                         _to = DateTime(
                                             date.year,
@@ -615,41 +614,37 @@ class CoursEditorState extends State<CoursEditor> {
                                 DateFormat('HH:mm').format(_to),
                                 textAlign: TextAlign.right,
                               ),
-                              onTap: _uid.indexOf(':') > -1
+                              onTap: _uid.contains(':')
                                   ? null
                                   : () async {
-                                      final TimeOfDay time =
-                                          await showTimePicker(
-                                              context: context,
-                                              initialTime: TimeOfDay(
-                                                  hour: _endTime.hour,
-                                                  minute: _endTime.minute),
-                                              builder: (BuildContext context,
-                                                  Widget child) {
-                                                return Theme(
-                                                  data: ThemeData(
-                                                    brightness: globals
-                                                            .currentTheme
-                                                            .isDark()
-                                                        ? Brightness.dark
-                                                        : Brightness.light,
-                                                    // colorScheme:
-                                                    //     _getColorScheme(widget.model),
-                                                    accentColor:
-                                                        Theme.of(context)
-                                                            .accentColor,
-                                                    primaryColor:
-                                                        Theme.of(context)
-                                                            .primaryColor,
-                                                  ),
-                                                  child: child,
-                                                );
-                                              });
+                                      final time = await showTimePicker(
+                                          context: context,
+                                          initialTime: TimeOfDay(
+                                              hour: _endTime.hour,
+                                              minute: _endTime.minute),
+                                          builder: (BuildContext context,
+                                              Widget child) {
+                                            return Theme(
+                                              data: ThemeData(
+                                                brightness: globals.currentTheme
+                                                        .isDark()
+                                                    ? Brightness.dark
+                                                    : Brightness.light,
+                                                // colorScheme:
+                                                //     _getColorScheme(widget.model),
+                                                accentColor: Theme.of(context)
+                                                    .accentColor,
+                                                primaryColor: Theme.of(context)
+                                                    .primaryColor,
+                                              ),
+                                              child: child,
+                                            );
+                                          });
 
                                       if (time != null && time != _endTime) {
                                         setState(() {
                                           _endTime = time;
-                                          final Duration difference =
+                                          final difference =
                                               _to.difference(_from);
                                           _to = DateTime(
                                               _to.year,
@@ -675,8 +670,8 @@ class CoursEditorState extends State<CoursEditor> {
             ListTile(
               contentPadding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
               leading: Icon(Icons.lens, color: color),
-              title: _uid.indexOf(':') > -1
-                  ? Text(flag)
+              title: _uid.contains(':')
+                  ? Text(flag).tr()
                   : DropdownButton<String>(
                       value: flag,
                       icon: Icon(OMIcons.expandMore),
@@ -690,19 +685,19 @@ class CoursEditorState extends State<CoursEditor> {
                       onChanged: (String newValue) {
                         setState(() {
                           flag = newValue;
-                          _flag = flag == 'Distanciel'
+                          _flag = flag == 'remote'
                               ? 'distanciel'
-                              : (flag == 'Présentiel' ? 'presentiel' : '');
+                              : (flag == 'face_to_face' ? 'presentiel' : '');
                         });
                       },
                       items: <String>[
-                        'Distanciel',
-                        'Présentiel',
-                        'Non spécifié',
+                        'remote',
+                        'face_to_face',
+                        'unspecified',
                       ].map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text(value).tr(),
                         );
                       }).toList(),
                     ),
@@ -711,12 +706,12 @@ class CoursEditorState extends State<CoursEditor> {
               height: 1.0,
               thickness: 1,
             ),
-            _selectedCours != null && _uid.indexOf(':') < 0
+            _selectedCours != null && !_uid.contains(':')
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: OutlineButton(
                         onPressed: () {
-                          if (_selectedCours != null && _uid.indexOf(':') < 0) {
+                          if (_selectedCours != null && !_uid.contains(':')) {
                             globals.cours.removeAt(
                                 globals.cours.indexOf(_selectedCours));
                             globals.customCours.removeAt(
@@ -742,11 +737,12 @@ class CoursEditorState extends State<CoursEditor> {
                                 ? Colors.redAccent
                                 : Colors.red.shade700,
                             width: 2),
-                        child: Text('Supprimer l\'évènement',
-                            style: TextStyle(
-                                color: globals.currentTheme.isDark()
-                                    ? Colors.redAccent
-                                    : Colors.red.shade700))),
+                        child: Text('delete_event',
+                                style: TextStyle(
+                                    color: globals.currentTheme.isDark()
+                                        ? Colors.redAccent
+                                        : Colors.red.shade700))
+                            .tr()),
                   )
                 : Container(),
             Container(),
@@ -771,10 +767,9 @@ class CoursEditorState extends State<CoursEditor> {
           appBar: AppBar(
             //backgroundColor: _colorCollection[_selectedColorIndex],
             title: Text(
-                _title == '' || addButton
-                    ? 'Nouvel évènement'
-                    : 'Détail de l\'évènement',
-                style: Theme.of(context).textTheme.bodyText2),
+                    _title == '' || addButton ? 'new_event' : 'detail_event',
+                    style: Theme.of(context).textTheme.bodyText2)
+                .tr(),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             leading: IconTheme(
                 data: Theme.of(context).accentIconTheme,
@@ -786,7 +781,7 @@ class CoursEditorState extends State<CoursEditor> {
                     Navigator.pop(context);
                   },
                 )),
-            actions: _uid.indexOf(':') > -1 && !addButton
+            actions: _uid.contains(':') && !addButton
                 ? null
                 : <Widget>[
                     IconTheme(
@@ -799,11 +794,11 @@ class CoursEditorState extends State<CoursEditor> {
                             onPressed: () {
                               print(_selectedCours);
                               if (_selectedCours != null &&
-                                  _uid.indexOf(':') < 0) {
+                                  !_uid.contains(':')) {
                                 globals.cours.removeAt(
                                     globals.cours.indexOf(_selectedCours));
                               }
-                              Cours c = new Cours(
+                              var c = Cours(
                                   'NR',
                                   _title,
                                   _prof,

@@ -1,3 +1,4 @@
+import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:devinci/libraries/timechef/pages/login.dart';
 import 'package:devinci/libraries/timechef/pages/main.dart';
 import 'package:devinci/libraries/timechef/timechef.dart';
@@ -16,40 +17,44 @@ class TimeChefPage extends StatefulWidget {
 class _TimeChefPageState extends State<TimeChefPage> {
   bool show = false;
 
-  runBeforeBuild() async {
+  void runBeforeBuild() async {
     if (globals.timeChefUser == null || !globals.timeChefUser.fetched) {
-      String username = await globals.storage.read(key: "timechefusername");
-      String password = await globals.storage.read(key: "timechefpassword");
+      var username = await globals.storage.read(key: 'timechefusername');
+      var password = await globals.storage.read(key: 'timechefpassword');
       if (username != null && password != null) {
-        globals.timeChefUser = new TimeChefUser(username, password);
+        globals.timeChefUser = TimeChefUser(username, password);
         try {
           await globals.timeChefUser.init();
           globals.timeChefUser.fetched = true;
           globals.pageChanger.setPage(1);
-          if (mounted)
+          if (mounted) {
             setState(() {
               show = true;
             });
+          }
         } catch (exception) {
           globals.pageChanger.setPage(0);
-          if (mounted)
+          if (mounted) {
             setState(() {
               show = true;
             });
+          }
         }
       } else {
         globals.pageChanger.setPage(0);
-        if (mounted)
+        if (mounted) {
           setState(() {
             show = true;
           });
+        }
       }
     } else {
-      if (mounted)
+      if (mounted) {
         setState(() {
           globals.pageChanger.setPage(1);
           show = true;
         });
+      }
     }
   }
 
@@ -69,10 +74,8 @@ class _TimeChefPageState extends State<TimeChefPage> {
             LoginPage(),
             MainPage(),
           ][globals.pageChanger.page()]
-        : Center(
-            child: CupertinoActivityIndicator(
-              animating: true,
-            ),
-          );
+        : TitleSection('self_balance',
+            iconButton: CupertinoActivityIndicator(),
+            padding: EdgeInsets.only(left: 16));
   }
 }

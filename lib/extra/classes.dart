@@ -4,6 +4,7 @@ import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Cours {
   Cours(
@@ -90,8 +91,8 @@ class NoteLock with ChangeNotifier {
 
 // ignore: must_be_immutable
 class PDFScreen extends StatelessWidget {
-  String pathPDF = "";
-  String title = "";
+  String pathPDF = '';
+  String title = '';
   PDFScreen(this.pathPDF, this.title);
 
   @override
@@ -164,7 +165,7 @@ class ContextEntryState extends State<ContextEntry> {
             height: 20,
             child: FlatButton(
               onPressed: copy,
-              child: Text('Copier'),
+              child: Text('copy').tr(),
             ),
           ),
         ),
@@ -173,7 +174,7 @@ class ContextEntryState extends State<ContextEntry> {
             height: 20,
             child: FlatButton(
               onPressed: share,
-              child: Text('Partager'),
+              child: Text('share').tr(),
             ),
           ),
         ),

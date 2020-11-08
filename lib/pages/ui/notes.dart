@@ -8,6 +8,7 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:devinci/pages/logic/notes.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class NotesPage extends StatefulWidget {
   NotesPage({Key key}) : super(key: key);
@@ -44,7 +45,7 @@ class NotesPageState extends State<NotesPage> {
               Icon(Icons.wifi_off_rounded, size: 32),
               Padding(
                 padding: const EdgeInsets.only(top: 8),
-                child: Text('Hors connexion'),
+                child: Text('offline').tr(),
               ),
             ],
           ),
@@ -63,23 +64,24 @@ class NotesPageState extends State<NotesPage> {
                 MeasureSize(
                   child: YearsSelection(),
                   onChange: (size) {
-                    scrollController.animateTo(size.height,
-                        duration: Duration(microseconds: 1),
-                        curve: Curves.linear);
+                    if (first) {
+                      scrollController.jumpTo(size.height);
+                      first = false;
+                    }
                   },
                 ),
-                TitleSection('Semestres',
+                TitleSection('semesters',
                     padding:
                         const EdgeInsets.only(top: 20.0, left: 20, right: 20)),
                 Padding(
                     padding: const EdgeInsets.only(top: 20.0),
                     child: Row(
                       children: <Widget>[
-                        SemestreSelection(0, 'Sept. - Janvier'),
-                        SemestreSelection(1, 'Janvier - Juin')
+                        SemestreSelection(0),
+                        SemestreSelection(1)
                       ],
                     )),
-                TitleSection('Notes'),
+                TitleSection('grades'),
                 globals.user.notes[index]['s'][currentSemester].length != 0
                     ? Padding(
                         padding: const EdgeInsets.only(

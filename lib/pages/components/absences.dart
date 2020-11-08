@@ -2,6 +2,7 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/pages/logic/absences.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:easy_localization/easy_localization.dart';
 
 Widget SemestreSelection(String sem, String subtitle) {
   return Expanded(
@@ -57,8 +58,14 @@ Widget AbsenceTile(int i) {
   List<String> jours = globals.user.absences['liste'][i]['jour'].split('-');
   List<String> creneaux =
       globals.user.absences['liste'][i]['creneau'].split(':');
-  var date =
-      '${jours[2]}/${jours[1]}/${jours[0]} ${creneaux[0]}:${creneaux[1]}';
+  var date = 'absence_date_format'.tr(namedArgs: {
+    'day': jours[2],
+    'month': jours[1],
+    'year': jours[0],
+    'hours': creneaux[0],
+    'mins': creneaux[1]
+  });
+  //'${jours[2]}/${jours[1]}/${jours[0]} ${creneaux[0]}:${creneaux[1]}';
   return Padding(
     padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
     child: Card(

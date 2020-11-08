@@ -20,10 +20,8 @@ class ScreenshotController {
     return Future.delayed(delay, () async {
       final renderObject = _containerKey.currentContext.findRenderObject();
       if (renderObject is RenderRepaintBoundary) {
-        final ui.Image image =
-            await renderObject.toImage(pixelRatio: pixelRatio);
-        final ByteData byteData =
-            await image.toByteData(format: ui.ImageByteFormat.png);
+        final image = await renderObject.toImage(pixelRatio: pixelRatio);
+        final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
         return byteData.buffer.asUint8List();
       } else {
         throw Exception('_containerKey is not a RepaintBoundary');

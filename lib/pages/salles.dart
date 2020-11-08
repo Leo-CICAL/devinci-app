@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:devinci/extra/classes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +6,7 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SallesPage extends StatefulWidget {
   SallesPage({Key key}) : super(key: key);
@@ -23,12 +22,14 @@ class _SallesPageState extends State<SallesPage> {
 
   void runBeforeBuild() async {
     await globals.user.getSallesLibres();
-    if (mounted)
+    if (mounted) {
       setState(() {
         show = true;
       });
+    }
   }
 
+  @override
   void initState() {
     super.initState();
     //populateData();
@@ -36,17 +37,15 @@ class _SallesPageState extends State<SallesPage> {
   }
 
   Widget getCellWidget(BuildContext context, GridColumn column, int rowIndex) {
-    print("get");
-
-    if (globals.user.sallesStr.indexOf(column.mappingName) > -1) {
+    if (globals.user.sallesStr.contains(column.mappingName)) {
       try {
-        final bool state = globals.user.salles[rowIndex]
+        final state = globals.user.salles[rowIndex]
             .occupation[globals.user.sallesStr.indexOf(column.mappingName)];
         return Container(
           color: state
               ? (globals.currentTheme.isDark()
-          ? Colors.deepOrangeAccent.shade400
-          : Colors.deepOrange)
+                  ? Colors.deepOrangeAccent.shade400
+                  : Colors.deepOrange)
               : Theme.of(context).scaffoldBackgroundColor,
         );
       } catch (e) {
@@ -58,11 +57,11 @@ class _SallesPageState extends State<SallesPage> {
   }
 
   List<GridColumn> genColumns() {
-    List<GridColumn> res = new List<GridColumn>();
-    res.add(GridTextColumn(mappingName: 'salles', headerText: 'Salles')
+    var res = <GridColumn>[];
+    res.add(GridTextColumn(mappingName: 'salles', headerText: 'rooms'.tr())
       ..cellStyle = DataGridCellStyle(textStyle: TextStyle(fontSize: 12))
       ..padding = EdgeInsets.only(left: 6));
-    for (String elem in globals.user.sallesStr) {
+    for (var elem in globals.user.sallesStr) {
       res.add(
         GridWidgetColumn(mappingName: elem)
           ..padding = EdgeInsets.only(left: 4, right: 4)
@@ -90,9 +89,9 @@ class _SallesPageState extends State<SallesPage> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         automaticallyImplyLeading: false,
         title: Text(
-          'Salles libres',
+          'free_room',
           style: Theme.of(context).textTheme.headline1,
-        ),
+        ).tr(),
         actions: <Widget>[
           IconButton(
             icon: IconTheme(
@@ -127,7 +126,7 @@ class SalleDataSource extends DataGridSource<Salle> {
 
   @override
   Object getValue(Salle salle, String columnName) {
-    if (columnName == "salles") {
+    if (columnName == 'salles') {
       return salle.name;
     } else {
       return ' ';

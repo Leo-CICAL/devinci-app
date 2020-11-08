@@ -9,9 +9,9 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:sembast/utils/value_utils.dart';
 
 //DATA
-
 int currentSemester = 0;
 bool show = false;
+bool first = true;
 final RefreshController refreshController =
     RefreshController(initialRefresh: false);
 final ScrollController scrollController = ScrollController(
@@ -74,7 +74,6 @@ Future<void> getData({bool force = false}) async {
 }
 
 void onRefresh() async {
-  print('refresh');
   if (!globals.noteLocked) {
     globals.noteLocked = true;
     try {

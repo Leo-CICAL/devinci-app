@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:devinci/extra/classes.dart';
+import 'package:devinci/pages/timechef.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +10,10 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter/scheduler.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/services.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:recase/recase.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:sembast/sembast.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 Map<String, dynamic> documents;
 
@@ -25,10 +26,10 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   bool show = false;
+  bool pad = false;
   double cardSize = 85;
   List<bool> docCardDetail = <bool>[];
   List<Map<String, dynamic>> docCardData = <Map<String, dynamic>>[];
-  bool showPersonnalData = false;
   var _tapPosition;
   @override
   void initState() {
@@ -38,7 +39,7 @@ class _UserPageState extends State<UserPage> {
         try {
           await globals.user.getDocuments();
         } catch (exception, stacktrace) {
-          var client = new HttpClient();
+          var client = HttpClient();
           var req = await client.getUrl(
             Uri.parse('https://www.leonard-de-vinci.net/?my=docs'),
           );
@@ -80,7 +81,7 @@ class _UserPageState extends State<UserPage> {
         try {
           await globals.user.getDocuments();
         } catch (exception, stacktrace) {
-          var client = new HttpClient();
+          var client = HttpClient();
           var req = await client.getUrl(
             Uri.parse('https://www.leonard-de-vinci.net/?my=docs'),
           );
@@ -88,34 +89,35 @@ class _UserPageState extends State<UserPage> {
           req.cookies.addAll([
             Cookie('alv', globals.user.tokens['alv']),
             Cookie('SimpleSAML', globals.user.tokens['SimpleSAML']),
-            new Cookie('uids', globals.user.tokens['uids']),
-            new Cookie('SimpleSAMLAuthToken',
-                globals.user.tokens["SimpleSAMLAuthToken"]),
+            Cookie('uids', globals.user.tokens['uids']),
+            Cookie('SimpleSAMLAuthToken',
+                globals.user.tokens['SimpleSAMLAuthToken']),
           ]);
-          HttpClientResponse res = await req.close();
+          var res = await req.close();
           globals.feedbackNotes = await res.transform(utf8.decoder).join();
 
           await reportError(
-              "user.dart | _UserPageState | runBeforeBuild() | user.getDocuments() => $exception",
+              'user.dart | _UserPageState | runBeforeBuild() | user.getDocuments() => $exception',
               stacktrace);
         }
       }
-      if (mounted)
+      if (mounted) {
         setState(() {
           show = true;
         });
+      }
       await Future.delayed(Duration(milliseconds: 200));
       globals.isLoading.setState(4, true);
     } else {
-      if (mounted)
+      if (mounted) {
         setState(() {
           show = true;
         });
+      }
     }
   }
 
-  ScrollController scroll = new ScrollController();
-  ScrollController scrollMark = new ScrollController();
+  ScrollController scroll = ScrollController();
 
   void _showCustomMenu(String data, String title) {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
@@ -135,8 +137,8 @@ class _UserPageState extends State<UserPage> {
 
       setState(() {
         if (delta == 1) {
-          Clipboard.setData(new ClipboardData(text: data));
-          final snackBar = SnackBar(content: Text('$title copié'));
+          Clipboard.setData(ClipboardData(text: data));
+          final snackBar = SnackBar(content: Text('copied').tr(args: [title]));
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
           Scaffold.of(context).showSnackBar(snackBar);
@@ -160,7 +162,7 @@ class _UserPageState extends State<UserPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              new GestureDetector(
+              GestureDetector(
                 // This does not give the tap position ...
                 onLongPress: () {
                   _showCustomMenu(second, main);
@@ -171,12 +173,11 @@ class _UserPageState extends State<UserPage> {
                 child: RichText(
                   textAlign: TextAlign.left,
                   text: TextSpan(
-                    text: main + ": ",
+                    text: main.tr() + ': ',
                     style: Theme.of(context).textTheme.bodyText1,
                     children: <TextSpan>[
                       TextSpan(
-                          text:
-                              showPersonnalData ? second : "•" * second.length,
+                          text: second,
                           style: TextStyle(
                             fontWeight: FontWeight.normal,
                           )),
@@ -191,6 +192,7 @@ class _UserPageState extends State<UserPage> {
     // ignore: non_constant_identifier_names
     Widget DocumentTile(
         String name, String subtitle, String frUrl, String enUrl, int id) {
+      name = name.tr();
       return Padding(
         padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
         child: Card(
@@ -200,25 +202,25 @@ class _UserPageState extends State<UserPage> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           child: InkWell(
             onTap: () async {
-              for (int i = 0; i < docCardDetail.length; i++) {
+              for (var i = 0; i < docCardDetail.length; i++) {
                 if (i != id) docCardDetail[i] = false;
               }
-              if (enUrl != "") {
+              if (enUrl != '') {
                 setState(() {
                   docCardDetail[id] = !docCardDetail[id];
                 });
               } else {
                 setState(() {
-                  docCardData[id]["frShowButton"] = false;
+                  docCardData[id]['frShowButton'] = false;
                 });
                 print(frUrl);
-                ReCase rc = new ReCase('${name}_$subtitle');
-                String path = await downloadDocuments(frUrl, rc.camelCase);
+                var rc = ReCase('${name}_$subtitle');
+                var path = await downloadDocuments(frUrl, rc.camelCase);
                 setState(() {
-                  docCardData[id]["frShowButton"] = true;
+                  docCardData[id]['frShowButton'] = true;
                 });
-                if (path != "") {
-                  Navigator.push(
+                if (path != '') {
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => PDFScreen(path, name)),
@@ -226,7 +228,7 @@ class _UserPageState extends State<UserPage> {
                 }
               }
             }, // handle your onTap here
-            child: (enUrl == "" && !docCardData[id]["frShowButton"])
+            child: (enUrl == '' && !docCardData[id]['frShowButton'])
                 ? Container(
                     height: 65,
                     child: Center(
@@ -247,8 +249,8 @@ class _UserPageState extends State<UserPage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
                                 Expanded(
-                                  child: new Container(
-                                    padding: new EdgeInsets.only(right: 10),
+                                  child: Container(
+                                    padding: EdgeInsets.only(right: 10),
                                     child: Text(
                                       name,
                                       overflow: TextOverflow.ellipsis,
@@ -292,26 +294,25 @@ class _UserPageState extends State<UserPage> {
                             child: Row(
                               children: <Widget>[
                                 Expanded(
-                                  child: docCardData[id]["frShowButton"]
+                                  child: docCardData[id]['frShowButton']
                                       ? FlatButton(
                                           onPressed: () async {
                                             setState(() {
-                                              docCardData[id]["frShowButton"] =
+                                              docCardData[id]['frShowButton'] =
                                                   false;
                                             });
                                             print(frUrl);
-                                            ReCase rc =
-                                                new ReCase('${name}_$subtitle');
-                                            String path =
-                                                await downloadDocuments(
-                                                    frUrl, rc.camelCase);
+                                            var rc =
+                                                ReCase('${name}_$subtitle');
+                                            var path = await downloadDocuments(
+                                                frUrl, rc.camelCase);
 
                                             setState(() {
-                                              docCardData[id]["frShowButton"] =
+                                              docCardData[id]['frShowButton'] =
                                                   true;
                                             });
-                                            if (path != "") {
-                                              Navigator.push(
+                                            if (path != '') {
+                                              await Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
@@ -319,9 +320,9 @@ class _UserPageState extends State<UserPage> {
                                               );
                                             }
                                           },
-                                          child: Text(enUrl != ""
-                                              ? "Français"
-                                              : "Ouvrir"),
+                                          child: Text(enUrl != ''
+                                              ? 'Français'
+                                              : 'open'.tr()),
                                         )
                                       : Container(
                                           child: Center(
@@ -330,28 +331,28 @@ class _UserPageState extends State<UserPage> {
                                         ),
                                 ),
                                 Visibility(
-                                  visible: enUrl != "",
+                                  visible: enUrl != '',
                                   child: Expanded(
-                                    child: docCardData[id]["enShowButton"]
+                                    child: docCardData[id]['enShowButton']
                                         ? FlatButton(
                                             onPressed: () async {
                                               setState(() {
                                                 docCardData[id]
-                                                    ["enShowButton"] = false;
+                                                    ['enShowButton'] = false;
                                               });
                                               print(enUrl);
-                                              ReCase rc = new ReCase(
+                                              var rc = ReCase(
                                                   '${name}_${subtitle}_en');
-                                              String path =
+                                              var path =
                                                   await downloadDocuments(
                                                       frUrl, rc.camelCase);
 
                                               setState(() {
                                                 docCardData[id]
-                                                    ["enShowButton"] = true;
+                                                    ['enShowButton'] = true;
                                               });
-                                              if (path != "") {
-                                                Navigator.push(
+                                              if (path != '') {
+                                                await Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
@@ -360,7 +361,7 @@ class _UserPageState extends State<UserPage> {
                                                 );
                                               }
                                             },
-                                            child: Text("English"),
+                                            child: Text('English'),
                                           )
                                         : Container(
                                             child: Center(
@@ -382,100 +383,149 @@ class _UserPageState extends State<UserPage> {
     }
 
     globals.currentContext = context;
-    return show
-        ? CupertinoScrollbar(
-            controller: scroll,
-            child: ListView(
-              controller: scroll,
+    if (show) {
+      return CupertinoScrollbar(
+        controller: scroll,
+        child: ListView(
+          controller: scroll,
+          children: <Widget>[
+            ExpansionTile(
+              title: Text(
+                'private_info',
+                textAlign: TextAlign.left,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ).tr(),
               children: <Widget>[
-                TitleSection("Informations personnelles",
-                    iconButton: IconButton(
-                        icon: Icon(showPersonnalData
-                            ? OMIcons.visibilityOff
-                            : OMIcons.visibility),
-                        onPressed: () {
-                          setState(() {
-                            showPersonnalData = !showPersonnalData;
-                          });
-                        })),
-                InfoSection("Identifiant", globals.user.tokens["uids"]),
-                InfoSection("Numéro de badge", globals.user.data["badge"]),
-                InfoSection("Numéro client", globals.user.data["client"]),
-                InfoSection("Id. Administratif", globals.user.data["idAdmin"]),
-                InfoSection("INE/BEA", globals.user.data["ine"]),
-                TitleSection("Documents"),
-                Padding(
-                  padding: EdgeInsets.only(top: 12, left: 20, right: 20),
-                  child: DocumentTile(
-                      "Certificat de scolarité",
-                      (globals.user.documents["certificat"]["annee"] != ""
-                          ? globals.user.documents
-                          : documents)["certificat"]["annee"],
-                      (globals.user.documents["certificat"]["annee"] != ""
-                          ? globals.user.documents
-                          : documents)["certificat"]["fr_url"],
-                      (globals.user.documents["certificat"]["annee"] != ""
-                          ? globals.user.documents
-                          : documents)["certificat"]["en_url"],
-                      0),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 0, left: 20, right: 20),
-                  child: DocumentTile(
-                      "Certificat ImaginR",
-                      (globals.user.documents["certificat"]["annee"] != ""
-                          ? globals.user.documents
-                          : documents)["imaginr"]["annee"],
-                      (globals.user.documents["certificat"]["annee"] != ""
-                          ? globals.user.documents
-                          : documents)["imaginr"]["url"],
-                      "",
-                      1),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 0, left: 20, right: 20),
-                  child: DocumentTile(
-                      "Calendrier académique",
-                      (globals.user.documents["certificat"]["annee"] != ""
-                          ? globals.user.documents
-                          : documents)["calendrier"]["annee"],
-                      (globals.user.documents["certificat"]["annee"] != ""
-                          ? globals.user.documents
-                          : documents)["calendrier"]["url"],
-                      "",
-                      2),
-                ),
-                new ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    itemCount:
-                        (globals.user.documents["certificat"]["annee"] != ""
-                                ? globals.user.documents
-                                : documents)["bulletins"]
-                            .length,
-                    itemBuilder: (BuildContext ctxt, int i) {
-                      return Padding(
-                        padding: EdgeInsets.only(top: 0, left: 20, right: 20),
-                        child: DocumentTile(
-                            (globals.user.documents["certificat"]["annee"] != ""
-                                ? globals.user.documents
-                                : documents)["bulletins"][i]["name"],
-                            (globals.user.documents["certificat"]["annee"] != ""
-                                ? globals.user.documents
-                                : documents)["bulletins"][i]["sub"],
-                            (globals.user.documents["certificat"]["annee"] != ""
-                                ? globals.user.documents
-                                : documents)["bulletins"][i]["fr_url"],
-                            (globals.user.documents["certificat"]["annee"] != ""
-                                ? globals.user.documents
-                                : documents)["bulletins"][i]["en_url"],
-                            3 + i),
-                      );
-                    }),
+                InfoSection('id', globals.user.tokens['uids']),
+                InfoSection('#card', globals.user.data['badge']),
+                InfoSection('#client', globals.user.data['client']),
+                InfoSection('id_admin', globals.user.data['idAdmin']),
+                InfoSection('INE', globals.user.data['ine']),
               ],
+              onExpansionChanged: (expanded) {
+                setState(() {
+                  pad = expanded;
+                });
+              },
             ),
-          )
-        : Center(child: CupertinoActivityIndicator());
+            Padding(
+              padding: EdgeInsets.only(top: (pad ? 20 : 0)),
+              child: TimeChefPage(),
+            ),
+            TitleSection('documents',
+                padding: EdgeInsets.only(left: 16, top: 20)),
+            Padding(
+              padding: EdgeInsets.only(top: 12, left: 20, right: 20),
+              child: DocumentTile(
+                  'school_certificate',
+                  (globals.user.documents['certificat']['annee'] != ''
+                      ? globals.user.documents
+                      : documents)['certificat']['annee'],
+                  (globals.user.documents['certificat']['annee'] != ''
+                      ? globals.user.documents
+                      : documents)['certificat']['fr_url'],
+                  (globals.user.documents['certificat']['annee'] != ''
+                      ? globals.user.documents
+                      : documents)['certificat']['en_url'],
+                  0),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 0, left: 20, right: 20),
+              child: DocumentTile(
+                  'imaginr_certificate',
+                  (globals.user.documents['certificat']['annee'] != ''
+                      ? globals.user.documents
+                      : documents)['imaginr']['annee'],
+                  (globals.user.documents['certificat']['annee'] != ''
+                      ? globals.user.documents
+                      : documents)['imaginr']['url'],
+                  '',
+                  1),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 0, left: 20, right: 20),
+              child: DocumentTile(
+                  'academic_calendar',
+                  (globals.user.documents['certificat']['annee'] != ''
+                      ? globals.user.documents
+                      : documents)['calendrier']['annee'],
+                  (globals.user.documents['certificat']['annee'] != ''
+                      ? globals.user.documents
+                      : documents)['calendrier']['url'],
+                  '',
+                  2),
+            ),
+            ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemCount: (globals.user.documents['certificat']['annee'] != ''
+                        ? globals.user.documents
+                        : documents)['bulletins']
+                    .length,
+                itemBuilder: (BuildContext ctxt, int i) {
+                  return Padding(
+                    padding: EdgeInsets.only(top: 0, left: 20, right: 20),
+                    child: DocumentTile(
+                        (globals.user.documents['certificat']['annee'] != ''
+                            ? globals.user.documents
+                            : documents)['bulletins'][i]['name'],
+                        (globals.user.documents['certificat']['annee'] != ''
+                            ? globals.user.documents
+                            : documents)['bulletins'][i]['sub'],
+                        (globals.user.documents['certificat']['annee'] != ''
+                            ? globals.user.documents
+                            : documents)['bulletins'][i]['fr_url'],
+                        (globals.user.documents['certificat']['annee'] != ''
+                            ? globals.user.documents
+                            : documents)['bulletins'][i]['en_url'],
+                        3 + i),
+                  );
+                }),
+          ],
+        ),
+      );
+    } else {
+      return Center(child: CupertinoActivityIndicator());
+    }
+  }
+}
+
+class RestaurantWidget extends StatefulWidget {
+  RestaurantWidget({Key key}) : super(key: key);
+
+  @override
+  _RestaurantWidgetState createState() => _RestaurantWidgetState();
+}
+
+class _RestaurantWidgetState extends State<RestaurantWidget> {
+  bool show = false;
+  bool connected = false;
+  bool showC = false;
+  String solde = '';
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
+  }
+
+  void runBeforeBuild() async {}
+
+  @override
+  Widget build(BuildContext context) {
+    if (showC) {
+      return TimeChefPage();
+    } else if (!connected) {
+      return TitleSection('self_balance',
+          iconButton: OutlineButton(
+              onPressed: () {
+                setState(() {
+                  showC = true;
+                });
+              },
+              child: Text('login').tr()));
+    } else {
+      return TimeChefPage();
+    }
   }
 }

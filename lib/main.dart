@@ -14,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 import 'package:quick_actions/quick_actions.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -30,20 +30,18 @@ Future<Null> main() async {
   // Pass all uncaught errors from the framework to Crashlytics.
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-  runApp(MyApp());
-
   globals.prefs = await SharedPreferences.getInstance();
-  String setTheme = globals.prefs.getString("theme") ?? "Système";
-  if (setTheme != "Système") {
-    globals.currentTheme.setDark(setTheme == "Sombre");
+  var setTheme = globals.prefs.getString('theme') ?? 'system';
+  if (setTheme != 'system') {
+    globals.currentTheme.setDark(setTheme == 'dark');
   } else {
     globals.currentTheme.setDark(
         SchedulerBinding.instance.window.platformBrightness == Brightness.dark);
   }
   //init quick_actions
-  final QuickActions quickActions = new QuickActions();
+  final quickActions = QuickActions();
   quickActions.initialize(quickActionsCallback);
-  quickActions.setShortcutItems(<ShortcutItem>[
+  await quickActions.setShortcutItems(<ShortcutItem>[
     const ShortcutItem(
         type: 'action_edt', localizedTitle: 'EDT', icon: 'icon_edt'),
     const ShortcutItem(
@@ -58,19 +56,27 @@ Future<Null> main() async {
         icon: 'icon_offline'),
   ]);
   runApp(
-    BetterFeedback(
-        // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
-        child: Phoenix(
-          // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
-          child: MyApp(),
-        ),
-        onFeedback: betterFeedbackOnFeedback),
+    EasyLocalization(
+      supportedLocales: [
+        Locale('fr'),
+        Locale('en'),
+      ],
+      path: 'assets/translations', // <-- change patch to your
+      fallbackLocale: Locale('fr'),
+      child: BetterFeedback(
+          // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
+          child: Phoenix(
+            // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
+            child: MyApp(),
+          ),
+          onFeedback: betterFeedbackOnFeedback),
+    ),
   );
 }
 
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() => new _MyAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
@@ -93,10 +99,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void didChangePlatformBrightness() {
-    final Brightness brightness =
-        WidgetsBinding.instance.window.platformBrightness;
-    String setTheme = globals.prefs.getString("theme") ?? "Système";
-    if (setTheme == "Système") {
+    final brightness = WidgetsBinding.instance.window.platformBrightness;
+    var setTheme = globals.prefs.getString('theme') ?? 'Système';
+    if (setTheme == 'Système') {
       globals.currentTheme.setDark(brightness == Brightness.dark);
     }
   }
@@ -106,19 +111,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     globals.currentContext = context;
+    var res = <LocalizationsDelegate<dynamic>>[
+      RefreshLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      SfGlobalLocalizations.delegate,
+    ];
+    res.addAll(context.localizationDelegates);
+
     return MaterialApp(
       navigatorKey: navigatorKey,
-      localizationsDelegates: [
-        RefreshLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        SfGlobalLocalizations.delegate
-      ],
-      supportedLocales: [
-        const Locale('en'),
-        const Locale('fr'),
-      ],
-      locale: const Locale('fr'),
+      localizationsDelegates: res,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       title: 'Devinci',
       navigatorObservers: <NavigatorObserver>[globals.observer],
       theme: ThemeData(
