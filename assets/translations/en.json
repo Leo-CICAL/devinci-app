@@ -48,7 +48,7 @@
     "absence_date_format":"{day}/{month}/{year} {hours}:{mins}",
     "no_class":"No class scheduled.",
     "error_msg":"An error happened",
-    "notOpen":"NOT YET OPENNED",
+    "notOpen":"NOT YET OPENED",
     "closed":"CLOSED",
     "ongoing":"PRESENT",
     "rooms":"Rooms",
