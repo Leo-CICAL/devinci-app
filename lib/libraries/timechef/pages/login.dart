@@ -143,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                                       }),
                                     ),
                                     actions: <Widget>[
-                                      FlatButton(
+                                      TextButton(
                                         child: Text('close').tr(),
                                         onPressed: () {
                                           Navigator.of(context).pop();
@@ -242,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
                                       }),
                                     ),
                                     actions: <Widget>[
-                                      FlatButton(
+                                      TextButton(
                                         child: Text('close').tr(),
                                         onPressed: () {
                                           Navigator.of(context).pop();
@@ -276,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   Padding(
                       padding: const EdgeInsets.only(top: 8.0),
-                      child: FlatButton(
+                      child: TextButton(
                           onPressed: () async {
                             const url = 'https://timechef.elior.com/#/register';
                             if (await canLaunch(url)) {
@@ -285,7 +285,10 @@ class _LoginPageState extends State<LoginPage> {
                               throw 'Could not launch $url';
                             }
                           },
-                          child: Text('no_account').tr()))
+                          child: Text('no_account',
+                                  style: TextStyle(
+                                      color: Theme.of(context).accentColor))
+                              .tr()))
                 ],
               ),
             ),
@@ -294,13 +297,19 @@ class _LoginPageState extends State<LoginPage> {
       );
     } else {
       return TitleSection('self_balance',
-          iconButton: OutlineButton(
+          iconButton: OutlinedButton(
               onPressed: () {
                 setState(() {
                   show = true;
                 });
               },
-              child: Text('login').tr()),
+              style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.resolveWith((states) {
+                return Theme.of(context).accentColor.withOpacity(0.2);
+              })),
+              child: Text('login',
+                      style: TextStyle(color: Theme.of(context).accentColor))
+                  .tr()),
           padding: EdgeInsets.only(left: 16));
     }
   }

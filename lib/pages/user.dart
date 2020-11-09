@@ -295,7 +295,7 @@ class _UserPageState extends State<UserPage> {
                               children: <Widget>[
                                 Expanded(
                                   child: docCardData[id]['frShowButton']
-                                      ? FlatButton(
+                                      ? TextButton(
                                           onPressed: () async {
                                             setState(() {
                                               docCardData[id]['frShowButton'] =
@@ -334,7 +334,7 @@ class _UserPageState extends State<UserPage> {
                                   visible: enUrl != '',
                                   child: Expanded(
                                     child: docCardData[id]['enShowButton']
-                                        ? FlatButton(
+                                        ? TextButton(
                                             onPressed: () async {
                                               setState(() {
                                                 docCardData[id]
@@ -487,45 +487,6 @@ class _UserPageState extends State<UserPage> {
       );
     } else {
       return Center(child: CupertinoActivityIndicator());
-    }
-  }
-}
-
-class RestaurantWidget extends StatefulWidget {
-  RestaurantWidget({Key key}) : super(key: key);
-
-  @override
-  _RestaurantWidgetState createState() => _RestaurantWidgetState();
-}
-
-class _RestaurantWidgetState extends State<RestaurantWidget> {
-  bool show = false;
-  bool connected = false;
-  bool showC = false;
-  String solde = '';
-  @override
-  void initState() {
-    super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
-  }
-
-  void runBeforeBuild() async {}
-
-  @override
-  Widget build(BuildContext context) {
-    if (showC) {
-      return TimeChefPage();
-    } else if (!connected) {
-      return TitleSection('self_balance',
-          iconButton: OutlineButton(
-              onPressed: () {
-                setState(() {
-                  showC = true;
-                });
-              },
-              child: Text('login').tr()));
-    } else {
-      return TimeChefPage();
     }
   }
 }

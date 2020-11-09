@@ -166,6 +166,7 @@ Voici un tableau des codes de langue vers nom de langue, dans l'ordre alphabéti
 | --- | --- | --- | :---: |
 | `fr` (default) | French | Français | ✅ 
 | `en` | English | English | ✅ |
+| `de` | German | Deutsch | ✅ |
 
 
 

@@ -1,7 +1,7 @@
 name: devinci
 description: devinci portail app
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.2.4+21
+version: 1.2.4+22
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -15,7 +15,6 @@ dependencies:
   cupertino_icons: ^1.0.0
   html: ^0.14.0+4
   characters: ^1.0.0
-  outline_material_icons: ^0.1.1
   syncfusion_flutter_core: ^18.3.47
   syncfusion_flutter_calendar: ^18.3.47
   syncfusion_localizations: ^18.3.47

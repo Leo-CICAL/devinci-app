@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                   }),
                 ),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text('close').tr(),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -168,7 +168,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                   }),
                 ),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text('close').tr(),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -357,7 +357,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                                     }),
                                                   ),
                                                   actions: <Widget>[
-                                                    FlatButton(
+                                                    TextButton(
                                                       child: Text('close').tr(),
                                                       onPressed: () {
                                                         Navigator.of(context)
@@ -483,7 +483,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                                   }),
                                                 ),
                                                 actions: <Widget>[
-                                                  FlatButton(
+                                                  TextButton(
                                                     child: Text('close').tr(),
                                                     onPressed: () {
                                                       Navigator.of(context)
@@ -528,7 +528,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
           ),
           persistentFooterButtons: show
               ? [
-                  FlatButton(
+                  TextButton(
                       key: Key('login_cgu'),
                       child: Text('TOS').tr(),
                       onPressed: () {
@@ -554,7 +554,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                           mustacheValues: null,
                         );
                       }),
-                  FlatButton(
+                  TextButton(
                       key: Key('login_privacy'),
                       child: Text('PP').tr(),
                       onPressed: () {

@@ -246,7 +246,6 @@ class User {
         .setCrashlyticsCollectionEnabled(globals.crashConsent == 'true');
     globals.analyticsConsent =
         globals.prefs.getBool('analyticsConsent') ?? true;
-    globals.showRestaurant = globals.prefs.getBool('showRestaurant') ?? true;
     await globals.analytics
         .setAnalyticsCollectionEnabled(globals.analyticsConsent);
     var calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
@@ -319,19 +318,19 @@ class User {
       await globals.storage.write(key: 'password', value: password);
       password =
           null; //if tokens are still valid we'll never need the password again in this session, so it is useless to keep it in the object and risk it to be leaked or displayed
-      //print('edt : ' + globals.user.data['edtUrl']);
+      print('edt : ' + globals.user.data['edtUrl']);
       if (globals.user.data['ecole'] == '' ||
           globals.user.data['edtUrl'] == '') {
         //edtUrl being the last information we retrieve from the getData() function, if it doesn't exist it means that the getData() function didn't work or was never run and must be run at least once.
         try {
-          //print("let's go try");
+          print("let's go try");
           await globals.user.getData();
         } catch (exception) {
-          //print(exception);
+          print(exception);
         }
       }
     }
-    //print("done init");
+    print('done init');
     return;
   }
 
@@ -550,7 +549,7 @@ class User {
       l('headers : ${response.headers}');
       var body = await response.transform(utf8.decoder).join();
       if (response.statusCode == 200) {
-        //print(body);
+        print(body);
         if (body.contains("('#password').hide();")) {
           l('error');
           throw Exception('wrong tokens');
@@ -578,36 +577,46 @@ class User {
       l('statusCode : ${response.statusCode}');
       l('headers : ${response.headers}');
       var body = await response.transform(utf8.decoder).join();
-      //print("get Data");
+      print('get Data');
       if (response.statusCode == 200) {
-        //print(body);
+        print(body);
 
         var doc = parse(body);
-        //print(doc.outerHtml);
+        print(doc.outerHtml);
         var ns = doc.querySelectorAll('#main > div > .row-fluid');
         var n = ns[ns.length - 1].querySelector(
             'div.social-box.social-blue.social-bordered > header > h4');
-        //print('n : "${n.innerHtml}"');
+        print('n : "${n.innerHtml}"');
         var regExp = RegExp(r': (.*?)\t');
         data['name'] = regExp.firstMatch(n.text).group(1);
         l("name : '${data["name"]}'");
 
         var ds = ns[ns.length - 1].querySelectorAll(
             'div.social-box.social-blue.social-bordered > div > div');
-        //print(ds);
-        //print('ds 0 : ' + ds[0].innerHtml);
-        //print('ds 1 : ' + ds[1].innerHtml);
-        //print('ds 2 : ' + ds[2].innerHtml);
+        print(ds);
+        print('ds 0 : ' + ds[0].innerHtml);
+        print('ds 1 : ' + ds[1].innerHtml);
+        print('ds 2 : ' + ds[2].innerHtml);
         String d;
+        var french = true;
+        if (doc
+            .querySelectorAll('.dropdown-toggle')[1]
+            .querySelector('img')
+            .attributes['src']
+            .contains('en.png')) {
+          french = false;
+        }
         try {
-          if (ds[1].innerHtml.contains('Identifiant')) {
-            //print('ds1 choosen');
-            //print(ds[1].querySelector('div'));
+          if (ds[1].innerHtml.contains(french ? 'Identifiant' : 'User ID')) {
+            print('ds1 choosen');
+            print(ds[1].querySelector('div'));
             d = ds[1]
                 .querySelector('div > div > div.span4 > div > div > address')
                 .text;
             l('d : $d');
-          } else if (ds[2].innerHtml.contains('Identifiant')) {
+          } else if (ds[2]
+              .innerHtml
+              .contains(french ? 'Identifiant' : 'User ID')) {
             d = ds[2]
                 .querySelector('div > div > div.span4 > div > div > address')
                 .text;
@@ -618,14 +627,28 @@ class User {
                 .text;
             l('d : $d');
           }
-          data['badge'] = RegExp(r'badge : (.*?)\n').firstMatch(d).group(1);
-          data['client'] = RegExp(r'client (.*?)\n').firstMatch(d).group(1);
-          data['idAdmin'] =
-              RegExp(r'Administratif (.*?)\n').firstMatch(d).group(1);
+          //detect language of the portail
+
+          if (french) {
+            data['badge'] = RegExp(r'badge : (.*?)\n').firstMatch(d).group(1);
+            data['client'] = RegExp(r'client (.*?)\n').firstMatch(d).group(1);
+            data['idAdmin'] =
+                RegExp(r'Administratif (.*?)\n').firstMatch(d).group(1);
+          } else {
+            data['badge'] =
+                RegExp(r'Badge Number : (.*?)\n').firstMatch(d).group(1);
+            data['client'] =
+                RegExp(r'Customer number (.*?)\n').firstMatch(d).group(1);
+            data['idAdmin'] =
+                RegExp(r'Administrative ID (.*?)\n').firstMatch(d).group(1);
+          }
           data['ine'] = RegExp(r'INE/BEA : (.*?)\n').firstMatch(d).group(1);
           l("data : ${data["badge"]}|${data["client"]}|${data["idAdmin"]}|${data["ine"]}");
           // ignore: empty_catches
-        } catch (e) {}
+        } catch (e, stacktrace) {
+          print(e);
+          print(stacktrace);
+        }
         var imgDiv = doc
             .querySelectorAll('#main > div > div')[1]
             .querySelector('div > div > img');
@@ -699,15 +722,15 @@ class User {
       );
       if (res != null) {
         if (res.statusCode == 200) {
-          //print('got absences');
+          print('got absences');
           var body = await res.transform(utf8.decoder).join();
           if (!body.contains('Validation des règlements')) {
             var doc = parse(body);
-            //print(doc.outerHtml);
+            print(doc.outerHtml);
             var spans = doc.querySelectorAll('.tab-pane > header > span');
             var nTB = doc
                 .querySelector('.tab-pane > header > span.label.label-warning');
-            //print(nTB);
+            print(nTB);
             var nTM = RegExp(r': (.*?)"').firstMatch(nTB.text + '"').group(1);
             absences['nT'] = int.parse(nTM);
 
@@ -754,7 +777,7 @@ class User {
                   tds[6].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => '');
               absences['liste'].add(elem);
             });
-            //print(absences['liste']);
+            print(absences['liste']);
           } else if (body.contains('Validation des règlements')) {
             final snackBar = material.SnackBar(
               content: material.Text('school_rules_validation').tr(),
@@ -937,7 +960,7 @@ class User {
                   ddhandle = lii.querySelector('div');
                   texts = ddhandle.text.split('\n');
                   //String prettyprint = encoder.convert(texts);
-                  ////print(prettyprint);
+                  //print(prettyprint);
                   elem = {
                     'matiere': '',
                     'moy': 0.0,
@@ -964,7 +987,7 @@ class User {
                           ['si']]);
                       // ignore: empty_catches
                     } catch (e) {}
-                    //print(elem["moy"]);
+                    print(elem['moy']);
                     try {
                       if (!texts[notesConfig['matieres']['!e']['ri']]
                           .contains(notesConfig['matieres']['!e']['rStr'])) {
@@ -1105,7 +1128,7 @@ class User {
       notes[index] = nn;
       await globals.store.record('notes').put(globals.db, notes);
       notesFetched = true;
-      //print('db updated');
+      print('db updated');
     } else {
       notesFetched = true;
     }
@@ -1132,13 +1155,13 @@ class User {
                           .querySelectorAll('tr')
                           .length;
                   i++) {
-                //print('[1]' +
-                // doc
-                //     .querySelectorAll(
-                //         '.social-box.social-bordered.span6')[1]
-                //     .querySelectorAll('tr')[i]
-                //     .querySelectorAll('td')[1]
-                //     .text);
+                print('[1]' +
+                    doc
+                        .querySelectorAll(
+                            '.social-box.social-bordered.span6')[1]
+                        .querySelectorAll('tr')[i]
+                        .querySelectorAll('td')[1]
+                        .text);
                 if (doc
                     .querySelectorAll('.social-box.social-bordered.span6')[1]
                     .querySelectorAll('tr')[i]
@@ -1172,9 +1195,9 @@ class User {
                           .querySelectorAll('a')[1]
                           .attributes['href'];
 
-              //print('[2]' + documents['certificat']['annee']);
-              //print('[3]' + documents['certificat']['fr_url']);
-              //print('[4]' + documents['certificat']['en_url']);
+              print('[2]' + documents['certificat']['annee']);
+              print('[3]' + documents['certificat']['fr_url']);
+              print('[4]' + documents['certificat']['en_url']);
 
               var imaginrElements = doc
                   .querySelectorAll('.social-box.social-bordered.span6')[1]
@@ -1226,7 +1249,8 @@ class User {
                     .text)
                 .group(0);
 
-            //print('[5] calendrier : ${documents["calendrier"]["annee"]}|${documents["calendrier"]["url"]}');
+            print(
+                '[5] calendrier : ${documents["calendrier"]["annee"]}|${documents["calendrier"]["url"]}');
             //documents liés aux notes :
             await getNotesList();
             for (var item in notesList) {
@@ -1239,7 +1263,7 @@ class User {
                       .querySelectorAll('div.body')[
                           doc.querySelectorAll('div.body').length - 2]
                       .querySelectorAll('a:not(.label)');
-                  //print('[6]' + filesA.toString());
+                  print('[6]' + filesA.toString());
                   documents['bulletins'].clear();
                   for (var i = 0; i < filesA.length; i += 2) {
                     documents['bulletins'].add({
@@ -1262,15 +1286,14 @@ class User {
                     });
                   }
                 }
-                //print('[7]' + documents['bulletins'].toString());
+                print('[7]' + documents['bulletins'].toString());
               }
             }
             //res = await devinciRequest(endpoint: '?my=notes');
 
           } else if (body.contains('Validation des règlements')) {
             final snackBar = material.SnackBar(
-              content: material.Text(
-                  'school_rules_validation').tr(),
+              content: material.Text('school_rules_validation').tr(),
               duration: const Duration(seconds: 10),
             );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
@@ -1336,12 +1359,12 @@ class User {
                     .attributes['title']
                     .split(': ')[1];
               } catch (e) {
-                //print(e);
+                print(e);
               }
               var nextLink = tds[3].querySelector('a').attributes['href'];
               res = await devinciRequest(endpoint: nextLink.substring(1));
               if (res.statusCode == 200) {
-                //print('go');
+                print('go');
                 var body = await res.transform(utf8.decoder).join();
                 if (body.contains('pas encore ouvert')) {
                   presence[i]['type'] = 'notOpen';
@@ -1373,7 +1396,7 @@ class User {
     } else {
       throw Exception(503); //service unavailable
     }
-    //print(presence);
+    print(presence);
     return;
   }
 
@@ -1440,7 +1463,7 @@ class User {
         for (var header in headers) {
           sallesStr.add(header.text);
         }
-        //print(sallesStr.join(' | '));
+        print(sallesStr.join(' | '));
         var bodyTrs = tbody.querySelectorAll('tr');
         for (var tr in bodyTrs) {
           var name = tr.querySelector('a').text;
@@ -1459,7 +1482,7 @@ class User {
           for (var i = 0; i < tds.length; i++) {
             var td = tds[i];
             if (name.contains('103')) {
-              //print(td.outerHtml);
+              print(td.outerHtml);
             }
             if (td.outerHtml.contains('slp_stab_cell')) {
               try {

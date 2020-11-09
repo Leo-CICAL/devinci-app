@@ -60,6 +60,7 @@ Future<Null> main() async {
       supportedLocales: [
         Locale('fr'),
         Locale('en'),
+        Locale('de'),
       ],
       path: 'assets/translations', // <-- change patch to your
       fallbackLocale: Locale('fr'),

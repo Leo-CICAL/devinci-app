@@ -13,7 +13,7 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
+
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -230,7 +230,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               alignedDropdown: true,
                               child: DropdownButton<String>(
                                 value: theme,
-                                icon: Icon(OMIcons.expandMore),
+                                icon: Icon(Icons.expand_more_rounded),
                                 iconSize: 24,
                                 elevation: 16,
                                 style: Theme.of(context).textTheme.subtitle1,
@@ -491,26 +491,26 @@ class _SettingsPageState extends State<SettingsPage> {
                           MarkdownPageListTile(
                             filename: 'assets/LICENSE',
                             title: Text('see_license').tr(),
-                            icon: Icon(OMIcons.description),
+                            icon: Icon(Icons.description_outlined),
                           ),
                           MarkdownPageListTile(
                             filename: 'assets/CONTRIBUTING.md',
                             title: Text('contribution_guide').tr(),
-                            icon: Icon(OMIcons.share),
+                            icon: Icon(Icons.share_outlined),
                           ),
                           LicensesPageListTile(
                             title: Text('open_source_licenses').tr(),
-                            icon: Icon(OMIcons.favorite),
+                            icon: Icon(Icons.favorite_outlined),
                           ),
                           MarkdownPageListTile(
                             filename: 'assets/tos.md',
                             title: Text('TOS_full').tr(),
-                            icon: Icon(OMIcons.gavel),
+                            icon: Icon(Icons.gavel_outlined),
                           ),
                           MarkdownPageListTile(
                             filename: 'assets/privacy.md',
                             title: Text('PP').tr(),
-                            icon: Icon(OMIcons.security),
+                            icon: Icon(Icons.security_outlined),
                           ),
                         ],
                         applicationIcon: SizedBox(

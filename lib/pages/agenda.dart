@@ -8,7 +8,7 @@ import 'package:devinci/extra/classes.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
+
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:sembast/sembast.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -373,9 +373,7 @@ class CoursEditorState extends State<CoursEditor> {
               contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
               leading: IconTheme(
                 data: Theme.of(context).accentIconTheme,
-                child: Icon(
-                  OMIcons.locationOn,
-                ),
+                child: Icon(Icons.location_on_outlined),
               ),
               title: TextField(
                 controller: TextEditingController(text: _location),
@@ -400,7 +398,7 @@ class CoursEditorState extends State<CoursEditor> {
               leading: IconTheme(
                 data: Theme.of(context).accentIconTheme,
                 child: Icon(
-                  OMIcons.group,
+                  Icons.group_outlined,
                 ),
               ),
               title: TextField(
@@ -674,7 +672,7 @@ class CoursEditorState extends State<CoursEditor> {
                   ? Text(flag).tr()
                   : DropdownButton<String>(
                       value: flag,
-                      icon: Icon(OMIcons.expandMore),
+                      icon: Icon(Icons.expand_more_rounded),
                       iconSize: 24,
                       elevation: 16,
                       style: Theme.of(context).textTheme.subtitle1,
@@ -709,7 +707,7 @@ class CoursEditorState extends State<CoursEditor> {
             _selectedCours != null && !_uid.contains(':')
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: OutlineButton(
+                    child: OutlinedButton(
                         onPressed: () {
                           if (_selectedCours != null && !_uid.contains(':')) {
                             globals.cours.removeAt(
@@ -732,11 +730,19 @@ class CoursEditorState extends State<CoursEditor> {
 
                           Navigator.pop(context);
                         },
-                        borderSide: BorderSide(
-                            color: globals.currentTheme.isDark()
-                                ? Colors.redAccent
-                                : Colors.red.shade700,
-                            width: 2),
+                        style: ButtonStyle(overlayColor:
+                            MaterialStateProperty.resolveWith((states) {
+                          return (globals.currentTheme.isDark()
+                                  ? Colors.redAccent
+                                  : Colors.red.shade700)
+                              .withOpacity(0.2);
+                        }), side: MaterialStateProperty.resolveWith((states) {
+                          return BorderSide(
+                              color: globals.currentTheme.isDark()
+                                  ? Colors.redAccent
+                                  : Colors.red.shade700,
+                              width: 2);
+                        })),
                         child: Text('delete_event',
                                 style: TextStyle(
                                     color: globals.currentTheme.isDark()

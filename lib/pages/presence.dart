@@ -33,6 +33,7 @@ class _PresencePageState extends State<PresencePage> {
         show = true;
       });
     }
+    await Future.delayed(const Duration(milliseconds: 300));
     if (globals.user.presence.isNotEmpty) {
       _pageController.jumpToPage(globals.user.presenceIndex);
     }

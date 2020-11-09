@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:devinci/extra/globals.dart' as globals;
-import 'package:outline_material_icons/outline_material_icons.dart';
+
 import 'package:share_extend/share_extend.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -119,7 +119,7 @@ class PDFScreen extends StatelessWidget {
               icon: IconTheme(
                 data: Theme.of(context).accentIconTheme,
                 child: Icon(
-                  OMIcons.share,
+                  Icons.share_outlined,
                 ),
               ),
               onPressed: () {
@@ -163,7 +163,7 @@ class ContextEntryState extends State<ContextEntry> {
         Expanded(
           child: Container(
             height: 20,
-            child: FlatButton(
+            child: TextButton(
               onPressed: copy,
               child: Text('copy').tr(),
             ),
@@ -172,7 +172,7 @@ class ContextEntryState extends State<ContextEntry> {
         Expanded(
           child: Container(
             height: 20,
-            child: FlatButton(
+            child: TextButton(
               onPressed: share,
               child: Text('share').tr(),
             ),

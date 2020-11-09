@@ -82,7 +82,7 @@
   "usage_monitoring":"Suivi d'utilisation",
   "logout":"Déconnexion",
   "write_comment":"Écrire un commentaire",
-  "app_description":"Devinci est une application qui a pour but de faciliter l'utilisation du portail étudiant du pôle Léonard De Vinci.\n ## Remerciements : \n - Robin Bouchet \n - Antoine Tête (dev)\n - MorningStar (dev)",
+  "app_description":"Devinci est une application qui a pour but de faciliter l'utilisation du portail étudiant du pôle Léonard De Vinci.\n ## Remerciements : \n - Robin Bouchet \n - Antoine Tête (dev)\n - MorningStar (dev & traduction)\n Erwan Regnault (traduction)",
   "see_license":"Voir la license",
   "contribution_guide":"Le code de contribution",
   "open_source_licenses":"Les licenses open source",
@@ -91,5 +91,11 @@
   "join_discord":"Rejoindre le Discord",
   "support":"Supporter",
   "footer":"Développé avec ❤ par Antoine Raulin",
-  "settings":"Paramètres"
+  "settings":"Paramètres",
+  "Bulletin S1":"Bulletin S1",
+  "Bulletin S2":"Bulletin S2",
+  "Bulletin annuel":"Bulletin annuel",
+  "Absent":"Absent",
+  "Excusee par scolarite":"Excusée par scolarité",
+  "Dispense sport":"Dispense sport"
 }

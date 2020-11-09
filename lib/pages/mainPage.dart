@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
+
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:easy_localization/easy_localization.dart';
@@ -62,7 +62,7 @@ class _MainPageState extends State<MainPage> {
                 IconButton(
                   icon: IconTheme(
                     data: Theme.of(context).accentIconTheme,
-                    child: Icon(OMIcons.add),
+                    child: Icon(Icons.add_outlined),
                   ),
                   onPressed: () async {
                     await Navigator.push<Widget>(
@@ -80,7 +80,7 @@ class _MainPageState extends State<MainPage> {
                 IconButton(
                   icon: IconTheme(
                     data: Theme.of(context).accentIconTheme,
-                    child: Icon(OMIcons.settings),
+                    child: Icon(Icons.settings_outlined),
                   ),
                   onPressed: () {
                     showCupertinoModalBottomSheet(
@@ -95,7 +95,7 @@ class _MainPageState extends State<MainPage> {
                 IconButton(
                   icon: IconTheme(
                     data: Theme.of(context).accentIconTheme,
-                    child: Icon(OMIcons.today),
+                    child: Icon(Icons.today_outlined),
                   ),
                   onPressed: () async {
                     globals.calendarController.displayDate = DateTime.now();
@@ -126,7 +126,7 @@ class _MainPageState extends State<MainPage> {
                       captureInheritedThemes: true,
                       icon: IconTheme(
                         data: Theme.of(context).accentIconTheme,
-                        child: Icon(OMIcons.moreVert),
+                        child: Icon(Icons.more_vert_outlined),
                       ),
                       onSelected: (String choice) {
                         if (choice == 'refresh') {
@@ -226,20 +226,21 @@ class _MainPageState extends State<MainPage> {
           child: BottomNavigationBar(
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(
-                      globals.selectedPage == 0 ? Icons.today : OMIcons.today),
+                  icon: Icon(globals.selectedPage == 0
+                      ? Icons.today
+                      : Icons.today_outlined),
                   label: 'time_schedule'.tr(),
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(globals.selectedPage == 1
                       ? Icons.assignment
-                      : OMIcons.assignment),
+                      : Icons.assignment_outlined),
                   label: 'grades'.tr(),
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(globals.selectedPage == 2
                       ? Icons.watch_later
-                      : OMIcons.watchLater),
+                      : Icons.watch_later_outlined),
                   label: 'absences'.tr(),
                 ),
                 BottomNavigationBarItem(
@@ -251,7 +252,7 @@ class _MainPageState extends State<MainPage> {
                 BottomNavigationBarItem(
                   icon: Icon(globals.selectedPage == 4
                       ? Icons.person
-                      : OMIcons.person),
+                      : Icons.person_outlined),
                   //,
                   label: globals.user.data['name'],
                 ),

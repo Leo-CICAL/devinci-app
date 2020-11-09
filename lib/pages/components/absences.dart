@@ -148,8 +148,9 @@ Widget AbsenceTile(int i) {
                           padding: const EdgeInsets.only(right: 10),
                           child: Text(
                             capitalize(globals
-                                .user.absences['liste'][i]['modalite']
-                                .toLowerCase()),
+                                    .user.absences['liste'][i]['modalite']
+                                    .toLowerCase())
+                                .tr(),
                             style: TextStyle(
                               fontSize: 12,
                               color: Color(0xff787878),
