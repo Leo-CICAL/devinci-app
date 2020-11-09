@@ -10,7 +10,7 @@
     "user": "User",
     "no_empty": "Cannot be empty",
     "password": "Password",
-    "login": "Connection",
+    "login": "Login",
     "TOS": "TOS",
     "PP": "Privacy Policy",
     "refresh": "Refresh",
@@ -19,7 +19,7 @@
     "day": "Day",
     "offline_msg": "You are offline",
     "offline": "Offline",
-    "time_schedule": "EDT",
+    "time_schedule": "Schedule",
     "grades": "Grades",
     "absences": "Absences",
     "attendance": "Attendance",
@@ -32,8 +32,8 @@
     "teacher": "Teacher",
     "group": "Group",
     "delete_event": "Delete event",
-    "new_event": " New event ",
-    "detail_event": " Event information",
+    "new_event": "New event",
+    "detail_event": "Event information",
     "s0": "Sept. – Jan.",
     "s1": "Jan. - June",
     "semesters": "Semesters",
@@ -65,7 +65,7 @@
     "imaginr_certificate":"ImaginR certificate",
     "academic_calendar":"Academic calendar",
     "self_balance":"Dining hall balance : ",
-    "self_balance_arg":" Dining hall balance: {} €",
+    "self_balance_arg":"Dining hall balance: {} €",
     "school_rules_validation":"Validation of school rules on the portal needed.",
     "re_take":"Retake",
     "send":"Send",
@@ -82,7 +82,7 @@
     "usage_monitoring":"Usage monitoring",
     "logout":"Logout",
     "write_comment":"Write a comment",
-    "app_description":" Devinci is an app whose goal is to make the use of the student portal of the pole Leonard the Vinci easier.\n ## Thanks : \n - Robin Bouchet \n - Antoine Tête (dev)\n - MorningStar (dev)",
+    "app_description":"Devinci is an app whose goal is to make the use of the student portal of the pole Leonard the Vinci easier.\n ## Thanks : \n - Robin Bouchet \n - Antoine Tête (dev)\n - MorningStar (dev)",
   
     "see_license":"View license",
     "contribution_guide":"Contribution guide",
@@ -91,6 +91,7 @@
     "about":"About",
     "join_discord":"Join the Discord",
     "support":"Support",
-    "footer":"Developed with ❤ by Antoine Raulin"
+    "footer":"Developed with ❤ by Antoine Raulin",
+    "settings":"Settings"
   }
   

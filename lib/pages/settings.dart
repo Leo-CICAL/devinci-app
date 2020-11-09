@@ -70,9 +70,9 @@ class _SettingsPageState extends State<SettingsPage> {
           title: Padding(
             padding: EdgeInsets.only(top: 30, bottom: 28),
             child: Text(
-              'Paramètres',
+              'settings',
               style: Theme.of(context).textTheme.headline1,
-            ),
+            ).tr(),
           ),
         ),
         body: SafeArea(
@@ -473,7 +473,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   GestureDetector(
                     onTap: () async {
                       await showAboutPage(
-                        title: Text('À propos'),
+                        title: Text('about').tr(),
                         context: context,
                         applicationVersion:
                             'Version {{ version }}, build #{{ buildNumber }}',
