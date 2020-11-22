@@ -102,6 +102,7 @@ PODS:
     - nanopb/encode (= 1.30906.0)
   - nanopb/decode (1.30906.0)
   - nanopb/encode (1.30906.0)
+  - OneSignal (2.16.0)
   - package_info (0.0.1):
     - Flutter
   - path_provider (0.0.1):
@@ -131,6 +132,7 @@ DEPENDENCIES:
   - flutter_siri_suggestions (from `.symlinks/plugins/flutter_siri_suggestions/ios`)
   - flutter_statusbarcolor (from `.symlinks/plugins/flutter_statusbarcolor/ios`)
   - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
+  - OneSignal (< 3.0, >= 2.9.3)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - quick_actions (from `.symlinks/plugins/quick_actions/ios`)
@@ -150,6 +152,7 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleUtilities
     - nanopb
+    - OneSignal
     - PromisesObjC
     - Reachability
 
@@ -217,6 +220,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
   in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
+  OneSignal: 3326e3f3b6418ea12809c232559bba5e226f2951
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
@@ -226,6 +230,6 @@ SPEC CHECKSUMS:
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: a8e083726b5ee9f677c74a994586d1f612d37f3d
+PODFILE CHECKSUM: 7b7b7e3692d908d2ec48155c1d9dd801ce79ad72
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0
