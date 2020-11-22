@@ -18,7 +18,7 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:allowBackup="false"
-        android:fullBackupContent="false"
+        android:fullBackupContent="@xml/my_backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="devinci"
         tools:ignore="GoogleAppIndexingWarning">

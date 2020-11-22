@@ -85,8 +85,9 @@ class _MainPageState extends State<MainPage> {
                   onPressed: () {
                     showCupertinoModalBottomSheet(
                         context: context,
-                        builder: (context, scrollController) => SettingsPage(
-                              scrollController: scrollController,
+                        builder: (context) => SettingsPage(
+                              scrollController:
+                                  ModalScrollController.of(context),
                             ));
                   },
                 ),

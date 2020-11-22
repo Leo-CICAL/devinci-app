@@ -10,43 +10,43 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.12.2
-  intl: ^0.16.1
-  flutter_secure_storage: ^3.3.4 # permet l'accès au secure storage de l'appareil pour stocker les identifiants de l'utilisateur et les tokens de connection
-  cupertino_icons: ^1.0.0
+  intl: ^0.16.0
+  flutter_secure_storage: ^3.3.5 # permet l'accès au secure storage de l'appareil pour stocker les identifiants de l'utilisateur et les tokens de connection
+  cupertino_icons: ^1.0.1
   html: ^0.14.0+4
   characters: ^1.0.0
-  syncfusion_flutter_core: ^18.3.47
-  syncfusion_flutter_calendar: ^18.3.47
-  syncfusion_localizations: ^18.3.47
-  syncfusion_flutter_datagrid: ^18.3.47-beta
-  pull_to_refresh: ^1.6.2
+  syncfusion_flutter_core: ^18.3.50
+  syncfusion_flutter_calendar: ^18.3.50
+  syncfusion_localizations: ^18.3.50
+  syncfusion_flutter_datagrid: ^18.3.50-beta
+  pull_to_refresh: ^1.6.3
   flutter_statusbarcolor: ^0.2.3 # permet de changer la couleur de la barre d'état et de navigation sur android et ios
   property_change_notifier: ^0.2.0 # permet de rebuild une interface si une variable change de valeur
-  device_info: ^1.0.0
+  device_info: ^2.0.0-nullsafety.1
   package_info: ^0.4.3+2
   flutter_email_sender: ^3.0.1 # permet d'appeler les fonctions d'envoi de mail natives
   path_provider: ^1.6.24 # permet de sauvegarder des fichiers dans des dossiers approprié au sein des appareils
   version: ^1.2.0 # permet de récupérer des informations de bases sur l'application
-  shared_preferences: ^0.5.12 # permet de modifier les shared_preferences
+  shared_preferences: ^0.5.12+4 # permet de modifier les shared_preferences
   flutter_markdown: ^0.5.0 # permet de convertir du Markdown en RichText, utilisé pour l'affichage du changelog des mise à jour
-  modal_bottom_sheet: ^0.2.2 # permet d'afficher un modal bottom sheet, utilisé pour afficher la page de paramètres
+  modal_bottom_sheet: ^1.0.0 # permet d'afficher un modal bottom sheet, utilisé pour afficher la page de paramètres
   flutter_phoenix: ^0.1.0 # permet de relancer l'application sans véritablement la quitter, une sorte de refresh, utile lorsque l'utilisateur se déconnecte
   flutter_full_pdf_viewer: ^1.0.6 # permet d'afficher des pdf dans l'application
   share_extend: ^1.1.9 # permet d'appeler le volet de partage natif des différents os et de partager des fichiers.
   flutter_svg: ^0.19.1 # permet l'affichage d'image svg
-  recase: ^3.0.0 # permet de transformer n'importe quelle phrase en camelCase
+  recase: ^3.0.1 # permet de transformer n'importe quelle phrase en camelCase
   diacritic: ^0.1.1 # permet de supprimer les accents et autres caractères ambigu dans les nom de fichier pour l'enregistrement dans les fichiers de l'appareil
   app_settings: ^4.0.4 # permet d'ouvrir les réglages de notifications dans les paramètres du téléphone
-  sembast: ^2.4.7+8 # sembast db stands for Simple Embedded Application Store database | système de base de donnée NoSQL pour sauvegarder les notes et determiner quelles notes sont nouvelles.
+  sembast: ^2.4.8 # sembast db stands for Simple Embedded Application Store database | système de base de donnée NoSQL pour sauvegarder les notes et determiner quelles notes sont nouvelles.
   quick_actions: ^0.4.0+10 # Permet d'avoir des quick actions (iOS) ou des App Shortcuts (Android) sur l'écran d'accueil
   about: ^1.4.0 # Affiche une page A propos, qui décrit l'application et les différentes licenses.
-  connectivity: ^2.0.1 # permet de connaître l'état de la connection internet de l'appareil
+  connectivity: ^3.0.0-nullsafety.1 # permet de connaître l'état de la connection internet de l'appareil
   flutter_siri_suggestions: ^1.0.2+hotfix1 #Flutter plugin for exposure on Siri Suggestions.
   firebase_core: ^0.5.2
   firebase_analytics: ^6.2.0
   firebase_crashlytics: ^0.2.3
-  url_launcher: ^5.7.10
-  in_app_review: ^1.0.2
+  url_launcher: ^6.0.0-nullsafety.1
+  in_app_review: ^1.0.3
   smooth_page_indicator: ^0.2.0
   easy_localization: ^2.3.3
   flutter_localizations:
