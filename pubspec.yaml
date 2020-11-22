@@ -49,6 +49,7 @@ dependencies:
   in_app_review: ^1.0.3
   smooth_page_indicator: ^0.2.0
   easy_localization: ^2.3.3
+  onesignal_flutter: ^2.0.0
   flutter_localizations:
     sdk: flutter
 

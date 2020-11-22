@@ -332,6 +332,12 @@
       "languageVersion": "2.0"
     },
     {
+      "name": "onesignal_flutter",
+      "rootUri": "file:///Users/antoine/.pub-cache/hosted/pub.dartlang.org/onesignal_flutter-2.6.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "package_info",
       "rootUri": "file:///Users/antoine/.pub-cache/hosted/pub.dartlang.org/package_info-0.4.3+2",
       "packageUri": "lib/",
@@ -668,7 +674,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2020-11-22T13:12:00.078864Z",
+  "generated": "2020-11-22T14:07:48.673412Z",
   "generator": "pub",
   "generatorVersion": "2.10.4"
 }

@@ -19,7 +19,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
-
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'extra/classes.dart';
 
 Future<Null> main() async {
@@ -29,6 +29,21 @@ Future<Null> main() async {
 
   // Pass all uncaught errors from the framework to Crashlytics.
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+  //Remove this method to stop OneSignal Debugging
+  await OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+
+  await OneSignal.shared.init('0a91d723-8929-46ec-9ce7-5e72c59708e5',
+      iOSSettings: {
+        OSiOSSettings.autoPrompt: false,
+        OSiOSSettings.inAppLaunchUrl: false
+      });
+  await OneSignal.shared
+      .setInFocusDisplayType(OSNotificationDisplayType.notification);
+
+// The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+  await OneSignal.shared
+      .promptUserForPushNotificationPermission(fallbackToSettings: true);
 
   globals.prefs = await SharedPreferences.getInstance();
   var setTheme = globals.prefs.getString('theme') ?? 'system';
