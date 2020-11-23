@@ -1,7 +1,9 @@
 library my_prj.globals;
 
+import 'package:devinci/libraries/admin/admin.dart';
 import 'package:devinci/libraries/timechef/classes.dart';
 import 'package:devinci/libraries/timechef/timechef.dart';
+import 'package:devinci/pages/mainPage.dart';
 import 'package:devinci/pages/ui/absences.dart';
 import 'package:devinci/pages/ui/notes.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -106,3 +108,5 @@ bool showRestaurant = false;
 //globalkeys
 final notesPageKey = GlobalKey<NotesPageState>();
 final absencesPageKey = GlobalKey<AbsencesPageState>();
+final mainPageKey = GlobalKey<MainPageState>();
+final adminPageKey = GlobalKey<AdminPageState>();

@@ -194,6 +194,12 @@
       "languageVersion": "2.0"
     },
     {
+      "name": "firebase_messaging",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging-7.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "flutter",
       "rootUri": "file:///Users/antoine/development/flutter/packages/flutter",
       "packageUri": "lib/",
@@ -334,6 +340,12 @@
     {
       "name": "onesignal_flutter",
       "rootUri": "file:///Users/antoine/.pub-cache/hosted/pub.dartlang.org/onesignal_flutter-2.6.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
+      "name": "onesignal_flutter",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/onesignal_flutter-2.6.1",
       "packageUri": "lib/",
       "languageVersion": "2.0"
     },
@@ -674,7 +686,13 @@
       "languageVersion": "2.7"
     }
   ],
+<<<<<<< Updated upstream
   "generated": "2020-11-22T14:14:57.568385Z",
   "generator": "pub",
   "generatorVersion": "2.10.4"
+=======
+  "generated": "2020-11-12T16:13:57.773745Z",
+  "generator": "pub",
+  "generatorVersion": "2.10.3"
+>>>>>>> Stashed changes
 }

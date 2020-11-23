@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
       print('credentials_exists');
       globals.user = User(username, password);
       try {
-        await globals.user.init();
+        await globals.user.init(context);
       } catch (exception, stacktrace) {
         if (mounted) {
           setState(() {
@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
         await Navigator.push(
           context,
           CupertinoPageRoute(
-            builder: (context) => MainPage(),
+            builder: (context) => MainPage(key: globals.mainPageKey),
           ),
         );
         // ignore: empty_catches
@@ -141,7 +141,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
       print('credentials_exists');
       globals.user = User(username, password);
       try {
-        await globals.user.init();
+        await globals.user.init(context);
       } catch (exception, stacktrace) {
         setState(() {
           show = true;
@@ -185,7 +185,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
       await Navigator.push(
         context,
         CupertinoPageRoute(
-          builder: (context) => MainPage(),
+          builder: (context) => MainPage(key: globals.mainPageKey),
         ),
       );
     } else {
@@ -314,12 +314,13 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                             myControllerUsername.text,
                                             myControllerPassword.text);
                                         try {
-                                          await globals.user.init();
+                                          await globals.user.init(context);
 
                                           await Navigator.push(
                                             context,
                                             CupertinoPageRoute(
-                                              builder: (context) => MainPage(),
+                                              builder: (context) => MainPage(
+                                                  key: globals.mainPageKey),
                                             ),
                                           );
                                         } catch (exception, stacktrace) {
@@ -440,12 +441,13 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                           myControllerUsername.text,
                                           myControllerPassword.text);
                                       try {
-                                        await globals.user.init();
+                                        await globals.user.init(context);
 
                                         await Navigator.push(
                                           context,
                                           CupertinoPageRoute(
-                                            builder: (context) => MainPage(),
+                                            builder: (context) => MainPage(
+                                                key: globals.mainPageKey),
                                           ),
                                         );
                                       } catch (exception, stacktrace) {
@@ -530,7 +532,10 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
               ? [
                   TextButton(
                       key: Key('login_cgu'),
-                      child: Text('TOS').tr(),
+                      child: Text('TOS',
+                              style: TextStyle(
+                                  color: Theme.of(context).accentColor))
+                          .tr(),
                       onPressed: () {
                         showMarkdownPage(
                           applicationIcon: SizedBox(
@@ -556,7 +561,10 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                       }),
                   TextButton(
                       key: Key('login_privacy'),
-                      child: Text('PP').tr(),
+                      child: Text('PP',
+                              style: TextStyle(
+                                  color: Theme.of(context).accentColor))
+                          .tr(),
                       onPressed: () {
                         showMarkdownPage(
                           applicationIcon: SizedBox(

@@ -198,7 +198,7 @@ class User {
     },
   };
 
-  Future<void> init() async {
+  Future<void> init(material.BuildContext context) async {
     //fetch notesConfig
     try {
       var client = HttpClient();
@@ -241,6 +241,10 @@ class User {
         await globals.storage.read(key: 'SimpleSAMLAuthToken') ?? '';
 
     //retrieve data from secure storage
+
+    var privacyConsent = globals.prefs.getInt('privacyConsent') ?? -1;
+    if (privacyConsent == -1) {}
+
     globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'true';
     await FirebaseCrashlytics.instance
         .setCrashlyticsCollectionEnabled(globals.crashConsent == 'true');

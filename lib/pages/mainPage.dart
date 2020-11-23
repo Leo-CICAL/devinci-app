@@ -10,7 +10,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:easy_localization/easy_localization.dart';
@@ -19,11 +18,13 @@ class MainPage extends StatefulWidget {
   MainPage({Key key}) : super(key: key);
 
   @override
-  _MainPageState createState() => _MainPageState();
+  MainPageState createState() => MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  var title = globals.user.data['name'];
+
   @override
   void initState() {
     super.initState();
@@ -33,6 +34,69 @@ class _MainPageState extends State<MainPage> {
   }
 
   final _pageController = PageController();
+
+  List<Widget> pages() {
+    var res = <Widget>[
+      AgendaPage(),
+      NotesPage(key: globals.notesPageKey),
+      AbsencesPage(key: globals.absencesPageKey),
+      PresencePage(),
+      UserPage()
+    ];
+
+    // if (Config.admin_id.isNotEmpty) {
+    //   if (globals.user.tokens['uids'] == Config.admin_id) {
+    //     res.add(AdminPage(key: globals.adminPageKey));
+    //   }
+    // }
+    return res;
+  }
+
+  List<BottomNavigationBarItem> bottomIcons() {
+    var res = <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+        icon: Icon(
+            globals.selectedPage == 0 ? Icons.today : Icons.today_outlined),
+        label: 'time_schedule'.tr(),
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(globals.selectedPage == 1
+            ? Icons.assignment
+            : Icons.assignment_outlined),
+        label: 'grades'.tr(),
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(globals.selectedPage == 2
+            ? Icons.watch_later
+            : Icons.watch_later_outlined),
+        label: 'absences'.tr(),
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(globals.selectedPage == 3
+            ? DevinciIcons.megaphone_filled
+            : DevinciIcons.megaphone_outlined),
+        label: 'attendance'.tr(),
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(
+            globals.selectedPage == 4 ? Icons.person : Icons.person_outlined),
+        //,
+        label: globals.user.data['name'],
+      ),
+    ];
+    // if (Config.admin_id.isNotEmpty) {
+    //   if (globals.user.tokens['uids'] == Config.admin_id) {
+    //     res.add(BottomNavigationBarItem(
+    //       icon: Icon(globals.selectedPage == 5
+    //           ? Icons.admin_panel_settings
+    //           : Icons.admin_panel_settings_outlined),
+    //       //,
+    //       label: 'admin'.tr(),
+    //     ));
+    //   }
+    // }
+    return res;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +118,7 @@ class _MainPageState extends State<MainPage> {
             centerTitle: false,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             title: Text(
-              globals.user.data['name'],
+              title,
               style: Theme.of(context).textTheme.headline1,
             ),
             actions: <Widget>[
@@ -91,6 +155,7 @@ class _MainPageState extends State<MainPage> {
                             ));
                   },
                 ),
+                SizedBox.shrink(),
               ].elementAt(globals.selectedPage),
               [
                 IconButton(
@@ -120,59 +185,66 @@ class _MainPageState extends State<MainPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 14),
                         child: CupertinoActivityIndicator(),
                       )
+                    : SizedBox.shrink(),
+                globals.isLoading.state(5)
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: CupertinoActivityIndicator(),
+                      )
                     : SizedBox.shrink()
               ].elementAt(globals.selectedPage),
-              globals.selectedPage == 0
-                  ? PopupMenuButton(
-                      captureInheritedThemes: true,
-                      icon: IconTheme(
-                        data: Theme.of(context).accentIconTheme,
-                        child: Icon(Icons.more_vert_outlined),
-                      ),
-                      onSelected: (String choice) {
-                        if (choice == 'refresh') {
-                          globals.isLoading.setState(0, true);
-                        } else if (choice == 'free_room') {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => SallesPage(),
-                            ),
-                          );
+              [
+                PopupMenuButton(
+                  captureInheritedThemes: true,
+                  icon: IconTheme(
+                    data: Theme.of(context).accentIconTheme,
+                    child: Icon(Icons.more_vert_outlined),
+                  ),
+                  onSelected: (String choice) {
+                    if (choice == 'refresh') {
+                      globals.isLoading.setState(0, true);
+                    } else if (choice == 'free_room') {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => SallesPage(),
+                        ),
+                      );
+                    } else {
+                      setState(() {
+                        if (globals.calendarView == CalendarView.day) {
+                          globals.calendarView = CalendarView.workWeek;
+                          globals.prefs.setBool('calendarViewDay', false);
+                          globals.calendarController.view =
+                              CalendarView.workWeek;
                         } else {
-                          setState(() {
-                            if (globals.calendarView == CalendarView.day) {
-                              globals.calendarView = CalendarView.workWeek;
-                              globals.prefs.setBool('calendarViewDay', false);
-                              globals.calendarController.view =
-                                  CalendarView.workWeek;
-                            } else {
-                              globals.calendarView = CalendarView.day;
-                              globals.prefs.setBool('calendarViewDay', true);
-                              globals.calendarController.view =
-                                  CalendarView.day;
-                            }
-                          });
+                          globals.calendarView = CalendarView.day;
+                          globals.prefs.setBool('calendarViewDay', true);
+                          globals.calendarController.view = CalendarView.day;
                         }
-                      },
-                      padding: EdgeInsets.zero,
-                      // initialValue: choices[_selection],
-                      itemBuilder: (BuildContext context) {
-                        return [
-                          globals.calendarView == CalendarView.day
-                              ? 'week'
-                              : 'day',
-                          'refresh',
-                          'free_room'
-                        ].map((String choice) {
-                          return PopupMenuItem<String>(
-                            value: choice,
-                            child: Text(choice).tr(),
-                          );
-                        }).toList();
-                      },
-                    )
-                  : SizedBox.shrink(),
+                      });
+                    }
+                  },
+                  padding: EdgeInsets.zero,
+                  // initialValue: choices[_selection],
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      globals.calendarView == CalendarView.day ? 'week' : 'day',
+                      'refresh',
+                      'free_room'
+                    ].map((String choice) {
+                      return PopupMenuItem<String>(
+                        value: choice,
+                        child: Text(choice).tr(),
+                      );
+                    }).toList();
+                  },
+                ),
+                SizedBox.shrink(),
+                SizedBox.shrink(),
+                SizedBox.shrink(),
+                SizedBox.shrink(),
+              ].elementAt(globals.selectedPage),
               globals.selectedPage == 0
                   ? globals.isConnected
                       ? (globals.isLoading.state(0)
@@ -206,13 +278,7 @@ class _MainPageState extends State<MainPage> {
             ],
             automaticallyImplyLeading: false),
         body: PageView(
-            children: <Widget>[
-              AgendaPage(),
-              NotesPage(key: globals.notesPageKey),
-              AbsencesPage(key: globals.absencesPageKey),
-              PresencePage(),
-              UserPage()
-            ],
+            children: pages(),
             onPageChanged: (index) {
               setState(() {
                 globals.selectedPage = index;
@@ -225,39 +291,7 @@ class _MainPageState extends State<MainPage> {
             canvasColor: Theme.of(context).scaffoldBackgroundColor,
           ),
           child: BottomNavigationBar(
-              items: [
-                BottomNavigationBarItem(
-                  icon: Icon(globals.selectedPage == 0
-                      ? Icons.today
-                      : Icons.today_outlined),
-                  label: 'time_schedule'.tr(),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(globals.selectedPage == 1
-                      ? Icons.assignment
-                      : Icons.assignment_outlined),
-                  label: 'grades'.tr(),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(globals.selectedPage == 2
-                      ? Icons.watch_later
-                      : Icons.watch_later_outlined),
-                  label: 'absences'.tr(),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(globals.selectedPage == 3
-                      ? DevinciIcons.megaphone_filled
-                      : DevinciIcons.megaphone_outlined),
-                  label: 'attendance'.tr(),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(globals.selectedPage == 4
-                      ? Icons.person
-                      : Icons.person_outlined),
-                  //,
-                  label: globals.user.data['name'],
-                ),
-              ],
+              items: bottomIcons(),
               currentIndex: globals.selectedPage,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               selectedItemColor: Theme.of(context).indicatorColor,

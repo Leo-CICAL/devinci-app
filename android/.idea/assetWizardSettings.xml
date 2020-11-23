@@ -24,7 +24,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="\tmp\round_access_time_24.xml" />
+                                                <entry key="imagePath" value="C:\Users\antoi\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                                 <entry key="opacityPercent" value="60" />
                                               </map>
                                             </option>
@@ -37,7 +37,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\antoi\Downloads\Hotpot Design - calendar\Android Image\xxxhdpi.png" />
+                                                <entry key="imagePath" value="C:\Users\antoi\Downloads\Hotpot Design - error_outline\error_outline.png" />
                                                 <entry key="opacityPercent" value="60" />
                                               </map>
                                             </option>
@@ -71,8 +71,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\antoi\Downloads\Hotpot Design - calendar\Android Image\xxxhdpi.png" />
-                                      <entry key="outputName" value="calendar" />
+                                      <entry key="imageAsset" value="C:\Users\antoi\Downloads\Hotpot Design - error_outline\error_outline.png" />
+                                      <entry key="outputName" value="error" />
                                     </map>
                                   </option>
                                 </PersistentState>

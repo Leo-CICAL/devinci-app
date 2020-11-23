@@ -70,6 +70,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   void runBeforeBuild() async {
+    await rgpdDialog(context);
     for (var i = 0; i < 10; i++) {
       docCardDetail.add(false);
       docCardData.add({'frShowButton': true, 'enShowButton': true});

@@ -66,7 +66,7 @@ class DevinciTheme with ChangeNotifier {
 }
 
 class IsLoading with ChangeNotifier {
-  List<bool> isLoading = [false, false, false, false, false];
+  List<bool> isLoading = [false, false, false, false, false, false];
   bool state(int index) {
     return isLoading[index];
   }

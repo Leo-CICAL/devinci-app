@@ -16,6 +16,7 @@ import 'dart:typed_data';
 import 'package:devinci/libraries/feedback/feedback.dart';
 import 'package:sembast/sembast.dart';
 import 'package:devinci/extra/classes.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 void l(var msg) {
   //stand for log
@@ -265,13 +266,13 @@ Future<Null> reportError(dynamic error, dynamic stackTrace) async {
   }
 }
 
-void reportToCrash(String err, StackTrace stackTrace) async {
+void reportToCrash(var err, StackTrace stackTrace) async {
   final snackBar = SnackBar(
     content: Text('Une erreur est survenue'),
     action: SnackBarAction(
         label: 'Ajouter des informations',
         onPressed: () async {
-          globals.feedbackError = err;
+          globals.feedbackError = err.toString();
           globals.feedbackStackTrace = stackTrace;
           BetterFeedback.of(globals.currentContext).show();
         }),
@@ -380,6 +381,44 @@ Future<void> dialog(
   } catch (exception, stacktrace) {
     await reportError(exception, stacktrace);
   }
+}
+
+Future<void> rgpdDialog(BuildContext context1) async {
+  await showDialog(
+    context: context1,
+    builder: (BuildContext context) {
+      // return object of type Dialog
+      return Dialog(
+        backgroundColor: Theme.of(context1).cardColor,
+        child: Column(
+          children: [
+            Text('gdpr_title').tr(),
+            Container(
+              height: 200,
+              child: ListView(
+                children: <Widget>[
+                  ListTile(
+                    leading: Container(
+                        color: globals.currentTheme.isDark()
+                            ? Colors.teal[900]
+                            : Colors.teal[100],
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(Icons.notifications_outlined,
+                              color:
+                                  Theme.of(context1).textTheme.bodyText1.color,
+                              size: 18),
+                        )),
+                    title: Text('Show notifications'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
 
 Future<String> downloadDocuments(String url, String filename) async {
@@ -509,20 +548,21 @@ Future<HttpClientResponse> devinciRequest(
     bool followRedirects = false,
     List<List<String>> headers,
     String data,
-    String replacementUrl = '', bool log = false}) async {
+    String replacementUrl = '',
+    bool log = false}) async {
   if (globals.user.tokens['SimpleSAML'] != '' &&
       globals.user.tokens['alv'] != '' &&
       globals.user.tokens['uids'] != '' &&
       globals.user.tokens['SimpleSAMLAuthToken'] != '') {
     var client = HttpClient();
-    if(log) print('[0]');
+    if (log) print('[0]');
     var uri = Uri.parse(replacementUrl == ''
         ? 'https://www.leonard-de-vinci.net/' + endpoint
         : replacementUrl);
-        if(log) print('[1] ${endpoint}');
+    if (log) print('[1] ${endpoint}');
     var req =
         method == 'GET' ? await client.getUrl(uri) : await client.postUrl(uri);
-    if(log) print('[1] ${req}');
+    if (log) print('[1] ${req}');
     req.followRedirects = followRedirects;
     req.cookies.addAll([
       Cookie('alv', globals.user.tokens['alv']),
@@ -538,7 +578,7 @@ Future<HttpClientResponse> devinciRequest(
     if (data != null) {
       req.write(data);
     }
-    if(log) print('[2]');
+    if (log) print('[2]');
     return await req.close();
   } else {
     return null;
