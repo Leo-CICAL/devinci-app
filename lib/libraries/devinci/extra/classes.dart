@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
+import 'package:crypto/crypto.dart';
 import 'package:devinci/extra/classes.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -13,6 +14,8 @@ import 'package:sembast/sembast_io.dart';
 import 'package:sembast/utils/value_utils.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:easy_localization/easy_localization.dart';
+
+import 'api.dart';
 
 class User {
   //constructor
@@ -242,14 +245,13 @@ class User {
 
     //retrieve data from secure storage
 
-    var privacyConsent = globals.prefs.getInt('privacyConsent') ?? -1;
-    if (privacyConsent == -1) {}
+    globals.notifConsent = globals.prefs.getBool('notifConsent') ?? false;
 
-    globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'true';
+    globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'false';
     await FirebaseCrashlytics.instance
         .setCrashlyticsCollectionEnabled(globals.crashConsent == 'true');
     globals.analyticsConsent =
-        globals.prefs.getBool('analyticsConsent') ?? true;
+        globals.prefs.getBool('analyticsConsent') ?? false;
     await globals.analytics
         .setAnalyticsCollectionEnabled(globals.analyticsConsent);
     var calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
@@ -334,6 +336,7 @@ class User {
         }
       }
     }
+    DevinciApi().register();
     print('done init');
     return;
   }
@@ -1441,6 +1444,11 @@ class User {
       if (res != null) {
         if (res.statusCode == 200) {
           presence[index]['type'] = 'done';
+          var bytes = utf8.encode(presence[index]['title'] +
+              presence[index]['prof'] +
+              presence[index]['horaires']); // data being hashed
+          var digest = sha256.convert(bytes);
+          DevinciApi().call(digest.toString());
         } else {
           throw Exception(res.statusCode);
         }

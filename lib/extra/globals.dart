@@ -31,6 +31,8 @@ BuildContext currentContext;
 
 String crashConsent;
 
+bool notifConsent;
+
 // class AgendaView extends PropertyChangeNotifier<String> {
 //   CalendarView _calendarView = CalendarView.day;
 

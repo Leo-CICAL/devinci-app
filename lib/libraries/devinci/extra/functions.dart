@@ -5,9 +5,11 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:device_info/device_info.dart';
 import 'dart:io' show Platform;
@@ -383,42 +385,325 @@ Future<void> dialog(
   }
 }
 
-Future<void> rgpdDialog(BuildContext context1) async {
-  await showDialog(
-    context: context1,
-    builder: (BuildContext context) {
-      // return object of type Dialog
-      return Dialog(
-        backgroundColor: Theme.of(context1).cardColor,
-        child: Column(
-          children: [
-            Text('gdpr_title').tr(),
-            Container(
-              height: 200,
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    leading: Container(
-                        color: globals.currentTheme.isDark()
-                            ? Colors.teal[900]
-                            : Colors.teal[100],
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Icon(Icons.notifications_outlined,
+void showGDPR(BuildContext context) async {
+  var notif = false;
+  if (Platform.isAndroid) {
+    notif = true;
+  }
+  var show_notif = false;
+  var bug = true;
+  var show_bug = false;
+  var analytics = true;
+  var show_analytics = false;
+  await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context2) {
+        return StatefulBuilder(builder: (context2, setState) {
+          return SimpleDialog(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            title: Text('gdpr_title',
+                    style: TextStyle(
+                        color: Theme.of(context).textTheme.headline1.color))
+                .tr(),
+            children: <Widget>[
+              Center(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(bottom: 8, left: 16, right: 16),
+                  child: Text('gdpr_consent',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
                               color:
-                                  Theme.of(context1).textTheme.bodyText1.color,
-                              size: 18),
-                        )),
-                    title: Text('Show notifications'),
+                                  Theme.of(context).textTheme.headline1.color))
+                      .tr(),
+                ),
+              ),
+              SwitchListTile(
+                value: notif,
+                activeColor: Theme.of(context).accentColor,
+                secondary: Container(
+                  height: 32,
+                  width: 32,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: globals.currentTheme.isDark()
+                        ? Colors.white.withOpacity(0.2)
+                        : Theme.of(context).accentColor.withOpacity(0.15),
+                  ),
+                  child: Icon(Icons.notifications_active_outlined,
+                      color: Theme.of(context).textTheme.headline1.color,
+                      size: 18),
+                ),
+                onChanged: (bool value) {
+                  setState(() {
+                    notif = value;
+                    if (notif == true) {
+                      OneSignal.shared.promptUserForPushNotificationPermission(
+                          fallbackToSettings: true);
+                    }
+                  });
+                },
+                title: RichText(
+                  text: TextSpan(
+                    text: 'attendance_notif'.tr() + '\n',
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: globals.currentTheme.isDark()
+                            ? Colors.blueGrey[100]
+                            : Colors.blueGrey[800]),
+                    children: <InlineSpan>[
+                      show_notif
+                          ? WidgetSpan(child: SizedBox.shrink())
+                          : TextSpan(
+                              text: 'more_about'.tr(),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  setState(() {
+                                    show_notif = true;
+                                    show_bug = false;
+                                    show_analytics = false;
+                                  });
+                                },
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.normal,
+                                  color: globals.currentTheme.isDark()
+                                      ? Colors.blueGrey[200]
+                                      : Colors.blueGrey[600])),
+                    ],
+                  ),
+                ),
+                subtitle: !show_notif
+                    ? SizedBox.shrink()
+                    : GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            show_notif = false;
+                          });
+                        },
+                        child: Text('notif_more',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.normal,
+                                    color: globals.currentTheme.isDark()
+                                        ? Colors.blueGrey[200]
+                                        : Colors.blueGrey[600]))
+                            .tr(),
+                      ),
+              ),
+              SwitchListTile(
+                value: bug,
+                activeColor: Theme.of(context).accentColor,
+                secondary: Container(
+                  height: 32,
+                  width: 32,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: globals.currentTheme.isDark()
+                        ? Colors.white.withOpacity(0.2)
+                        : Theme.of(context).accentColor.withOpacity(0.15),
+                  ),
+                  child: Icon(Icons.bug_report_outlined,
+                      color: Theme.of(context).textTheme.headline1.color,
+                      size: 18),
+                ),
+                onChanged: (bool value) {
+                  setState(() {
+                    bug = value;
+                  });
+                },
+                title: RichText(
+                  text: TextSpan(
+                    text: 'error_report'.tr() + '\n',
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: globals.currentTheme.isDark()
+                            ? Colors.blueGrey[100]
+                            : Colors.blueGrey[800]),
+                    children: <InlineSpan>[
+                      show_bug
+                          ? WidgetSpan(child: SizedBox.shrink())
+                          : TextSpan(
+                              text: 'more_about'.tr(),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  setState(() {
+                                    show_bug = true;
+                                    show_analytics = false;
+                                    show_notif = false;
+                                  });
+                                },
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.normal,
+                                  color: globals.currentTheme.isDark()
+                                      ? Colors.blueGrey[200]
+                                      : Colors.blueGrey[600])),
+                    ],
+                  ),
+                ),
+                subtitle: !show_bug
+                    ? SizedBox.shrink()
+                    : GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            show_bug = false;
+                          });
+                        },
+                        child: Text('crash_more',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.normal,
+                                    color: globals.currentTheme.isDark()
+                                        ? Colors.blueGrey[200]
+                                        : Colors.blueGrey[600]))
+                            .tr(),
+                      ),
+              ),
+              SwitchListTile(
+                value: analytics,
+                activeColor: Theme.of(context).accentColor,
+                secondary: Container(
+                  height: 32,
+                  width: 32,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: globals.currentTheme.isDark()
+                        ? Colors.white.withOpacity(0.2)
+                        : Theme.of(context).accentColor.withOpacity(0.15),
+                  ),
+                  child: Icon(Icons.insights_rounded,
+                      color: Theme.of(context).textTheme.headline1.color,
+                      size: 18),
+                ),
+                onChanged: (bool value) {
+                  setState(() {
+                    analytics = value;
+                  });
+                },
+                title: RichText(
+                  text: TextSpan(
+                    text: 'usage_monitoring'.tr() + '\n',
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: globals.currentTheme.isDark()
+                            ? Colors.blueGrey[100]
+                            : Colors.blueGrey[800]),
+                    children: <InlineSpan>[
+                      show_analytics
+                          ? WidgetSpan(child: SizedBox.shrink())
+                          : TextSpan(
+                              text: 'more_about'.tr(),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  setState(() {
+                                    show_analytics = true;
+                                    show_notif = false;
+                                    show_bug = false;
+                                  });
+                                },
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.normal,
+                                  color: globals.currentTheme.isDark()
+                                      ? Colors.blueGrey[200]
+                                      : Colors.blueGrey[600])),
+                    ],
+                  ),
+                ),
+                subtitle: !show_analytics
+                    ? SizedBox.shrink()
+                    : GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            show_analytics = false;
+                          });
+                        },
+                        child: Text('analytics_more',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.normal,
+                                    color: globals.currentTheme.isDark()
+                                        ? Colors.blueGrey[200]
+                                        : Colors.blueGrey[600]))
+                            .tr(),
+                      ),
+              ),
+              Center(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(bottom: 8, left: 16, right: 16),
+                  child: Text('gdpr_footer',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: globals.currentTheme.isDark()
+                            ? Colors.blueGrey[100]
+                            : Colors.blueGrey[800],
+                      )).tr(),
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: SimpleDialogOption(
+                      onPressed: () {
+                        setState(() {
+                          notif = false;
+                          bug = false;
+                          analytics = false;
+                        });
+                      },
+                      child: Center(
+                          child: Text('refuse_all',
+                              style: TextStyle(
+                                color: Theme.of(context).accentColor,
+                              )).tr()),
+                    ),
+                  ),
+                  Expanded(
+                    child: SimpleDialogOption(
+                      onPressed: () {
+                        Navigator.pop(context2, true);
+                      },
+                      child: Center(
+                          child: Text('confirm',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    Theme.of(context).textTheme.headline1.color,
+                              )).tr()),
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
+            ],
+          );
+        });
+      });
+  print('notif1 ${notif}');
+  print('crash1 ${bug}');
+  print('ana1 ${analytics}');
+  globals.notifConsent = notif;
+  await globals.prefs.setBool('notifConsent', globals.notifConsent);
+  await OneSignal.shared.consentGranted(notif);
+  globals.crashConsent = bug ? 'true' : 'false';
+  await globals.prefs.setString('crashConsent', globals.crashConsent);
+  await FirebaseCrashlytics.instance
+      .setCrashlyticsCollectionEnabled(globals.crashConsent == 'true');
+  globals.analyticsConsent = analytics;
+  await globals.prefs.setBool('analyticsConsent', globals.analyticsConsent);
+  await globals.analytics
+      .setAnalyticsCollectionEnabled(globals.analyticsConsent);
+
+  print('notif ${globals.notifConsent}');
+  print('crash ${globals.crashConsent}');
+  print('ana ${globals.analyticsConsent}');
 }
 
 Future<String> downloadDocuments(String url, String filename) async {

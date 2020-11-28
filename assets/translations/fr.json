@@ -98,5 +98,14 @@
   "Absent":"Absent",
   "Excusee par scolarite":"Excusée par scolarité",
   "Dispense sport":"Dispense sport",
-  "gdpr_title":"Devinci demande votre consentement pour l'utilisation de vos données personnelles pour :"
+  "gdpr_title":"Notifications et vie privée",
+  "gdpr_content":"Devinci à besoin de votre consentement pour traiter vos données personnelles pour :",
+  "attendance_notif":"Notification de présence",
+  "more_about":"en savoir plus",
+  "notif_more":"Des informations personnelles telles que l’identifiant unique de votre appareil et une empreinte numérique de vos cours de la journée (hash) seront envoyé et traité par notre serveur. Supprimé au bout de 12 h maximum",
+  "crash_more":"Des informations personnelles telles que l’identifiant unique et les caractéristiques techniques de votre appareil et le rapport d’erreur seront envoyés et traités par Google Crashlytics. Par défaut, ces données ne comprennent aucune information personnelle telles que votre nom ou vos identifiants Devinci.",
+  "analytics_more":"Des informations personnelles telles que l’identifiant unique et les caractéristiques techniques de votre appareil et vos habitudes d’utilisation de l’application seront envoyé et traité par Google Analytics. Ces informations permettent d’avoir des rapports d’erreur plus pertinents et de connaitre le nombre d’utilisateurs de l’application.",
+  "gdpr_footer":"Ces réglages peuvent être modifiés à tout moment depuis les paramètres de l'application",
+  "refuse_all":"Refuser tout",
+  "confirm":"Valider"
 }

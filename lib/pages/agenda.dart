@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:devinci/extra/CommonWidgets.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:devinci/libraries/devinci/extra/functions.dart';
@@ -8,6 +11,7 @@ import 'package:devinci/extra/classes.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:sembast/sembast.dart';
@@ -68,6 +72,8 @@ class _AgendaPageState extends State<AgendaPage> {
   _AgendaPageState();
 
   Future<void> getCalendar() async {
+    var privacyConsent = globals.prefs.getBool('privacyConsent') ?? false;
+
     if (globals.lastFetchAgenda == null) {
       globals.lastFetchAgenda = DateTime.now();
       var icalUrl = globals.user.data['edtUrl'];
@@ -87,6 +93,10 @@ class _AgendaPageState extends State<AgendaPage> {
       setState(() {
         show = true;
       });
+    }
+    if (!privacyConsent) {
+      Timer(Duration(seconds: 2), () => showGDPR(context));
+      await globals.prefs.setBool('privacyConsent', true);
     }
     return;
   }
@@ -170,7 +180,6 @@ class _AgendaPageState extends State<AgendaPage> {
   @override
   Widget build(BuildContext context) {
     globals.currentContext = context;
-
     return show
         ? Column(children: <Widget>[
             AgendaHeader(),

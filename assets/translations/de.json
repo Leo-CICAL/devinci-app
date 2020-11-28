@@ -98,5 +98,14 @@
   "Absent":"Abwesend",
   "Excusee par scolarite":"Entschuldigt durch Schulbildung",
   "Dispense sport":"Sport-Ausnahme",
-  "gdpr_title":"Devinci bittet um Ihre Zustimmung zur Verwendung Ihrer persönlichen Daten für :"
-  }  
+  "gdpr_title":"Benachrichtigungen und Datenschutz",
+  "gdpr_consent":"Devinci benötigt Ihre Zustimmung zur Verarbeitung Ihrer persönlichen Daten für :",
+  "attendance_notif":"Benachrichtigung über die Anwesenheit",
+  "more_about":"Erfahren Sie mehr",
+  "notif_more":"Persönliche Daten wie die eindeutige Kennung Ihres Geräts und ein digitaler Hash Ihrer Lektionen des Tages werden von unserem Server gesendet und verarbeitet. Gelöscht nach maximal 12 Stunden",
+  "crash_more":"Persönliche Informationen wie die eindeutige Kennung und die technischen Spezifikationen Ihres Geräts sowie der Fehlerbericht werden von Google Crashlytics gesendet und verarbeitet. Standardmäßig enthalten diese Daten keine persönlichen Informationen wie Ihren Namen oder Devinci-Kennungen.",
+  "analytics_more":"Persönliche Informationen wie die eindeutige Kennung und die technischen Spezifikationen Ihres Geräts sowie der Fehlerbericht werden von Google Crashlytics gesendet und verarbeitet. Standardmäßig enthalten diese Daten keine persönlichen Informationen wie Ihren Namen oder Devinci-Kennungen.",
+  "gdpr_footer":"Diese Einstellungen können jederzeit über die Anwendungsparameter geändert werden.",
+  "refuse_all":"Alle ablehnen",
+  "confirm":"Bestätigen Sie"
+}  

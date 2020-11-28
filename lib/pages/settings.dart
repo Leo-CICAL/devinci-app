@@ -13,6 +13,7 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -165,7 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   right: 16,
                   top: 16,
                 ),
-                height: (6 * 46).toDouble(),
+                height: (7 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -297,6 +298,41 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                           ],
                         ),
+                      ),
+                    ),
+                    Container(
+                      height: 46,
+                      margin: EdgeInsets.only(left: 24),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                        width: 0.2,
+                        color: Color(0xffACACAC),
+                      ))),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              'attendance_notif',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ).tr(),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Switch.adaptive(
+                              value: globals.notifConsent,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  globals.notifConsent = value;
+                                  OneSignal.shared
+                                      .consentGranted(globals.notifConsent);
+                                  globals.prefs.setBool(
+                                      'notifConsent', globals.notifConsent);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Container(
