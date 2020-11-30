@@ -328,6 +328,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                       .consentGranted(globals.notifConsent);
                                   globals.prefs.setBool(
                                       'notifConsent', globals.notifConsent);
+                                  if (globals.notifConsent) {
+                                    OneSignal.shared
+                                        .promptUserForPushNotificationPermission(
+                                            fallbackToSettings: true);
+                                  }
                                 });
                               },
                             ),
