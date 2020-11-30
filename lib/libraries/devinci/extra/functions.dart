@@ -691,6 +691,10 @@ void showGDPR(BuildContext context) async {
   print('ana1 ${analytics}');
   globals.notifConsent = notif;
   await globals.prefs.setBool('notifConsent', globals.notifConsent);
+  if (globals.notifConsent) {
+    await OneSignal.shared
+        .promptUserForPushNotificationPermission(fallbackToSettings: true);
+  }
   await OneSignal.shared.consentGranted(notif);
   globals.crashConsent = bug ? 'true' : 'false';
   await globals.prefs.setString('crashConsent', globals.crashConsent);
