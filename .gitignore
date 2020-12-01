@@ -14,3 +14,9 @@ android/key.properties
 .flutter-plugins-dependencies
 *.xml
 *.xml
+.dart_tool/package_config.json
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.packages
+.packages
