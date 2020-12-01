@@ -107,5 +107,6 @@
   "analytics_more":"Des informations personnelles telles que l’identifiant unique et les caractéristiques techniques de votre appareil et vos habitudes d’utilisation de l’application seront envoyé et traité par Google Analytics. Ces informations permettent d’avoir des rapports d’erreur plus pertinents et de connaitre le nombre d’utilisateurs de l’application.",
   "gdpr_footer":"Ces réglages peuvent être modifiés à tout moment depuis les paramètres de l'application",
   "refuse_all":"Refuser tout",
-  "confirm":"Valider"
+  "confirm":"Valider",
+  "copy_player_id":"Copier le PlayerId"
 }

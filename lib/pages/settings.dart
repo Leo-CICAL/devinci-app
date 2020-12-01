@@ -459,7 +459,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   right: 16,
                   top: 28,
                 ),
-                height: (6 * 46).toDouble(),
+                height: (7 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -668,27 +668,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
-                  Container(
-                    height: 46,
-                    margin: EdgeInsets.only(left: 24),
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                      width: 0.2,
-                      color: Color(0xffACACAC),
-                    ))),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text('Version: $appVersion',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w300,
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
+                  VersionComponent(),
+                  IdComponent(),
                   Container(
                     height: 46,
                     margin: EdgeInsets.only(left: 24),
@@ -708,6 +689,114 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class VersionComponent extends StatefulWidget {
+  VersionComponent({Key key}) : super(key: key);
+
+  @override
+  _VersionComponentState createState() => _VersionComponentState();
+}
+
+class _VersionComponentState extends State<VersionComponent> {
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
+  }
+
+  void runBeforeBuild() async {
+    var packageInfo = await PackageInfo.fromPlatform();
+    appVersion = packageInfo.version;
+    appVersion += ' b' + packageInfo.buildNumber;
+    setState(() {
+      show = true;
+    });
+  }
+
+  String appVersion = '';
+  bool show = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 46,
+      margin: EdgeInsets.only(left: 24),
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        width: 0.2,
+        color: Color(0xffACACAC),
+      ))),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Text('Version: ' + (show ? appVersion : '...'),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w300,
+                )),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class IdComponent extends StatefulWidget {
+  IdComponent({Key key}) : super(key: key);
+
+  @override
+  _IdComponentState createState() => _IdComponentState();
+}
+
+class _IdComponentState extends State<IdComponent> {
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
+  }
+
+  void runBeforeBuild() async {
+    var sub = await OneSignal.shared.getPermissionSubscriptionState();
+    var sub2 = sub.subscriptionStatus;
+    id = sub2.userId;
+  }
+
+  String id = '';
+  bool show = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        await Clipboard.setData(ClipboardData(text: id));
+        final snackBar = SnackBar(content: Text('copied').tr(args: [id]));
+        Scaffold.of(context).showSnackBar(snackBar);
+      }, // handle your onTap here
+      child: Container(
+        height: 46,
+        margin: EdgeInsets.only(left: 24),
+        decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(
+          width: 0.2,
+          color: Color(0xffACACAC),
+        ))),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Text('copy_player_id',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
+                  )).tr(),
+            ),
+          ],
         ),
       ),
     );

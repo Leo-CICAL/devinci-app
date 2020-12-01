@@ -107,5 +107,6 @@
   "analytics_more":"Persönliche Informationen wie die eindeutige Kennung und die technischen Spezifikationen Ihres Geräts sowie der Fehlerbericht werden von Google Crashlytics gesendet und verarbeitet. Standardmäßig enthalten diese Daten keine persönlichen Informationen wie Ihren Namen oder Devinci-Kennungen.",
   "gdpr_footer":"Diese Einstellungen können jederzeit über die Anwendungsparameter geändert werden.",
   "refuse_all":"Alle ablehnen",
-  "confirm":"Bestätigen Sie"
+  "confirm":"Bestätigen Sie",
+  "copy_player_id":"Kopieren der PlayerId"
 }  
