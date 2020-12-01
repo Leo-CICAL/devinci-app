@@ -1,0 +1,19 @@
+name: devinci_notif_server
+description: A server for devinci App notifications system.
+# version: 1.0.0
+
+environment:
+  sdk: '>=2.8.1 <3.0.0'
+  
+
+dependencies:
+  path: ^1.7.0
+  crypto: ^2.1.5
+  html: ^0.14.0+4
+  intl: ^0.16.1
+  cron: ^0.2.4
+  args: ^1.6.0 
+
+dev_dependencies:
+  pedantic: ^1.9.0
+  test: ^1.14.4
