@@ -8,6 +8,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PresencePage extends StatefulWidget {
   PresencePage({Key key}) : super(key: key);
@@ -18,24 +19,28 @@ class PresencePage extends StatefulWidget {
 
 class _PresencePageState extends State<PresencePage> {
   bool show = false;
-  RefreshController _refreshController =
+  final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ButtonState buttonState = ButtonState.normal;
 
-  PageController _pageController = PageController(
+  final PageController _pageController = PageController(
     initialPage: 0,
   );
 
   void runBeforeBuild() async {
     await globals.user.getPresence(force: true);
-    if (mounted)
+    if (mounted) {
       setState(() {
         show = true;
       });
-    if (globals.user.presence.length > 0)
+    }
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (globals.user.presence.isNotEmpty) {
       _pageController.jumpToPage(globals.user.presenceIndex);
+    }
   }
 
+  @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
@@ -43,10 +48,11 @@ class _PresencePageState extends State<PresencePage> {
 
   void _onRefresh() async {
     await globals.user.getPresence(force: true);
-    if (mounted)
+    if (mounted) {
       setState(() {
         show = true;
       });
+    }
     if (mounted) {
       setState(() {
         _refreshController.refreshCompleted();
@@ -55,8 +61,8 @@ class _PresencePageState extends State<PresencePage> {
   }
 
   List<Widget> pageGen() {
-    List<Widget> res = new List<Widget>();
-    for (int i = 0; i < globals.user.presence.length; i++) {
+    var res = <Widget>[];
+    for (var i = 0; i < globals.user.presence.length; i++) {
       res.add(CupertinoScrollbar(
         child: SmartRefresher(
           enablePullDown: true,
@@ -72,8 +78,8 @@ class _PresencePageState extends State<PresencePage> {
                 child: Center(
                   child: Text(
                       globals.user.presence[i]['type'] == 'none'
-                          ? 'Pas de cours prévu.'
-                          : globals.user.presence[i]["title"],
+                          ? 'no_class'.tr()
+                          : globals.user.presence[i]['title'],
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.headline2),
                 ),
@@ -82,7 +88,7 @@ class _PresencePageState extends State<PresencePage> {
                 padding: const EdgeInsets.only(top: 0),
                 child: Center(
                   child: Text(
-                      globals.user.presence[i]['type'] == 'none' ? '' : "—",
+                      globals.user.presence[i]['type'] == 'none' ? '' : '—',
                       style: Theme.of(context).textTheme.headline2),
                 ),
               ),
@@ -92,21 +98,21 @@ class _PresencePageState extends State<PresencePage> {
                   child: Text(
                       globals.user.presence[i]['type'] == 'none'
                           ? ''
-                          : (globals.user.presence[i]["prof"] == ''
-                              ? globals.user.presence[i]["horaires"]
-                              : globals.user.presence[i]["prof"]),
+                          : (globals.user.presence[i]['prof'] == ''
+                              ? globals.user.presence[i]['horaires']
+                              : globals.user.presence[i]['prof']),
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyText1),
                 ),
               ),
-              globals.user.presence[i]["prof"] != ''
+              globals.user.presence[i]['prof'] != ''
                   ? Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: Center(
                         child: Text(
                             globals.user.presence[i]['type'] == 'none'
                                 ? ''
-                                : globals.user.presence[i]["horaires"],
+                                : globals.user.presence[i]['horaires'],
                             style: Theme.of(context).textTheme.bodyText2),
                       ),
                     )
@@ -115,18 +121,18 @@ class _PresencePageState extends State<PresencePage> {
                 padding: const EdgeInsets.only(top: 112, left: 48, right: 48),
                 child: Center(
                     child: {
-                  "ongoing": ProgressButton(
+                  'ongoing': ProgressButton(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18),
                       child: Text(
-                        "présent".toUpperCase(),
+                        'ongoing',
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: globals.currentTheme.isDark()
                                 ? Colors.black
                                 : Colors.white),
-                      ),
+                      ).tr(),
                     ),
                     onPressed: () async {
                       setState(() {
@@ -143,7 +149,7 @@ class _PresencePageState extends State<PresencePage> {
                           buttonState = ButtonState.error;
                         });
                         final snackBar = SnackBar(
-                          content: Text("Une erreur est survenue"),
+                          content: Text('error_msg').tr(),
                           duration: const Duration(seconds: 6),
                         );
 
@@ -158,7 +164,7 @@ class _PresencePageState extends State<PresencePage> {
                         ? Colors.black
                         : Colors.white,
                   ),
-                  "done": ProgressButton(
+                  'done': ProgressButton(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18),
                       child: IconTheme(
@@ -172,16 +178,16 @@ class _PresencePageState extends State<PresencePage> {
                         ? Color(0xFF313131)
                         : Color(0xFFDFDFDF),
                   ),
-                  "notOpen": ProgressButton(
+                  'notOpen': ProgressButton(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18),
                       child: Text(
-                        "pas encore ouvert".toUpperCase(),
+                        'notOpen',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                         ),
-                      ),
+                      ).tr(),
                     ),
                     onPressed: null,
                     buttonState: buttonState,
@@ -189,17 +195,17 @@ class _PresencePageState extends State<PresencePage> {
                         ? Color(0xFF313131)
                         : Color(0xFFDFDFDF),
                   ),
-                  "closed": ProgressButton(
+                  'closed': ProgressButton(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18),
                       child: Text(
-                        "cloturé".toUpperCase(),
+                        'closed',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
                         ),
-                      ),
+                      ).tr(),
                     ),
                     onPressed: null,
                     buttonState: buttonState,
@@ -207,7 +213,7 @@ class _PresencePageState extends State<PresencePage> {
                         ? Colors.redAccent
                         : Colors.red.shade700,
                   ),
-                }[globals.user.presence[i]["type"]]),
+                }[globals.user.presence[i]['type']]),
               ),
               Visibility(
                 visible: globals.user.presence[i]['zoom'] != '',
@@ -217,7 +223,7 @@ class _PresencePageState extends State<PresencePage> {
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18),
                       child: Text(
-                        "ZOOM".toUpperCase(),
+                        'ZOOM',
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -248,7 +254,7 @@ class _PresencePageState extends State<PresencePage> {
                   child: Center(
                     child: RichText(
                       text: TextSpan(
-                        text: 'Mot de passe : ',
+                        text: '${'password'.tr()} : ',
                         style: DefaultTextStyle.of(context).style,
                         children: <TextSpan>[
                           TextSpan(
@@ -270,72 +276,72 @@ class _PresencePageState extends State<PresencePage> {
 
   @override
   Widget build(BuildContext context) {
-    return show
-        ? (globals.user.presence.length > 0
-            ? Column(
-                children: [
-                  TitleSection("Présences"),
-                  Expanded(
-                    child: PageView(
-                      controller: _pageController,
-                      children: pageGen(),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 62, left: 8, right: 8, bottom: 12),
-                    child: SmoothPageIndicator(
-                        controller: _pageController, // PageController
-                        count: globals.user.presence.length,
-                        effect: WormEffect(
-                            dotHeight: 10,
-                            dotWidth: 10,
-                            activeDotColor: Theme.of(context)
-                                .accentColor), // your preferred effect
-                        onDotClicked: (index) {
-                          _pageController.jumpToPage(index);
-                        }),
-                  )
-                ],
-              )
-            : CupertinoScrollbar(
-                child: SmartRefresher(
-                  enablePullDown: true,
-                  header: ClassicHeader(),
-                  controller: _refreshController,
-                  onRefresh: _onRefresh,
-                  child: ListView(
-                    shrinkWrap: false,
-                    children: <Widget>[
-                      TitleSection("Présences"),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(top: 62, left: 8, right: 8),
-                        child: Center(
-                          child: Text('Pas de cours prévu.',
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.headline2),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 52),
-                        child: Container(
-                          height: 200,
-                          width: 200,
-                          child: Center(
-                            child: SvgPicture.asset(
-                              "assets/free.svg",
-                              color:
-                                  Theme.of(context).textTheme.bodyText1.color,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
+    if (show) {
+      return (globals.user.presence.isNotEmpty
+          ? Column(
+              children: [
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    children: pageGen(),
                   ),
                 ),
-              ))
-        : Center(
-            child: CupertinoActivityIndicator(),
-          );
+                Padding(
+                  padding: const EdgeInsets.only(top: 62, left: 8, right: 8, bottom: 12),
+                  child: SmoothPageIndicator(
+                      controller: _pageController, // PageController
+                      count: globals.user.presence.length,
+                      effect: WormEffect(
+                          dotHeight: 10,
+                          dotWidth: 10,
+                          activeDotColor: Theme.of(context)
+                              .accentColor), // your preferred effect
+                      onDotClicked: (index) {
+                        _pageController.jumpToPage(index);
+                      }),
+                )
+              ],
+            )
+          : CupertinoScrollbar(
+              child: SmartRefresher(
+                enablePullDown: true,
+                header: ClassicHeader(),
+                controller: _refreshController,
+                onRefresh: _onRefresh,
+                child: ListView(
+                  shrinkWrap: false,
+                  children: <Widget>[
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 62, left: 8, right: 8),
+                      child: Center(
+                        child: Text('no_class',
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.headline2)
+                            .tr(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 52),
+                      child: Container(
+                        height: 200,
+                        width: 200,
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/free.svg',
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ));
+    } else {
+      return Center(
+        child: CupertinoActivityIndicator(),
+      );
+    }
   }
 }

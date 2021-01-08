@@ -28,6 +28,7 @@
   - [Build Instructions](#build-instructions)
   - [Technologies](#technologies)
   - [Contribution](#contribution)
+  - [Traduction](#traduction)
   - [Dépendances](#dépendances)
 
 ## Build Instructions
@@ -77,7 +78,98 @@
 
 ## Contribution
 
-Vous souhaitez contribuer ? Prenez connaissance des [lignes directions de contribution](CONTRIBUTING.md)
+Vous souhaitez contribuer ? Prenez connaissance des [lignes directrices de contribution](CONTRIBUTING.md)
+
+## Traduction
+
+Aidez à traduire Devinci dans votre langue.
+  
+### Création d'une nouvelle langue
+
+Si la langue que vous souhaitez traduire n'existe pas encore sous forme de fichier JSON, soumettez-nous une issue afin que nous puissions créer un modèle pour que vous puissiez commencer.
+
+### Soumettre des modifications
+Pour traduire, forkez ce repo et éditez le fichier JSON de votre langue situé dans `/assets/translations` . Ensuite, soumettez une pull request.
+
+Notez que vous n'avez pas besoin de cloner votre fork pour faire les modifications; vous pouvez tout faire sur l'interface web de GitHub. Il vous suffit d'ouvrir un fichier dans votre propre fork et de cliquer sur l'icône du crayon pour commencer les modifications.
+
+### Traduction
+Le fichier JSON de traduction est constitué de paires de valeurs clés. La clé doit vous donner une bonne idée de l'endroit où se trouve le texte dans l'application.
+
+Pour traduire, il suffit de modifier la valeur. Par exemple, disons que vous voyez
+```JSON
+{
+"login" : "Connexion"
+}
+```
+Il suffit de le changer en :
+
+```JSON
+{
+"login" : "********"
+}
+```
+où "********" est l'expression "login" dans la langue cible. J'utilise le bouton de connexion comme exemple ici.
+
+Si vous rencontrez quelque chose comme :
+
+```JSON
+{
+"copied":"{} copié"
+}
+```
+laissez la partie `{}` seule et ne la traduisez pas. `{}` ne fait pas partie du texte et sera remplacé par la valeur appropriée lorsque l'application sera lancée.
+
+Pareil pour :
+```JSON
+{
+"unknown_error": "Une erreur inconnue est survenue.\n\nCode : {code}\nInformation: {exception}",
+}
+```
+`{code}` et `{exception}` seront remplacés par les valeurs appropriées.
+
+Pour le pluriel :
+Exemple : 
+```JSON
+"day": {
+    "zero":"{} дней",
+    "one": "{} день",
+    "two": "{} дня",
+    "few": "{} дня",
+    "many": "{} дней",
+    "other": "{} дней"
+  },
+  "money": {
+    "zero": "You not have money",
+    "one": "You have {} dollar",
+    "many": "You have {} dollars",
+    "other": "You have {} dollars"
+  }
+```
+
+Pour les genres : 
+Exemple : 
+```JSON
+{
+  "greetings":{
+      "male":"Hi Mr. {}",
+      "female":"Hello Ms. {}",
+      "other":"Hello {}"
+   }
+}
+```
+
+### Langues existantes
+Voici un tableau des codes de langue vers nom de langue, dans l'ordre alphabétique. Ces langues ont leurs fichiers modèles prêts, mais ne sont pas nécessairement prêtes à être utilisées dans l'application.
+
+| code de langue | nom de la langue | nom natif | État |
+| --- | --- | --- | :---: |
+| `fr` (default) | French | Français | ✅ 
+| `en` | English | English | ✅ |
+| `de` | German | Deutsch | ✅ |
+
+
+
 
 ## Dépendances
 

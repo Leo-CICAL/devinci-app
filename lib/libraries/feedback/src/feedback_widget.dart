@@ -55,7 +55,7 @@ class FeedbackWidgetState extends State<FeedbackWidget>
   List<Color> drawColors;
 
   PainterController create() {
-    final PainterController controller = PainterController();
+    final controller = PainterController();
     controller.thickness = 5.0;
     controller.drawColor = drawColors[0];
     return controller;
@@ -113,8 +113,8 @@ class FeedbackWidgetState extends State<FeedbackWidget>
     //if (!widget.isFeedbackVisible) {
     //  return widget.child;
     //}
-    if(!widget.isFeedbackVisible){
-      textEditingController.text = "";
+    if (!widget.isFeedbackVisible) {
+      textEditingController.text = '';
     }
     final scaleAnimation = Tween<double>(begin: 1, end: 0.65)
         .chain(CurveTween(curve: Curves.easeInSine))
@@ -127,7 +127,7 @@ class FeedbackWidgetState extends State<FeedbackWidget>
     final controlsHorizontalAlignment = Tween<double>(begin: 1.4, end: .95)
         .chain(CurveTween(curve: Curves.easeInSine))
         .animate(_controller);
-    
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -220,7 +220,7 @@ class FeedbackWidgetState extends State<FeedbackWidget>
                               // Through using a Builder we can supply an
                               // appropriate BuildContext to the callback
                               // function.
-                              return FlatButton(
+                              return TextButton(
                                 key: const Key('submit_feedback_button'),
                                 child: Text(
                                   widget.translation.submitButtonText,

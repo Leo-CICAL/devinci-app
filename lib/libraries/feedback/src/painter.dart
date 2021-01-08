@@ -32,14 +32,14 @@ class _PainterState extends State<Painter> {
   }
 
   void _onPanStart(DragStartDetails start) {
-    final Offset pos = (context.findRenderObject() as RenderBox)
+    final pos = (context.findRenderObject() as RenderBox)
         .globalToLocal(start.globalPosition);
     widget.painterController._pathHistory.add(pos);
     widget.painterController._notifyListeners();
   }
 
   void _onPanUpdate(DragUpdateDetails update) {
-    final Offset pos = (context.findRenderObject() as RenderBox)
+    final pos = (context.findRenderObject() as RenderBox)
         .globalToLocal(update.globalPosition);
     widget.painterController._pathHistory.updateCurrent(pos);
     widget.painterController._notifyListeners();
@@ -97,7 +97,7 @@ class _PathHistory {
       return;
     }
     _inDrag = true;
-    final Path path = Path();
+    final path = Path();
     path.moveTo(startPoint.dx, startPoint.dy);
     _paths.add(MapEntry<Path, Paint>(path, currentPaint));
   }
@@ -106,7 +106,7 @@ class _PathHistory {
     if (!_inDrag) {
       return;
     }
-    final Path path = _paths.last.key;
+    final path = _paths.last.key;
     path.lineTo(nextPoint.dx, nextPoint.dy);
   }
 
@@ -115,7 +115,7 @@ class _PathHistory {
   }
 
   void draw(Canvas canvas, Size size) {
-    for (final MapEntry<Path, Paint> path in _paths) {
+    for (final path in _paths) {
       canvas.drawPath(path.key, path.value);
     }
   }
@@ -144,7 +144,7 @@ class PainterController extends ChangeNotifier {
   }
 
   void _updatePaint() {
-    final Paint paint = Paint()
+    final paint = Paint()
       ..color = drawColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = thickness

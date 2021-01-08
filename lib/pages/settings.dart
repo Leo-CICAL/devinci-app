@@ -13,10 +13,12 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
+
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // ignore: must_be_immutable
 class SettingsPage extends StatefulWidget {
@@ -32,28 +34,21 @@ class _SettingsPageState extends State<SettingsPage> {
   final ScrollController scrollController;
   _SettingsPageState(this.scrollController);
 
+  @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
   }
 
   void runBeforeBuild() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    var packageInfo = await PackageInfo.fromPlatform();
     appVersion = packageInfo.version;
-    int bgIntTime = globals.prefs.getInt('bgTime') ?? 0;
-
-    if (bgIntTime != 0) {
-      DateTime bgDate = new DateTime.fromMillisecondsSinceEpoch(bgIntTime);
-      bgTime = bgDate.toLocal().toString();
-    } else {
-      bgTime = 'jamais';
-    }
-    theme = globals.prefs.getString("theme") ?? "Système";
+    appVersion += ' b' + packageInfo.buildNumber;
+    theme = globals.prefs.getString('theme') ?? 'system';
   }
 
-  String appVersion = "";
-  String bgTime = "";
-  String theme = "Système";
+  String appVersion = '';
+  String theme = 'system';
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +71,9 @@ class _SettingsPageState extends State<SettingsPage> {
           title: Padding(
             padding: EdgeInsets.only(top: 30, bottom: 28),
             child: Text(
-              "Paramètres",
+              'settings',
               style: Theme.of(context).textTheme.headline1,
-            ),
+            ).tr(),
           ),
         ),
         body: SafeArea(
@@ -90,7 +85,7 @@ class _SettingsPageState extends State<SettingsPage> {
               Platform.isIOS
                   ? (Column(
                       children: [
-                        TitleSection("Changement d'icône"),
+                        TitleSection('icon_change'),
                         Container(
                           margin: EdgeInsets.only(top: 18, bottom: 18),
                           height: 100.0,
@@ -193,9 +188,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "Hors connexion",
+                              'offline',
                               style: Theme.of(context).textTheme.subtitle1,
-                            ),
+                            ).tr(),
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 8),
@@ -205,7 +200,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 setState(() {
                                   globals.isConnected = !globals.isConnected;
                                   globals.prefs.setBool(
-                                      "isConnected", globals.isConnected);
+                                      'isConnected', globals.isConnected);
                                 });
                               },
                             ),
@@ -226,9 +221,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "Theme",
+                              'theme',
                               style: Theme.of(context).textTheme.subtitle1,
-                            ),
+                            ).tr(),
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 9),
@@ -236,7 +231,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               alignedDropdown: true,
                               child: DropdownButton<String>(
                                 value: theme,
-                                icon: Icon(OMIcons.expandMore),
+                                icon: Icon(Icons.expand_more_rounded),
                                 iconSize: 24,
                                 elevation: 16,
                                 style: Theme.of(context).textTheme.subtitle1,
@@ -247,10 +242,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                 onChanged: (String newValue) {
                                   setState(() {
                                     theme = newValue;
-                                    globals.prefs.setString("theme", newValue);
-                                    if (newValue != "Système") {
+                                    globals.prefs.setString('theme', newValue);
+                                    if (newValue != 'system') {
                                       globals.currentTheme
-                                          .setDark(newValue == "Sombre");
+                                          .setDark(newValue == 'dark');
                                     } else {
                                       globals.currentTheme.setDark(
                                           MediaQuery.of(context)
@@ -260,13 +255,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                   });
                                 },
                                 items: <String>[
-                                  'Système',
-                                  'Sombre',
-                                  'Clair',
+                                  'system',
+                                  'dark',
+                                  'light',
                                 ].map<DropdownMenuItem<String>>((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
-                                    child: Text(value),
+                                    child: Text(value).tr(),
                                   );
                                 }).toList(),
                               ),
@@ -275,43 +270,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         ],
                       ),
                     ),
-                    Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              "Page restaurant",
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Switch.adaptive(
-                              value: globals.showRestaurant,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  globals.showRestaurant =
-                                      !globals.showRestaurant;
-                                  globals.prefs.setBool(
-                                      "showRestaurant", globals.showRestaurant);
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                     GestureDetector(
                       onTap: () async {
-                        AppSettings.openAppSettings();
+                        await AppSettings.openAppSettings();
                       }, // handle your onTap here
                       child: Container(
                         height: 46,
@@ -326,9 +287,9 @@ class _SettingsPageState extends State<SettingsPage> {
                           children: <Widget>[
                             Expanded(
                               child: Text(
-                                "Paramètres des notifications",
+                                'notif_settings',
                                 style: Theme.of(context).textTheme.subtitle1,
-                              ),
+                              ).tr(),
                             ),
                             Padding(
                               padding: EdgeInsets.only(right: 8),
@@ -352,22 +313,62 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "Rapports d'incident",
+                              'attendance_notif',
                               style: Theme.of(context).textTheme.subtitle1,
-                            ),
+                            ).tr(),
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 8),
                             child: Switch.adaptive(
-                              value: globals.crashConsent == "true",
+                              value: globals.notifConsent,
                               onChanged: (bool value) {
                                 setState(() {
-                                  if (globals.crashConsent == "false") {
-                                    globals.crashConsent = "true";
+                                  globals.notifConsent = value;
+                                  OneSignal.shared
+                                      .consentGranted(globals.notifConsent);
+                                  globals.prefs.setBool(
+                                      'notifConsent', globals.notifConsent);
+                                  if (globals.notifConsent) {
+                                    OneSignal.shared
+                                        .promptUserForPushNotificationPermission(
+                                            fallbackToSettings: true);
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 46,
+                      margin: EdgeInsets.only(left: 24),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                        width: 0.2,
+                        color: Color(0xffACACAC),
+                      ))),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              'error_report',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ).tr(),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Switch.adaptive(
+                              value: globals.crashConsent == 'true',
+                              onChanged: (bool value) {
+                                setState(() {
+                                  if (globals.crashConsent == 'false') {
+                                    globals.crashConsent = 'true';
                                     globals.prefs
                                         .setString('crashConsent', 'true');
                                   } else {
-                                    globals.crashConsent = "false";
+                                    globals.crashConsent = 'false';
                                     globals.prefs
                                         .setString('crashConsent', 'false');
                                   }
@@ -394,9 +395,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "Suivi d'utilisation",
+                              'usage_monitoring',
                               style: Theme.of(context).textTheme.subtitle1,
-                            ),
+                            ).tr(),
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 8),
@@ -405,13 +406,13 @@ class _SettingsPageState extends State<SettingsPage> {
                               onChanged: (bool value) {
                                 setState(() {
                                   if (globals.analyticsConsent) {
-                                    globals.analyticsConsent = true;
-                                    globals.prefs
-                                        .setBool('analyticsConsent', true);
-                                  } else {
                                     globals.analyticsConsent = false;
                                     globals.prefs
                                         .setBool('analyticsConsent', false);
+                                  } else {
+                                    globals.analyticsConsent = true;
+                                    globals.prefs
+                                        .setBool('analyticsConsent', true);
                                   }
                                 });
                               },
@@ -431,11 +432,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         child: Row(
                           children: <Widget>[
                             Expanded(
-                              child: Text("Déconnexion",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.redAccent.shade200)),
+                              child: Text('logout',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.redAccent.shade200))
+                                  .tr(),
                             ),
                             Padding(
                               padding: EdgeInsets.only(right: 8),
@@ -468,13 +470,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   GestureDetector(
                     onTap: () async {
                       if (Platform.isAndroid) {
-                        final InAppReview inAppReview = InAppReview.instance;
+                        final inAppReview = InAppReview.instance;
 
                         if (await inAppReview.isAvailable()) {
-                          inAppReview.requestReview();
+                          await inAppReview.requestReview();
                         }
                       } else {
-                        final Email email = Email(
+                        final email = Email(
                           body: '',
                           subject: 'Devinci - Feedback',
                           recipients: ['devinci@araulin.eu'],
@@ -496,9 +498,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "Écrire un commentaire",
+                              'write_comment',
                               style: Theme.of(context).textTheme.subtitle1,
-                            ),
+                            ).tr(),
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 8),
@@ -511,8 +513,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      showAboutPage(
-                        title: Text('À propos'),
+                      await showAboutPage(
+                        title: Text('about').tr(),
                         context: context,
                         applicationVersion:
                             'Version {{ version }}, build #{{ buildNumber }}',
@@ -524,33 +526,32 @@ class _SettingsPageState extends State<SettingsPage> {
                               padding: const EdgeInsets.all(0),
                               styleSheet: MarkdownStyleSheet(
                                   p: Theme.of(context).textTheme.bodyText2),
-                              data:
-                                  "Devinci est une application qui a pour but de faciliter l'utilisation du portail étudiant du pôle Léonard De Vinci.\n ## Remerciements : \n - Robin Bouchet \n - Antoine Tête (dev)"),
+                              data: 'app_description'.tr()),
                         ),
                         children: <Widget>[
                           MarkdownPageListTile(
                             filename: 'assets/LICENSE',
-                            title: Text('Voir la license'),
-                            icon: Icon(OMIcons.description),
+                            title: Text('see_license').tr(),
+                            icon: Icon(Icons.description_outlined),
                           ),
                           MarkdownPageListTile(
                             filename: 'assets/CONTRIBUTING.md',
-                            title: Text('Le code de contribution'),
-                            icon: Icon(OMIcons.share),
+                            title: Text('contribution_guide').tr(),
+                            icon: Icon(Icons.share_outlined),
                           ),
                           LicensesPageListTile(
-                            title: Text('Les licenses open source'),
-                            icon: Icon(OMIcons.favorite),
+                            title: Text('open_source_licenses').tr(),
+                            icon: Icon(Icons.favorite_outlined),
                           ),
                           MarkdownPageListTile(
                             filename: 'assets/tos.md',
-                            title: Text("Conditions générales d'utilisation"),
-                            icon: Icon(OMIcons.gavel),
+                            title: Text('TOS_full').tr(),
+                            icon: Icon(Icons.gavel_outlined),
                           ),
                           MarkdownPageListTile(
                             filename: 'assets/privacy.md',
-                            title: Text('Politique de confidentialité'),
-                            icon: Icon(OMIcons.security),
+                            title: Text('PP').tr(),
+                            icon: Icon(Icons.security_outlined),
                           ),
                         ],
                         applicationIcon: SizedBox(
@@ -581,9 +582,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "À Propos",
+                              'about',
                               style: Theme.of(context).textTheme.subtitle1,
-                            ),
+                            ).tr(),
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 8),
@@ -616,9 +617,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "Rejoindre le Discord",
+                              'join_discord',
                               style: Theme.of(context).textTheme.subtitle1,
-                            ),
+                            ).tr(),
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 8),
@@ -640,109 +641,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       } else {
                         throw 'Could not launch $url';
                       }
-                      // slideDialog.showSlideDialog(
-                      //   context: context,
-                      //   backgroundColor: Theme.of(context).cardColor,
-                      //   child: Column(children: <Widget>[
-                      //     Container(
-                      //       width: 72,
-                      //       height: 72,
-                      //       child: SvgPicture.asset(
-                      //         'assets/bocal.svg',
-                      //         color: globals.currentTheme.isDark()
-                      //             ? Colors.white
-                      //             : Colors.black,
-                      //       ),
-                      //     ),
-                      //     Padding(
-                      //       padding: const EdgeInsets.only(top: 8),
-                      //       child: Text('Bocal à pourboires',
-                      //           style: Theme.of(context).textTheme.headline2),
-                      //     ),
-                      //     Padding(
-                      //       padding: const EdgeInsets.only(
-                      //           top: 12, left: 24, right: 24),
-                      //       child: Text(
-                      //         "Si vous vous sentez particulièrement gentil et que vous souhaitez soutenir le développement de Devinci, n'importe quel don nous aideras beaucoup.",
-                      //         textAlign: TextAlign.left,
-                      //         style: TextStyle(
-                      //           fontWeight: FontWeight.normal,
-                      //           fontSize: 17,
-                      //           color: globals.currentTheme.isDark()
-                      //               ? Colors.white
-                      //               : Colors.black,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     Padding(
-                      //       padding: const EdgeInsets.only(
-                      //           top: 12, left: 24, right: 24),
-                      //       child: Text(
-                      //         Platform.isIOS
-                      //             ? "Les fonds récoltés serviront principalement à mettre suffisamment de côté pour payer les frais de l'App Store et permettre dans un futur proche d'y proposer l'application."
-                      //             : "Les fonds récoltés serviront principalement à mettre suffisamment de côté pour payer les frais du Play Store et permettre dans un futur proche d'y proposer l'application.",
-                      //         textAlign: TextAlign.left,
-                      //         style: TextStyle(
-                      //           fontWeight: FontWeight.normal,
-                      //           fontSize: 17,
-                      //           color: globals.currentTheme.isDark()
-                      //               ? Colors.white
-                      //               : Colors.black,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     Padding(
-                      //       padding: const EdgeInsets.only(
-                      //           top: 48, left: 24, right: 24),
-                      //       child: OutlineButton(
-                      //         onPressed: () async {
-                      //           const url =
-                      //               'https://www.paypal.com/paypalme/antoinraulin';
-                      //           if (await canLaunch(url)) {
-                      //             await launch(url);
-                      //           } else {
-                      //             throw 'Could not launch $url';
-                      //           }
-                      //         },
-                      //         highlightedBorderColor:
-                      //             globals.currentTheme.isDark()
-                      //                 ? Colors.white
-                      //                 : Colors.black,
-                      //         borderSide: BorderSide(
-                      //             width: 1.5,
-                      //             color: Theme.of(context).accentColor),
-                      //         child: Container(
-                      //           width: double.infinity,
-                      //           height: 50,
-                      //           child: Center(
-                      //             child: Row(
-                      //               children: [
-                      //                 Container(
-                      //                   height: 28,
-                      //                   width: 28,
-                      //                   child: SvgPicture.asset(
-                      //                     'assets/paypal.svg',
-                      //                     color: globals.currentTheme.isDark()
-                      //                         ? Colors.white
-                      //                         : Colors.black,
-                      //                   ),
-                      //                 ),
-                      //                 Expanded(
-                      //                   child: Center(
-                      //                     child: Text('Supporter',
-                      //                         style: Theme.of(context)
-                      //                             .textTheme
-                      //                             .bodyText1),
-                      //                   ),
-                      //                 ),
-                      //               ],
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ]),
-                      // );
                     }, // handle your onTap here
                     child: Container(
                       height: 46,
@@ -757,9 +655,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "Supporter",
+                              'support',
                               style: Theme.of(context).textTheme.subtitle1,
-                            ),
+                            ).tr(),
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 8),
@@ -770,59 +668,19 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
-                  Container(
-                    height: 46,
-                    margin: EdgeInsets.only(left: 24),
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                      width: 0.2,
-                      color: Color(0xffACACAC),
-                    ))),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text("Version: $appVersion",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w300,
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 46,
-                    margin: EdgeInsets.only(left: 24),
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                      width: 0.2,
-                      color: Color(0xffACACAC),
-                    ))),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text("Date fetch: $bgTime",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w300,
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
+                  VersionComponent(),
+                  IdComponent(),
                   Container(
                     height: 46,
                     margin: EdgeInsets.only(left: 24),
                     child: Row(
                       children: <Widget>[
                         Expanded(
-                          child: Text("Développé avec ❤ par Antoine Raulin",
+                          child: Text('footer',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w300,
-                              )),
+                              )).tr(),
                         ),
                       ],
                     ),
@@ -831,6 +689,114 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class VersionComponent extends StatefulWidget {
+  VersionComponent({Key key}) : super(key: key);
+
+  @override
+  _VersionComponentState createState() => _VersionComponentState();
+}
+
+class _VersionComponentState extends State<VersionComponent> {
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
+  }
+
+  void runBeforeBuild() async {
+    var packageInfo = await PackageInfo.fromPlatform();
+    appVersion = packageInfo.version;
+    appVersion += ' b' + packageInfo.buildNumber;
+    setState(() {
+      show = true;
+    });
+  }
+
+  String appVersion = '';
+  bool show = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 46,
+      margin: EdgeInsets.only(left: 24),
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        width: 0.2,
+        color: Color(0xffACACAC),
+      ))),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Text('Version: ' + (show ? appVersion : '...'),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w300,
+                )),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class IdComponent extends StatefulWidget {
+  IdComponent({Key key}) : super(key: key);
+
+  @override
+  _IdComponentState createState() => _IdComponentState();
+}
+
+class _IdComponentState extends State<IdComponent> {
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
+  }
+
+  void runBeforeBuild() async {
+    var sub = await OneSignal.shared.getPermissionSubscriptionState();
+    var sub2 = sub.subscriptionStatus;
+    id = sub2.userId;
+  }
+
+  String id = '';
+  bool show = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        await Clipboard.setData(ClipboardData(text: id));
+        final snackBar = SnackBar(content: Text('copied').tr(args: [id]));
+        Scaffold.of(context).showSnackBar(snackBar);
+      }, // handle your onTap here
+      child: Container(
+        height: 46,
+        margin: EdgeInsets.only(left: 24),
+        decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(
+          width: 0.2,
+          color: Color(0xffACACAC),
+        ))),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Text('copy_player_id',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
+                  )).tr(),
+            ),
+          ],
         ),
       ),
     );

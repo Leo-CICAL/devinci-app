@@ -156,10 +156,11 @@ class FeedbackIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
     Color currentColor;
-    if (onPressed != null)
+    if (onPressed != null) {
       currentColor = color;
-    else
+    } else {
       currentColor = disabledColor ?? Theme.of(context).disabledColor;
+    }
 
     Widget result = ConstrainedBox(
       constraints: BoxConstraints(

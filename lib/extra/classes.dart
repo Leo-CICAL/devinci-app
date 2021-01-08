@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:devinci/extra/globals.dart' as globals;
-import 'package:outline_material_icons/outline_material_icons.dart';
+
 import 'package:share_extend/share_extend.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Cours {
   Cours(
@@ -65,7 +66,7 @@ class DevinciTheme with ChangeNotifier {
 }
 
 class IsLoading with ChangeNotifier {
-  List<bool> isLoading = [false, false, false, false, false];
+  List<bool> isLoading = [false, false, false, false, false, false];
   bool state(int index) {
     return isLoading[index];
   }
@@ -90,8 +91,8 @@ class NoteLock with ChangeNotifier {
 
 // ignore: must_be_immutable
 class PDFScreen extends StatelessWidget {
-  String pathPDF = "";
-  String title = "";
+  String pathPDF = '';
+  String title = '';
   PDFScreen(this.pathPDF, this.title);
 
   @override
@@ -118,7 +119,7 @@ class PDFScreen extends StatelessWidget {
               icon: IconTheme(
                 data: Theme.of(context).accentIconTheme,
                 child: Icon(
-                  OMIcons.share,
+                  Icons.share_outlined,
                 ),
               ),
               onPressed: () {
@@ -162,18 +163,18 @@ class ContextEntryState extends State<ContextEntry> {
         Expanded(
           child: Container(
             height: 20,
-            child: FlatButton(
+            child: TextButton(
               onPressed: copy,
-              child: Text('Copier'),
+              child: Text('copy').tr(),
             ),
           ),
         ),
         Expanded(
           child: Container(
             height: 20,
-            child: FlatButton(
+            child: TextButton(
               onPressed: share,
-              child: Text('Partager'),
+              child: Text('share').tr(),
             ),
           ),
         ),

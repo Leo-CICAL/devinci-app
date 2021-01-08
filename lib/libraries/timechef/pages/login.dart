@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/libraries/flutter_progress_button/flutter_progress_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../timechef.dart';
 
 class LoginPage extends StatefulWidget {
@@ -23,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   final FocusNode _passwordFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
   ButtonState buttonState = ButtonState.normal;
+  bool show = false;
 
   @override
   void dispose() {
@@ -34,178 +36,128 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
-      alignment: Alignment.center,
-      margin: const EdgeInsets.only(left: 28.0, right: 28.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
-            child: Text(
-              "Elior - TimeChef",
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 24,
+    if (show) {
+      return Container(
+        alignment: Alignment.center,
+        margin: const EdgeInsets.only(left: 28.0, right: 28.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: Text(
+                'Elior - TimeChef',
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 22,
+                ),
               ),
             ),
-          ),
-          Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  autocorrect: false,
-                  textInputAction: TextInputAction.next,
-                  focusNode: _usernameFocus,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Utilisateur',
-                  ),
-                  controller: myControllerUsername,
-                  onFieldSubmitted: (term) {
-                    fieldFocusChange(context, _usernameFocus, _passwordFocus);
-                  },
-                  validator: (value) {
-                    if (globals.timeChefUser != null) {
-                      if (globals.timeChefUser.error) {
-                        return 'Identifiants incorrects';
-                      }
-                    }
-                    if (value.isEmpty) {
-                      return 'Ne peut être vide';
-                    }
-                    return null;
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: TextFormField(
-                    obscureText: true,
-                    textInputAction: TextInputAction.done,
-                    focusNode: _passwordFocus,
+            Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    textInputAction: TextInputAction.next,
+                    focusNode: _usernameFocus,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'Mot de passe',
+                      labelText: 'user'.tr(),
                     ),
-                    controller: myControllerPassword,
-                    onFieldSubmitted: (value) async {
-                      _passwordFocus.unfocus();
-
-                      if (globals.timeChefUser != null)
-                        globals.timeChefUser.error = false;
-                      if (_formKey.currentState.validate()) {
-                        print("valid");
-                        setState(() {
-                          buttonState = ButtonState.inProgress;
-                        });
-                        globals.timeChefUser = new TimeChefUser(
-                            myControllerUsername.text,
-                            myControllerPassword.text);
-                        try {
-                          await globals.timeChefUser.init();
-                          globals.pageChanger.setPage(1);
-                        } catch (exception, stacktrace) {
-                          print(exception);
-                          setState(() {
-                            buttonState = ButtonState.error;
-                          });
-                          Timer(
-                              Duration(milliseconds: 500),
-                              () => setState(() {
-                                    buttonState = ButtonState.normal;
-                                  }));
-                          //user.init() throw error if credentials are wrong or if an error occurred during the process
-                          if (globals.timeChefUser.code == 401) {
-                            //credentials are wrong
-                            myControllerPassword.text = "";
-                          } else {
-                            await reportError(
-                                'timechef/login.dart | _LoginPageState | runBeforeBuild() | timeChefUser.init() | else => $exception',
-                                stacktrace);
-
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                // return object of type Dialog
-                                return AlertDialog(
-                                  title: new Text("Erreur"),
-                                  content: new Text(
-                                      "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: $exception"),
-                                  actions: <Widget>[
-                                    // usually buttons at the bottom of the dialog
-                                    new FlatButton(
-                                      child: new Text("Fermer"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-
-                          _formKey.currentState.validate();
-                        }
-                      } else {
-                        print("invalid");
-                        setState(() {
-                          buttonState = ButtonState.error;
-                        });
-                        Timer(
-                            Duration(milliseconds: 500),
-                            () => setState(() {
-                                  buttonState = ButtonState.normal;
-                                }));
-                      }
+                    controller: myControllerUsername,
+                    onFieldSubmitted: (term) {
+                      fieldFocusChange(context, _usernameFocus, _passwordFocus);
                     },
                     validator: (value) {
                       if (globals.timeChefUser != null) {
                         if (globals.timeChefUser.error) {
-                          return null;
+                          return 'wrong_id'.tr();
                         }
                       }
                       if (value.isEmpty) {
-                        return 'Ne peut être vide';
+                        return 'no_empty'.tr();
                       }
                       return null;
                     },
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: ProgressButton(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 18),
-                      child: Text(
-                        "Connexion".toUpperCase(),
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: globals.currentTheme.isDark()
-                                ? Colors.black
-                                : Colors.white),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: TextFormField(
+                      obscureText: true,
+                      textInputAction: TextInputAction.done,
+                      focusNode: _passwordFocus,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'password'.tr(),
                       ),
-                    ),
-                    onPressed: () async {
-                      if (globals.timeChefUser != null)
-                        globals.timeChefUser.error = false;
-                      if (_formKey.currentState.validate()) {
-                        print("valid");
-                        setState(() {
-                          buttonState = ButtonState.inProgress;
-                        });
-                        globals.timeChefUser = new TimeChefUser(
-                            myControllerUsername.text,
-                            myControllerPassword.text);
-                        try {
-                          await globals.timeChefUser.init();
-                          globals.pageChanger.setPage(1);
-                        } catch (exception, stacktrace) {
-                          print(exception);
+                      controller: myControllerPassword,
+                      onFieldSubmitted: (value) async {
+                        _passwordFocus.unfocus();
+
+                        if (globals.timeChefUser != null) {
+                          globals.timeChefUser.error = false;
+                        }
+                        if (_formKey.currentState.validate()) {
+                          print('valid');
+                          setState(() {
+                            buttonState = ButtonState.inProgress;
+                          });
+                          globals.timeChefUser = TimeChefUser(
+                              myControllerUsername.text,
+                              myControllerPassword.text);
+                          try {
+                            await globals.timeChefUser.init();
+                            globals.pageChanger.setPage(1);
+                          } catch (exception, stacktrace) {
+                            print(exception);
+                            setState(() {
+                              buttonState = ButtonState.error;
+                            });
+                            Timer(
+                                Duration(milliseconds: 500),
+                                () => setState(() {
+                                      buttonState = ButtonState.normal;
+                                    }));
+                            //user.init() throw error if credentials are wrong or if an error occurred during the process
+                            if (globals.timeChefUser.code == 401) {
+                              //credentials are wrong
+                              myControllerPassword.text = '';
+                            } else {
+                              await reportError(
+                                  'timechef/login.dart | _LoginPageState | runBeforeBuild() | timeChefUser.init() | else => $exception',
+                                  stacktrace);
+
+                              await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  // return object of type Dialog
+                                  return AlertDialog(
+                                    title: Text('error').tr(),
+                                    content: Text(
+                                      'unknown_error'.tr(namedArgs: {
+                                        'code': globals.user.code.toString(),
+                                        'exception': exception
+                                      }),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text('close').tr(),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+
+                            _formKey.currentState.validate();
+                          }
+                        } else {
                           setState(() {
                             buttonState = ButtonState.error;
                           });
@@ -214,75 +166,151 @@ class _LoginPageState extends State<LoginPage> {
                               () => setState(() {
                                     buttonState = ButtonState.normal;
                                   }));
-                          //user.init() throw error if credentials are wrong or if an error occurred during the process
-                          if (globals.timeChefUser.code == 401) {
-                            //credentials are wrong
-                            myControllerPassword.text = "";
-                          } else {
-                            await reportError(
-                                'timechef/login.dart | _LoginPageState | runBeforeBuild() | timeChefUser.init() | else => $exception',
-                                stacktrace);
-
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                // return object of type Dialog
-                                return AlertDialog(
-                                  title: new Text("Erreur"),
-                                  content: new Text(
-                                      "Une erreur inconnue est survenue.\n\nCode : ${globals.user.code}\nInformation: $exception"),
-                                  actions: <Widget>[
-                                    // usually buttons at the bottom of the dialog
-                                    new FlatButton(
-                                      child: new Text("Fermer"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-
-                          _formKey.currentState.validate();
                         }
-                      } else {
-                        print("invalid");
-                        setState(() {
-                          buttonState = ButtonState.error;
-                        });
-                        Timer(
-                            Duration(milliseconds: 500),
-                            () => setState(() {
-                                  buttonState = ButtonState.normal;
-                                }));
-                      }
-                    },
-                    buttonState: buttonState,
-                    backgroundColor: Theme.of(context).accentColor,
-                    progressColor: globals.currentTheme.isDark()
-                        ? Colors.black
-                        : Colors.white,
-                  ),
-                ),
-                Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: FlatButton(
-                        onPressed: () async {
-                          const url = 'https://timechef.elior.com/#/register';
-                          if (await canLaunch(url)) {
-                            await launch(url);
-                          } else {
-                            throw 'Could not launch $url';
+                      },
+                      validator: (value) {
+                        if (globals.timeChefUser != null) {
+                          if (globals.timeChefUser.error) {
+                            return null;
                           }
-                        },
-                        child: Text("Je n'ai pas de compte")))
-              ],
+                        }
+                        if (value.isEmpty) {
+                          return 'no_empty'.tr();
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: ProgressButton(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 18),
+                        child: Text(
+                          'login'.tr().toUpperCase(),
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: globals.currentTheme.isDark()
+                                  ? Colors.black
+                                  : Colors.white),
+                        ),
+                      ),
+                      onPressed: () async {
+                        if (globals.timeChefUser != null) {
+                          globals.timeChefUser.error = false;
+                        }
+                        if (_formKey.currentState.validate()) {
+                          setState(() {
+                            buttonState = ButtonState.inProgress;
+                          });
+                          globals.timeChefUser = TimeChefUser(
+                              myControllerUsername.text,
+                              myControllerPassword.text);
+                          try {
+                            await globals.timeChefUser.init();
+                            globals.pageChanger.setPage(1);
+                          } catch (exception, stacktrace) {
+                            print(exception);
+                            setState(() {
+                              buttonState = ButtonState.error;
+                            });
+                            Timer(
+                                Duration(milliseconds: 500),
+                                () => setState(() {
+                                      buttonState = ButtonState.normal;
+                                    }));
+                            //user.init() throw error if credentials are wrong or if an error occurred during the process
+                            if (globals.timeChefUser.code == 401) {
+                              //credentials are wrong
+                              myControllerPassword.text = '';
+                            } else {
+                              await reportError(
+                                  'timechef/login.dart | _LoginPageState | runBeforeBuild() | timeChefUser.init() | else => $exception',
+                                  stacktrace);
+
+                              await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  // return object of type Dialog
+                                  return AlertDialog(
+                                    title: Text('error').tr(),
+                                    content: Text(
+                                      'unknown_error'.tr(namedArgs: {
+                                        'code': globals.user.code.toString(),
+                                        'exception': exception
+                                      }),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text('close').tr(),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+
+                            _formKey.currentState.validate();
+                          }
+                        } else {
+                          setState(() {
+                            buttonState = ButtonState.error;
+                          });
+                          Timer(
+                              Duration(milliseconds: 500),
+                              () => setState(() {
+                                    buttonState = ButtonState.normal;
+                                  }));
+                        }
+                      },
+                      buttonState: buttonState,
+                      backgroundColor: Theme.of(context).accentColor,
+                      progressColor: globals.currentTheme.isDark()
+                          ? Colors.black
+                          : Colors.white,
+                    ),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: TextButton(
+                          onPressed: () async {
+                            const url = 'https://timechef.elior.com/#/register';
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              throw 'Could not launch $url';
+                            }
+                          },
+                          child: Text('no_account',
+                                  style: TextStyle(
+                                      color: Theme.of(context).accentColor))
+                              .tr()))
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    } else {
+      return TitleSection('self_balance',
+          iconButton: OutlinedButton(
+              onPressed: () {
+                setState(() {
+                  show = true;
+                });
+              },
+              style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.resolveWith((states) {
+                return Theme.of(context).accentColor.withOpacity(0.2);
+              })),
+              child: Text('login',
+                      style: TextStyle(color: Theme.of(context).accentColor))
+                  .tr()),
+          padding: EdgeInsets.only(left: 16));
+    }
   }
 }

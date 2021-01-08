@@ -1,17 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
+import 'package:crypto/crypto.dart';
 import 'package:devinci/extra/classes.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:html/parser.dart' show parse;
-import 'package:html/dom.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
+import 'package:sembast/utils/value_utils.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+import 'api.dart';
 
 class User {
   //constructor
@@ -28,47 +32,49 @@ class User {
   int code = 200;
 
   Map<String, String> tokens = {
-    "SimpleSAML": "",
-    "alv": "",
-    "uids": "",
-    "SimpleSAMLAuthToken": "",
+    'SimpleSAML': '',
+    'alv': '',
+    'uids': '',
+    'SimpleSAMLAuthToken': '',
   };
 
   void reset() async {
-    this.tokens["SimpleSAML"] = "";
-    this.tokens["alv"] = "";
-    this.tokens["SimpleSAMLAuthToken"] = "";
+    tokens['SimpleSAML'] = '';
+    tokens['alv'] = '';
+    tokens['SimpleSAMLAuthToken'] = '';
     await globals.storage.deleteAll();
   }
 
   Map<String, String> data = {
-    "badge": "",
-    "client": "",
-    "idAdmin": "",
-    "ine": "",
-    "edtUrl": "",
-    "name": "",
-    "ecole": "",
+    'badge': '',
+    'client': '',
+    'idAdmin': '',
+    'ine': '',
+    'edtUrl': '',
+    'name': '',
+    'ecole': '',
   };
 
   Map<String, dynamic> absences = {
-    "nT": 0,
-    "s1": 0,
-    "s2": 0,
-    "seances": 0,
-    "liste": [],
-    "done": false
+    'nT': 0,
+    's1': 0,
+    's2': 0,
+    'seances': 0,
+    'liste': [],
+    'done': false
   };
 
-  Map<String, dynamic> notes = {
-    "s1": [],
-    "s2": [],
-  };
-
-  Map notesEvolution = {
-    "added": [],
-    "changed": [],
-  };
+  List<dynamic> notes = [
+    // {
+    //   "name": "", //ESILV A1
+    //   "s":[
+    //     [], //S1
+    //     []  //S2
+    //   ]
+    // }
+  ];
+  List<List<String>> notesList = [];
+  List<String> years = [];
 
   bool notesFetched = false;
 
@@ -89,20 +95,20 @@ class User {
   int presenceIndex = 0;
 
   Map<String, dynamic> documents = {
-    "certificat": {
-      "annee": "",
-      "fr_url": "",
-      "en_url": "",
+    'certificat': {
+      'annee': '',
+      'fr_url': '',
+      'en_url': '',
     },
-    "imaginr": {
-      "annee": "",
-      "url": "",
+    'imaginr': {
+      'annee': '',
+      'url': '',
     },
-    "calendrier": {
-      "annee": "",
-      "url": "",
+    'calendrier': {
+      'annee': '',
+      'url': '',
     },
-    "bulletins": []
+    'bulletins': []
   };
 
   List<Salle> salles = [];
@@ -195,122 +201,116 @@ class User {
     },
   };
 
-  Future<void> init() async {
+  Future<void> init(material.BuildContext context) async {
     //fetch notesConfig
-    print(json.encode(this.notesConfig));
     try {
-      HttpClient client = new HttpClient();
+      var client = HttpClient();
       client.connectionTimeout = const Duration(seconds: 4);
-      HttpClientRequest req = await client.getUrl(
+      var req = await client.getUrl(
         Uri.parse(
-          "https://devinci.araulin.tech/nc.json",
+          'https://devinci.araulin.tech/nc.json',
         ),
       );
-      HttpClientResponse res = await req.close();
+      var res = await req.close();
       if (res.statusCode == 200) {
-        String body = await res.transform(utf8.decoder).join();
-        this.notesConfig = json.decode(body);
+        var body = await res.transform(utf8.decoder).join();
+        notesConfig = json.decode(body);
       }
+      // ignore: empty_catches
     } catch (exception) {}
     //init sembast db
-    Directory directory;
-    if (Platform.isAndroid) {
-      directory = await getExternalStorageDirectory();
-    } else {
-      directory = await getApplicationDocumentsDirectory();
-    }
-    final String path = directory.path;
-    // File path to a file in the current directory
-    String dbPath = path + '/data/db.db';
-    DatabaseFactory dbFactory = databaseFactoryIo;
+    var directory = await getApplicationDocumentsDirectory();
 
+    final path = directory.path;
+
+    // File path to a file in the current directory
+    var dbPath = path + '/data/data.db';
+    var dbFactory = databaseFactoryIo;
 // We use the database factory to open the database
     globals.db = await dbFactory.openDatabase(dbPath);
-    Map<String, dynamic> notes = await globals.store
-        .record('notes')
-        .get(globals.db) as Map<String, dynamic>;
+    var notes =
+        await globals.store.record('notes').get(globals.db) as List<dynamic>;
     if (notes == null) {
-      notes = {
-        "s1": [],
-        "s2": [],
-      };
+      notes = [];
       await globals.store.record('notes').put(globals.db, notes);
     }
-    //this.notes.copy(notes);
+    this.notes = cloneList(notes);
     //retrieve tokens from secure storage (if they exist)
-    this.tokens["SimpleSAML"] = await globals.storage.read(key: "SimpleSAML") ??
-        ""; //try to get token SimpleSAML from secure storage, if secure storage send back null (because the token does't exist yet) '??' means : if null, so if the token doesn't exist replace null by an empty string.
-    this.tokens["alv"] = await globals.storage.read(key: "alv") ?? "";
-    this.tokens["uids"] = await globals.storage.read(key: "uids") ?? "";
-    this.tokens["SimpleSAMLAuthToken"] =
-        await globals.storage.read(key: "SimpleSAMLAuthToken") ?? "";
+    tokens['SimpleSAML'] = await globals.storage.read(key: 'SimpleSAML') ??
+        ''; //try to get token SimpleSAML from secure storage, if secure storage send back null (because the token does't exist yet) '??' means : if null, so if the token doesn't exist replace null by an empty string.
+    tokens['alv'] = await globals.storage.read(key: 'alv') ?? '';
+    tokens['uids'] = await globals.storage.read(key: 'uids') ?? '';
+    tokens['SimpleSAMLAuthToken'] =
+        await globals.storage.read(key: 'SimpleSAMLAuthToken') ?? '';
 
     //retrieve data from secure storage
-    globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'true';
+
+    globals.notifConsent = globals.prefs.getBool('notifConsent') ?? false;
+
+    globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'false';
     await FirebaseCrashlytics.instance
         .setCrashlyticsCollectionEnabled(globals.crashConsent == 'true');
     globals.analyticsConsent =
-        globals.prefs.getBool('analyticsConsent') ?? true;
-    globals.showRestaurant = globals.prefs.getBool('showRestaurant') ?? true;
+        globals.prefs.getBool('analyticsConsent') ?? false;
     await globals.analytics
         .setAnalyticsCollectionEnabled(globals.analyticsConsent);
-    bool calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
+    var calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
     globals.calendarView =
         calendarViewDay ? CalendarView.day : CalendarView.workWeek;
-    this.data["badge"] = await globals.storage.read(key: "badge") ?? "";
-    this.data["client"] = await globals.storage.read(key: "client") ?? "";
-    this.data["idAdmin"] = await globals.storage.read(key: "idAdmin") ?? "";
-    this.data["ine"] = await globals.storage.read(key: "ine") ?? "";
-    this.data["edtUrl"] = await globals.storage.read(key: "edtUrl") ?? "";
-    if (this.data["edtUrl"] != "") {
-      await setICal(this.data["edtUrl"]);
+    data['badge'] = await globals.storage.read(key: 'badge') ?? '';
+    data['client'] = await globals.storage.read(key: 'client') ?? '';
+    data['idAdmin'] = await globals.storage.read(key: 'idAdmin') ?? '';
+    data['ine'] = await globals.storage.read(key: 'ine') ?? '';
+    data['edtUrl'] = await globals.storage.read(key: 'edtUrl') ?? '';
+    if (data['edtUrl'] != '') {
+      await setICal(data['edtUrl']);
     }
-    this.data["name"] = await globals.storage.read(key: "name") ?? "";
+    data['name'] = await globals.storage.read(key: 'name') ?? '';
     if (globals.isConnected) {
       try {
-        l("test tokens");
-        await this.testTokens().timeout(Duration(seconds: 8), onTimeout: () {
+        l('test tokens');
+        await testTokens().timeout(Duration(seconds: 8), onTimeout: () {
           globals.isConnected = false;
         }).catchError((exception) async {
-          l("test tokens exception : $exception");
+          l('test tokens exception : $exception');
           //testTokens throw an exception if tokens don't exist or if they aren't valid
           //as the tokens don't exist yet or aren't valid, we shall retrieve them from devinci's server
           try {
-            await this.getTokens();
+            await getTokens();
           } catch (exception) {
             //getTokens throw an exception if an error occurs during the retrieving or if credentials are wrong
-            if (this.code == 500) {
+            if (code == 500) {
               //the exception was thrown by a dart process, which meens that credentials may be good, but the function had trouble to access the server.
 
-            } else if (this.code == 401) {
+            } else if (code == 401) {
               await globals.storage
                   .deleteAll(); //remove all sensitive data from the phone if the user can't connect
               //the exception was thrown because credentials are wrong
               throw Exception(
-                  "wrong credentials : $exception"); //throw an exception to indicate to the parent process that credentials are wrong and may need to be changed
+                  'wrong credentials : $exception'); //throw an exception to indicate to the parent process that credentials are wrong and may need to be changed
             } else {
               throw Exception(exception); //we don't know what happened here
             }
           }
         }); //test if tokens exist and if so, test if they are still valid
       } catch (exception) {
-        l("test tokens exception : $exception");
+        l('test tokens exception : $exception');
 
         //testTokens throw an exception if tokens don't exist or if they aren't valid
         //as the tokens don't exist yet or aren't valid, we shall retrieve them from devinci's server
         try {
-          await this.getTokens();
+          await getTokens();
         } catch (exception) {
           //getTokens throw an exception if an error occurs during the retrieving or if credentials are wrong
-          if (this.code == 500) {
+          if (code == 500) {
             //the exception was thrown by a dart process, which meens that credentials may be good, but the function had trouble to access the server.
 
-          } else if (this.code == 401) {
+          } else if (code == 401) {
             await globals.storage
                 .deleteAll(); //remove all sensitive data from the phone if the user can't connect
             //the exception was thrown because credentials are wrong
             throw Exception(
-                "wrong credentials : $exception"); //throw an exception to indicate to the parent process that credentials are wrong and may need to be changed
+                'wrong credentials : $exception'); //throw an exception to indicate to the parent process that credentials are wrong and may need to be changed
           } else {
             throw Exception(exception); //we don't know what happened here
           }
@@ -318,85 +318,85 @@ class User {
       }
       //if we manage to arrive here it means that we have valid tokens and that credentials are good
       await globals.storage.write(
-          key: "username",
-          value: this
-              .username); //save credentials in secure storage if user specified "remember me"
-      await globals.storage.write(key: "password", value: this.password);
-      this.password =
+          key: 'username',
+          value:
+              username); //save credentials in secure storage if user specified "remember me"
+      await globals.storage.write(key: 'password', value: password);
+      password =
           null; //if tokens are still valid we'll never need the password again in this session, so it is useless to keep it in the object and risk it to be leaked or displayed
-      print('edt : ' + globals.user.data["edtUrl"]);
-      if (globals.user.data['ecole'] == "" ||
-          globals.user.data['edtUrl'] == "") {
+      print('edt : ' + globals.user.data['edtUrl']);
+      if (globals.user.data['ecole'] == '' ||
+          globals.user.data['edtUrl'] == '') {
         //edtUrl being the last information we retrieve from the getData() function, if it doesn't exist it means that the getData() function didn't work or was never run and must be run at least once.
         try {
           print("let's go try");
           await globals.user.getData();
         } catch (exception) {
-          //print(exception);
+          print(exception);
         }
       }
     }
-    //print("done init");
+    DevinciApi().register();
+    print('done init');
     return;
   }
 
   Future<void> getTokens() async {
-    HttpClient client = new HttpClient();
+    var client = HttpClient();
 
-    if (this.username != "" && this.password != "") {
-      HttpClientRequest req = await client.getUrl(
+    if (username != '' && password != '') {
+      var req = await client.getUrl(
         Uri.parse('https://www.leonard-de-vinci.net/'),
       );
-      HttpClientResponse res = await req.close();
+      var res = await req.close();
 
       l('statusCode : ${res.statusCode}');
       l('headers : ${res.headers}');
       l('STEP 1 : HEADERS - SET-COOKIE : ${res.headers.value("set-cookie")}');
-      RegExp regExp = new RegExp(r'(.*?)=(.*?)($|;|,(?! ))');
-      this.tokens["alv"] = regExp
+      var regExp = RegExp(r'(.*?)=(.*?)($|;|,(?! ))');
+      tokens['alv'] = regExp
           .firstMatch(
-            res.headers.value("set-cookie"),
+            res.headers.value('set-cookie'),
           )
           .group(2);
-      l('ALV : "${this.tokens['alv']}"');
+      l('ALV : "${tokens['alv']}"');
       if (res.statusCode == 200) {
         req = await client.postUrl(
             Uri.parse('https://www.leonard-de-vinci.net/ajax.inc.php'));
         req.headers.set(
             'Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
         req.headers.set('Referer', 'https://www.leonard-de-vinci.net/');
-        req.headers.set('Cookie', 'alv=${this.tokens["alv"]}');
-        req.write(
-            "act=ident_analyse&login=" + Uri.encodeComponent(this.username));
-        l("[STEP 2] REQ HEADERS : ${req.headers}");
+        req.headers.set('Cookie', 'alv=${tokens["alv"]}');
+        req.write('act=ident_analyse&login=' + Uri.encodeComponent(username));
+        l('[STEP 2] REQ HEADERS : ${req.headers}');
         res = await req.close();
         l('[STEP 2] statusCode : ${res.statusCode}');
         l('[STEP 2] RES headers : ${res.headers}');
-        String body = await res.transform(utf8.decoder).join();
+        var body = await res.transform(utf8.decoder).join();
         l('[STEP 2] BODY : $body');
-        if (body.indexOf("location") > -1) {
+        if (body.contains('location')) {
           l('username correct');
 
           req = await client.getUrl(
             Uri.parse(
                 'https://www.leonard-de-vinci.net/login.sso.php?username=' +
-                    Uri.encodeComponent(this.username)),
+                    Uri.encodeComponent(username)),
           );
           req.followRedirects = false;
           req.headers.set('Referer', 'https://www.leonard-de-vinci.net/');
-          req.headers.set('Cookie', 'alv=${this.tokens["alv"]}');
-          l("[STEP 3] REQ HEADERS : ${req.headers}");
+          req.headers.set('Cookie', 'alv=${tokens["alv"]}');
+          l('[STEP 3] REQ HEADERS : ${req.headers}');
           res = await req.close();
           l('[STEP 3] statusCode : ${res.statusCode}');
           l('[STEP 3] RES headers : ${res.headers}');
-          this.tokens["SimpleSAML"] = regExp
+          tokens['SimpleSAML'] = regExp
               .firstMatch(
-                res.headers.value("set-cookie"),
+                res.headers.value('set-cookie'),
               )
               .group(2);
-          l('SimpleSAML : "${this.tokens['SimpleSAML']}"');
+          l('SimpleSAML : "${tokens['SimpleSAML']}"');
 
-          String redUrl = res.headers.value("location");
+          var redUrl = res.headers.value('location');
 
           req = await client.getUrl(
             Uri.parse(redUrl),
@@ -405,713 +405,697 @@ class User {
           l('[STEP 4] statusCode : ${res.statusCode}');
           l('[STEP 4] RES headers : ${res.headers}');
           body = await res.transform(utf8.decoder).join();
-          //l('[STEP 4] BODY : $body');
-          regExp = new RegExp(r'action="\/adfs(.*?)"');
-          String url =
-              "https://adfs.devinci.fr/adfs" + regExp.firstMatch(body).group(1);
+          l('[STEP 4] BODY : $body');
+          regExp = RegExp(r'action="\/adfs(.*?)"');
+          var url =
+              'https://adfs.devinci.fr/adfs' + regExp.firstMatch(body).group(1);
           l('[STEP 4] url : $url');
 
           req = await client.postUrl(
             Uri.parse(url),
           );
           req.headers.set('Content-Type', 'application/x-www-form-urlencoded');
-          req.write("UserName=" +
-              Uri.encodeComponent(this.username) +
-              "&Password=" +
-              Uri.encodeComponent(this.password) +
-              "&AuthMethod=FormsAuthentication");
-          l("[STEP 5] REQ HEADERS : ${req.headers}");
+          req.write('UserName=' +
+              Uri.encodeComponent(username) +
+              '&Password=' +
+              Uri.encodeComponent(password) +
+              '&AuthMethod=FormsAuthentication');
+          l('[STEP 5] REQ HEADERS : ${req.headers}');
           res = await req.close();
           l('[STEP 5] statusCode : ${res.statusCode}');
           l('[STEP 5] RES headers : ${res.headers}');
 
-          if (res.headers.value("set-cookie") != null &&
+          if (res.headers.value('set-cookie') != null &&
               res.statusCode == 302) {
             l('connected');
-            regExp = new RegExp(r'(.*?)=(.*?)($|;|,(?! ))');
+            regExp = RegExp(r'(.*?)=(.*?)($|;|,(?! ))');
             // ignore: non_constant_identifier_names
-            String MSISAuth = regExp
+            var MSISAuth = regExp
                 .firstMatch(
-                  res.headers.value("set-cookie"),
+                  res.headers.value('set-cookie'),
                 )
                 .group(2);
-            redUrl = res.headers.value("location");
+            redUrl = res.headers.value('location');
 
             req = await client.getUrl(
               Uri.parse(redUrl),
             );
-            req.headers.set("Cookie", "MSISAuth=" + MSISAuth);
-            l("[STEP 6] REQ HEADERS : ${req.headers}");
+            req.headers.set('Cookie', 'MSISAuth=' + MSISAuth);
+            l('[STEP 6] REQ HEADERS : ${req.headers}');
             res = await req.close();
             l('[STEP 6] statusCode : ${res.statusCode}');
             l('[STEP 6] RES headers : ${res.headers}');
             body = await res.transform(utf8.decoder).join();
-            regExp = new RegExp(r'value="(.*?)"');
-            String value = regExp.firstMatch(body).group(1);
+            regExp = RegExp(r'value="(.*?)"');
+            var value = regExp.firstMatch(body).group(1);
 
-            //l('value : $value');
+            l('value : $value');
             req = await client.postUrl(
               Uri.parse(
-                  "https://www.leonard-de-vinci.net/include/SAML/module.php/saml/sp/saml2-acs.php/devinci-sp"),
+                  'https://www.leonard-de-vinci.net/include/SAML/module.php/saml/sp/saml2-acs.php/devinci-sp'),
             );
             req.headers
-                .set("Content-Type", "application/x-www-form-urlencoded");
-            req.headers.set("Cookie",
-                "alv=${this.tokens["alv"]}; SimpleSAML=${this.tokens["SimpleSAML"]}");
+                .set('Content-Type', 'application/x-www-form-urlencoded');
+            req.headers.set('Cookie',
+                "alv=${tokens["alv"]}; SimpleSAML=${tokens["SimpleSAML"]}");
             req.followRedirects = false;
-            String b = "SAMLResponse=" +
+            var b = 'SAMLResponse=' +
                 Uri.encodeComponent(value) +
-                "&RelayState=https://www.leonard-de-vinci.net/login.sso.php";
+                '&RelayState=https://www.leonard-de-vinci.net/login.sso.php';
             req.write(b);
-            l("[STEP 7] REQ HEADERS : ${req.headers}");
+            l('[STEP 7] REQ HEADERS : ${req.headers}');
             res = await req.close();
             l('[STEP 7] statusCode : ${res.statusCode}');
             l('[STEP 7] RES headers : ${res.headers}');
             body = await res.transform(utf8.decoder).join();
             l("set-cookie : ${res.headers['set-cookie']}");
             if (res.statusCode == 303) {
-              redUrl = res.headers.value("location");
-              regExp = new RegExp(r'(.*?)=(.*?)($|;|,(?! ))');
-              this.tokens["SimpleSAMLAuthToken"] = regExp
+              redUrl = res.headers.value('location');
+              regExp = RegExp(r'(.*?)=(.*?)($|;|,(?! ))');
+              tokens['SimpleSAMLAuthToken'] = regExp
                   .firstMatch(
                     res.headers['set-cookie'][1],
                   )
                   .group(2);
-              l('SimpleSAMLAuthToken : "${this.tokens["SimpleSAMLAuthToken"]}"');
+              l('SimpleSAMLAuthToken : "${tokens["SimpleSAMLAuthToken"]}"');
 
               req = await client.getUrl(
                 Uri.parse(redUrl),
               );
               req.followRedirects = false;
               req.headers.set(
-                  "Cookie",
-                  "alv=" +
-                      this.tokens["alv"] +
-                      "; SimpleSAML=" +
-                      this.tokens["SimpleSAML"] +
-                      "; SimpleSAMLAuthToken=" +
-                      this.tokens["SimpleSAMLAuthToken"]);
-              l("[STEP 8] REQ HEADERS : ${req.headers}");
+                  'Cookie',
+                  'alv=' +
+                      tokens['alv'] +
+                      '; SimpleSAML=' +
+                      tokens['SimpleSAML'] +
+                      '; SimpleSAMLAuthToken=' +
+                      tokens['SimpleSAMLAuthToken']);
+              l('[STEP 8] REQ HEADERS : ${req.headers}');
               res = await req.close();
               l('[STEP 8] statusCode : ${res.statusCode}');
               l('[STEP 8] RES headers : ${res.headers}');
               //body = await res.transform(utf8.decoder).join();
-              this.tokens["uids"] = regExp
+              tokens['uids'] = regExp
                   .firstMatch(
                     res.headers['set-cookie'][2],
                   )
                   .group(2);
-              l('uids : "${this.tokens["uids"]}"');
+              l('uids : "${tokens["uids"]}"');
               await globals.storage.write(
-                key: "SimpleSAML",
-                value: this.tokens["SimpleSAML"],
+                key: 'SimpleSAML',
+                value: tokens['SimpleSAML'],
               );
               await globals.storage.write(
-                key: "alv",
-                value: this.tokens["alv"],
+                key: 'alv',
+                value: tokens['alv'],
               );
               await globals.storage.write(
-                key: "SimpleSAMLAuthToken",
-                value: this.tokens["SimpleSAMLAuthToken"],
+                key: 'SimpleSAMLAuthToken',
+                value: tokens['SimpleSAMLAuthToken'],
               );
               await globals.storage.write(
-                key: "uids",
-                value: this.tokens["uids"],
+                key: 'uids',
+                value: tokens['uids'],
               );
-              this.error = false;
-              this.code = 200;
+              error = false;
+              code = 200;
             } else {
-              this.error = true;
-              this.code = res.statusCode;
-              throw Exception("unhandled error");
+              error = true;
+              code = res.statusCode;
+              throw Exception('unhandled error');
             }
           } else {
-            this.error = true;
-            this.code = 401;
-            throw Exception("wrong credentials");
+            error = true;
+            code = 401;
+            throw Exception('wrong credentials');
           }
         } else {
           l('username incorrect');
-          this.error = true;
-          this.code = 401;
-          throw Exception("wrong credentials");
+          error = true;
+          code = 401;
+          throw Exception('wrong credentials');
         }
       } else {
-        this.error = true;
-        this.code = res.statusCode;
-        throw Exception("Error while retrieving alv token");
+        error = true;
+        code = res.statusCode;
+        throw Exception('Error while retrieving alv token');
       }
     } else {
-      this.error = true;
-      this.code = 400;
-      throw Exception("missing parameters");
+      error = true;
+      code = 400;
+      throw Exception('missing parameters');
     }
     return;
   }
 
   Future<void> testTokens() async {
-    HttpClient client = new HttpClient();
-
-    //check if all tokens are still valid:
-    if (this.tokens["SimpleSAML"] != "" &&
-        this.tokens["alv"] != "" &&
-        this.tokens["uids"] != "" &&
-        this.tokens["SimpleSAMLAuthToken"] != "" &&
-        this.error == false) {
-      this.error = true;
-      this.code = 400;
-
-      HttpClientRequest request = await client.getUrl(
-        Uri.parse('https://www.leonard-de-vinci.net/'),
-      );
-      request.followRedirects = false;
-      // request.cookies.addAll([
-      //   new Cookie('alv', this.tokens["alv"]),
-      //   new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-      //   new Cookie('uids', this.tokens["uids"]),
-      //   new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-      // ]);
-      request.headers.set("Cookie",
-          "alv=${this.tokens["alv"]}; SimpleSAML=${this.tokens["SimpleSAML"]}; SimpleSAMLAuthToken=${this.tokens["SimpleSAMLAuthToken"]}; uids=${this.tokens["uids"]}");
-      //request.headers.add("set",
-      //"Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.2 Mobile/15E148 Safari/604.1");
-      //print(request.headers);
-      HttpClientResponse response = await request.close();
-
+    var response = await devinciRequest();
+    if (response != null) {
       l('statusCode : ${response.statusCode}');
       l('headers : ${response.headers}');
-      String body = await response.transform(utf8.decoder).join();
+      var body = await response.transform(utf8.decoder).join();
       if (response.statusCode == 200) {
-        //print(body);
-        if (body.indexOf("('#password').hide();") > -1) {
-          l("error");
-          throw Exception("wrong tokens");
+        print(body);
+        if (body.contains("('#password').hide();")) {
+          l('error');
+          throw Exception('wrong tokens');
         } else {
-          this.error = false;
-          this.code = 200;
+          error = false;
+          code = 200;
         }
       } else {
-        throw Exception("wrong tokens -> statuscode : ${response.statusCode}");
+        throw Exception('wrong tokens -> statuscode : ${response.statusCode}');
       }
     } else {
-      this.error = true;
-      this.code = 400;
-      throw Exception("missing tokens or user as error");
+      error = true;
+      code = 400;
+      throw Exception('missing tokens or user as error');
     }
     return;
   }
 
   Future<void> getData() async {
-    HttpClient client = new HttpClient();
-    if (this.tokens["SimpleSAML"] != "" &&
-        this.tokens["alv"] != "" &&
-        this.tokens["uids"] != "" &&
-        this.tokens["SimpleSAMLAuthToken"] != "" &&
-        this.error == false) {
-      this.error = true;
-      this.code = 400;
-
-      HttpClientRequest request = await client.getUrl(
-        Uri.parse('https://www.leonard-de-vinci.net/'),
-      );
-      request.followRedirects = false;
-      request.cookies.addAll([
-        new Cookie('alv', this.tokens["alv"]),
-        new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-        new Cookie('uids', this.tokens["uids"]),
-        new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-      ]);
-      HttpClientResponse response = await request.close();
-
+    l('getData');
+    var response = await devinciRequest(
+        replacementUrl: 'https://www.leonard-de-vinci.net/', log: true);
+    l(response);
+    if (response != null) {
       l('statusCode : ${response.statusCode}');
       l('headers : ${response.headers}');
-      String body = await response.transform(utf8.decoder).join();
-      //print("get Data");
+      var body = await response.transform(utf8.decoder).join();
+      print('get Data');
       if (response.statusCode == 200) {
-        //print(body);
+        print(body);
 
         var doc = parse(body);
-        //print(doc.outerHtml);
-        List<Element> ns = doc.querySelectorAll("#main > div > .row-fluid");
-        Element n = ns[ns.length - 1].querySelector(
-            "div.social-box.social-blue.social-bordered > header > h4");
-        //print('n : "${n.innerHtml}"');
-        RegExp regExp = new RegExp(r": (.*?)\t");
-        this.data["name"] = regExp.firstMatch(n.text).group(1);
-        l("name : '${this.data["name"]}'");
+        print(doc.outerHtml);
+        var ns = doc.querySelectorAll('#main > div > .row-fluid');
+        var n = ns[ns.length - 1].querySelector(
+            'div.social-box.social-blue.social-bordered > header > h4');
+        print('n : "${n.innerHtml}"');
+        var regExp = RegExp(r': (.*?)\t');
+        data['name'] = regExp.firstMatch(n.text).group(1);
+        l("name : '${data["name"]}'");
 
-        List<Element> ds = ns[ns.length - 1].querySelectorAll(
-            "div.social-box.social-blue.social-bordered > div > div");
+        var ds = ns[ns.length - 1].querySelectorAll(
+            'div.social-box.social-blue.social-bordered > div > div');
         print(ds);
-        print("ds 0 : " + ds[0].innerHtml);
-        print("ds 1 : " + ds[1].innerHtml);
-        print("ds 2 : " + ds[2].innerHtml);
+        print('ds 0 : ' + ds[0].innerHtml);
+        print('ds 1 : ' + ds[1].innerHtml);
+        print('ds 2 : ' + ds[2].innerHtml);
         String d;
+        var french = true;
+        if (doc
+            .querySelectorAll('.dropdown-toggle')[1]
+            .querySelector('img')
+            .attributes['src']
+            .contains('en.png')) {
+          french = false;
+        }
         try {
-          if (ds[1].innerHtml.indexOf("Identifiant") > -1) {
-            print("ds1 choosen");
-            print(ds[1].querySelector("div"));
+          if (ds[1].innerHtml.contains(french ? 'Identifiant' : 'User ID')) {
+            print('ds1 choosen');
+            print(ds[1].querySelector('div'));
             d = ds[1]
-                .querySelector("div > div > div.span4 > div > div > address")
+                .querySelector('div > div > div.span4 > div > div > address')
                 .text;
-            l("d : $d");
-          } else if (ds[2].innerHtml.indexOf("Identifiant") > -1) {
+            l('d : $d');
+          } else if (ds[2]
+              .innerHtml
+              .contains(french ? 'Identifiant' : 'User ID')) {
             d = ds[2]
-                .querySelector("div > div > div.span4 > div > div > address")
+                .querySelector('div > div > div.span4 > div > div > address')
                 .text;
-            l("d : $d");
+            l('d : $d');
           } else {
             d = ds[3]
-                .querySelector("div > div > div.span4 > div > div > address")
+                .querySelector('div > div > div.span4 > div > div > address')
                 .text;
-            l("d : $d");
+            l('d : $d');
           }
-          this.data["badge"] =
-              new RegExp(r"badge : (.*?)\n").firstMatch(d).group(1);
-          this.data["client"] =
-              new RegExp(r"client (.*?)\n").firstMatch(d).group(1);
-          this.data["idAdmin"] =
-              new RegExp(r"Administratif (.*?)\n").firstMatch(d).group(1);
-          this.data["ine"] =
-              new RegExp(r"INE/BEA : (.*?)\n").firstMatch(d).group(1);
-          l("data : ${this.data["badge"]}|${this.data["client"]}|${this.data["idAdmin"]}|${this.data["ine"]}");
-        } catch (e) {}
-        Element imgDiv = doc
+          //detect language of the portail
+
+          if (french) {
+            data['badge'] = RegExp(r'badge : (.*?)\n').firstMatch(d).group(1);
+            data['client'] = RegExp(r'client (.*?)\n').firstMatch(d).group(1);
+            data['idAdmin'] =
+                RegExp(r'Administratif (.*?)\n').firstMatch(d).group(1);
+          } else {
+            data['badge'] =
+                RegExp(r'Badge Number : (.*?)\n').firstMatch(d).group(1);
+            data['client'] =
+                RegExp(r'Customer number (.*?)\n').firstMatch(d).group(1);
+            data['idAdmin'] =
+                RegExp(r'Administrative ID (.*?)\n').firstMatch(d).group(1);
+          }
+          data['ine'] = RegExp(r'INE/BEA : (.*?)\n').firstMatch(d).group(1);
+          l("data : ${data["badge"]}|${data["client"]}|${data["idAdmin"]}|${data["ine"]}");
+          // ignore: empty_catches
+        } catch (e, stacktrace) {
+          print(e);
+          print(stacktrace);
+        }
+        var imgDiv = doc
             .querySelectorAll('#main > div > div')[1]
             .querySelector('div > div > img');
 
-        if (imgDiv.attributes['src'].indexOf('esilv') > -1) {
-          this.data['ecole'] = 'esilv';
-        } else if (imgDiv.attributes['src'].indexOf('iim') > -1) {
-          this.data['ecole'] = 'iim';
-        } else if (imgDiv.attributes['src'].indexOf('emlv') > -1) {
-          this.data['ecole'] = 'emlv';
+        if (imgDiv.attributes['src'].contains('esilv')) {
+          data['ecole'] = 'esilv';
+        } else if (imgDiv.attributes['src'].contains('iim')) {
+          data['ecole'] = 'iim';
+        } else if (imgDiv.attributes['src'].contains('emlv')) {
+          data['ecole'] = 'emlv';
         } else {
-          this.data['ecole'] = 'na';
+          data['ecole'] = 'na';
         }
         await globals.analytics
-            .setUserProperty(name: 'ecole', value: this.data['ecole']);
-        request = await client
-            .getUrl(Uri.parse("https://www.leonard-de-vinci.net/?my=edt"));
-        request.followRedirects = false;
-        request.cookies.addAll([
-          new Cookie('alv', this.tokens["alv"]),
-          new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-          new Cookie('uids', this.tokens["uids"]),
-          new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-        ]);
-        response = await request.close();
+            .setUserProperty(name: 'ecole', value: data['ecole']);
+        response = await devinciRequest(endpoint: '?my=edt');
 
         l('statusCode : ${response.statusCode}');
         l('headers : ${response.headers}');
         body = await response.transform(utf8.decoder).join();
         if (response.statusCode == 200) {
-          this.data["edtUrl"] = "https://ical.devinci.me/" +
-              new RegExp(r'ical.devinci.me\/(.*?)"').firstMatch(body).group(1);
-          l("ical url : ${this.data["edtUrl"]}");
+          data['edtUrl'] = 'https://ical.devinci.me/' +
+              RegExp(r'ical.devinci.me\/(.*?)"').firstMatch(body).group(1);
+          l("ical url : ${data["edtUrl"]}");
           await globals.storage.write(
-            key: "badge",
-            value: this.data["badge"],
+            key: 'badge',
+            value: data['badge'],
           );
           await globals.storage.write(
-            key: "client",
-            value: this.data["client"],
+            key: 'client',
+            value: data['client'],
           );
           await globals.storage.write(
-            key: "idAdmin",
-            value: this.data["idAdmin"],
+            key: 'idAdmin',
+            value: data['idAdmin'],
           );
           await globals.storage.write(
-            key: "ine",
-            value: this.data["ine"],
+            key: 'ine',
+            value: data['ine'],
           );
           await globals.storage.write(
-            key: "edtUrl",
-            value: this.data["edtUrl"],
+            key: 'edtUrl',
+            value: data['edtUrl'],
           );
           await globals.storage.write(
-            key: "name",
-            value: this.data["name"],
+            key: 'name',
+            value: data['name'],
           );
         } else {
-          this.error = true;
-          this.code = response.statusCode;
-          throw Exception("unhandled exception");
+          error = true;
+          code = response.statusCode;
+          throw Exception('unhandled exception');
         }
       } else {
-        this.error = true;
-        this.code = response.statusCode;
-        throw Exception("unhandled exception");
+        error = true;
+        code = response.statusCode;
+        throw Exception('unhandled exception');
       }
     } else {
-      this.error = true;
-      this.code = 400;
-      throw Exception("missing parameters");
+      error = true;
+      code = 400;
+      throw Exception('missing parameters');
     }
     return;
   }
 
   Future<void> getAbsences() async {
     if (globals.isConnected) {
-      HttpClient client = new HttpClient();
-      if (this.tokens["SimpleSAML"] != "" &&
-          this.tokens["alv"] != "" &&
-          this.tokens["uids"] != "" &&
-          this.tokens["SimpleSAMLAuthToken"] != "") {
-        HttpClientRequest req = await client.getUrl(
-          Uri.parse("https://www.leonard-de-vinci.net/?my=abs"),
-          //Uri.parse("https://www.araulin.tech/devinci/absences.html"),
-        );
-        req.followRedirects = false;
-        req.cookies.addAll([
-          new Cookie('alv', this.tokens["alv"]),
-          new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-          new Cookie('uids', this.tokens["uids"]),
-          new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-        ]);
-        HttpClientResponse res = await req.close();
+      var res = await devinciRequest(
+        endpoint: '?my=abs',
+      );
+      if (res != null) {
         if (res.statusCode == 200) {
-          print("got absences");
-          String body = await res.transform(utf8.decoder).join();
-          if (body.indexOf('Validation des règlements') < 0) {
+          print('got absences');
+          var body = await res.transform(utf8.decoder).join();
+          if (!body.contains('Validation des règlements')) {
             var doc = parse(body);
-            //print(doc.outerHtml);
-            List<Element> spans =
-                doc.querySelectorAll(".tab-pane > header > span");
-            Element nTB = doc
-                .querySelector(".tab-pane > header > span.label.label-warning");
-            //print(nTB);
-            String nTM =
-                new RegExp(r': (.*?)"').firstMatch(nTB.text + '"').group(1);
-            this.absences["nT"] = int.parse(nTM);
+            print(doc.outerHtml);
+            var spans = doc.querySelectorAll('.tab-pane > header > span');
+            var nTB = doc
+                .querySelector('.tab-pane > header > span.label.label-warning');
+            print(nTB);
+            var nTM = RegExp(r': (.*?)"').firstMatch(nTB.text + '"').group(1);
+            absences['nT'] = int.parse(nTM);
 
-            String s1M = new RegExp(r': (.*?)"')
-                .firstMatch(spans[0].text + '"')
-                .group(1);
-            this.absences["s1"] = int.parse(s1M);
+            var s1M =
+                RegExp(r': (.*?)"').firstMatch(spans[0].text + '"').group(1);
+            absences['s1'] = int.parse(s1M);
 
-            Element s2B = doc
-                .querySelector(".tab-pane > header > span.label.label-success");
-            String s2M =
-                new RegExp(r': (.*?)"').firstMatch(s2B.text + '"').group(1);
-            this.absences["s2"] = int.parse(s2M);
+            var s2B = doc
+                .querySelector('.tab-pane > header > span.label.label-success');
+            var s2M = RegExp(r': (.*?)"').firstMatch(s2B.text + '"').group(1);
+            absences['s2'] = int.parse(s2M);
 
-            String seanceM = new RegExp(r'"(.*?) séance')
+            var seanceM = RegExp(r'"(.*?) séance')
                 .firstMatch('"' + spans[3].text)
                 .group(1);
-            this.absences["seances"] = int.parse(seanceM);
-            List<Element> trs =
-                doc.querySelectorAll(".tab-pane.active > table > tbody > tr");
-            this.absences["liste"].clear();
+            absences['seances'] = int.parse(seanceM);
+            var trs =
+                doc.querySelectorAll('.tab-pane.active > table > tbody > tr');
+            absences['liste'].clear();
             trs.forEach((tr) {
-              Map<String, String> elem = {
-                "cours": "",
-                "type": "",
-                "jour": "",
-                "creneau": "",
-                "duree": "",
-                "modalite": ""
+              var elem = <String, String>{
+                'cours': '',
+                'type': '',
+                'jour': '',
+                'creneau': '',
+                'duree': '',
+                'modalite': ''
               };
 
-              List<Element> tds = tr.querySelectorAll("td");
-              elem["cours"] = tds[1]
+              var tds = tr.querySelectorAll('td');
+              elem['cours'] = tds[1]
                   .text
-                  .replaceAll(tds[1].querySelector("span").text, "")
-                  .replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-              elem["type"] =
-                  tds[2].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-              elem["jour"] =
-                  tds[3].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-              elem["creneau"] =
-                  tds[4].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-              elem["duree"] =
-                  tds[5].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-              elem["modalite"] =
-                  tds[6].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => "");
-              this.absences["liste"].add(elem);
+                  .replaceAll(tds[1].querySelector('span').text, '')
+                  .replaceAllMapped(RegExp(r'\s\s+'), (match) => '');
+              elem['type'] =
+                  tds[2].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => '');
+              elem['jour'] =
+                  tds[3].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => '');
+              elem['creneau'] =
+                  tds[4].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => '');
+              elem['duree'] =
+                  tds[5].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => '');
+              elem['modalite'] =
+                  tds[6].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => '');
+              absences['liste'].add(elem);
             });
-            print(this.absences["liste"]);
-          } else if (body.indexOf('Validation des règlements') > -1) {
+            print(absences['liste']);
+          } else if (body.contains('Validation des règlements')) {
             final snackBar = material.SnackBar(
-              content: material.Text(
-                  "Validation des règlements requise sur le portail."),
+              content: material.Text('school_rules_validation').tr(),
               duration: const Duration(seconds: 10),
             );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
             material.Scaffold.of(globals.currentContext).showSnackBar(snackBar);
           }
-          this.absences["done"] = true;
-          await globals.store.record('absences').put(globals.db, this.absences);
+          absences['done'] = true;
+          await globals.store.record('absences').put(globals.db, absences);
         } else {
-          this.error = true;
-          this.code = res.statusCode;
-          throw Exception("unhandled exception");
+          error = true;
+          code = res.statusCode;
+          throw Exception('unhandled exception');
         }
       } else {
-        this.error = true;
-        this.code = 400;
+        error = true;
+        code = 400;
 
-        throw Exception("missing parameters => " +
-            this.tokens["SimpleSAML"] +
-            " | " +
-            this.tokens["alv"] +
-            " | " +
-            this.tokens["SimpleSAMLAuthToken"] +
-            " | " +
-            this.tokens["uids"] +
-            " | " +
-            this.error.toString());
+        throw Exception('missing parameters => ' +
+            tokens['SimpleSAML'] +
+            ' | ' +
+            tokens['alv'] +
+            ' | ' +
+            tokens['SimpleSAMLAuthToken'] +
+            ' | ' +
+            tokens['uids'] +
+            ' | ' +
+            error.toString());
       }
     } else {
-      this.absences =
-          await globals.store.record('absences').get(globals.db) as Map;
+      absences = await globals.store.record('absences').get(globals.db) as Map;
     }
 
     return;
   }
 
-  Future<void> getNotes({bool load = false}) async {
+  Future<void> getNotesList() async {
+    var res = await devinciRequest(endpoint: '?my=notes');
+    if (res != null) {
+      if (res.statusCode == 200) {
+        var body = await res.transform(utf8.decoder).join();
+        if (!body.contains('Validation des règlements')) {
+          var doc = parse(body);
+          var tbody = doc.querySelector('tbody');
+          var trs = tbody.querySelectorAll('tr');
+          notesList.clear();
+          years.clear();
+          for (var tr in trs) {
+            notes.add({});
+            var tds = tr.querySelectorAll('td');
+            var name = tds[1].text;
+            years.add(name);
+            var link = tr.querySelector('a');
+            var href = link.attributes['href'];
+            var p = href.split('p=')[1];
+            notesList.add([name, p]);
+          }
+        } else {
+          final snackBar = material.SnackBar(
+            content: material.Text('school_rules_validation').tr(),
+            duration: const Duration(seconds: 10),
+          );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+          material.Scaffold.of(globals.currentContext).showSnackBar(snackBar);
+        }
+      } else {
+        error = true;
+        code = res.statusCode;
+        throw Exception('unhandled exception');
+      }
+    } else {
+      error = true;
+      code = 400;
+
+      throw Exception('missing parameters => ' +
+          tokens['SimpleSAML'] +
+          ' | ' +
+          tokens['alv'] +
+          ' | ' +
+          tokens['SimpleSAMLAuthToken'] +
+          ' | ' +
+          tokens['uids'] +
+          ' | ' +
+          error.toString());
+    }
+    return;
+  }
+
+  Future<void> getNotes(String p, int index) async {
     if (globals.isConnected) {
-      List added = [];
-      List changed = [];
-      Map<String, dynamic> nn = {"s1": [], "s2": []};
-      var timestamp = DateTime.now().millisecondsSinceEpoch;
-      Map<String, dynamic> before = {"s1": [], "s2": []};
-      before.copy(this.notes);
-      HttpClient client = new HttpClient();
-      if (this.tokens["SimpleSAML"] != "" &&
-          this.tokens["alv"] != "" &&
-          this.tokens["uids"] != "" &&
-          this.tokens["SimpleSAMLAuthToken"] != "") {
-        int timestamp = DateTime.now().millisecondsSinceEpoch;
-
-        HttpClientRequest req = await client.getUrl(
-          Uri.parse(
-            //'http://10.1.169.208:5500/robin_notes.html',
-            'https://www.leonard-de-vinci.net/?my=notes',
-          ),
-        );
-        req.followRedirects = false;
-        req.cookies.addAll([
-          new Cookie('alv', this.tokens["alv"]),
-          new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-          new Cookie('uids', this.tokens["uids"]),
-          new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-        ]);
-        HttpClientResponse res = await req.close();
-        l("NOTES - STATUS CODE : ${res.statusCode}");
+      var nn = <String, dynamic>{
+        'name': 1,
+        's': [
+          [],
+          [],
+        ],
+      };
+      var res = await devinciRequest(endpoint: '?my=notes&p=' + p);
+      if (res != null) {
+        l('NOTES - STATUS CODE : ${res.statusCode}');
         if (res.statusCode == 200) {
-          String body = await res.transform(utf8.decoder).join();
-          if (body.indexOf('Aucune note') < 0 &&
-              body.indexOf('Validation des règlements') < 0) {
+          var body = await res.transform(utf8.decoder).join();
+          if (!body.contains('Aucune note') &&
+              !body.contains('Validation des règlements')) {
             var doc = parse(body);
+            var headers = doc.querySelectorAll('header');
+            var header = headers[headers.length - 1].text;
+            nn['name'] =
+                int.tryParse(RegExp(r'\d').firstMatch(header).group(0));
 
-            List<Element> divs =
-                doc.querySelectorAll(this.notesConfig['mainDivs']);
-            for (int y = 0; y < 2; y++) {
-              int i = 0;
-              List<Element> ols1 =
-                  divs[5].querySelectorAll(this.notesConfig['modules']['ols']);
-              List<Element> ols = ols1[y]
-                  .querySelector(this.notesConfig['modules']['olsBis'])
+            var divs = doc.querySelectorAll(notesConfig['mainDivs']);
+            for (var y = 0; y < 2; y++) {
+              var i = 0;
+              var ols1 =
+                  divs[5].querySelectorAll(notesConfig['modules']['ols']);
+              var ols = ols1[y]
+                  .querySelector(notesConfig['modules']['olsBis'])
                   .children;
-              for (int yy = 1; yy < ols.length; yy++) {
-                Element ol = ols[yy];
-                Map<String, dynamic> elem = {
-                  "module": "",
-                  "moy": 0.0,
-                  "nf": 0.0,
-                  "moyP": 0.0,
-                  "matieres": []
+              for (var yy = 1; yy < ols.length; yy++) {
+                var ol = ols[yy];
+                var elem = <String, dynamic>{
+                  'module': '',
+                  'moy': 0.0,
+                  'nf': 0.0,
+                  'moyP': 0.0,
+                  'matieres': []
                 };
-                Element li = ol.querySelector("li");
-                Element ddhandle = ol.querySelector("div");
-                List<String> texts = ddhandle.text.split("\n");
-                elem["module"] = texts[this.notesConfig['modules']['item']['m']]
+                var li = ol.querySelector('li');
+                var ddhandle = ol.querySelector('div');
+                var texts = ddhandle.text.split('\n');
+                elem['module'] = texts[notesConfig['modules']['item']['m']]
                     .replaceAllMapped(
-                        RegExp(this.notesConfig['modules']['item']['mR']),
-                        (match) => "");
+                        RegExp(notesConfig['modules']['item']['mR']),
+                        (match) => '');
 
-                elem["moy"] = null;
-                elem["nf"] = null;
-                elem["moyP"] = null;
-                if (texts[this.notesConfig['modules']['item']['eI']]
-                        .indexOf(this.notesConfig['modules']['item']['eStr']) <
-                    0) {
+                elem['moy'] = null;
+                elem['nf'] = null;
+                elem['moyP'] = null;
+                if (!texts[notesConfig['modules']['item']['eI']]
+                    .contains(notesConfig['modules']['item']['eStr'])) {
                   try {
-                    elem["moy"] = double.parse(
-                        texts[this.notesConfig['modules']['item']['!e']['moy']['i']]
-                            .replaceAllMapped(
-                                RegExp(this.notesConfig['modules']['item']['!e']
-                                    ['moy']['r']),
-                                (match) => "")
-                            .split(this.notesConfig['modules']['item']['!e']['moy']
-                                ['s'])[this.notesConfig['modules']['item']['!e']['moy']['si']]);
+                    elem['moy'] = double.parse(
+                        texts[notesConfig['modules']['item']['!e']['moy']['i']]
+                                .replaceAllMapped(
+                                    RegExp(notesConfig['modules']['item']['!e']
+                                        ['moy']['r']),
+                                    (match) => '')
+                                .split(
+                                    notesConfig['modules']['item']['!e']['moy']['s'])[
+                            notesConfig['modules']['item']['!e']['moy']['si']]);
+                    // ignore: empty_catches
                   } catch (e) {}
                   try {
-                    elem["nf"] = double.parse(RegExp(this.notesConfig['modules']
-                            ['item']['!e']['nf']['r'])
-                        .firstMatch(texts[this.notesConfig['modules']['item']
-                                ['!e']['nf']['i']] +
-                            this.notesConfig['modules']['item']['!e']['nf']
-                                ['+'])
-                        .group(1));
+                    elem['nf'] = double.parse(
+                        RegExp(notesConfig['modules']['item']['!e']['nf']['r'])
+                            .firstMatch(texts[notesConfig['modules']['item']
+                                    ['!e']['nf']['i']] +
+                                notesConfig['modules']['item']['!e']['nf']['+'])
+                            .group(1));
+                    // ignore: empty_catches
                   } catch (e) {}
                   try {
-                    elem["moyP"] = double.parse(RegExp(this
-                            .notesConfig['modules']['item']['!e']['moyP']['r'])
-                        .firstMatch(texts[this.notesConfig['modules']['item']
-                                ['!e']['moyP']['i']] +
-                            this.notesConfig['modules']['item']['!e']['moyP']
-                                ['+'])
+                    elem['moyP'] = double.parse(RegExp(
+                            notesConfig['modules']['item']['!e']['moyP']['r'])
+                        .firstMatch(texts[notesConfig['modules']['item']['!e']
+                                ['moyP']['i']] +
+                            notesConfig['modules']['item']['!e']['moyP']['+'])
                         .group(1));
+                    // ignore: empty_catches
                   } catch (e) {}
                 }
+                nn['s'][y].add(elem);
 
-                nn["s${y + 1}"].add(elem);
+                //nn["s${y + 1}"].add(elem);
 
-                Element ddlist = li.querySelector("ol");
-                int j = 0;
+                var ddlist = li.querySelector('ol');
+                var j = 0;
                 ddlist.children.forEach((lii) {
-                  ddhandle = lii.querySelector("div");
-                  texts = ddhandle.text.split("\n");
+                  ddhandle = lii.querySelector('div');
+                  texts = ddhandle.text.split('\n');
                   //String prettyprint = encoder.convert(texts);
-                  // print(prettyprint);
+                  //print(prettyprint);
                   elem = {
-                    "matiere": "",
-                    "moy": 0.0,
-                    "moyP": 0.0,
-                    "notes": [],
-                    "c": true
+                    'matiere': '',
+                    'moy': 0.0,
+                    'moyP': 0.0,
+                    'notes': [],
+                    'c': true
                   };
 
-                  elem["matiere"] = texts[this.notesConfig['matieres']['mi']]
+                  elem['matiere'] = texts[notesConfig['matieres']['mi']]
                       .replaceAllMapped(
-                          RegExp(this.notesConfig['matieres']['mr']),
-                          (match) => "");
-                  elem["moy"] = null;
-                  elem["moyP"] = null;
-                  if (texts[this.notesConfig['matieres']['ei']]
-                          .indexOf(this.notesConfig['matieres']['eStr']) <
-                      0) {
+                          RegExp(notesConfig['matieres']['mr']), (match) => '');
+                  elem['moy'] = null;
+                  elem['moyP'] = null;
+                  if (!texts[notesConfig['matieres']['ei']]
+                      .contains(notesConfig['matieres']['eStr'])) {
                     try {
-                      elem["moy"] = double.parse(
-                          texts[this.notesConfig['matieres']['!e']['moy']['i']]
-                                  .replaceAllMapped(
-                                      RegExp(this.notesConfig['matieres']['!e']
-                                          ['moy']['r']),
-                                      (match) => "")
-                                  .split(
-                                      this.notesConfig['matieres']['!e']['moy']['s'])[
-                              this.notesConfig['matieres']['!e']['moy']['si']]);
+                      elem['moy'] = double.parse(texts[notesConfig['matieres']
+                              ['!e']['moy']['i']]
+                          .replaceAllMapped(
+                              RegExp(notesConfig['matieres']['!e']['moy']['r']),
+                              (match) => '')
+                          .split(notesConfig['matieres']['!e']['moy']
+                              ['s'])[notesConfig['matieres']['!e']['moy']
+                          ['si']]);
+                      // ignore: empty_catches
                     } catch (e) {}
-                    //print(elem["moy"]);
+                    print(elem['moy']);
                     try {
-                      if (texts[this.notesConfig['matieres']['!e']['ri']]
-                              .indexOf(
-                                  this.notesConfig['matieres']['!e']['rStr']) <
-                          0) {
+                      if (!texts[notesConfig['matieres']['!e']['ri']]
+                          .contains(notesConfig['matieres']['!e']['rStr'])) {
                         try {
-                          elem["moyP"] = double.parse(RegExp(
-                                  this.notesConfig['matieres']['!e']['!r']
-                                      ['moyP']['r'])
-                              .firstMatch(texts[this.notesConfig['matieres']
-                                      ['!e']['!r']['moyP']['i']] +
-                                  this.notesConfig['matieres']['!e']['!r']
-                                      ['moyP']['+'])
+                          elem['moyP'] = double.parse(RegExp(
+                                  notesConfig['matieres']['!e']['!r']['moyP']
+                                      ['r'])
+                              .firstMatch(texts[notesConfig['matieres']['!e']
+                                      ['!r']['moyP']['i']] +
+                                  notesConfig['matieres']['!e']['!r']['moyP']
+                                      ['+'])
                               .group(1));
                         } catch (e) {
-                          elem["moyP"] = null;
+                          elem['moyP'] = null;
                         }
                       } else {
-                        double noteR = double.parse(RegExp(
-                                this.notesConfig['matieres']['!e']['r']['noteR']
-                                    ['r'])
-                            .firstMatch(texts[this.notesConfig['matieres']['!e']
-                                    ['r']['noteR']['i']] +
-                                this.notesConfig['matieres']['!e']['r']['noteR']
+                        var noteR = double.parse(RegExp(notesConfig['matieres']
+                                ['!e']['r']['noteR']['r'])
+                            .firstMatch(texts[notesConfig['matieres']['!e']['r']
+                                    ['noteR']['i']] +
+                                notesConfig['matieres']['!e']['r']['noteR']
                                     ['+'])
                             .group(1));
-                        if (noteR > elem["moy"]) {
+                        if (noteR > elem['moy']) {
                           if (noteR > 10) {
-                            elem["moy"] = 10.0;
+                            elem['moy'] = 10.0;
                           } else {
-                            elem["moy"] = noteR;
+                            elem['moy'] = noteR;
                           }
                         }
                         var e = {
-                          "nom": "MESIMF120419-CC-1 Rattrapage",
-                          "note": noteR,
-                          "noteP": null,
-                          "date": timestamp
+                          'nom':
+                              'MESIMF120419-CC-1 Rattrapage' + 're_take'.tr(),
+                          'note': noteR,
+                          'noteP': null,
+                          //"date": timestamp
                         };
 
-                        elem["notes"].add(e);
+                        elem['notes'].add(e);
 
-                        elem["moyP"] = double.parse(RegExp(
-                                this.notesConfig['matieres']['!e']['r']['moyP']
-                                    ['r'])
-                            .firstMatch(texts[this.notesConfig['matieres']['!e']
-                                    ['r']['moyP']['i']] +
-                                this.notesConfig['matieres']['!e']['r']['moyP']
-                                    ['+'])
+                        elem['moyP'] = double.parse(RegExp(
+                                notesConfig['matieres']['!e']['r']['moyP']['r'])
+                            .firstMatch(texts[notesConfig['matieres']['!e']['r']
+                                    ['moyP']['i']] +
+                                notesConfig['matieres']['!e']['r']['moyP']['+'])
                             .group(1));
                       }
+                      // ignore: empty_catches
                     } catch (e) {}
                   }
-
-                  nn["s${y + 1}"][i]["matieres"].add(elem);
-                  ddlist = lii.querySelector("ol");
+                  nn['s'][y][i]['matieres'].add(elem);
+                  //nn["s${y + 1}"][i]["matieres"].add(elem);
+                  ddlist = lii.querySelector('ol');
                   if (ddlist != null) {
                     ddlist.children.forEach((liii) {
-                      ddhandle = liii.querySelector("div");
-                      texts = ddhandle.text.split("\n");
+                      ddhandle = liii.querySelector('div');
+                      texts = ddhandle.text.split('\n');
                       elem = {
-                        "nom": "",
-                        "note": 0.0,
-                        "noteP": 0.0,
-                        "date": timestamp
+                        'nom': '',
+                        'note': 0.0,
+                        'noteP': 0.0,
+                        //"date": timestamp
                       };
-                      elem["nom"] = texts[this.notesConfig['notes']['n']['i']]
+                      elem['nom'] = texts[notesConfig['notes']['n']['i']]
                           .replaceAllMapped(
-                              RegExp(this.notesConfig['notes']['n']['r']),
-                              (match) => "");
-                      if (texts.length < this.notesConfig['notes']['tl']) {
-                        elem["note"] = null;
-                        elem["noteP"] = null;
+                              RegExp(notesConfig['notes']['n']['r']),
+                              (match) => '');
+                      if (texts.length < notesConfig['notes']['tl']) {
+                        elem['note'] = null;
+                        elem['noteP'] = null;
                       } else {
-                        String temp = texts[this.notesConfig['notes']['note']
-                                ['i']]
-                            .replaceAllMapped(
-                                RegExp(this.notesConfig['notes']['note']['r']),
-                                (match) => "")
-                            .split(this.notesConfig['notes']['note']
-                                ['s'])[this.notesConfig['notes']['note']['si']];
-                        if (temp.indexOf('Absence') > -1) {
-                          elem["note"] = 0.12345;
+                        var temp = texts[notesConfig['notes']['note']['i']]
+                                .replaceAllMapped(
+                                    RegExp(notesConfig['notes']['note']['r']),
+                                    (match) => '')
+                                .split(notesConfig['notes']['note']['s'])[
+                            notesConfig['notes']['note']['si']];
+                        if (temp.contains('Absence')) {
+                          elem['note'] = 0.12345;
                         } else {
-                          elem["note"] = double.parse(
-                              texts[this.notesConfig['notes']['note']['i']]
+                          elem['note'] = double.parse(texts[notesConfig['notes']
+                                      ['note']['i']]
                                   .replaceAllMapped(
-                                      RegExp(this.notesConfig['notes']['note']
-                                          ['r']),
-                                      (match) => "")
-                                  .split(this.notesConfig['notes']['note']
-                                      ['s'])[this.notesConfig['notes']['note']
-                                  ['si']]);
+                                      RegExp(notesConfig['notes']['note']['r']),
+                                      (match) => '')
+                                  .split(notesConfig['notes']['note']['s'])[
+                              notesConfig['notes']['note']['si']]);
                         }
-                        elem["noteP"] = null;
+                        elem['noteP'] = null;
                         try {
-                          elem["noteP"] = double.parse(RegExp(
-                                  this.notesConfig['notes']['nP']['r'])
-                              .firstMatch(
-                                  texts[this.notesConfig['notes']['nP']['i']] +
-                                      this.notesConfig['notes']['nP']['+'])
-                              .group(1));
+                          elem['noteP'] = double.parse(
+                              RegExp(notesConfig['notes']['nP']['r'])
+                                  .firstMatch(
+                                      texts[notesConfig['notes']['nP']['i']] +
+                                          notesConfig['notes']['nP']['+'])
+                                  .group(1));
+                          // ignore: empty_catches
                         } catch (e) {}
                       }
-
-                      nn["s${y + 1}"][i]["matieres"][j]["notes"].add(elem);
+                      nn['s'][y][i]['matieres'][j]['notes'].add(elem);
+                      //nn["s${y + 1}"][i]["matieres"][j]["notes"].add(elem);
                     });
                   }
                   j++;
@@ -1119,307 +1103,204 @@ class User {
                 i++;
               }
             }
-          } else if (body.indexOf('Validation des règlements') > -1) {
+          } else if (body.contains('Validation des règlements')) {
             final snackBar = material.SnackBar(
-              content: material.Text(
-                  "Validation des règlements requise sur le portail."),
+              content: material.Text('school_rules_validation').tr(),
               duration: const Duration(seconds: 10),
             );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
             material.Scaffold.of(globals.currentContext).showSnackBar(snackBar);
           }
         } else {
-          this.error = true;
-          this.code = res.statusCode;
-          throw Exception("unhandled exception");
+          error = true;
+          code = res.statusCode;
+          throw Exception('unhandled exception');
         }
       } else {
-        this.error = true;
-        this.code = 400;
+        error = true;
+        code = 400;
 
-        throw Exception("missing parameters => " +
-            this.tokens["SimpleSAML"] +
-            " | " +
-            this.tokens["alv"] +
-            " | " +
-            this.tokens["SimpleSAMLAuthToken"] +
-            " | " +
-            this.tokens["uids"] +
-            " | " +
-            this.error.toString());
+        throw Exception('missing parameters => ' +
+            tokens['SimpleSAML'] +
+            ' | ' +
+            tokens['alv'] +
+            ' | ' +
+            tokens['SimpleSAMLAuthToken'] +
+            ' | ' +
+            tokens['uids'] +
+            ' | ' +
+            error.toString());
       }
-      for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < before["s${i + 1}"].length; j++) {
-          for (int k = 0; k < before["s${i + 1}"][j]["matieres"].length; k++) {
-            var old = before["s${i + 1}"][j]["matieres"][k]["notes"];
-            var n = nn["s${i + 1}"][j]["matieres"][k]["notes"];
-            // print(
-            //     "old:${before["s${i + 1}"][j]["matieres"].length} | n:${nn["s${i + 1}"][j]["matieres"].length}");
-            // print(before["s${i + 1}"][j]["module"]);
-            before["s${i + 1}"][j]["matieres"][k]["moy"] =
-                nn["s${i + 1}"][j]["matieres"][k]["moy"];
-            before["s${i + 1}"][j]["matieres"][k]["moyP"] =
-                nn["s${i + 1}"][j]["matieres"][k]["moyP"];
-            Map<String, dynamic> comparaison = comparer(old, n);
-            comparaison['added'].forEach(
-              (item) {
-                before["s${i + 1}"][j]["matieres"][k]["notes"].add(
-                  {
-                    'nom': item['nom'],
-                    'note': item['note'],
-                    'noteP': item['noteP'],
-                    'date': timestamp,
-                  },
-                );
-                added.add(
-                  {
-                    'matieres': before["s${i + 1}"][j]["matieres"][k]
-                        ["matiere"],
-                    'nom': item['nom'],
-                    'note': item['note'],
-                  },
-                );
-              },
-            );
-            comparaison['removed'].forEach(
-              (item) {
-                before["s${i + 1}"][j]["matieres"][k]["notes"]
-                    .removeWhere((element) => element["nom"] == item["nom"]);
-              },
-            );
-            comparaison['changed'].forEach((item) {
-              changed.add({
-                'matieres': before["s${i + 1}"][j]["matieres"][k]["matiere"],
-                'data': item
-              });
-              for (int y = 0;
-                  y < before["s${i + 1}"][j]["matieres"][k]["notes"].length;
-                  y++) {
-                if (before["s${i + 1}"][j]["matieres"][k]["notes"][y]["nom"] ==
-                    item["key"]) {
-                  item['v'].forEach((e) {
-                    before["s${i + 1}"][j]["matieres"][k]["notes"][y][e[0]] =
-                        e[1][1];
-                  });
-                  before["s${i + 1}"][j]["matieres"][k]["notes"][y]['date'] =
-                      timestamp;
-                  break;
-                }
-              }
-            });
-          }
-        }
-      }
-      if (before["s1"].isEmpty && before["s2"].isEmpty) {
-        this.notes.copy(nn);
-        await globals.store.record('notes').put(globals.db, this.notes);
-        this.notesFetched = true;
-        print("db updated");
-      } else {
-        this.notes = {"s1": [], "s2": []};
-        this.notes.copy(before);
-        this.notesEvolution["added"] = added;
-        this.notesEvolution["changed"] = changed;
-        await globals.store.record('notes').put(globals.db, this.notes);
-        this.notesFetched = true;
-        print("db updated");
-      }
+
+      notes[index] = nn;
+      await globals.store.record('notes').put(globals.db, notes);
+      notesFetched = true;
+      print('db updated');
     } else {
-      this.notesFetched = true;
+      notesFetched = true;
     }
     return;
   }
 
   Future<void> getDocuments() async {
     if (globals.isConnected) {
-      HttpClient client = new HttpClient();
-      if (this.tokens["SimpleSAML"] != "" &&
-          this.tokens["alv"] != "" &&
-          this.tokens["uids"] != "" &&
-          this.tokens["SimpleSAMLAuthToken"] != "") {
-        HttpClientRequest req = await client.getUrl(
-          Uri.parse("https://www.leonard-de-vinci.net/?my=docs"),
-          //"http://10.188.132.77:5500/documents.html"),
-        );
-        req.followRedirects = false;
-        req.cookies.addAll([
-          new Cookie('alv', this.tokens["alv"]),
-          new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-          new Cookie('uids', this.tokens["uids"]),
-          new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-        ]);
-        HttpClientResponse res = await req.close();
+      var res = await devinciRequest(endpoint: '?my=docs');
+      if (res != null) {
         if (res.statusCode == 200) {
-          String body = await res.transform(utf8.decoder).join();
-          if (body.indexOf('Validation des règlements') < 0) {
+          var body = await res.transform(utf8.decoder).join();
+          if (!body.contains('Validation des règlements')) {
             var doc = parse(body);
             //Element cert = doc.querySelector("#main > div > div:nth-child(5) > div:nth-child(2) > div > table > tbody > tr > td:nth-child(2)");
             try {
-              int certIndex = 1;
-              int imaginrIndex = 1;
-              for (int i = 1;
+              var certIndex = 1;
+              var imaginrIndex = 1;
+              for (var i = 1;
                   i <
                       doc
                           .querySelectorAll(
-                              ".social-box.social-bordered.span6")[1]
-                          .querySelectorAll("tr")
+                              '.social-box.social-bordered.span6')[1]
+                          .querySelectorAll('tr')
                           .length;
                   i++) {
                 print('[1]' +
                     doc
                         .querySelectorAll(
-                            ".social-box.social-bordered.span6")[1]
-                        .querySelectorAll("tr")[i]
-                        .querySelectorAll("td")[1]
+                            '.social-box.social-bordered.span6')[1]
+                        .querySelectorAll('tr')[i]
+                        .querySelectorAll('td')[1]
                         .text);
                 if (doc
-                        .querySelectorAll(
-                            ".social-box.social-bordered.span6")[1]
-                        .querySelectorAll("tr")[i]
-                        .querySelectorAll("td")[0]
-                        .text
-                        .indexOf("scolarité") >
-                    -1) {
+                    .querySelectorAll('.social-box.social-bordered.span6')[1]
+                    .querySelectorAll('tr')[i]
+                    .querySelectorAll('td')[0]
+                    .text
+                    .contains('scolarité')) {
                   certIndex = i;
                 } else if (doc
-                        .querySelectorAll(
-                            ".social-box.social-bordered.span6")[1]
-                        .querySelectorAll("tr")[i]
-                        .querySelectorAll("td")[0]
-                        .text
-                        .indexOf("ImaginR") >
-                    -1) {
+                    .querySelectorAll('.social-box.social-bordered.span6')[1]
+                    .querySelectorAll('tr')[i]
+                    .querySelectorAll('td')[0]
+                    .text
+                    .contains('ImaginR')) {
                   imaginrIndex = i;
                 }
               }
-              List<Element> certElements = doc
-                  .querySelectorAll(".social-box.social-bordered.span6")[1]
-                  .querySelectorAll("tr")[certIndex]
-                  .querySelectorAll("td");
+              var certElements = doc
+                  .querySelectorAll('.social-box.social-bordered.span6')[1]
+                  .querySelectorAll('tr')[certIndex]
+                  .querySelectorAll('td');
 
-              this.documents["certificat"]["annee"] = certElements[1].text;
-              this.documents["certificat"]["fr_url"] =
-                  "https://www.leonard-de-vinci.net" +
+              documents['certificat']['annee'] = certElements[1].text;
+              documents['certificat']['fr_url'] =
+                  'https://www.leonard-de-vinci.net' +
                       certElements[2]
-                          .querySelectorAll("a")[0]
-                          .attributes["href"];
-              this.documents["certificat"]["en_url"] =
-                  "https://www.leonard-de-vinci.net" +
+                          .querySelectorAll('a')[0]
+                          .attributes['href'];
+              documents['certificat']['en_url'] =
+                  'https://www.leonard-de-vinci.net' +
                       certElements[2]
-                          .querySelectorAll("a")[1]
-                          .attributes["href"];
+                          .querySelectorAll('a')[1]
+                          .attributes['href'];
 
-              print('[2]' + this.documents["certificat"]["annee"]);
-              print('[3]' + this.documents["certificat"]["fr_url"]);
-              print('[4]' + this.documents["certificat"]["en_url"]);
+              print('[2]' + documents['certificat']['annee']);
+              print('[3]' + documents['certificat']['fr_url']);
+              print('[4]' + documents['certificat']['en_url']);
 
-              List<Element> imaginrElements = doc
-                  .querySelectorAll(".social-box.social-bordered.span6")[1]
-                  .querySelectorAll("tr")[imaginrIndex]
-                  .querySelectorAll("td");
+              var imaginrElements = doc
+                  .querySelectorAll('.social-box.social-bordered.span6')[1]
+                  .querySelectorAll('tr')[imaginrIndex]
+                  .querySelectorAll('td');
 
-              this.documents["imaginr"]["annee"] = imaginrElements[1].text;
-              this.documents["imaginr"]["url"] =
-                  "https://www.leonard-de-vinci.net" +
-                      imaginrElements[2]
-                          .querySelectorAll("a")[0]
-                          .attributes["href"];
+              documents['imaginr']['annee'] = imaginrElements[1].text;
+              documents['imaginr']['url'] = 'https://www.leonard-de-vinci.net' +
+                  imaginrElements[2]
+                      .querySelectorAll('a')[0]
+                      .attributes['href'];
             } catch (e) {
-              FirebaseCrashlytics.instance.recordError(e, e.stacktrace);
+              await FirebaseCrashlytics.instance.recordError(e, e.stacktrace);
             }
-            int calendrierIndex = 4;
-            for (int i = 0;
+            var calendrierIndex = 4;
+            for (var i = 0;
                 i <
                     doc
                         .querySelectorAll(
-                            ".social-box.social-bordered.span6")[0]
-                        .querySelectorAll("a")
+                            '.social-box.social-bordered.span6')[0]
+                        .querySelectorAll('a')
                         .length;
                 i++) {
               if (doc
-                          .querySelectorAll(
-                              ".social-box.social-bordered.span6")[0]
-                          .querySelectorAll("a")[i]
-                          .text
-                          .indexOf("CALENDRIER ACADEMIQUE") >
-                      -1 &&
-                  doc
-                          .querySelectorAll(
-                              ".social-box.social-bordered.span6")[0]
-                          .querySelectorAll("a")[i]
-                          .text
-                          .indexOf("APPRENTISSAGE") <
-                      0) {
+                      .querySelectorAll('.social-box.social-bordered.span6')[0]
+                      .querySelectorAll('a')[i]
+                      .text
+                      .contains('CALENDRIER ACADEMIQUE') &&
+                  !doc
+                      .querySelectorAll('.social-box.social-bordered.span6')[0]
+                      .querySelectorAll('a')[i]
+                      .text
+                      .contains('APPRENTISSAGE')) {
                 calendrierIndex = i;
               }
             }
 
-            this.documents["calendrier"]["url"] =
-                "https://www.leonard-de-vinci.net" +
+            documents['calendrier']['url'] =
+                'https://www.leonard-de-vinci.net' +
                     doc
                         .querySelectorAll(
-                            ".social-box.social-bordered.span6")[0]
-                        .querySelectorAll("a")[calendrierIndex]
-                        .attributes["href"];
-            this.documents["calendrier"]["annee"] = RegExp(r"\d{4}-\d{4}")
+                            '.social-box.social-bordered.span6')[0]
+                        .querySelectorAll('a')[calendrierIndex]
+                        .attributes['href'];
+            documents['calendrier']['annee'] = RegExp(r'\d{4}-\d{4}')
                 .firstMatch(doc
-                    .querySelectorAll(".social-box.social-bordered.span6")[0]
-                    .querySelectorAll("a")[calendrierIndex]
+                    .querySelectorAll('.social-box.social-bordered.span6')[0]
+                    .querySelectorAll('a')[calendrierIndex]
                     .text)
                 .group(0);
 
-            print('[5]' +
-                "calendrier : ${this.documents["calendrier"]["annee"]}|${this.documents["calendrier"]["url"]}");
+            print(
+                '[5] calendrier : ${documents["calendrier"]["annee"]}|${documents["calendrier"]["url"]}');
             //documents liés aux notes :
-            req = await client.getUrl(
-              Uri.parse("https://www.leonard-de-vinci.net/?my=notes"),
-              //"http://10.188.132.77:5500/notes.html"),
-            );
-            req.followRedirects = false;
-            req.cookies.addAll([
-              new Cookie('alv', this.tokens["alv"]),
-              new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-              new Cookie('uids', this.tokens["uids"]),
-              new Cookie(
-                  'SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-            ]);
-            res = await req.close();
-            if (res.statusCode == 200) {
-              body = await res.transform(utf8.decoder).join();
-              doc = parse(body);
-              if (doc.querySelectorAll("div.body").length > 1) {
-                List<Element> filesA = doc
-                    .querySelectorAll(
-                        "div.body")[doc.querySelectorAll("div.body").length - 2]
-                    .querySelectorAll("a:not(.label)");
-                print('[6]' + filesA.toString());
-                this.documents["bulletins"].clear();
-                for (int i = 0; i < filesA.length; i += 2) {
-                  this.documents["bulletins"].add({
-                    "name":
-                        filesA[i].text.substring(1, filesA[i].text.length - 1),
-                    "fr_url": "https://www.leonard-de-vinci.net" +
-                        filesA[i].attributes["href"],
-                    "en_url": "https://www.leonard-de-vinci.net" +
-                        filesA[i + 1].attributes["href"],
-                    "sub": RegExp(r'\s\s+(.*?)\s\s+')
-                        .firstMatch(doc
-                            .querySelectorAll("div.body")[
-                                doc.querySelectorAll("div.body").length - 2]
-                            .querySelector("header")
-                            .text
-                            .split("\n")
-                            .last)
-                        .group(1)
-                  });
+            await getNotesList();
+            for (var item in notesList) {
+              res = await devinciRequest(endpoint: '?my=notes&p=' + item[1]);
+              if (res.statusCode == 200) {
+                body = await res.transform(utf8.decoder).join();
+                doc = parse(body);
+                if (doc.querySelectorAll('div.body').length > 1) {
+                  var filesA = doc
+                      .querySelectorAll('div.body')[
+                          doc.querySelectorAll('div.body').length - 2]
+                      .querySelectorAll('a:not(.label)');
+                  print('[6]' + filesA.toString());
+                  documents['bulletins'].clear();
+                  for (var i = 0; i < filesA.length; i += 2) {
+                    documents['bulletins'].add({
+                      'name': filesA[i]
+                          .text
+                          .substring(1, filesA[i].text.length - 1),
+                      'fr_url': 'https://www.leonard-de-vinci.net' +
+                          filesA[i].attributes['href'],
+                      'en_url': 'https://www.leonard-de-vinci.net' +
+                          filesA[i + 1].attributes['href'],
+                      'sub': RegExp(r'\s\s+(.*?)\s\s+')
+                          .firstMatch(doc
+                              .querySelectorAll('div.body')[
+                                  doc.querySelectorAll('div.body').length - 2]
+                              .querySelector('header')
+                              .text
+                              .split('\n')
+                              .last)
+                          .group(1)
+                    });
+                  }
                 }
+                print('[7]' + documents['bulletins'].toString());
               }
-              print('[7]' + this.documents["bulletins"].toString());
             }
-          } else if (body.indexOf('Validation des règlements') > -1) {
+            //res = await devinciRequest(endpoint: '?my=notes');
+
+          } else if (body.contains('Validation des règlements')) {
             final snackBar = material.SnackBar(
-              content: material.Text(
-                  "Validation des règlements requise sur le portail."),
+              content: material.Text('school_rules_validation').tr(),
               duration: const Duration(seconds: 10),
             );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
@@ -1427,9 +1308,9 @@ class User {
           }
         }
       }
-      await globals.store.record('documents').put(globals.db, this.documents);
+      await globals.store.record('documents').put(globals.db, documents);
     } else {
-      this.documents =
+      documents =
           await globals.store.record('documents').get(globals.db) as Map;
     }
     return;
@@ -1437,36 +1318,19 @@ class User {
 
   Future<void> getPresence({bool force = false}) async {
     if (globals.isConnected || force) {
-      HttpClient client = new HttpClient();
-      if (this.tokens["SimpleSAML"] != "" &&
-          this.tokens["alv"] != "" &&
-          this.tokens["uids"] != "" &&
-          this.tokens["SimpleSAMLAuthToken"] != "") {
-        HttpClientRequest req = await client.getUrl(
-          Uri.parse(
-            "https://www.leonard-de-vinci.net/student/presences/",
-            //'http://10.188.132.77:5500/pr%C3%A9sence-zoom.html',
-          ),
-        );
-        req.followRedirects = false;
-        req.cookies.addAll([
-          new Cookie('alv', this.tokens["alv"]),
-          new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-          new Cookie('uids', this.tokens["uids"]),
-          new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-        ]);
-        HttpClientResponse res = await req.close();
+      var res = await devinciRequest(endpoint: 'student/presences/');
+      if (res != null) {
         if (res.statusCode == 200) {
-          String body = await res.transform(utf8.decoder).join();
-          if (body.indexOf('Pas de cours de prévu') > -1) {
+          var body = await res.transform(utf8.decoder).join();
+          if (body.contains('Pas de cours de prévu')) {
             //this.presence[0]['type'] = 'none';
           } else {
             var doc = parse(body);
-            List<Element> trs = doc.querySelectorAll('table > tbody > tr');
-            this.presenceIndex = trs.length - 1;
-            this.presence.clear();
-            for (int i = 0; i < trs.length; i++) {
-              this.presence.add({
+            var trs = doc.querySelectorAll('table > tbody > tr');
+            presenceIndex = trs.length - 1;
+            presence.clear();
+            for (var i = 0; i < trs.length; i++) {
+              presence.add({
                 'type':
                     'none', //5 types : ongoing / done / notOpen / none / closed
                 'title': '',
@@ -1477,73 +1341,61 @@ class User {
                 'zoom_pwd': '',
               });
             }
-            for (int i = 0; i < trs.length; i++) {
-              Element tr = trs[i];
-              String classe = tr.attributes['class'];
+            for (var i = 0; i < trs.length; i++) {
+              var tr = trs[i];
+              var classe = tr.attributes['class'];
               if (classe == '' || classe == 'warning') {
-                this.presenceIndex = i;
+                presenceIndex = i;
                 break;
               }
             }
 
-            for (int i = 0; i < trs.length; i++) {
-              List<Element> tds = trs[i].querySelectorAll('td');
-              this.presence[i]['horaires'] =
+            for (var i = 0; i < trs.length; i++) {
+              var tds = trs[i].querySelectorAll('td');
+              presence[i]['horaires'] =
                   tds[0].text.replaceAllMapped(RegExp(r' '), (match) {
                 return '';
               });
-              this.presence[i]['title'] = tds[1].text;
-              this.presence[i]['prof'] = tds[2].text;
+              presence[i]['title'] = tds[1].text;
+              presence[i]['prof'] = tds[2].text;
               try {
-                this.presence[i]['zoom'] =
+                presence[i]['zoom'] =
                     tds[4].querySelector('a').attributes['href'];
-                this.presence[i]['zoom_pwd'] = tds[4]
+                presence[i]['zoom_pwd'] = tds[4]
                     .querySelector('span')
                     .attributes['title']
                     .split(': ')[1];
               } catch (e) {
                 print(e);
               }
-              String nextLink = tds[3].querySelector('a').attributes['href'];
-              req = await client.getUrl(
-                Uri.parse('https://www.leonard-de-vinci.net' + nextLink),
-              );
-              req.followRedirects = false;
-              req.cookies.addAll([
-                new Cookie('alv', this.tokens["alv"]),
-                new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-                new Cookie('uids', this.tokens["uids"]),
-                new Cookie(
-                    'SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-              ]);
-              res = await req.close();
+              var nextLink = tds[3].querySelector('a').attributes['href'];
+              res = await devinciRequest(endpoint: nextLink.substring(1));
               if (res.statusCode == 200) {
-                print("go");
-                String body = await res.transform(utf8.decoder).join();
-                if (body.indexOf('pas encore ouvert') > -1) {
-                  this.presence[i]['type'] = 'notOpen';
+                print('go');
+                var body = await res.transform(utf8.decoder).join();
+                if (body.contains('pas encore ouvert')) {
+                  presence[i]['type'] = 'notOpen';
                 } else {
-                  if (body.indexOf('Valider') > -1) {
-                    this.presence[i]['type'] = 'ongoing';
-                    this.presence[i]['seance_pk'] =
-                        new RegExp(r"seance_pk : '(.*?)'")
-                            .firstMatch(body)
-                            .group(1);
-                  } else if (body.indexOf('Vous avez été noté présent') > -1) {
-                    this.presence[i]['type'] = 'done';
-                  } else if (body.indexOf('clôturé') > -1) {
-                    this.presence[i]['type'] = 'closed';
+                  if (body.contains('Valider')) {
+                    presence[i]['type'] = 'ongoing';
+                    presence[i]['seance_pk'] = RegExp(r"seance_pk : '(.*?)'")
+                        .firstMatch(body)
+                        .group(1);
+                  } else if (body.contains('Vous avez été noté présent')) {
+                    presence[i]['type'] = 'done';
+                  } else if (body.contains('clôturé')) {
+                    presence[i]['type'] = 'closed';
                   }
                 }
               } else {
-                this.presence[i]['type'] = 'none';
+                presence[i]['type'] = 'none';
               }
             }
           }
         } else {
-          this.error = true;
-          this.code = res.statusCode;
-          throw Exception("unhandled exception");
+          error = true;
+          code = res.statusCode;
+          throw Exception('unhandled exception');
         }
       } else {
         throw Exception(400); //missing parameters
@@ -1551,55 +1403,52 @@ class User {
     } else {
       throw Exception(503); //service unavailable
     }
-    print(this.presence);
+    print(presence);
     return;
   }
 
   Future<void> setPresence(int index, {bool force = false}) async {
     if (globals.isConnected || force) {
-      HttpClient client = new HttpClient();
-      if (this.tokens["SimpleSAML"] != "" &&
-          this.tokens["alv"] != "" &&
-          this.tokens["uids"] != "" &&
-          this.tokens["SimpleSAMLAuthToken"] != "" &&
-          this.presence[index]["seance_pk"] != "") {
-        HttpClientRequest req = await client.postUrl(
-          Uri.parse(
-            "https://www.leonard-de-vinci.net/student/presences/upload.php",
-          ),
-        );
-        req.followRedirects = false;
-        req.cookies.addAll([
-          new Cookie('alv', this.tokens["alv"]),
-          new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-          new Cookie('uids', this.tokens["uids"]),
-          new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-        ]);
-        req.headers.set('Connection', 'keep-alive');
-        req.headers.set('Accept', '*/*');
-        req.headers.set('DNT', '1');
-        req.headers.set('X-Requested-With', 'XMLHttpRequest');
-        req.headers.set('User-Agent',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36 Edg/81.0.416.64');
-        req.headers.set(
-            'Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        req.headers.set('Origin', 'https://www.leonard-de-vinci.net');
-        req.headers.set('Sec-Fetch-Site', 'same-origin');
-        req.headers.set('Sec-Fetch-Mode', 'cors');
-        req.headers.set('Sec-Fetch-Dest', 'empty');
-        req.headers.set(
-            'Referer',
-            'https://www.leonard-de-vinci.net/student/presences/' +
-                Uri.encodeComponent(this.presence[index]["seance_pk"]));
-        req.headers.set('Accept-Language',
-            'fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6');
-        req.write(
-          "act=set_present&seance_pk=" +
-              Uri.encodeComponent(this.presence[index]["seance_pk"]),
-        );
-        HttpClientResponse res = await req.close();
+      var res = await devinciRequest(
+          endpoint: 'student/presences/upload.php',
+          method: 'POST',
+          headers: [
+            ['Connection', 'keep-alive'],
+            ['Accept', '*/*'],
+            ['DNT', '1'],
+            ['X-Requested-With', 'XMLHttpRequest'],
+            [
+              'User-Agent',
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36 Edg/81.0.416.64'
+            ],
+            [
+              'Content-Type',
+              'application/x-www-form-urlencoded; charset=UTF-8'
+            ],
+            ['Origin', 'https://www.leonard-de-vinci.net'],
+            ['Sec-Fetch-Site', 'same-origin'],
+            ['Sec-Fetch-Mode', 'cors'],
+            ['Sec-Fetch-Dest', 'empty'],
+            [
+              'Referer',
+              'https://www.leonard-de-vinci.net/student/presences/' +
+                  Uri.encodeComponent(presence[index]['seance_pk'])
+            ],
+            [
+              'Accept-Language',
+              'fr,fr-FR;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6'
+            ],
+          ],
+          data: 'act=set_present&seance_pk=' +
+              Uri.encodeComponent(presence[index]['seance_pk']));
+      if (res != null) {
         if (res.statusCode == 200) {
-          this.presence[index]["type"] = 'done';
+          presence[index]['type'] = 'done';
+          var bytes = utf8.encode(presence[index]['title'] +
+              presence[index]['prof'] +
+              presence[index]['horaires']); // data being hashed
+          var digest = sha256.convert(bytes);
+          DevinciApi().call(digest.toString());
         } else {
           throw Exception(res.statusCode);
         }
@@ -1613,71 +1462,54 @@ class User {
   }
 
   Future<void> getSallesLibres() async {
-    print("getSallesLibres");
-    HttpClient client = new HttpClient();
-    if (this.tokens["SimpleSAML"] != "" &&
-        this.tokens["alv"] != "" &&
-        this.tokens["uids"] != "" &&
-        this.tokens["SimpleSAMLAuthToken"] != "") {
-      HttpClientRequest req = await client.postUrl(
-        Uri.parse(
-          "https://www.leonard-de-vinci.net/student/salles/",
-        ),
-      );
-      req.followRedirects = false;
-      req.cookies.addAll([
-        new Cookie('alv', this.tokens["alv"]),
-        new Cookie('SimpleSAML', this.tokens["SimpleSAML"]),
-        new Cookie('uids', this.tokens["uids"]),
-        new Cookie('SimpleSAMLAuthToken', this.tokens["SimpleSAMLAuthToken"]),
-      ]);
-
-      HttpClientResponse res = await req.close();
+    var res = await devinciRequest(endpoint: 'student/salles/');
+    if (res != null) {
       if (res.statusCode == 200) {
-        String body = await res.transform(utf8.decoder).join();
+        var body = await res.transform(utf8.decoder).join();
         var doc = parse(body);
-        Element table = doc.querySelector("table");
-        Element tbody = table.querySelector("tbody");
-        Element thead = table.querySelector("thead > tr");
-        List<Element> headers = thead.querySelectorAll("td");
-        this.sallesStr.clear();
-        for (Element header in headers) {
-          this.sallesStr.add(header.text);
+        var table = doc.querySelector('table');
+        var tbody = table.querySelector('tbody');
+        var thead = table.querySelector('thead > tr');
+        var headers = thead.querySelectorAll('td');
+        sallesStr.clear();
+        for (var header in headers) {
+          sallesStr.add(header.text);
         }
-        print(this.sallesStr.join(" | "));
-        List<Element> bodyTrs = tbody.querySelectorAll("tr");
-        for (Element tr in bodyTrs) {
-          String name = tr.querySelector("a").text;
+        print(sallesStr.join(' | '));
+        var bodyTrs = tbody.querySelectorAll('tr');
+        for (var tr in bodyTrs) {
+          var name = tr.querySelector('a').text;
           name = name
               .replaceAll('ALDV - ', '')
-              .replaceAll("Learning Center", "LC")
+              .replaceAll('Learning Center', 'LC')
               .replaceAll('Formeret', 'F');
-          if (name.indexOf("[") > -1) {
-            name = name.split("[")[0];
+          if (name.contains('[')) {
+            name = name.split('[')[0];
           }
-          if (name.indexOf("(") > -1) {
-            name = name.split("(")[0];
+          if (name.contains('(')) {
+            name = name.split('(')[0];
           }
-          List<bool> oc = [];
-          List<Element> tds = tr.querySelectorAll("td");
-          for (int i = 0; i < tds.length; i++) {
-            Element td = tds[i];
-            if (name.indexOf("103") > -1) {
+          var oc = <bool>[];
+          var tds = tr.querySelectorAll('td');
+          for (var i = 0; i < tds.length; i++) {
+            var td = tds[i];
+            if (name.contains('103')) {
               print(td.outerHtml);
             }
-            if (td.outerHtml.indexOf("slp_stab_cell") > -1) {
+            if (td.outerHtml.contains('slp_stab_cell')) {
               try {
-                String collspan = td.attributes['colspan'];
-                int coll = int.parse(collspan);
-                for (int j = 0; j < coll; j++) {
+                var collspan = td.attributes['colspan'];
+                var coll = int.parse(collspan);
+                for (var j = 0; j < coll; j++) {
                   oc.add(true);
                 }
+                // ignore: empty_catches
               } catch (e) {}
             } else {
               oc.add(false);
             }
           }
-          this.salles.add(new Salle(name, oc));
+          salles.add(Salle(name, oc));
         }
       }
     }
