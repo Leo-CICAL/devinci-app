@@ -51,7 +51,7 @@ void setup() async {
         crons.add(Cron());
         if (now.hour > h2h) {
           //le cours est forcement fini
-          print('cours $i passed');
+          //print('cours $i passed');
         } else if ((now.hour == h2h && now.minute < h2m) || now.hour < h2h) {
           //le cours n'est pas fini
           if (now.hour > hh) {
@@ -78,12 +78,12 @@ void setup() async {
   req.add(utf8.encode(json.encode(data)));
   var response = await req.close();
   var reply = await response.transform(utf8.decoder).join();
-  print(reply);
+  //print(reply);
 }
 
 void runCron(int index, String cronStr, String cronStr2) {
-  print(
-      'defined a new cron : index : $index | str : $cronStr | str2 : $cronStr2');
+  //print(
+  //    'defined a new cron : index : $index | str : $cronStr | str2 : $cronStr2');
   var cron = crons[index];
   var stopCron = Cron();
   cron.schedule(Schedule.parse(cronStr), () async {
@@ -91,7 +91,7 @@ void runCron(int index, String cronStr, String cronStr2) {
     var user = User(config.username, config.password);
     await user.init();
     var timer = Timer.periodic(Duration(seconds: 30), (Timer t) async {
-      print('cron #$index - fast start');
+      //print('cron #$index - fast start');
       await user.getPresence();
       if (user.presence[index]['type'] == 'ongoing' ||
           user.presence[index]['type'] == 'done' ||
@@ -109,9 +109,9 @@ void runCron(int index, String cronStr, String cronStr2) {
     Timer(Duration(minutes: 2), () {
       if (go) {
         timer.cancel();
-        print('cancel first');
+        //print('cancel first');
         Timer.periodic(Duration(minutes: 1), (Timer t) async {
-          print('cron #$index');
+          //print('cron #$index');
           await user.getPresence();
           if (user.presence[index]['type'] == 'ongoing' ||
               user.presence[index]['type'] == 'done' ||
@@ -144,7 +144,7 @@ void call(String hash) async {
   req.add(utf8.encode(json.encode(data)));
   var response = await req.close();
   var reply = await response.transform(utf8.decoder).join();
-  print(reply);
+  //print(reply);
   client.close();
 }
 
