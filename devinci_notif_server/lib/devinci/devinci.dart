@@ -102,7 +102,7 @@ class User {
     //if we manage to arrive here it means that we have valid tokens and that credentials are good
     password =
         null; //if tokens are still valid we'll never need the password again in this session, so it is useless to keep it in the object and risk it to be leaked or displayed
-    print('done init');
+    //print('done init');
     return;
   }
 
