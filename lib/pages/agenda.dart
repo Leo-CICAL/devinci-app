@@ -161,6 +161,7 @@ class _AgendaPageState extends State<AgendaPage> {
       _groupe = appointment.groupe;
       _location = appointment.location;
       _selectedCours = appointment;
+
     } else {
       final date = calendarTapDetails.date;
       _from = date;

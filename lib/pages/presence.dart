@@ -1,3 +1,4 @@
+import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:devinci/libraries/flutter_progress_button/flutter_progress_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +72,7 @@ class _PresencePageState extends State<PresencePage> {
           child: ListView(
             shrinkWrap: true,
             children: <Widget>[
+
               Padding(
                 padding: const EdgeInsets.only(top: 62, left: 8, right: 8),
                 child: Center(
@@ -285,7 +287,7 @@ class _PresencePageState extends State<PresencePage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.only(top: 62, left: 8, right: 8, bottom: 12),
                   child: SmoothPageIndicator(
                       controller: _pageController, // PageController
                       count: globals.user.presence.length,
@@ -307,7 +309,7 @@ class _PresencePageState extends State<PresencePage> {
                 controller: _refreshController,
                 onRefresh: _onRefresh,
                 child: ListView(
-                  shrinkWrap: true,
+                  shrinkWrap: false,
                   children: <Widget>[
                     Padding(
                       padding:
