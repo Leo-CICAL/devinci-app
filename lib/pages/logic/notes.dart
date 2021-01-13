@@ -64,7 +64,7 @@ Future<void> getData({bool force = false}) async {
       show = true;
     });
   } catch (e) {
-    print(e);
+    l(e);
   }
   if (!globals.user.notesFetched && globals.isConnected) {
     globals.isLoading.setState(1, true);

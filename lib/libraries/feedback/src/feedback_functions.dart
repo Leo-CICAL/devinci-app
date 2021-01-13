@@ -19,9 +19,9 @@ void consoleFeedbackFunction(
   String feedbackText,
   Uint8List feedbackScreenshot,
 ) {
-  // print('Feedback text:');
-  // print(feedbackText);
-  // print('Size of image: ${feedbackScreenshot.length}');
+  // l('Feedback text:');
+  // l(feedbackText);
+  // l('Size of image: ${feedbackScreenshot.length}');
 }
 
 /// Shows an [AlertDialog] with the given feedback.

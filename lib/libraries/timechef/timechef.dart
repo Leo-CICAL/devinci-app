@@ -31,16 +31,16 @@ class TimeChefUser {
     accessToken = await globals.storage.read(key: 'SimpleSAML') ?? '';
 
     if (globals.isConnected) {
-      print('is connected');
+      l('is connected');
       try {
-        print('try tokens');
+        l('try tokens');
         await testToken();
       } catch (exception) {
         try {
-          print('go for login');
+          l('go for login');
           await login();
         } catch (exception) {
-          print('login exception');
+          l('login exception');
           //getTokens throw an exception if an error occurs during the retrieving or if credentials are wrong
           if (code == 500) {
             //the exception was thrown by a dart process, which meens that credentials may be good, but the function had trouble to access the server.
@@ -71,34 +71,34 @@ class TimeChefUser {
   Future<void> login() async {
     var client = HttpClient();
     if (username != '' && password != '') {
-      print('cred ok');
+      l('cred ok');
       var jsonMap = <String, String>{
         'authType': '',
         'password': password,
         'username': username,
       };
-      print('1');
+      l('1');
       var request = await client.postUrl(
         Uri.parse('https://timechef.elior.com/api/oauth/?scope=timechef'),
       );
-      print('6');
+      l('6');
       request.followRedirects = false;
-      print('2');
+      l('2');
       request.headers.set('content-type', 'application/json');
-      print('3');
+      l('3');
       request.headers.set('Accept', 'application/json, text/plain, */*');
-      print('4');
+      l('4');
       request.add(utf8.encode(json.encode(jsonMap)));
-      print('5');
+      l('5');
 
-      print(request);
+      l(request);
       var response = await request.close();
       var body = await response.transform(utf8.decoder).join();
-      print('login : ${response.statusCode}');
+      l('login : ${response.statusCode}');
       if (response.statusCode == 200) {
-        print(body);
+        l(body);
         var resJson = json.decode(body);
-        print(resJson);
+        l(resJson);
         accessToken = resJson['accessToken'];
       } else {
         error = true;
@@ -114,10 +114,10 @@ class TimeChefUser {
   }
 
   Future<void> testToken() async {
-    print('hi test');
+    l('hi test');
     var client = HttpClient();
     if (accessToken != '') {
-      print('accessToken = ${accessToken}');
+      l('accessToken = ${accessToken}');
       var request = await client.getUrl(
         Uri.parse('https://timechef.elior.com/api/oauth/me'),
       );
@@ -127,13 +127,13 @@ class TimeChefUser {
       var response = await request.close();
       var body = await response.transform(utf8.decoder).join();
       if (response.statusCode != 200) {
-        print('test : error : ${response.statusCode}');
+        l('test : error : ${response.statusCode}');
         throw Exception('wrong tokens');
       } else {
-        print(body);
+        l(body);
       }
     } else {
-      print('no access token');
+      l('no access token');
       throw Exception('missing tokens or user has error');
     }
     return;
@@ -155,7 +155,7 @@ class TimeChefUser {
         throw Exception('wrong tokens');
       } else {
         var resJson = json.decode(body);
-        print(resJson);
+        l(resJson);
         solde = resJson['solde'];
       }
     } else {
@@ -200,7 +200,7 @@ class TimeChefUser {
               'detailsTxt': txt
             });
           }
-          print(transactions);
+          l(transactions);
         } else {}
       }
     } else {

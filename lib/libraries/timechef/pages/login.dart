@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                           globals.timeChefUser.error = false;
                         }
                         if (_formKey.currentState.validate()) {
-                          print('valid');
+                          l('valid');
                           setState(() {
                             buttonState = ButtonState.inProgress;
                           });
@@ -112,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                             await globals.timeChefUser.init();
                             globals.pageChanger.setPage(1);
                           } catch (exception, stacktrace) {
-                            print(exception);
+                            l(exception);
                             setState(() {
                               buttonState = ButtonState.error;
                             });
@@ -211,7 +211,7 @@ class _LoginPageState extends State<LoginPage> {
                             await globals.timeChefUser.init();
                             globals.pageChanger.setPage(1);
                           } catch (exception, stacktrace) {
-                            print(exception);
+                            l(exception);
                             setState(() {
                               buttonState = ButtonState.error;
                             });

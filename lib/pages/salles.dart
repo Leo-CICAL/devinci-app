@@ -58,15 +58,16 @@ class _SallesPageState extends State<SallesPage> {
 
   List<GridColumn> genColumns() {
     var res = <GridColumn>[];
-    res.add(GridTextColumn(mappingName: 'salles', headerText: 'rooms'.tr())
-      ..cellStyle = DataGridCellStyle(textStyle: TextStyle(fontSize: 12))
-      ..padding = EdgeInsets.only(left: 6));
+    res.add(GridTextColumn(
+        mappingName: 'salles',
+        headerText: 'rooms'.tr(),
+        cellStyle: DataGridCellStyle(textStyle: TextStyle(fontSize: 12)),
+        padding: EdgeInsets.only(left: 6)));
     for (var elem in globals.user.sallesStr) {
-      res.add(
-        GridWidgetColumn(mappingName: elem)
-          ..padding = EdgeInsets.only(left: 4, right: 4)
-          ..width = 50.0,
-      );
+      res.add(GridWidgetColumn(
+          mappingName: elem,
+          padding: EdgeInsets.only(left: 4, right: 4),
+          width: 50.0));
     }
     return res;
   }

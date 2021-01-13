@@ -161,7 +161,6 @@ class _AgendaPageState extends State<AgendaPage> {
       _groupe = appointment.groupe;
       _location = appointment.location;
       _selectedCours = appointment;
-
     } else {
       final date = calendarTapDetails.date;
       _from = date;
@@ -808,7 +807,7 @@ class CoursEditorState extends State<CoursEditor> {
                               Icons.done,
                             ),
                             onPressed: () {
-                              print(_selectedCours);
+                              l(_selectedCours);
                               if (_selectedCours != null &&
                                   !_uid.contains(':')) {
                                 globals.cours.removeAt(

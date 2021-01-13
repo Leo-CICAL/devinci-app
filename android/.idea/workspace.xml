@@ -10,113 +10,88 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e152c72b-963c-47b0-9a0f-bc120c672086" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_browser_browser_1_0_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_ads_identifier_16_0_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_base_16_0_1_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_basement_16_0_1_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_cloud_messaging_16_0_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_location_15_0_1_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_location_16_0_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_17_6_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_api_17_6_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_base_17_6_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_impl_17_6_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_sdk_17_6_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_places_placereport_15_0_1_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_places_placereport_16_0_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_stats_16_0_1_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_tasks_16_0_1_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_dagger_dagger_2_24_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_errorprone_error_prone_annotations_2_3_2_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_common_16_0_3_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_datatransport_17_0_3_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_encoders_16_0_0_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_encoders_json_16_0_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_encoders_json_17_0_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_iid_17_0_4_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_iid_interop_16_0_1_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_measurement_connector_17_0_1_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_messaging_17_3_4_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_messaging_20_3_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_guava_guava_28_1_android_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_j2objc_j2objc_annotations_1_3_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_onesignal_OneSignal_3_15_3_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_checkerframework_checker_compat_qual_2_5_5_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_codehaus_mojo_animal_sniffer_annotations_1_18_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/-1151128363/android-firebase_crashlytics.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/-1185544412/android-package_info.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/-1719743977/android-device_info.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/-1773359647/path_provider.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/-1918380141/onesignal_flutter.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/-471344636/android-url_launcher.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/-54395075/android-firebase_core.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/-984129403/android-firebase_analytics.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/1483707452/quick_actions.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/1984296325/firebase_messaging.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/303071218/android-in_app_review.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/344670377/connectivity.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/36715086/android-firebase_core_web.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/592044064/android-url_launcher_web.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/error.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/gear.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/error.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/gear.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/error.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/gear.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/error.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/gear.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/error.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxxhdpi/gear.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/../.dart_tool/package_config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.packages" beforeDir="false" afterPath="$PROJECT_DIR$/../.packages" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/../.vscode/settings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_datatransport_transport_backend_cct_2_2_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_datatransport_transport_backend_cct_2_2_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_datatransport_transport_runtime_2_2_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_datatransport_transport_runtime_2_2_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_17_4_1_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_api_17_4_1_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_base_17_4_1_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_impl_17_4_1_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_sdk_17_4_1_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_sdk_api_17_4_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_sdk_api_17_6_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_play_core_1_8_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_play_core_1_8_2_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_analytics_17_4_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_analytics_17_6_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_core_17_4_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_core_17_5_1_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_crashlytics_17_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_crashlytics_17_2_2_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_crashlytics_17_2_1_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_encoders_json_16_1_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_iid_20_1_5_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_iid_20_3_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_installations_16_2_1_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_installations_16_3_2_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_datatransport_transport_api_2_2_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_datatransport_transport_backend_cct_2_2_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_datatransport_transport_backend_cct_2_3_1_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_datatransport_transport_runtime_2_2_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_datatransport_transport_runtime_2_2_4_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_17_6_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_api_17_6_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_base_17_6_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_impl_17_6_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_sdk_17_6_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_measurement_sdk_api_17_6_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_auto_value_auto_value_annotations_1_6_5_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_dagger_dagger_2_24_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_dagger_dagger_2_27_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_analytics_17_6_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_common_19_3_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_common_19_3_1_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_components_16_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_core_17_5_1_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_crashlytics_17_2_2_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_datatransport_17_0_3_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_encoders_16_0_0_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_encoders_json_16_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_iid_20_3_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_installations_16_3_2_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_installations_16_3_3_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_installations_interop_16_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_messaging_20_3_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_onesignal_OneSignal_3_15_3_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__io_flutter_arm64_v8a_debug_1_0_0_b8752bbfff0419c8bf616b602bc59fd28f6a3d1b_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__io_flutter_armeabi_v7a_debug_1_0_0_b8752bbfff0419c8bf616b602bc59fd28f6a3d1b_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__io_flutter_flutter_embedding_debug_1_0_0_b8752bbfff0419c8bf616b602bc59fd28f6a3d1b_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__io_flutter_x86_64_debug_1_0_0_b8752bbfff0419c8bf616b602bc59fd28f6a3d1b_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__io_flutter_x86_debug_1_0_0_b8752bbfff0419c8bf616b602bc59fd28f6a3d1b_jar.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/-129214967/device_info.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/-1831186733/firebase_crashlytics.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/-1905971873/url_launcher_web.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/-216729402/android-path_provider.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/-734453445/firebase_core.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/-806769299/url_launcher.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/-926624452/android-quick_actions.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/1844169549/firebase_core_web.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/295529754/in_app_review.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/451283965/package_info.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/541068123/android-connectivity.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/802318852/firebase_analytics.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1151128363/android-firebase_crashlytics.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1185544412/android-package_info.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-1185544412/android-package_info.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1352572693/android-shared_preferences_linux.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1489849232/android-connectivity_for_web.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1642729148/android-connectivity_macos.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1719743977/android-device_info.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-1719743977/android-device_info.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1773359647/path_provider.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1918380141/onesignal_flutter.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-2018975237/url_launcher_linux.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-339147278/android-flutter_full_pdf_viewer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-339147278/android-flutter_full_pdf_viewer.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-471344636/android-url_launcher.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-471344636/android-url_launcher.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-54395075/android-firebase_core.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-757255120/flutter_siri_suggestions.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-757255120/flutter_siri_suggestions.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-777553985/android-shared_preferences.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-844555016/shared_preferences_windows.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-876681088/url_launcher_macos.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-984129403/android-firebase_analytics.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1022603402/path_provider_macos.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1090396825/flutter_statusbarcolor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1090396825/flutter_statusbarcolor.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1483707452/quick_actions.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1483707452/quick_actions.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1530814127/flutter_secure_storage.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1889997896/shared_preferences_macos.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1935085720/path_provider_windows.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1984296325/firebase_messaging.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/233557364/android-share_extend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/233557364/android-share_extend.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/303071218/android-in_app_review.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/319771118/flutter_email_sender.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/344670377/connectivity.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/36715086/android-firebase_core_web.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/556257272/app_settings.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/556257272/app_settings.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/897340234/url_launcher_windows.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/app/app.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/eu/araulin/devinci/DevinciWidgetSquare.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/eu/araulin/devinci/DevinciWidgetSquare.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/devinci_widget_square.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/devinci_widget_square.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../assets/translations/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/../assets/translations/en.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../assets/translations/fr.json" beforeDir="false" afterPath="$PROJECT_DIR$/../assets/translations/fr.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/extra/classes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/extra/classes.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../lib/extra/globals.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/extra/globals.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/libraries/devinci/extra/functions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/libraries/devinci/extra/functions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/libraries/devinci/extra/classes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/libraries/devinci/extra/classes.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/pages/login.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/login.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/pages/mainPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/mainPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/login.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/salles.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/salles.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/ui/absences.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/ui/absences.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.yaml" afterDir="false" />
     </list>
@@ -125,7 +100,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_3a" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_3_API_30" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -163,12 +138,14 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="5.4_FWVGA_API_30" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2021-01-13T17:22:36.469Z" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.recentlyUsedThemes" value="Theme.AppCompat.Light.DarkActionBar" />
     <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/res/drawable" />
-    <property name="memory.settings.postsync.last.time.stamp" value="1596896567591" />
+    <property name="memory.settings.postsync.last.time.stamp" value="1610558509090" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
@@ -290,7 +267,6 @@
     </state>
     <state x="426" y="299" key="FileChooserDialogImpl/-1920.140.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1603287129925" />
     <state x="426" y="299" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1603818764383" />
-    <state x="684" y="320" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1596896778791" />
     <state width="1877" height="339" key="GridCell.Tab.0.bottom" timestamp="1605184155352">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -319,6 +295,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="498" height="488" key="SwitcherDM/0.0.1920.1040@0.0.1920.1040" timestamp="1605180178323" />
+    <state x="373" y="130" width="1200" height="800" key="com.android.tools.idea.avdmanager.AvdListDialog" timestamp="1610558696093">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="373" y="130" width="1200" height="800" key="com.android.tools.idea.avdmanager.AvdListDialog/-1920.365.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610558696093" />
     <state x="616" y="172" width="672" height="676" key="search.everywhere.popup" timestamp="1603286560519">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

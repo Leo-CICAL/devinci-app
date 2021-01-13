@@ -217,7 +217,9 @@ class User {
         notesConfig = json.decode(body);
       }
       // ignore: empty_catches
-    } catch (exception) {}
+    } catch (exception) {
+      l(exception.toString());
+    }
     //init sembast db
     var directory = await getApplicationDocumentsDirectory();
 
@@ -234,6 +236,7 @@ class User {
       notes = [];
       await globals.store.record('notes').put(globals.db, notes);
     }
+    l('h2');
     this.notes = cloneList(notes);
     //retrieve tokens from secure storage (if they exist)
     tokens['SimpleSAML'] = await globals.storage.read(key: 'SimpleSAML') ??
@@ -244,7 +247,7 @@ class User {
         await globals.storage.read(key: 'SimpleSAMLAuthToken') ?? '';
 
     //retrieve data from secure storage
-
+    l('h3');
     globals.notifConsent = globals.prefs.getBool('notifConsent') ?? false;
 
     globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'false';
@@ -252,6 +255,7 @@ class User {
         .setCrashlyticsCollectionEnabled(globals.crashConsent == 'true');
     globals.analyticsConsent =
         globals.prefs.getBool('analyticsConsent') ?? false;
+    l('h4');
     await globals.analytics
         .setAnalyticsCollectionEnabled(globals.analyticsConsent);
     var calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
@@ -262,6 +266,7 @@ class User {
     data['idAdmin'] = await globals.storage.read(key: 'idAdmin') ?? '';
     data['ine'] = await globals.storage.read(key: 'ine') ?? '';
     data['edtUrl'] = await globals.storage.read(key: 'edtUrl') ?? '';
+    l('h5');
     if (data['edtUrl'] != '') {
       await setICal(data['edtUrl']);
     }
@@ -324,20 +329,20 @@ class User {
       await globals.storage.write(key: 'password', value: password);
       password =
           null; //if tokens are still valid we'll never need the password again in this session, so it is useless to keep it in the object and risk it to be leaked or displayed
-      print('edt : ' + globals.user.data['edtUrl']);
+      l('edt : ' + globals.user.data['edtUrl']);
       if (globals.user.data['ecole'] == '' ||
           globals.user.data['edtUrl'] == '') {
         //edtUrl being the last information we retrieve from the getData() function, if it doesn't exist it means that the getData() function didn't work or was never run and must be run at least once.
         try {
-          print("let's go try");
+          l("let's go try");
           await globals.user.getData();
         } catch (exception) {
-          print(exception);
+          l(exception);
         }
       }
     }
     DevinciApi().register();
-    print('done init');
+    l('done init');
     return;
   }
 
@@ -556,7 +561,7 @@ class User {
       l('headers : ${response.headers}');
       var body = await response.transform(utf8.decoder).join();
       if (response.statusCode == 200) {
-        print(body);
+        l(body);
         if (body.contains("('#password').hide();")) {
           l('error');
           throw Exception('wrong tokens');
@@ -584,26 +589,26 @@ class User {
       l('statusCode : ${response.statusCode}');
       l('headers : ${response.headers}');
       var body = await response.transform(utf8.decoder).join();
-      print('get Data');
+      l('get Data');
       if (response.statusCode == 200) {
-        print(body);
+        l(body);
 
         var doc = parse(body);
-        print(doc.outerHtml);
+        l(doc.outerHtml);
         var ns = doc.querySelectorAll('#main > div > .row-fluid');
         var n = ns[ns.length - 1].querySelector(
             'div.social-box.social-blue.social-bordered > header > h4');
-        print('n : "${n.innerHtml}"');
+        l('n : "${n.innerHtml}"');
         var regExp = RegExp(r': (.*?)\t');
         data['name'] = regExp.firstMatch(n.text).group(1);
         l("name : '${data["name"]}'");
 
         var ds = ns[ns.length - 1].querySelectorAll(
             'div.social-box.social-blue.social-bordered > div > div');
-        print(ds);
-        print('ds 0 : ' + ds[0].innerHtml);
-        print('ds 1 : ' + ds[1].innerHtml);
-        print('ds 2 : ' + ds[2].innerHtml);
+        l(ds);
+        l('ds 0 : ' + ds[0].innerHtml);
+        l('ds 1 : ' + ds[1].innerHtml);
+        l('ds 2 : ' + ds[2].innerHtml);
         String d;
         var french = true;
         if (doc
@@ -615,8 +620,8 @@ class User {
         }
         try {
           if (ds[1].innerHtml.contains(french ? 'Identifiant' : 'User ID')) {
-            print('ds1 choosen');
-            print(ds[1].querySelector('div'));
+            l('ds1 choosen');
+            l(ds[1].querySelector('div'));
             d = ds[1]
                 .querySelector('div > div > div.span4 > div > div > address')
                 .text;
@@ -653,8 +658,8 @@ class User {
           l("data : ${data["badge"]}|${data["client"]}|${data["idAdmin"]}|${data["ine"]}");
           // ignore: empty_catches
         } catch (e, stacktrace) {
-          print(e);
-          print(stacktrace);
+          l(e);
+          l(stacktrace);
         }
         var imgDiv = doc
             .querySelectorAll('#main > div > div')[1]
@@ -729,15 +734,15 @@ class User {
       );
       if (res != null) {
         if (res.statusCode == 200) {
-          print('got absences');
+          l('got absences');
           var body = await res.transform(utf8.decoder).join();
           if (!body.contains('Validation des règlements')) {
             var doc = parse(body);
-            print(doc.outerHtml);
+            l(doc.outerHtml);
             var spans = doc.querySelectorAll('.tab-pane > header > span');
             var nTB = doc
                 .querySelector('.tab-pane > header > span.label.label-warning');
-            print(nTB);
+            l(nTB);
             var nTM = RegExp(r': (.*?)"').firstMatch(nTB.text + '"').group(1);
             absences['nT'] = int.parse(nTM);
 
@@ -784,7 +789,7 @@ class User {
                   tds[6].text.replaceAllMapped(RegExp(r'\s\s+'), (match) => '');
               absences['liste'].add(elem);
             });
-            print(absences['liste']);
+            l(absences['liste']);
           } else if (body.contains('Validation des règlements')) {
             final snackBar = material.SnackBar(
               content: material.Text('school_rules_validation').tr(),
@@ -967,7 +972,7 @@ class User {
                   ddhandle = lii.querySelector('div');
                   texts = ddhandle.text.split('\n');
                   //String prettyprint = encoder.convert(texts);
-                  //print(prettyprint);
+                  //l(prettyprint);
                   elem = {
                     'matiere': '',
                     'moy': 0.0,
@@ -994,7 +999,7 @@ class User {
                           ['si']]);
                       // ignore: empty_catches
                     } catch (e) {}
-                    print(elem['moy']);
+                    l(elem['moy']);
                     try {
                       if (!texts[notesConfig['matieres']['!e']['ri']]
                           .contains(notesConfig['matieres']['!e']['rStr'])) {
@@ -1135,7 +1140,7 @@ class User {
       notes[index] = nn;
       await globals.store.record('notes').put(globals.db, notes);
       notesFetched = true;
-      print('db updated');
+      l('db updated');
     } else {
       notesFetched = true;
     }
@@ -1162,7 +1167,7 @@ class User {
                           .querySelectorAll('tr')
                           .length;
                   i++) {
-                print('[1]' +
+                l('[1]' +
                     doc
                         .querySelectorAll(
                             '.social-box.social-bordered.span6')[1]
@@ -1202,9 +1207,9 @@ class User {
                           .querySelectorAll('a')[1]
                           .attributes['href'];
 
-              print('[2]' + documents['certificat']['annee']);
-              print('[3]' + documents['certificat']['fr_url']);
-              print('[4]' + documents['certificat']['en_url']);
+              l('[2]' + documents['certificat']['annee']);
+              l('[3]' + documents['certificat']['fr_url']);
+              l('[4]' + documents['certificat']['en_url']);
 
               var imaginrElements = doc
                   .querySelectorAll('.social-box.social-bordered.span6')[1]
@@ -1256,8 +1261,7 @@ class User {
                     .text)
                 .group(0);
 
-            print(
-                '[5] calendrier : ${documents["calendrier"]["annee"]}|${documents["calendrier"]["url"]}');
+            l('[5] calendrier : ${documents["calendrier"]["annee"]}|${documents["calendrier"]["url"]}');
             //documents liés aux notes :
             await getNotesList();
             for (var item in notesList) {
@@ -1270,7 +1274,7 @@ class User {
                       .querySelectorAll('div.body')[
                           doc.querySelectorAll('div.body').length - 2]
                       .querySelectorAll('a:not(.label)');
-                  print('[6]' + filesA.toString());
+                  l('[6]' + filesA.toString());
                   documents['bulletins'].clear();
                   for (var i = 0; i < filesA.length; i += 2) {
                     documents['bulletins'].add({
@@ -1293,7 +1297,7 @@ class User {
                     });
                   }
                 }
-                print('[7]' + documents['bulletins'].toString());
+                l('[7]' + documents['bulletins'].toString());
               }
             }
             //res = await devinciRequest(endpoint: '?my=notes');
@@ -1366,12 +1370,12 @@ class User {
                     .attributes['title']
                     .split(': ')[1];
               } catch (e) {
-                print(e);
+                l(e);
               }
               var nextLink = tds[3].querySelector('a').attributes['href'];
               res = await devinciRequest(endpoint: nextLink.substring(1));
               if (res.statusCode == 200) {
-                print('go');
+                l('go');
                 var body = await res.transform(utf8.decoder).join();
                 if (body.contains('pas encore ouvert')) {
                   presence[i]['type'] = 'notOpen';
@@ -1403,7 +1407,7 @@ class User {
     } else {
       throw Exception(503); //service unavailable
     }
-    print(presence);
+    l(presence);
     return;
   }
 
@@ -1475,7 +1479,7 @@ class User {
         for (var header in headers) {
           sallesStr.add(header.text);
         }
-        print(sallesStr.join(' | '));
+        l(sallesStr.join(' | '));
         var bodyTrs = tbody.querySelectorAll('tr');
         for (var tr in bodyTrs) {
           var name = tr.querySelector('a').text;
@@ -1494,7 +1498,7 @@ class User {
           for (var i = 0; i < tds.length; i++) {
             var td = tds[i];
             if (name.contains('103')) {
-              print(td.outerHtml);
+              l(td.outerHtml);
             }
             if (td.outerHtml.contains('slp_stab_cell')) {
               try {

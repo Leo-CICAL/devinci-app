@@ -9,8 +9,6 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/pages/logic/absences.dart';
 
-// Map<String, dynamic> absences;
-
 class AbsencesPage extends StatefulWidget {
   AbsencesPage({Key key}) : super(key: key);
 

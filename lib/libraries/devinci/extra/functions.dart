@@ -105,12 +105,12 @@ Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
 
   if (mainReg.hasMatch(body)) {
     var vevents = mainReg.allMatches(body);
-    // print(vevents);
-    // print(vevents.length);
+    // l(vevents);
+    // l(vevents.length);
     vevents.forEach((vevent) {
-      //print('new   ');
+      //l('new   ');
       var veventBody = vevent.group(1);
-      //print(veventBody);
+      //l(veventBody);
       String dtstart,
           dtend,
           location,
@@ -215,7 +215,7 @@ bool get isInDebugMode {
 
 /// Reports [error] along with its [stackTrace] to Sentry.io.
 Future<Null> reportError(dynamic error, dynamic stackTrace) async {
-  print('Caught error: $error');
+  l('Caught error: $error');
   var err = error.toString();
   if (Platform.isAndroid || Platform.isIOS) {
     var packageInfo = await PackageInfo.fromPlatform();
@@ -284,12 +284,12 @@ void reportToCrash(var err, StackTrace stackTrace) async {
   // check if you are running in dev mode using an assertion and omit sending
   // the report.
   if (isInDebugMode) {
-    print(stackTrace);
-    print('In dev mode. Not sending report to Crashlytics.');
+    l(stackTrace);
+    l('in dev mode. Not sending report to Crashlytics.');
     return;
   }
 
-  print('Reporting to Crashlytics...');
+  l('Reporting to Crashlytics...');
   await FirebaseCrashlytics.instance.recordError(err, stackTrace);
 }
 
@@ -311,7 +311,7 @@ void betterFeedbackOnFeedback(
   var attachmentNotes = File(path + '/devinci_n.txt');
   await attachment.writeAsBytes(feedbackScreenshot);
   await attachmentNotes.writeAsString(globals.feedbackNotes);
-  //print(attachment.path);
+  //l(attachment.path);
   final email = Email(
     body:
         '$feedbackText\n\n Erreur:${globals.feedbackError}\n StackTrace:${globals.feedbackStackTrace.toString()}\n eventId : ${globals.eventId}',
@@ -325,7 +325,7 @@ void betterFeedbackOnFeedback(
 }
 
 void quickActionsCallback(shortcutType) {
-  print(shortcutType);
+  l(shortcutType);
   switch (shortcutType) {
     case 'action_edt':
       globals.selectedPage = 0;
@@ -686,9 +686,9 @@ void showGDPR(BuildContext context) async {
           );
         });
       });
-  print('notif1 ${notif}');
-  print('crash1 ${bug}');
-  print('ana1 ${analytics}');
+  l('notif1 ${notif}');
+  l('crash1 ${bug}');
+  l('ana1 ${analytics}');
   globals.notifConsent = notif;
   await globals.prefs.setBool('notifConsent', globals.notifConsent);
   if (globals.notifConsent) {
@@ -705,9 +705,9 @@ void showGDPR(BuildContext context) async {
   await globals.analytics
       .setAnalyticsCollectionEnabled(globals.analyticsConsent);
 
-  print('notif ${globals.notifConsent}');
-  print('crash ${globals.crashConsent}');
-  print('ana ${globals.analyticsConsent}');
+  l('notif ${globals.notifConsent}');
+  l('crash ${globals.crashConsent}');
+  l('ana ${globals.analyticsConsent}');
 }
 
 Future<String> downloadDocuments(String url, String filename) async {
@@ -749,7 +749,7 @@ Future<String> downloadDocuments(String url, String filename) async {
       if (response.headers.value('content-type').contains('html')) {
         //c'est du html, mais bordel ou est le fichier ?
         var body = await response.transform(utf8.decoder).join();
-        print(body);
+        l(body);
       } else {
         var bytes = await consolidateHttpClientResponseBytes(response);
         await fileSave.writeAsBytes(bytes);
@@ -844,14 +844,14 @@ Future<HttpClientResponse> devinciRequest(
       globals.user.tokens['uids'] != '' &&
       globals.user.tokens['SimpleSAMLAuthToken'] != '') {
     var client = HttpClient();
-    if (log) print('[0]');
+    if (log) l('[0]');
     var uri = Uri.parse(replacementUrl == ''
         ? 'https://www.leonard-de-vinci.net/' + endpoint
         : replacementUrl);
-    if (log) print('[1] ${endpoint}');
+    if (log) l('[1] ${endpoint}');
     var req =
         method == 'GET' ? await client.getUrl(uri) : await client.postUrl(uri);
-    if (log) print('[1] ${req}');
+    if (log) l('[1] ${req}');
     req.followRedirects = followRedirects;
     req.cookies.addAll([
       Cookie('alv', globals.user.tokens['alv']),
@@ -867,7 +867,7 @@ Future<HttpClientResponse> devinciRequest(
     if (data != null) {
       req.write(data);
     }
-    if (log) print('[2]');
+    if (log) l('[2]');
     return await req.close();
   } else {
     return null;

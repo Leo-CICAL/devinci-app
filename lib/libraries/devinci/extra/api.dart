@@ -6,6 +6,8 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:intl/intl.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
+import 'functions.dart';
+
 class DevinciApi {
   void register() async {
     if (globals.user != null) {
@@ -28,7 +30,7 @@ class DevinciApi {
             var digest = sha256.convert(bytes);
             hashes.add(digest.toString());
           });
-          print(hashes);
+          l(hashes);
           var client = HttpClient();
           var uri = Uri.parse('https://api.devinci.araulin.tech/register');
           var req = await client.postUrl(uri);
@@ -41,20 +43,20 @@ class DevinciApi {
             req.add(utf8.encode(json.encode(data)));
             var response = await req.close();
             var reply = await response.transform(utf8.decoder).join();
-            print(reply);
+            l(reply);
             await globals.prefs.setString('lastNotifRegistration', currentDate);
             client.close();
           } else {
-            print('no player id');
+            l('no player id');
           }
         } else {
-          print("can't send notif");
+          l("can't send notif");
         }
       } else {
-        print('no notif consent');
+        l('no notif consent');
       }
     } else {
-      print('user not existing');
+      l('user not existing');
     }
   }
 
@@ -73,16 +75,16 @@ class DevinciApi {
           req.add(utf8.encode(json.encode(data)));
           var response = await req.close();
           var reply = await response.transform(utf8.decoder).join();
-          print(reply);
+          l(reply);
           client.close();
         } else {
-          print('no player id');
+          l('no player id');
         }
       } else {
-        print('no notif consent');
+        l('no notif consent');
       }
     } else {
-      print('user not existing');
+      l('user not existing');
     }
   }
 }

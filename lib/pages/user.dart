@@ -213,7 +213,7 @@ class _UserPageState extends State<UserPage> {
                 setState(() {
                   docCardData[id]['frShowButton'] = false;
                 });
-                print(frUrl);
+                l(frUrl);
                 var rc = ReCase('${name}_$subtitle');
                 var path = await downloadDocuments(frUrl, rc.camelCase);
                 setState(() {
@@ -301,7 +301,7 @@ class _UserPageState extends State<UserPage> {
                                               docCardData[id]['frShowButton'] =
                                                   false;
                                             });
-                                            print(frUrl);
+                                            l(frUrl);
                                             var rc =
                                                 ReCase('${name}_$subtitle');
                                             var path = await downloadDocuments(
@@ -340,7 +340,7 @@ class _UserPageState extends State<UserPage> {
                                                 docCardData[id]
                                                     ['enShowButton'] = false;
                                               });
-                                              print(enUrl);
+                                              l(enUrl);
                                               var rc = ReCase(
                                                   '${name}_${subtitle}_en');
                                               var path =
