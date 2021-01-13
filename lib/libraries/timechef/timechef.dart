@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:devinci/libraries/devinci/extra/functions.dart';
 
 class TimeChefUser {
   TimeChefUser(String username, String password) {
