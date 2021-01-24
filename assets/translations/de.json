@@ -108,5 +108,7 @@
   "gdpr_footer":"Diese Einstellungen können jederzeit über die Anwendungsparameter geändert werden.",
   "refuse_all":"Alle ablehnen",
   "confirm":"Bestätigen Sie",
-  "copy_player_id":"Kopieren der PlayerId"
+  "copy_player_id":"Kopieren der PlayerId",
+  "locale":"de",
+  "lost_password":"Haben Sie Ihr Passwort vergessen?"
 }  

@@ -1,3 +1,4 @@
+import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:devinci/extra/devinci_icons_icons.dart';
 import 'package:devinci/pages/agenda.dart';
 import 'package:devinci/pages/presence.dart';
@@ -24,6 +25,7 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var title = globals.user.data['name'];
+  var showSidePanel = false;
 
   @override
   void initState() {
@@ -100,7 +102,6 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-
     globals.currentContext = context;
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
@@ -195,52 +196,89 @@ class MainPageState extends State<MainPage> {
                     : SizedBox.shrink()
               ].elementAt(globals.selectedPage),
               [
-                PopupMenuButton(
-                  captureInheritedThemes: true,
-                  icon: IconTheme(
-                    data: Theme.of(context).accentIconTheme,
-                    child: Icon(Icons.more_vert_outlined),
-                  ),
-                  onSelected: (String choice) {
-                    if (choice == 'refresh') {
-                      globals.isLoading.setState(0, true);
-                    } else if (choice == 'free_room') {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => SallesPage(),
+                MediaQuery.of(context).size.width > 1000
+                    ? Row(
+                        children: [
+                          IconButton(
+                            icon: IconTheme(
+                              data: Theme.of(context).accentIconTheme,
+                              child: Icon(Icons.refresh_rounded),
+                            ),
+                            onPressed: () async {
+                              await Navigator.push<Widget>(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        CoursEditor(
+                                          addButton: true,
+                                        )),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: IconTheme(
+                              data: Theme.of(context).accentIconTheme,
+                              child: Icon(showSidePanel
+                                  ? Icons.view_sidebar_rounded
+                                  : Icons.view_sidebar_outlined),
+                            ),
+                            onPressed: () async {
+                              setState(() {
+                                showSidePanel = !showSidePanel;
+                              });
+                            },
+                          ),
+                        ],
+                      )
+                    : PopupMenuButton(
+                        captureInheritedThemes: true,
+                        icon: IconTheme(
+                          data: Theme.of(context).accentIconTheme,
+                          child: Icon(Icons.more_vert_outlined),
                         ),
-                      );
-                    } else {
-                      setState(() {
-                        if (globals.calendarView == CalendarView.day) {
-                          globals.calendarView = CalendarView.workWeek;
-                          globals.prefs.setBool('calendarViewDay', false);
-                          globals.calendarController.view =
-                              CalendarView.workWeek;
-                        } else {
-                          globals.calendarView = CalendarView.day;
-                          globals.prefs.setBool('calendarViewDay', true);
-                          globals.calendarController.view = CalendarView.day;
-                        }
-                      });
-                    }
-                  },
-                  padding: EdgeInsets.zero,
-                  // initialValue: choices[_selection],
-                  itemBuilder: (BuildContext context) {
-                    return [
-                      globals.calendarView == CalendarView.day ? 'week' : 'day',
-                      'refresh',
-                      'free_room'
-                    ].map((String choice) {
-                      return PopupMenuItem<String>(
-                        value: choice,
-                        child: Text(choice).tr(),
-                      );
-                    }).toList();
-                  },
-                ),
+                        onSelected: (String choice) {
+                          if (choice == 'refresh') {
+                            globals.isLoading.setState(0, true);
+                          } else if (choice == 'free_room') {
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => SallesPage(),
+                              ),
+                            );
+                          } else {
+                            setState(() {
+                              if (globals.calendarView == CalendarView.day) {
+                                globals.calendarView = CalendarView.workWeek;
+                                globals.prefs.setBool('calendarViewDay', false);
+                                globals.calendarController.view =
+                                    CalendarView.workWeek;
+                              } else {
+                                globals.calendarView = CalendarView.day;
+                                globals.prefs.setBool('calendarViewDay', true);
+                                globals.calendarController.view =
+                                    CalendarView.day;
+                              }
+                            });
+                          }
+                        },
+                        padding: EdgeInsets.zero,
+                        // initialValue: choices[_selection],
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            globals.calendarView == CalendarView.day
+                                ? 'week'
+                                : 'day',
+                            'refresh',
+                            'free_room'
+                          ].map((String choice) {
+                            return PopupMenuItem<String>(
+                              value: choice,
+                              child: Text(choice).tr(),
+                            );
+                          }).toList();
+                        },
+                      ),
                 SizedBox.shrink(),
                 SizedBox.shrink(),
                 SizedBox.shrink(),
@@ -278,34 +316,188 @@ class MainPageState extends State<MainPage> {
                 ),
             ],
             automaticallyImplyLeading: false),
-        body: PageView(
-            children: pages(),
-            onPageChanged: (index) {
+        body: LayoutBuilder(builder: (context, constraints) {
+          Widget DrawerTile(
+              String title, IconData icon, IconData selectedIcon, index,
+              {dynamic callback}) {
+            callback ??= () {
               setState(() {
                 globals.selectedPage = index;
+                _pageController.animateToPage(globals.selectedPage,
+                    duration: Duration(milliseconds: 200),
+                    curve: Curves.linear);
               });
-            },
-            controller: _pageController),
-        bottomNavigationBar: Theme(
-          data: Theme.of(context).copyWith(
-            // sets the background color of the `BottomNavigationBar`
-            canvasColor: Theme.of(context).scaffoldBackgroundColor,
-          ),
-          child: BottomNavigationBar(
-              items: bottomIcons(),
-              currentIndex: globals.selectedPage,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              selectedItemColor: Theme.of(context).indicatorColor,
-              unselectedItemColor: Theme.of(context).unselectedWidgetColor,
-              onTap: (index) {
-                setState(() {
-                  globals.selectedPage = index;
-                  _pageController.animateToPage(globals.selectedPage,
-                      duration: Duration(milliseconds: 200),
-                      curve: Curves.linear);
-                });
-              }),
-        ),
+            };
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Material(
+                color: globals.selectedPage == index
+                    ? (globals.currentTheme.isDark()
+                        ? Colors.grey.withAlpha(50)
+                        : Theme.of(context).primaryColor.withAlpha(35))
+                    : Colors.transparent,
+                shape: SquircleBorder(
+                  radius: 25.0,
+                ),
+                child: ListTile(
+                  shape: SquircleBorder(
+                    radius: 25.0,
+                  ),
+                  leading: Icon(
+                      globals.selectedPage == index ? selectedIcon : icon,
+                      color: globals.selectedPage == index
+                          ? Theme.of(context).accentColor
+                          : Theme.of(context).textTheme.bodyText1.color),
+                  title: Text(title,
+                          style: TextStyle(
+                              color: globals.selectedPage == index
+                                  ? Theme.of(context).accentColor
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .color))
+                      .tr(),
+                  selected: globals.selectedPage == index,
+                  onTap: callback,
+                ),
+              ),
+            );
+          }
+
+          if (constraints.maxWidth > 1000) {
+            return Container(
+              child: Row(children: <Widget>[
+                Container(
+                    width: MediaQuery.of(context).size.width * 0.15 + 0.5,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        right: BorderSide(
+                            width: 0.5,
+                            color: Theme.of(context).textTheme.headline1.color),
+                      ),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: ListView(
+                        children: [
+                          DrawerTile('time_schedule', Icons.today_outlined,
+                              Icons.today_rounded, 0),
+                          DrawerTile('grades', Icons.assignment_outlined,
+                              Icons.assignment_rounded, 1),
+                          DrawerTile('absences', Icons.watch_later_outlined,
+                              Icons.watch_later_rounded, 2),
+                          DrawerTile(
+                              'attendance',
+                              DevinciIcons.megaphone_outlined,
+                              DevinciIcons.megaphone_filled,
+                              3),
+                          DrawerTile(globals.user.data['name'],
+                              Icons.person_outlined, Icons.person_rounded, 4),
+                          Divider(
+                            height: 8,
+                            thickness: 1,
+                          ),
+                          DrawerTile('free_room', Icons.meeting_room_outlined,
+                              Icons.meeting_room_rounded, 5, callback: () {
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => SallesPage(),
+                              ),
+                            );
+                          }),
+                          DrawerTile('settings', Icons.settings_outlined,
+                              Icons.settings_rounded, 6, callback: () {
+                            showCupertinoModalBottomSheet(
+                                context: context,
+                                builder: (context) => Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.15),
+                                      child: SettingsPage(
+                                        scrollController:
+                                            ModalScrollController.of(context),
+                                      ),
+                                    ));
+                          }),
+                        ],
+                      ),
+                    )),
+                Container(
+                  width: MediaQuery.of(context).orientation ==
+                              Orientation.landscape &&
+                          showSidePanel &&
+                          globals.selectedPage == 0
+                      ? MediaQuery.of(context).size.width * 0.65 - 1
+                      : MediaQuery.of(context).size.width * 0.85 - 0.5,
+                  child: PageView(
+                      children: pages(),
+                      onPageChanged: (index) {
+                        setState(() {
+                          globals.selectedPage = index;
+                        });
+                      },
+                      controller: _pageController),
+                ),
+                MediaQuery.of(context).orientation == Orientation.landscape &&
+                        showSidePanel &&
+                        globals.selectedPage == 0
+                    ? (Container(
+                        width: MediaQuery.of(context).size.width * 0.20 + 0.5,
+                        decoration: BoxDecoration(
+                          border: Border(
+                            left: BorderSide(
+                                width: 0.5,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .headline1
+                                    .color),
+                          ),
+                        ),
+                        child: PresencePage(),
+                      ))
+                    : SizedBox.shrink()
+              ]),
+            );
+          } else {
+            return PageView(
+                children: pages(),
+                onPageChanged: (index) {
+                  setState(() {
+                    globals.selectedPage = index;
+                  });
+                },
+                controller: _pageController);
+          }
+        }),
+        bottomNavigationBar: LayoutBuilder(builder: (context, constraints) {
+          if (constraints.maxWidth > 1000) {
+            return SizedBox.shrink();
+          } else {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                // sets the background color of the `BottomNavigationBar`
+                canvasColor: Theme.of(context).scaffoldBackgroundColor,
+              ),
+              child: BottomNavigationBar(
+                  items: bottomIcons(),
+                  currentIndex: globals.selectedPage,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  selectedItemColor: Theme.of(context).indicatorColor,
+                  unselectedItemColor: Theme.of(context).unselectedWidgetColor,
+                  onTap: (index) {
+                    setState(() {
+                      globals.selectedPage = index;
+                      _pageController.animateToPage(globals.selectedPage,
+                          duration: Duration(milliseconds: 200),
+                          curve: Curves.linear);
+                    });
+                  }),
+            );
+          }
+        }),
       ),
     );
   }

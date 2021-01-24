@@ -3,7 +3,6 @@ import 'package:about/about.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -372,48 +371,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                     globals.prefs
                                         .setString('crashConsent', 'false');
                                   }
-                                  FirebaseCrashlytics.instance
-                                      .setCrashlyticsCollectionEnabled(
-                                          globals.crashConsent == 'true');
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'usage_monitoring',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Switch.adaptive(
-                              value: globals.analyticsConsent,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  if (globals.analyticsConsent) {
-                                    globals.analyticsConsent = false;
-                                    globals.prefs
-                                        .setBool('analyticsConsent', false);
-                                  } else {
-                                    globals.analyticsConsent = true;
-                                    globals.prefs
-                                        .setBool('analyticsConsent', true);
-                                  }
+                                  // FirebaseCrashlytics.instance
+                                  //     .setCrashlyticsCollectionEnabled(
+                                  //         globals.crashConsent == 'true');
                                 });
                               },
                             ),

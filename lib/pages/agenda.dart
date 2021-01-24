@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:devinci/extra/CommonWidgets.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -180,48 +179,55 @@ class _AgendaPageState extends State<AgendaPage> {
   @override
   Widget build(BuildContext context) {
     globals.currentContext = context;
-    return show
-        ? Column(children: <Widget>[
-            AgendaHeader(),
-            Expanded(
-              child: SfCalendar(
-                view: globals.calendarView,
-                onTap: onCalendarTapped,
-                controller: globals.calendarController,
-                dataSource: MeetingDataSource(globals.cours),
-                headerHeight: 0,
-                timeSlotViewSettings: TimeSlotViewSettings(
-                  startHour: 7,
-                  endHour: 23,
-                  nonWorkingDays: <int>[DateTime.sunday],
-                  timeFormat: 'HH:mm',
-                ),
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                firstDayOfWeek: 1,
-                selectionDecoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(
-                      color: globals.currentTheme.isDark()
-                          ? Colors.white
-                          : Colors.black,
-                      width: 2),
-                  borderRadius: const BorderRadius.all(Radius.circular(4)),
-                  shape: BoxShape.rectangle,
-                ),
-                onViewChanged: (ViewChangedDetails viewChangedDetails) {
-                  globals.agendaTitle.headerText = DateFormat('MMMM yyyy')
-                      .format(viewChangedDetails.visibleDates[
-                          viewChangedDetails.visibleDates.length ~/ 2])
-                      .toString()
-                      .capitalize();
-                  SchedulerBinding.instance.addPostFrameCallback((duration) {
-                    setAgendaHeaderState(() {});
-                  });
-                },
+    return LayoutBuilder(builder: (context, constraints) {
+      if (show) {
+        return Column(children: <Widget>[
+          AgendaHeader(),
+          Expanded(
+            child: SfCalendar(
+              view: globals.calendarView,
+              onTap: onCalendarTapped,
+              controller: globals.calendarController,
+              dataSource: MeetingDataSource(globals.cours),
+              headerHeight: 0,
+              timeSlotViewSettings: TimeSlotViewSettings(
+                startHour: 7,
+                endHour: 23,
+                nonWorkingDays: <int>[DateTime.sunday],
+                timeFormat: 'HH:mm',
+                timeIntervalHeight: constraints.maxWidth > 1000
+                    ? (constraints.maxHeight / 16)
+                    : -1,
               ),
-            )
-          ])
-        : Center(child: CupertinoActivityIndicator());
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              firstDayOfWeek: 1,
+              selectionDecoration: BoxDecoration(
+                color: Colors.transparent,
+                border: Border.all(
+                    color: globals.currentTheme.isDark()
+                        ? Colors.white
+                        : Colors.black,
+                    width: 2),
+                borderRadius: const BorderRadius.all(Radius.circular(4)),
+                shape: BoxShape.rectangle,
+              ),
+              onViewChanged: (ViewChangedDetails viewChangedDetails) {
+                globals.agendaTitle.headerText = DateFormat('MMMM yyyy')
+                    .format(viewChangedDetails.visibleDates[
+                        viewChangedDetails.visibleDates.length ~/ 2])
+                    .toString()
+                    .capitalize();
+                SchedulerBinding.instance.addPostFrameCallback((duration) {
+                  setAgendaHeaderState(() {});
+                });
+              },
+            ),
+          )
+        ]);
+      } else {
+        return Center(child: CupertinoActivityIndicator());
+      }
+    });
   }
 }
 

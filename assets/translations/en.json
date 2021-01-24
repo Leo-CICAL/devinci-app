@@ -108,5 +108,7 @@
   "gdpr_footer":"These settings can be changed at any time from the application settings.",
   "refuse_all":"Refuse all",
   "confirm":"Confirm",
-  "copy_player_id":"Copy the PlayerId"
+  "copy_player_id":"Copy the PlayerId",
+  "locale":"en",
+  "lost_password":"Forgot your password?"
 }

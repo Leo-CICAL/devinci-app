@@ -19,7 +19,7 @@ dependencies:
   syncfusion_flutter_calendar: ^18.4.34
   syncfusion_localizations: ^18.4.34
   syncfusion_flutter_datagrid: ^18.4.34-beta
-  pull_to_refresh: ^1.6.3
+  pull_to_refresh: 1.6.3
   flutter_statusbarcolor: ^0.2.3 # permet de changer la couleur de la barre d'état et de navigation sur android et ios
   property_change_notifier: ^0.2.0 # permet de rebuild une interface si une variable change de valeur
   device_info: ^1.0.0
@@ -42,15 +42,17 @@ dependencies:
   about: ^1.4.0 # Affiche une page A propos, qui décrit l'application et les différentes licenses.
   connectivity: ^2.0.2 # permet de connaître l'état de la connection internet de l'appareil
   flutter_siri_suggestions: ^1.0.2+hotfix1 #Flutter plugin for exposure on Siri Suggestions.
-  firebase_core: ^0.7.0
-  firebase_analytics: ^7.0.1
-  firebase_crashlytics: ^0.4.0
+  #firebase_core: ^0.7.0
+  #firebase_analytics: ^7.0.1
+  #firebase_crashlytics: ^0.4.0
+  cupertino_rounded_corners: ^1.0.3
+  sentry_flutter: ^4.0.1
   onesignal_flutter: ^2.6.2
   url_launcher: ^5.7.10
   in_app_review: ^1.0.4
   smooth_page_indicator: ^0.2.0
   easy_localization: ^2.3.3
-  firebase_messaging: ^8.0.0-dev.13
+  #firebase_messaging: ^8.0.0-dev.13
   crypto: ^2.1.5
   flutter_localizations:
     sdk: flutter

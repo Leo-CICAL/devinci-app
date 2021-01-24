@@ -5,15 +5,16 @@ import 'package:crypto/crypto.dart';
 import 'package:devinci/extra/classes.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/extra/globals.dart' as globals;
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:html/parser.dart' show parse;
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/utils/value_utils.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:sentry/sentry.dart' as sentry;
 
 import 'api.dart';
 
@@ -251,13 +252,6 @@ class User {
     globals.notifConsent = globals.prefs.getBool('notifConsent') ?? false;
 
     globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'false';
-    await FirebaseCrashlytics.instance
-        .setCrashlyticsCollectionEnabled(globals.crashConsent == 'true');
-    globals.analyticsConsent =
-        globals.prefs.getBool('analyticsConsent') ?? false;
-    l('h4');
-    await globals.analytics
-        .setAnalyticsCollectionEnabled(globals.analyticsConsent);
     var calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
     globals.calendarView =
         calendarViewDay ? CalendarView.day : CalendarView.workWeek;
@@ -341,6 +335,12 @@ class User {
         }
       }
     }
+    Sentry.configureScope(
+      (scope) => scope.user = sentry.User(username: tokens['alv']),
+    );
+    Sentry.configureScope(
+      (scope) => scope.setTag('app.language', 'locale'.tr()),
+    );
     DevinciApi().register();
     l('done init');
     return;
@@ -640,6 +640,9 @@ class User {
             l('d : $d');
           }
           //detect language of the portail
+          Sentry.configureScope(
+            (scope) => scope.setTag('portail.language', french ? 'fr' : 'en'),
+          );
 
           if (french) {
             data['badge'] = RegExp(r'badge : (.*?)\n').firstMatch(d).group(1);
@@ -661,21 +664,6 @@ class User {
           l(e);
           l(stacktrace);
         }
-        var imgDiv = doc
-            .querySelectorAll('#main > div > div')[1]
-            .querySelector('div > div > img');
-
-        if (imgDiv.attributes['src'].contains('esilv')) {
-          data['ecole'] = 'esilv';
-        } else if (imgDiv.attributes['src'].contains('iim')) {
-          data['ecole'] = 'iim';
-        } else if (imgDiv.attributes['src'].contains('emlv')) {
-          data['ecole'] = 'emlv';
-        } else {
-          data['ecole'] = 'na';
-        }
-        await globals.analytics
-            .setUserProperty(name: 'ecole', value: data['ecole']);
         response = await devinciRequest(endpoint: '?my=edt');
 
         l('statusCode : ${response.statusCode}');
@@ -1222,7 +1210,10 @@ class User {
                       .querySelectorAll('a')[0]
                       .attributes['href'];
             } catch (e) {
-              await FirebaseCrashlytics.instance.recordError(e, e.stacktrace);
+              await Sentry.captureException(
+                e,
+                stackTrace: e.stackTrace,
+              );
             }
             var calendrierIndex = 4;
             for (var i = 0;

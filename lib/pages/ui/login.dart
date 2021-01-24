@@ -9,6 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -57,17 +59,30 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                 statusBarIconBrightness: globals.currentTheme.isDark()
                     ? Brightness.light
                     : Brightness.dark),
-            child: !show
-                ? Center(
+            child: LayoutBuilder(builder: (context, constraints) {
+              if (!show) {
+                return Center(
                     child: CupertinoActivityIndicator(
-                    animating: true,
-                  ))
-                : Container(
+                  animating: true,
+                ));
+              } else {
+                if (constraints.maxWidth > 600) {
+                  return Container(
                     alignment: Alignment.center,
-                    margin: const EdgeInsets.only(left: 28.0, right: 28.0),
+                    margin: EdgeInsets.only(
+                        left: constraints.maxWidth * 0.3,
+                        right: constraints.maxWidth * 0.3),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
+                        Container(
+                          child: SvgPicture.asset(
+                            'assets/devinci.svg',
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                          ),
+                          height: 100,
+                          width: 100,
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: Text(
@@ -144,12 +159,146 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                       : Colors.white,
                                 ),
                               ),
+                              Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: TextButton(
+                                      onPressed: () async {
+                                        const url =
+                                            'https://www.leonard-de-vinci.net/lost_password.php';
+                                        if (await canLaunch(url)) {
+                                          await launch(url);
+                                        } else {
+                                          throw 'Could not launch $url';
+                                        }
+                                      },
+                                      child: Text('lost_password',
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .accentColor))
+                                          .tr())),
                             ],
                           ),
                         ),
                       ],
                     ),
-                  ),
+                  );
+                } else {
+                  return Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(left: 28.0, right: 28.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          child: SvgPicture.asset(
+                            'assets/devinci.svg',
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                          ),
+                          height: 100,
+                          width: 100,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: Text(
+                            'welcome'.tr(),
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                        ),
+                        Form(
+                          key: formKey,
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                keyboardType: TextInputType.emailAddress,
+                                autocorrect: false,
+                                key: Key('login_username'),
+                                textInputAction: TextInputAction.next,
+                                focusNode: usernameFocus,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'user'.tr(),
+                                  suffixText: '@edu.devinci.fr',
+                                ),
+                                controller: myControllerUsername,
+                                onFieldSubmitted: (term) {
+                                  fieldFocusChange(
+                                      context, usernameFocus, passwordFocus);
+                                },
+                                validator: validator,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20.0),
+                                child: TextFormField(
+                                  obscureText: true,
+                                  textInputAction: TextInputAction.done,
+                                  focusNode: passwordFocus,
+                                  key: Key('login_password'),
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'password'.tr(),
+                                  ),
+                                  controller: myControllerPassword,
+                                  onFieldSubmitted: submit,
+                                  validator: validator,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20.0),
+                                child: ProgressButton(
+                                  key: Key('login_connect'),
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 18),
+                                    child: Text(
+                                      'login'.tr().toUpperCase(),
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: globals.currentTheme.isDark()
+                                              ? Colors.black
+                                              : Colors.white),
+                                    ),
+                                  ),
+                                  onPressed: submit,
+                                  buttonState: buttonState,
+                                  backgroundColor:
+                                      Theme.of(context).accentColor,
+                                  progressColor: globals.currentTheme.isDark()
+                                      ? Colors.black
+                                      : Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: TextButton(
+                                      onPressed: () async {
+                                        const url =
+                                            'https://www.leonard-de-vinci.net/lost_password.php';
+                                        if (await canLaunch(url)) {
+                                          await launch(url);
+                                        } else {
+                                          throw 'Could not launch $url';
+                                        }
+                                      },
+                                      child: Text('lost_password',
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .accentColor))
+                                          .tr()))
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              }
+            }),
           ),
           persistentFooterButtons: show
               ? [

@@ -108,5 +108,7 @@
   "gdpr_footer":"Ces réglages peuvent être modifiés à tout moment depuis les paramètres de l'application",
   "refuse_all":"Refuser tout",
   "confirm":"Valider",
-  "copy_player_id":"Copier le PlayerId"
+  "copy_player_id":"Copier le PlayerId",
+  "locale":"fr",
+  "lost_password":"mot de passe oublié ?"
 }

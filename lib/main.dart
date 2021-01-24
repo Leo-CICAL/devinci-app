@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:devinci/libraries/feedback/feedback.dart';
 import 'package:devinci/pages/ui/login.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -9,26 +8,19 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:package_info/package_info.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:easy_localization/easy_localization.dart';
-//firebase
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'extra/classes.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp();
-
-  // Pass all uncaught errors from the framework to Crashlytics.
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
   //Remove this method to stop OneSignal Debugging
   await OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
@@ -67,22 +59,32 @@ Future<Null> main() async {
         localizedTitle: 'Hors connexion',
         icon: 'icon_offline'),
   ]);
-  runApp(
-    EasyLocalization(
-      supportedLocales: [
-        Locale('fr'),
-        Locale('en'),
-        Locale('de'),
-      ],
-      path: 'assets/translations', // <-- change patch to your
-      fallbackLocale: Locale('fr'),
-      child: BetterFeedback(
-          // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
-          child: Phoenix(
-            // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
-            child: MyApp(),
-          ),
-          onFeedback: betterFeedbackOnFeedback),
+  var packageInfo = await PackageInfo.fromPlatform();
+  var appVersion = 'devinci@' + packageInfo.version;
+  appVersion += '+' + packageInfo.buildNumber;
+  await SentryFlutter.init(
+    (options) => options
+      ..dsn =
+          'https://d90bf661f0ef48d29264be594b6ad954@o400644.ingest.sentry.io/5279681'
+      ..release = appVersion
+      ..environment = 'prod',
+    appRunner: () => runApp(
+      EasyLocalization(
+        supportedLocales: [
+          Locale('fr'),
+          Locale('en'),
+          Locale('de'),
+        ],
+        path: 'assets/translations', // <-- change patch to your
+        fallbackLocale: Locale('fr'),
+        child: BetterFeedback(
+            // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
+            child: Phoenix(
+              // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
+              child: MyApp(),
+            ),
+            onFeedback: betterFeedbackOnFeedback),
+      ),
     ),
   );
 }
@@ -99,8 +101,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     globals.currentTheme.addListener(() {
       if (mounted) setState(() {});
     });
-    globals.analytics = FirebaseAnalytics();
-    globals.observer = FirebaseAnalyticsObserver(analytics: globals.analytics);
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -138,7 +138,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       title: 'Devinci',
-      navigatorObservers: <NavigatorObserver>[globals.observer],
       theme: ThemeData(
         primarySwatch: Colors.teal,
         primaryColor: Colors.teal,

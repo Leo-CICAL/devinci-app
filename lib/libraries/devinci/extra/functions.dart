@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:diacritic/diacritic.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -19,6 +18,7 @@ import 'package:devinci/libraries/feedback/feedback.dart';
 import 'package:sembast/sembast.dart';
 import 'package:devinci/extra/classes.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 void l(var msg) {
   //stand for log
@@ -285,12 +285,15 @@ void reportToCrash(var err, StackTrace stackTrace) async {
   // the report.
   if (isInDebugMode) {
     l(stackTrace);
-    l('in dev mode. Not sending report to Crashlytics.');
+    l('in dev mode. Not sending report to Sentry.');
     return;
   }
 
-  l('Reporting to Crashlytics...');
-  await FirebaseCrashlytics.instance.recordError(err, stackTrace);
+  l('Reporting to Sentry...');
+  await Sentry.captureException(
+    err,
+    stackTrace: stackTrace,
+  );
 }
 
 String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
@@ -564,76 +567,6 @@ void showGDPR(BuildContext context) async {
                             .tr(),
                       ),
               ),
-              SwitchListTile(
-                value: analytics,
-                activeColor: Theme.of(context).accentColor,
-                secondary: Container(
-                  height: 32,
-                  width: 32,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    color: globals.currentTheme.isDark()
-                        ? Colors.white.withOpacity(0.2)
-                        : Theme.of(context).accentColor.withOpacity(0.15),
-                  ),
-                  child: Icon(Icons.insights_rounded,
-                      color: Theme.of(context).textTheme.headline1.color,
-                      size: 18),
-                ),
-                onChanged: (bool value) {
-                  setState(() {
-                    analytics = value;
-                  });
-                },
-                title: RichText(
-                  text: TextSpan(
-                    text: 'usage_monitoring'.tr() + '\n',
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: globals.currentTheme.isDark()
-                            ? Colors.blueGrey[100]
-                            : Colors.blueGrey[800]),
-                    children: <InlineSpan>[
-                      show_analytics
-                          ? WidgetSpan(child: SizedBox.shrink())
-                          : TextSpan(
-                              text: 'more_about'.tr(),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  setState(() {
-                                    show_analytics = true;
-                                    show_notif = false;
-                                    show_bug = false;
-                                  });
-                                },
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.normal,
-                                  color: globals.currentTheme.isDark()
-                                      ? Colors.blueGrey[200]
-                                      : Colors.blueGrey[600])),
-                    ],
-                  ),
-                ),
-                subtitle: !show_analytics
-                    ? SizedBox.shrink()
-                    : GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            show_analytics = false;
-                          });
-                        },
-                        child: Text('analytics_more',
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.normal,
-                                    color: globals.currentTheme.isDark()
-                                        ? Colors.blueGrey[200]
-                                        : Colors.blueGrey[600]))
-                            .tr(),
-                      ),
-              ),
               Center(
                 child: Padding(
                   padding:
@@ -688,7 +621,6 @@ void showGDPR(BuildContext context) async {
       });
   l('notif1 ${notif}');
   l('crash1 ${bug}');
-  l('ana1 ${analytics}');
   globals.notifConsent = notif;
   await globals.prefs.setBool('notifConsent', globals.notifConsent);
   if (globals.notifConsent) {
@@ -698,16 +630,9 @@ void showGDPR(BuildContext context) async {
   await OneSignal.shared.consentGranted(notif);
   globals.crashConsent = bug ? 'true' : 'false';
   await globals.prefs.setString('crashConsent', globals.crashConsent);
-  await FirebaseCrashlytics.instance
-      .setCrashlyticsCollectionEnabled(globals.crashConsent == 'true');
-  globals.analyticsConsent = analytics;
-  await globals.prefs.setBool('analyticsConsent', globals.analyticsConsent);
-  await globals.analytics
-      .setAnalyticsCollectionEnabled(globals.analyticsConsent);
 
   l('notif ${globals.notifConsent}');
   l('crash ${globals.crashConsent}');
-  l('ana ${globals.analyticsConsent}');
 }
 
 Future<String> downloadDocuments(String url, String filename) async {
