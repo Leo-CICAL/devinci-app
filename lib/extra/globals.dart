@@ -45,6 +45,8 @@ bool notifConsent;
 
 CalendarView calendarView = CalendarView.workWeek;
 
+bool showSidePanel = false;
+
 class AgendaTitle extends PropertyChangeNotifier<String> {
   String _headerText = '';
 

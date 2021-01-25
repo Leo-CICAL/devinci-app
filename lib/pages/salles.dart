@@ -66,8 +66,8 @@ class _SallesPageState extends State<SallesPage> {
     for (var elem in globals.user.sallesStr) {
       res.add(GridWidgetColumn(
           mappingName: elem,
-          padding: EdgeInsets.only(left: 4, right: 4),
-          width: 50.0));
+          padding: EdgeInsets.only(left: 0, right: 0),
+          width: 73.0));
     }
     return res;
   }

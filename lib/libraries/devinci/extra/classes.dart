@@ -250,7 +250,7 @@ class User {
     //retrieve data from secure storage
     l('h3');
     globals.notifConsent = globals.prefs.getBool('notifConsent') ?? false;
-
+    globals.showSidePanel = globals.prefs.getBool('showSidePanel') ?? false;
     globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'false';
     var calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
     globals.calendarView =

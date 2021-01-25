@@ -25,7 +25,6 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var title = globals.user.data['name'];
-  var showSidePanel = false;
 
   @override
   void initState() {
@@ -215,19 +214,25 @@ class MainPageState extends State<MainPage> {
                               );
                             },
                           ),
-                          IconButton(
-                            icon: IconTheme(
-                              data: Theme.of(context).accentIconTheme,
-                              child: Icon(showSidePanel
-                                  ? Icons.view_sidebar_rounded
-                                  : Icons.view_sidebar_outlined),
-                            ),
-                            onPressed: () async {
-                              setState(() {
-                                showSidePanel = !showSidePanel;
-                              });
-                            },
-                          ),
+                          MediaQuery.of(context).orientation ==
+                                  Orientation.portrait
+                              ? SizedBox.shrink()
+                              : IconButton(
+                                  icon: IconTheme(
+                                    data: Theme.of(context).accentIconTheme,
+                                    child: Icon(globals.showSidePanel
+                                        ? Icons.view_sidebar_rounded
+                                        : Icons.view_sidebar_outlined),
+                                  ),
+                                  onPressed: () async {
+                                    setState(() {
+                                      globals.showSidePanel =
+                                          !globals.showSidePanel;
+                                      globals.prefs.setBool('showSidePanel',
+                                          globals.showSidePanel);
+                                    });
+                                  },
+                                ),
                         ],
                       )
                     : PopupMenuButton(
@@ -324,8 +329,7 @@ class MainPageState extends State<MainPage> {
               setState(() {
                 globals.selectedPage = index;
                 _pageController.animateToPage(globals.selectedPage,
-                    duration: Duration(milliseconds: 200),
-                    curve: Curves.linear);
+                    duration: Duration(milliseconds: 1), curve: Curves.linear);
               });
             };
             return Container(
@@ -365,20 +369,26 @@ class MainPageState extends State<MainPage> {
           }
 
           if (constraints.maxWidth > 1000) {
+            globals.calendarView = CalendarView.workWeek;
             return Container(
               child: Row(children: <Widget>[
                 Container(
-                    width: MediaQuery.of(context).size.width * 0.15 + 0.5,
+                    width: 250 + 0.3,
                     decoration: BoxDecoration(
                       border: Border(
                         right: BorderSide(
-                            width: 0.5,
-                            color: Theme.of(context).textTheme.headline1.color),
+                            width: 0.3,
+                            color: Theme.of(context)
+                                .textTheme
+                                .headline1
+                                .color
+                                .withAlpha(110)),
                       ),
                     ),
                     child: Container(
                       padding: const EdgeInsets.only(top: 16),
                       child: ListView(
+                        physics: const NeverScrollableScrollPhysics(),
                         children: [
                           DrawerTile('time_schedule', Icons.today_outlined,
                               Icons.today_rounded, 0),
@@ -428,10 +438,10 @@ class MainPageState extends State<MainPage> {
                 Container(
                   width: MediaQuery.of(context).orientation ==
                               Orientation.landscape &&
-                          showSidePanel &&
+                          globals.showSidePanel &&
                           globals.selectedPage == 0
-                      ? MediaQuery.of(context).size.width * 0.65 - 1
-                      : MediaQuery.of(context).size.width * 0.85 - 0.5,
+                      ? MediaQuery.of(context).size.width * 0.80 - 250 - 0.6
+                      : MediaQuery.of(context).size.width - 250 - 0.3,
                   child: PageView(
                       children: pages(),
                       onPageChanged: (index) {
@@ -442,21 +452,24 @@ class MainPageState extends State<MainPage> {
                       controller: _pageController),
                 ),
                 MediaQuery.of(context).orientation == Orientation.landscape &&
-                        showSidePanel &&
+                        globals.showSidePanel &&
                         globals.selectedPage == 0
                     ? (Container(
-                        width: MediaQuery.of(context).size.width * 0.20 + 0.5,
+                        width: MediaQuery.of(context).size.width * 0.20 + 0.3,
                         decoration: BoxDecoration(
                           border: Border(
                             left: BorderSide(
-                                width: 0.5,
+                                width: 0.3,
                                 color: Theme.of(context)
                                     .textTheme
                                     .headline1
-                                    .color),
+                                    .color
+                                    .withAlpha(110)),
                           ),
                         ),
-                        child: PresencePage(),
+                        child: PresencePage(
+                          inSidePanel: true,
+                        ),
                       ))
                     : SizedBox.shrink()
               ]),

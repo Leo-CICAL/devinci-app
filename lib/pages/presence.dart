@@ -11,7 +11,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class PresencePage extends StatefulWidget {
-  PresencePage({Key key}) : super(key: key);
+  final bool inSidePanel;
+  PresencePage({Key key, this.inSidePanel}) : super(key: key);
 
   @override
   _PresencePageState createState() => _PresencePageState();
@@ -72,7 +73,6 @@ class _PresencePageState extends State<PresencePage> {
           child: ListView(
             shrinkWrap: true,
             children: <Widget>[
-
               Padding(
                 padding: const EdgeInsets.only(top: 62, left: 8, right: 8),
                 child: Center(
@@ -80,8 +80,16 @@ class _PresencePageState extends State<PresencePage> {
                       globals.user.presence[i]['type'] == 'none'
                           ? 'no_class'.tr()
                           : globals.user.presence[i]['title'],
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.headline2),
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      style: widget.inSidePanel != null
+                          ? TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color:
+                                  Theme.of(context).textTheme.headline2.color,
+                            )
+                          : Theme.of(context).textTheme.headline2),
                 ),
               ),
               Padding(
@@ -101,8 +109,16 @@ class _PresencePageState extends State<PresencePage> {
                           : (globals.user.presence[i]['prof'] == ''
                               ? globals.user.presence[i]['horaires']
                               : globals.user.presence[i]['prof']),
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyText1),
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      style: widget.inSidePanel != null
+                          ? TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color:
+                                  Theme.of(context).textTheme.headline2.color,
+                            )
+                          : Theme.of(context).textTheme.bodyText1),
                 ),
               ),
               globals.user.presence[i]['prof'] != ''
@@ -118,7 +134,10 @@ class _PresencePageState extends State<PresencePage> {
                     )
                   : SizedBox.shrink(),
               Padding(
-                padding: const EdgeInsets.only(top: 112, left: 48, right: 48),
+                padding: EdgeInsets.only(
+                    top: 112,
+                    left: widget.inSidePanel != null ? 16 : 48,
+                    right: widget.inSidePanel != null ? 16 : 48),
                 child: Center(
                     child: {
                   'ongoing': ProgressButton(
@@ -218,7 +237,10 @@ class _PresencePageState extends State<PresencePage> {
               Visibility(
                 visible: globals.user.presence[i]['zoom'] != '',
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 32, left: 48, right: 48),
+                  padding: EdgeInsets.only(
+                      top: 32,
+                      left: widget.inSidePanel != null ? 16 : 48,
+                      right: widget.inSidePanel != null ? 16 : 48),
                   child: ProgressButton(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18),
@@ -250,7 +272,10 @@ class _PresencePageState extends State<PresencePage> {
               Visibility(
                 visible: globals.user.presence[i]['zoom_pwd'] != '',
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 12, left: 48, right: 48),
+                  padding: EdgeInsets.only(
+                      top: 12,
+                      left: widget.inSidePanel != null ? 16 : 48,
+                      right: widget.inSidePanel != null ? 16 : 48),
                   child: Center(
                     child: RichText(
                       text: TextSpan(
@@ -287,7 +312,8 @@ class _PresencePageState extends State<PresencePage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 62, left: 8, right: 8, bottom: 12),
+                  padding: const EdgeInsets.only(
+                      top: 62, left: 8, right: 8, bottom: 12),
                   child: SmoothPageIndicator(
                       controller: _pageController, // PageController
                       count: globals.user.presence.length,
