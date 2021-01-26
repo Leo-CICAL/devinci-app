@@ -36,7 +36,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
+    //SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
   }
 
   void runBeforeBuild() async {
@@ -165,7 +165,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   right: 16,
                   top: 16,
                 ),
-                height: (7 * 46).toDouble(),
+                height: (6 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,

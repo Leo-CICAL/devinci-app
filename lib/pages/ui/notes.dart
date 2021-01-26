@@ -36,136 +36,135 @@ class NotesPageState extends State<NotesPage> {
     Widget result = SizedBox
         .shrink(); //de base je met un SizedBox.shrink() parce que c'est l'"équivalent" du null en widget sans que ca casse tout si c'est ca qui est renvoyé.
 
-    return OrientationBuilder(builder: (context, orientation) {
-      if (show) {
-        if (!globals.isConnected && globals.user.notes.isEmpty) {
-          //hors-connexion et pas de données backup
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.wifi_off_rounded, size: 32),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text('offline').tr(),
-                ),
-              ],
-            ),
-          );
-        } else {
-          if (MediaQuery.of(context).size.width > 1000) {
-            return CupertinoScrollbar(
-              child: SmartRefresher(
-                enablePullDown: true,
-                header: ClassicHeader(),
-                controller: refreshController,
-                onRefresh: onRefresh,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.13,
+    if (show) {
+      if (!globals.isConnected && globals.user.notes.isEmpty) {
+        //hors-connexion et pas de données backup
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.wifi_off_rounded, size: 32),
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text('offline').tr(),
+              ),
+            ],
+          ),
+        );
+      } else {
+        var padding = 0.0;
+        if (MediaQuery.of(context).size.width > 1000) {
+          padding = MediaQuery.of(context).size.width * 0.13;
+        } else if (MediaQuery.of(context).size.width > 800) {
+          padding = MediaQuery.of(context).size.width * 0.1;
+        } else if (MediaQuery.of(context).size.width > 600) {
+          padding = MediaQuery.of(context).size.width * 0.08;
+        }
+        return CupertinoScrollbar(
+          child: SmartRefresher(
+            enablePullDown: true,
+            header: ClassicHeader(),
+            controller: refreshController,
+            onRefresh: onRefresh,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: padding,
+              ),
+              child: ListView(
+                controller: scrollController,
+                shrinkWrap: true,
+                children: <Widget>[
+                  MeasureSize(
+                    child: YearsSelection(),
+                    onChange: (size) {
+                      if (first) {
+                        scrollController.jumpTo(size.height);
+                        first = false;
+                      }
+                    },
                   ),
-                  child: ListView(
-                    controller: scrollController,
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      MeasureSize(
-                        child: YearsSelection(),
-                        onChange: (size) {
-                          if (first) {
-                            scrollController.jumpTo(size.height);
-                            first = false;
-                          }
-                        },
-                      ),
-                      TitleSection('semesters',
+                  TitleSection('semesters',
+                      padding: const EdgeInsets.only(
+                          top: 20.0, left: 20, right: 20)),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Row(
+                        children: <Widget>[
+                          SemestreSelection(0),
+                          SemestreSelection(1)
+                        ],
+                      )),
+                  TitleSection('grades'),
+                  globals.user.notes[index]['s'][currentSemester].length != 0
+                      ? Padding(
                           padding: const EdgeInsets.only(
-                              top: 20.0, left: 20, right: 20)),
-                      Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
-                          child: Row(
-                            children: <Widget>[
-                              SemestreSelection(0),
-                              SemestreSelection(1)
-                            ],
-                          )),
-                      TitleSection('grades'),
-                      globals.user.notes[index]['s'][currentSemester].length !=
-                              0
-                          ? Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 20.0, left: 20, right: 20, bottom: 48),
-                              child: ListView.builder(
+                              top: 20.0, left: 20, right: 20, bottom: 48),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            itemCount: globals
+                                .user.notes[index]['s'][currentSemester].length,
+                            itemBuilder: (BuildContext ctxt, int i) {
+                              return ListView.builder(
                                 shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
+                                primary: false,
                                 scrollDirection: Axis.vertical,
-                                itemCount: globals.user
-                                    .notes[index]['s'][currentSemester].length,
-                                itemBuilder: (BuildContext ctxt, int i) {
-                                  return ListView.builder(
-                                    shrinkWrap: true,
-                                    primary: false,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: globals
-                                        .user
-                                        .notes[index]['s'][currentSemester][i]
-                                            ['matieres']
-                                        .length,
-                                    itemBuilder: (BuildContext ctxt, int j) {
-                                      return Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          MatiereTile(i, j),
-                                          ListView.builder(
-                                            shrinkWrap: true,
-                                            primary: false,
-                                            scrollDirection: Axis.vertical,
-                                            itemCount: globals
-                                                .user
-                                                .notes[index]['s']
-                                                    [currentSemester][i]
-                                                    ['matieres'][j]['notes']
-                                                .length,
-                                            itemBuilder:
-                                                (BuildContext ctxt, int y) {
-                                              return NoteTile(i, j, y);
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
+                                itemCount: globals
+                                    .user
+                                    .notes[index]['s'][currentSemester][i]
+                                        ['matieres']
+                                    .length,
+                                itemBuilder: (BuildContext ctxt, int j) {
+                                  return Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      MatiereTile(i, j),
+                                      ListView.builder(
+                                        shrinkWrap: true,
+                                        primary: false,
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: globals
+                                            .user
+                                            .notes[index]['s'][currentSemester]
+                                                [i]['matieres'][j]['notes']
+                                            .length,
+                                        itemBuilder:
+                                            (BuildContext ctxt, int y) {
+                                          return NoteTile(i, j, y);
+                                        },
+                                      ),
+                                    ],
                                   );
                                 },
-                              ),
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.only(top: 52),
-                              child: Container(
-                                height: 200,
-                                width: 200,
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    'assets/free.svg',
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        .color,
-                                  ),
-                                ),
+                              );
+                            },
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(top: 52),
+                          child: Container(
+                            height: 200,
+                            width: 200,
+                            child: Center(
+                              child: SvgPicture.asset(
+                                'assets/free.svg',
+                                color:
+                                    Theme.of(context).textTheme.bodyText1.color,
                               ),
                             ),
-                    ],
-                  ),
-                ),
+                          ),
+                        ),
+                ],
               ),
-            );
-          } else {}
-        }
-      } else {
-        return Center(
-          child: CupertinoActivityIndicator(),
+            ),
+          ),
         );
       }
-    });
+    } else {
+      return Center(
+        child: CupertinoActivityIndicator(),
+      );
+    }
   }
 }

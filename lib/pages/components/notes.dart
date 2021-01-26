@@ -99,8 +99,12 @@ Widget MatiereTile(int i, int j) {
                                       [currentSemester][i]['matieres'][j]) ==
                                   null
                               ? ''
-                              : getMatMoy(globals.user.notes[index]['s']
-                                      [currentSemester][i]['matieres'][j])
+                              : (getMatMoy(globals.user.notes[index]['s'][currentSemester]
+                                              [i]['matieres'][j]) ==
+                                          100
+                                      ? 'validated'.tr()
+                                      : getMatMoy(globals.user.notes[index]['s']
+                                          [currentSemester][i]['matieres'][j]))
                                   .toString(),
                           style: TextStyle(
                               color: (getMatMoy(globals.user.notes[index]['s']

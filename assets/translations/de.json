@@ -110,5 +110,7 @@
   "confirm":"Bestätigen Sie",
   "copy_player_id":"Kopieren der PlayerId",
   "locale":"de",
-  "lost_password":"Haben Sie Ihr Passwort vergessen?"
+  "lost_password":"Haben Sie Ihr Passwort vergessen?",
+  "validated":"validiert",
+  "reconnecting":"Die Verbindung wiederherstellen..."
 }  

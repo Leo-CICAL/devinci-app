@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:sembast/utils/value_utils.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 //DATA
 int currentSemester = 0;
@@ -74,6 +75,10 @@ Future<void> getData({bool force = false}) async {
 }
 
 void onRefresh() async {
+  l(globals.user.tokens);
+  globals.user.tokens['SimpleSAML'] = '4846432';
+  globals.user.tokens['alv'] = 'apeoie';
+  globals.user.tokens['SimpleSAMLAuthToken'] = '564ze684684';
   if (!globals.noteLocked) {
     globals.noteLocked = true;
     try {
@@ -85,8 +90,35 @@ void onRefresh() async {
         catcher(exception, stacktrace);
       }
     } catch (exception, stacktrace) {
-      catcher(exception, stacktrace);
+      l('needs reconnection');
+      final snackBar = SnackBar(
+        content: Text('reconnecting').tr(),
+        duration: const Duration(seconds: 10),
+      );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+      Scaffold.of(getContext()).showSnackBar(snackBar);
+      try {
+        await globals.user.getTokens();
+      } catch (e, stacktrace) {
+        l(e);
+        l(stacktrace);
+      }
+      try {
+        await globals.user.getNotesList();
+        currentYear = globals.user.notesList[index][0];
+        try {
+          await globals.user.getNotes(globals.user.notesList[index][1], index);
+        } catch (exception, stacktrace) {
+          catcher(exception, stacktrace);
+        }
+      } catch (exception, stacktrace) {
+        catcher(exception, stacktrace);
+      }
+      Scaffold.of(getContext()).removeCurrentSnackBar();
+
+      l(globals.user.tokens);
     }
+    l(globals.user.tokens);
     globals.noteLocked = false;
   }
 

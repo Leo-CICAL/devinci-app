@@ -39,24 +39,44 @@ class _UserPageState extends State<UserPage> {
         try {
           await globals.user.getDocuments();
         } catch (exception, stacktrace) {
-          var client = HttpClient();
-          var req = await client.getUrl(
-            Uri.parse('https://www.leonard-de-vinci.net/?my=docs'),
+          l('needs reconnection');
+          final snackBar = SnackBar(
+            content: Text('reconnecting').tr(),
+            duration: const Duration(seconds: 10),
           );
-          req.followRedirects = false;
-          req.cookies.addAll([
-            Cookie('alv', globals.user.tokens['alv']),
-            Cookie('SimpleSAML', globals.user.tokens['SimpleSAML']),
-            Cookie('uids', globals.user.tokens['uids']),
-            Cookie('SimpleSAMLAuthToken',
-                globals.user.tokens['SimpleSAMLAuthToken']),
-          ]);
-          var res = await req.close();
-          globals.feedbackNotes = await res.transform(utf8.decoder).join();
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+          Scaffold.of(context).showSnackBar(snackBar);
+          try {
+            await globals.user.getTokens();
+          } catch (e, stacktrace) {
+            l(e);
+            l(stacktrace);
+          }
+          try {
+            await globals.user.getDocuments();
+          } catch (exception, stacktrace) {
+            var client = HttpClient();
+            var req = await client.getUrl(
+              Uri.parse('https://www.leonard-de-vinci.net/?my=docs'),
+            );
+            req.followRedirects = false;
+            req.cookies.addAll([
+              Cookie('alv', globals.user.tokens['alv']),
+              Cookie('SimpleSAML', globals.user.tokens['SimpleSAML']),
+              Cookie('uids', globals.user.tokens['uids']),
+              Cookie('SimpleSAMLAuthToken',
+                  globals.user.tokens['SimpleSAMLAuthToken']),
+            ]);
+            var res = await req.close();
+            globals.feedbackNotes = await res.transform(utf8.decoder).join();
 
-          await reportError(
-              'user.dart | _UserPageState | runBeforeBuild() | user.getDocuments() => $exception',
-              stacktrace);
+            await reportError(
+                'user.dart | _UserPageState | runBeforeBuild() | user.getDocuments() => $exception',
+                stacktrace);
+          }
+          Scaffold.of(context).removeCurrentSnackBar();
+
+          l(globals.user.tokens);
         }
         if (mounted) {
           setState(() {
@@ -81,24 +101,44 @@ class _UserPageState extends State<UserPage> {
         try {
           await globals.user.getDocuments();
         } catch (exception, stacktrace) {
-          var client = HttpClient();
-          var req = await client.getUrl(
-            Uri.parse('https://www.leonard-de-vinci.net/?my=docs'),
+          l('needs reconnection');
+          final snackBar = SnackBar(
+            content: Text('reconnecting').tr(),
+            duration: const Duration(seconds: 10),
           );
-          req.followRedirects = false;
-          req.cookies.addAll([
-            Cookie('alv', globals.user.tokens['alv']),
-            Cookie('SimpleSAML', globals.user.tokens['SimpleSAML']),
-            Cookie('uids', globals.user.tokens['uids']),
-            Cookie('SimpleSAMLAuthToken',
-                globals.user.tokens['SimpleSAMLAuthToken']),
-          ]);
-          var res = await req.close();
-          globals.feedbackNotes = await res.transform(utf8.decoder).join();
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+          Scaffold.of(context).showSnackBar(snackBar);
+          try {
+            await globals.user.getTokens();
+          } catch (e, stacktrace) {
+            l(e);
+            l(stacktrace);
+          }
+          try {
+            await globals.user.getDocuments();
+          } catch (exception, stacktrace) {
+            var client = HttpClient();
+            var req = await client.getUrl(
+              Uri.parse('https://www.leonard-de-vinci.net/?my=docs'),
+            );
+            req.followRedirects = false;
+            req.cookies.addAll([
+              Cookie('alv', globals.user.tokens['alv']),
+              Cookie('SimpleSAML', globals.user.tokens['SimpleSAML']),
+              Cookie('uids', globals.user.tokens['uids']),
+              Cookie('SimpleSAMLAuthToken',
+                  globals.user.tokens['SimpleSAMLAuthToken']),
+            ]);
+            var res = await req.close();
+            globals.feedbackNotes = await res.transform(utf8.decoder).join();
 
-          await reportError(
-              'user.dart | _UserPageState | runBeforeBuild() | user.getDocuments() => $exception',
-              stacktrace);
+            await reportError(
+                'user.dart | _UserPageState | runBeforeBuild() | user.getDocuments() => $exception',
+                stacktrace);
+          }
+          Scaffold.of(context).removeCurrentSnackBar();
+
+          l(globals.user.tokens);
         }
       }
       if (mounted) {
@@ -215,7 +255,32 @@ class _UserPageState extends State<UserPage> {
                 });
                 l(frUrl);
                 var rc = ReCase('${name}_$subtitle');
-                var path = await downloadDocuments(frUrl, rc.camelCase);
+                var path = null;
+                try {
+                  path = await downloadDocuments(frUrl, rc.camelCase);
+                } catch (e) {
+                  l('needs reconnection');
+                  final snackBar = SnackBar(
+                    content: Text('reconnecting').tr(),
+                    duration: const Duration(seconds: 10),
+                  );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+                  Scaffold.of(context).showSnackBar(snackBar);
+                  try {
+                    await globals.user.getTokens();
+                  } catch (e, stacktrace) {
+                    l(e);
+                    l(stacktrace);
+                  }
+                  try {
+                    path = await downloadDocuments(frUrl, rc.camelCase);
+                  } catch (exception, stacktrace) {
+                    //todo
+                  }
+                  Scaffold.of(context).removeCurrentSnackBar();
+
+                  l(globals.user.tokens);
+                }
                 setState(() {
                   docCardData[id]['frShowButton'] = true;
                 });
@@ -382,107 +447,119 @@ class _UserPageState extends State<UserPage> {
       );
     }
 
+    var padding = 0.0;
+    if (MediaQuery.of(context).size.width > 1000) {
+      padding = MediaQuery.of(context).size.width * 0.13;
+    } else if (MediaQuery.of(context).size.width > 800) {
+      padding = MediaQuery.of(context).size.width * 0.1;
+    } else if (MediaQuery.of(context).size.width > 600) {
+      padding = MediaQuery.of(context).size.width * 0.08;
+    }
     globals.currentContext = context;
     if (show) {
       return CupertinoScrollbar(
         controller: scroll,
-        child: ListView(
-          controller: scroll,
-          children: <Widget>[
-            ExpansionTile(
-              title: Text(
-                'private_info',
-                textAlign: TextAlign.left,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ).tr(),
-              children: <Widget>[
-                InfoSection('id', globals.user.tokens['uids']),
-                InfoSection('#card', globals.user.data['badge']),
-                InfoSection('#client', globals.user.data['client']),
-                InfoSection('id_admin', globals.user.data['idAdmin']),
-                InfoSection('INE', globals.user.data['ine']),
-              ],
-              onExpansionChanged: (expanded) {
-                setState(() {
-                  pad = expanded;
-                });
-              },
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: (pad ? 20 : 0)),
-              child: TimeChefPage(),
-            ),
-            TitleSection('documents',
-                padding: EdgeInsets.only(left: 16, top: 20)),
-            Padding(
-              padding: EdgeInsets.only(top: 12, left: 20, right: 20),
-              child: DocumentTile(
-                  'school_certificate',
-                  (globals.user.documents['certificat']['annee'] != ''
-                      ? globals.user.documents
-                      : documents)['certificat']['annee'],
-                  (globals.user.documents['certificat']['annee'] != ''
-                      ? globals.user.documents
-                      : documents)['certificat']['fr_url'],
-                  (globals.user.documents['certificat']['annee'] != ''
-                      ? globals.user.documents
-                      : documents)['certificat']['en_url'],
-                  0),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 0, left: 20, right: 20),
-              child: DocumentTile(
-                  'imaginr_certificate',
-                  (globals.user.documents['certificat']['annee'] != ''
-                      ? globals.user.documents
-                      : documents)['imaginr']['annee'],
-                  (globals.user.documents['certificat']['annee'] != ''
-                      ? globals.user.documents
-                      : documents)['imaginr']['url'],
-                  '',
-                  1),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 0, left: 20, right: 20),
-              child: DocumentTile(
-                  'academic_calendar',
-                  (globals.user.documents['certificat']['annee'] != ''
-                      ? globals.user.documents
-                      : documents)['calendrier']['annee'],
-                  (globals.user.documents['certificat']['annee'] != ''
-                      ? globals.user.documents
-                      : documents)['calendrier']['url'],
-                  '',
-                  2),
-            ),
-            ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                itemCount: (globals.user.documents['certificat']['annee'] != ''
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: padding),
+          child: ListView(
+            controller: scroll,
+            children: <Widget>[
+              ExpansionTile(
+                title: Text(
+                  'private_info',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ).tr(),
+                children: <Widget>[
+                  InfoSection('id', globals.user.tokens['uids']),
+                  InfoSection('#card', globals.user.data['badge']),
+                  InfoSection('#client', globals.user.data['client']),
+                  InfoSection('id_admin', globals.user.data['idAdmin']),
+                  InfoSection('INE', globals.user.data['ine']),
+                ],
+                onExpansionChanged: (expanded) {
+                  setState(() {
+                    pad = expanded;
+                  });
+                },
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: (pad ? 20 : 0)),
+                child: TimeChefPage(),
+              ),
+              TitleSection('documents',
+                  padding: EdgeInsets.only(left: 16, top: 20)),
+              Padding(
+                padding: EdgeInsets.only(top: 12, left: 20, right: 20),
+                child: DocumentTile(
+                    'school_certificate',
+                    (globals.user.documents['certificat']['annee'] != ''
                         ? globals.user.documents
-                        : documents)['bulletins']
-                    .length,
-                itemBuilder: (BuildContext ctxt, int i) {
-                  return Padding(
-                    padding: EdgeInsets.only(top: 0, left: 20, right: 20),
-                    child: DocumentTile(
-                        (globals.user.documents['certificat']['annee'] != ''
-                            ? globals.user.documents
-                            : documents)['bulletins'][i]['name'],
-                        (globals.user.documents['certificat']['annee'] != ''
-                            ? globals.user.documents
-                            : documents)['bulletins'][i]['sub'],
-                        (globals.user.documents['certificat']['annee'] != ''
-                            ? globals.user.documents
-                            : documents)['bulletins'][i]['fr_url'],
-                        (globals.user.documents['certificat']['annee'] != ''
-                            ? globals.user.documents
-                            : documents)['bulletins'][i]['en_url'],
-                        3 + i),
-                  );
-                }),
-          ],
+                        : documents)['certificat']['annee'],
+                    (globals.user.documents['certificat']['annee'] != ''
+                        ? globals.user.documents
+                        : documents)['certificat']['fr_url'],
+                    (globals.user.documents['certificat']['annee'] != ''
+                        ? globals.user.documents
+                        : documents)['certificat']['en_url'],
+                    0),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 0, left: 20, right: 20),
+                child: DocumentTile(
+                    'imaginr_certificate',
+                    (globals.user.documents['certificat']['annee'] != ''
+                        ? globals.user.documents
+                        : documents)['imaginr']['annee'],
+                    (globals.user.documents['certificat']['annee'] != ''
+                        ? globals.user.documents
+                        : documents)['imaginr']['url'],
+                    '',
+                    1),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 0, left: 20, right: 20),
+                child: DocumentTile(
+                    'academic_calendar',
+                    (globals.user.documents['certificat']['annee'] != ''
+                        ? globals.user.documents
+                        : documents)['calendrier']['annee'],
+                    (globals.user.documents['certificat']['annee'] != ''
+                        ? globals.user.documents
+                        : documents)['calendrier']['url'],
+                    '',
+                    2),
+              ),
+              ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  itemCount:
+                      (globals.user.documents['certificat']['annee'] != ''
+                              ? globals.user.documents
+                              : documents)['bulletins']
+                          .length,
+                  itemBuilder: (BuildContext ctxt, int i) {
+                    return Padding(
+                      padding: EdgeInsets.only(top: 0, left: 20, right: 20),
+                      child: DocumentTile(
+                          (globals.user.documents['certificat']['annee'] != ''
+                              ? globals.user.documents
+                              : documents)['bulletins'][i]['name'],
+                          (globals.user.documents['certificat']['annee'] != ''
+                              ? globals.user.documents
+                              : documents)['bulletins'][i]['sub'],
+                          (globals.user.documents['certificat']['annee'] != ''
+                              ? globals.user.documents
+                              : documents)['bulletins'][i]['fr_url'],
+                          (globals.user.documents['certificat']['annee'] != ''
+                              ? globals.user.documents
+                              : documents)['bulletins'][i]['en_url'],
+                          3 + i),
+                    );
+                  }),
+            ],
+          ),
         ),
       );
     } else {

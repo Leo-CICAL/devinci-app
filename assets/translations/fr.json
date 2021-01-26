@@ -110,5 +110,7 @@
   "confirm":"Valider",
   "copy_player_id":"Copier le PlayerId",
   "locale":"fr",
-  "lost_password":"mot de passe oublié ?"
+  "lost_password":"mot de passe oublié ?",
+  "validated":"validée",
+  "reconnecting":"Reconnexion..."
 }

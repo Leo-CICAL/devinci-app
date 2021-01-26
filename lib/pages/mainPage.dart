@@ -34,7 +34,9 @@ class MainPageState extends State<MainPage> {
     });
   }
 
-  final _pageController = PageController();
+  var _pageController = PageController();
+
+  var lastWidth = 0.0;
 
   List<Widget> pages() {
     var res = <Widget>[
@@ -44,12 +46,6 @@ class MainPageState extends State<MainPage> {
       PresencePage(),
       UserPage()
     ];
-
-    // if (Config.admin_id.isNotEmpty) {
-    //   if (globals.user.tokens['uids'] == Config.admin_id) {
-    //     res.add(AdminPage(key: globals.adminPageKey));
-    //   }
-    // }
     return res;
   }
 
@@ -109,6 +105,10 @@ class MainPageState extends State<MainPage> {
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
         globals.currentTheme.isDark());
+    if (globals.selectedPage > 4 && MediaQuery.of(context).size.width <= 1000) {
+      globals.selectedPage = 4;
+    }
+    _pageController = PageController(initialPage: globals.selectedPage);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -142,20 +142,23 @@ class MainPageState extends State<MainPage> {
                 SizedBox.shrink(),
                 SizedBox.shrink(),
                 SizedBox.shrink(),
-                IconButton(
-                  icon: IconTheme(
-                    data: Theme.of(context).accentIconTheme,
-                    child: Icon(Icons.settings_outlined),
-                  ),
-                  onPressed: () {
-                    showCupertinoModalBottomSheet(
-                        context: context,
-                        builder: (context) => SettingsPage(
-                              scrollController:
-                                  ModalScrollController.of(context),
-                            ));
-                  },
-                ),
+                MediaQuery.of(context).size.width > 1000
+                    ? SizedBox.shrink()
+                    : IconButton(
+                        icon: IconTheme(
+                          data: Theme.of(context).accentIconTheme,
+                          child: Icon(Icons.settings_outlined),
+                        ),
+                        onPressed: () {
+                          showCupertinoModalBottomSheet(
+                              context: context,
+                              builder: (context) => SettingsPage(
+                                    scrollController:
+                                        ModalScrollController.of(context),
+                                  ));
+                        },
+                      ),
+                SizedBox.shrink(),
                 SizedBox.shrink(),
               ].elementAt(globals.selectedPage),
               [
@@ -192,7 +195,8 @@ class MainPageState extends State<MainPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 14),
                         child: CupertinoActivityIndicator(),
                       )
-                    : SizedBox.shrink()
+                    : SizedBox.shrink(),
+                SizedBox.shrink(),
               ].elementAt(globals.selectedPage),
               [
                 MediaQuery.of(context).size.width > 1000
@@ -288,6 +292,8 @@ class MainPageState extends State<MainPage> {
                 SizedBox.shrink(),
                 SizedBox.shrink(),
                 SizedBox.shrink(),
+                SizedBox.shrink(),
+                SizedBox.shrink(),
               ].elementAt(globals.selectedPage),
               globals.selectedPage == 0
                   ? globals.isConnected
@@ -328,8 +334,9 @@ class MainPageState extends State<MainPage> {
             callback ??= () {
               setState(() {
                 globals.selectedPage = index;
-                _pageController.animateToPage(globals.selectedPage,
-                    duration: Duration(milliseconds: 1), curve: Curves.linear);
+                _pageController.jumpToPage(
+                  globals.selectedPage,
+                );
               });
             };
             return Container(
@@ -375,6 +382,7 @@ class MainPageState extends State<MainPage> {
                 Container(
                     width: 250 + 0.3,
                     decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       border: Border(
                         right: BorderSide(
                             width: 0.3,
@@ -404,34 +412,17 @@ class MainPageState extends State<MainPage> {
                           DrawerTile(globals.user.data['name'],
                               Icons.person_outlined, Icons.person_rounded, 4),
                           Divider(
-                            height: 8,
+                            height: 16,
                             thickness: 1,
                           ),
                           DrawerTile('free_room', Icons.meeting_room_outlined,
-                              Icons.meeting_room_rounded, 5, callback: () {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => SallesPage(),
-                              ),
-                            );
-                          }),
-                          DrawerTile('settings', Icons.settings_outlined,
-                              Icons.settings_rounded, 6, callback: () {
-                            showCupertinoModalBottomSheet(
-                                context: context,
-                                builder: (context) => Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.15),
-                                      child: SettingsPage(
-                                        scrollController:
-                                            ModalScrollController.of(context),
-                                      ),
-                                    ));
-                          }),
+                              Icons.meeting_room_rounded, 5),
+                          DrawerTile(
+                            'settings',
+                            Icons.settings_outlined,
+                            Icons.settings_rounded,
+                            6,
+                          ),
                         ],
                       ),
                     )),
@@ -443,7 +434,8 @@ class MainPageState extends State<MainPage> {
                       ? MediaQuery.of(context).size.width * 0.80 - 250 - 0.6
                       : MediaQuery.of(context).size.width - 250 - 0.3,
                   child: PageView(
-                      children: pages(),
+                      children: List<Widget>.from(pages())
+                        ..addAll([SallesPage(tablet: true), SettingsPage()]),
                       onPageChanged: (index) {
                         setState(() {
                           globals.selectedPage = index;

@@ -321,8 +321,6 @@ class User {
           value:
               username); //save credentials in secure storage if user specified "remember me"
       await globals.storage.write(key: 'password', value: password);
-      password =
-          null; //if tokens are still valid we'll never need the password again in this session, so it is useless to keep it in the object and risk it to be leaked or displayed
       l('edt : ' + globals.user.data['edtUrl']);
       if (globals.user.data['ecole'] == '' ||
           globals.user.data['edtUrl'] == '') {
@@ -378,7 +376,7 @@ class User {
         l('[STEP 2] statusCode : ${res.statusCode}');
         l('[STEP 2] RES headers : ${res.headers}');
         var body = await res.transform(utf8.decoder).join();
-        l('[STEP 2] BODY : $body');
+        //l('[STEP 2] BODY : $body');
         if (body.contains('location')) {
           l('username correct');
 
@@ -410,7 +408,7 @@ class User {
           l('[STEP 4] statusCode : ${res.statusCode}');
           l('[STEP 4] RES headers : ${res.headers}');
           body = await res.transform(utf8.decoder).join();
-          l('[STEP 4] BODY : $body');
+          //l('[STEP 4] BODY : $body');
           regExp = RegExp(r'action="\/adfs(.*?)"');
           var url =
               'https://adfs.devinci.fr/adfs' + regExp.firstMatch(body).group(1);
@@ -419,6 +417,7 @@ class User {
           req = await client.postUrl(
             Uri.parse(url),
           );
+
           req.headers.set('Content-Type', 'application/x-www-form-urlencoded');
           req.write('UserName=' +
               Uri.encodeComponent(username) +
@@ -816,6 +815,14 @@ class User {
   }
 
   Future<void> getNotesList() async {
+    // l('test tokens');
+    // try {
+    //   await testTokens();
+    // } catch (e) {
+    //   l('need to reconnect');
+    //   await getTokens();
+    // }
+    l(tokens);
     var res = await devinciRequest(endpoint: '?my=notes');
     if (res != null) {
       if (res.statusCode == 200) {
@@ -986,7 +993,21 @@ class User {
                               ['s'])[notesConfig['matieres']['!e']['moy']
                           ['si']]);
                       // ignore: empty_catches
-                    } catch (e) {}
+                    } catch (e) {
+                      try {
+                        if (texts[notesConfig['matieres']['!e']['moy']['i']]
+                                .replaceAllMapped(
+                                    RegExp(notesConfig['matieres']['!e']['moy']
+                                        ['r']),
+                                    (match) => '')
+                                .split(notesConfig['matieres']['!e']['moy']
+                                    ['s'])[notesConfig['matieres']['!e']['moy']
+                                ['si']] ==
+                            'Validé') {
+                          elem['moy'] = 100.0;
+                        }
+                      } catch (e) {}
+                    }
                     l(elem['moy']);
                     try {
                       if (!texts[notesConfig['matieres']['!e']['ri']]

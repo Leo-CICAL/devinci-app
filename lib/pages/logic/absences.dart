@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:devinci/libraries/devinci/extra/functions.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sembast/sembast.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:sembast/utils/value_utils.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 //DATA
 bool show = false;
@@ -66,7 +68,48 @@ void setState(void Function() fun, {bool condition = true}) {
 void runBeforeBuild() async {
   if (globals.user.absences != null) {
     if (!globals.user.absences['done']) {
-      await getData();
+      try {
+        await getData();
+      } catch (e) {
+        l('needs reconnection');
+        final snackBar = SnackBar(
+          content: Text('reconnecting').tr(),
+          duration: const Duration(seconds: 10),
+        );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+        Scaffold.of(getContext()).showSnackBar(snackBar);
+        try {
+          await globals.user.getTokens();
+        } catch (e, stacktrace) {
+          l(e);
+          l(stacktrace);
+        }
+        try {
+          await getData();
+        } catch (exception, stacktrace) {
+          var client = HttpClient();
+          var req = await client.getUrl(
+            Uri.parse('https://www.leonard-de-vinci.net/?my=abs'),
+          );
+          req.followRedirects = false;
+          req.cookies.addAll([
+            Cookie('alv', globals.user.tokens['alv']),
+            Cookie('SimpleSAML', globals.user.tokens['SimpleSAML']),
+            Cookie('uids', globals.user.tokens['uids']),
+            Cookie('SimpleSAMLAuthToken',
+                globals.user.tokens['SimpleSAMLAuthToken']),
+          ]);
+          var res = await req.close();
+          globals.feedbackNotes = await res.transform(utf8.decoder).join();
+
+          await reportError(
+              'absences.dart | _AbsencesPageState | runBeforeBuild() | user.getAbsences() => $exception',
+              stacktrace);
+        }
+        Scaffold.of(getContext()).removeCurrentSnackBar();
+
+        l(globals.user.tokens);
+      }
     }
   }
 

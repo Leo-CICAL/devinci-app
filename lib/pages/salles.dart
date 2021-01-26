@@ -9,7 +9,8 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class SallesPage extends StatefulWidget {
-  SallesPage({Key key}) : super(key: key);
+  final bool tablet;
+  SallesPage({Key key, this.tablet}) : super(key: key);
 
   @override
   _SallesPageState createState() => _SallesPageState();
@@ -82,30 +83,8 @@ class _SallesPageState extends State<SallesPage> {
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
         globals.currentTheme.isDark());
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        brightness: MediaQuery.of(context).platformBrightness,
-        centerTitle: false,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        automaticallyImplyLeading: false,
-        title: Text(
-          'free_room',
-          style: Theme.of(context).textTheme.headline1,
-        ).tr(),
-        actions: <Widget>[
-          IconButton(
-            icon: IconTheme(
-              data: Theme.of(context).accentIconTheme,
-              child: Icon(Icons.close),
-            ),
-            onPressed: () async {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-      body: show
+    if (widget.tablet != null) {
+      return show
           ? SfDataGrid(
               source: salleDataSource,
               cellBuilder: getCellWidget,
@@ -116,8 +95,45 @@ class _SallesPageState extends State<SallesPage> {
           : Center(
               child: CupertinoActivityIndicator(
               animating: true,
-            )),
-    );
+            ));
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          elevation: 0.0,
+          brightness: MediaQuery.of(context).platformBrightness,
+          centerTitle: false,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          automaticallyImplyLeading: false,
+          title: Text(
+            'free_room',
+            style: Theme.of(context).textTheme.headline1,
+          ).tr(),
+          actions: <Widget>[
+            IconButton(
+              icon: IconTheme(
+                data: Theme.of(context).accentIconTheme,
+                child: Icon(Icons.close),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+        body: show
+            ? SfDataGrid(
+                source: salleDataSource,
+                cellBuilder: getCellWidget,
+                columns: genColumns(),
+                frozenColumnsCount: 1,
+                gridLinesVisibility: GridLinesVisibility.both,
+              )
+            : Center(
+                child: CupertinoActivityIndicator(
+                animating: true,
+              )),
+      );
+    }
   }
 }
 

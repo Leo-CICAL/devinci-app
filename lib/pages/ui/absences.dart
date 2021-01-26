@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:devinci/extra/CommonWidgets.dart';
+import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/pages/components/absences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +26,48 @@ class AbsencesPageState extends State<AbsencesPage> {
     super.initState();
     globals.isLoading.addListener(() async {
       if (globals.isLoading.state(2)) {
-        await getData(force: true);
+        try {
+          await getData(force: true);
+        } catch (e) {
+          l('needs reconnection');
+          final snackBar = SnackBar(
+            content: Text('reconnecting').tr(),
+            duration: const Duration(seconds: 10),
+          );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+          Scaffold.of(getContext()).showSnackBar(snackBar);
+          try {
+            await globals.user.getTokens();
+          } catch (e, stacktrace) {
+            l(e);
+            l(stacktrace);
+          }
+          try {
+            await getData(force: true);
+          } catch (exception, stacktrace) {
+            var client = HttpClient();
+            var req = await client.getUrl(
+              Uri.parse('https://www.leonard-de-vinci.net/?my=abs'),
+            );
+            req.followRedirects = false;
+            req.cookies.addAll([
+              Cookie('alv', globals.user.tokens['alv']),
+              Cookie('SimpleSAML', globals.user.tokens['SimpleSAML']),
+              Cookie('uids', globals.user.tokens['uids']),
+              Cookie('SimpleSAMLAuthToken',
+                  globals.user.tokens['SimpleSAMLAuthToken']),
+            ]);
+            var res = await req.close();
+            globals.feedbackNotes = await res.transform(utf8.decoder).join();
+
+            await reportError(
+                'absences.dart | _AbsencesPageState | runBeforeBuild() | user.getAbsences() => $exception',
+                stacktrace);
+          }
+          Scaffold.of(getContext()).removeCurrentSnackBar();
+
+          l(globals.user.tokens);
+        }
         globals.isLoading.setState(2, false);
       }
     });
@@ -49,6 +94,15 @@ class AbsencesPageState extends State<AbsencesPage> {
           ),
         );
       } else {
+        var padding = 0.0;
+        if (MediaQuery.of(context).size.width > 1000) {
+          padding = MediaQuery.of(context).size.width * 0.13;
+        } else if (MediaQuery.of(context).size.width > 800) {
+          padding = MediaQuery.of(context).size.width * 0.1;
+        } else if (MediaQuery.of(context).size.width > 600) {
+          padding = MediaQuery.of(context).size.width * 0.08;
+        }
+
         result = CupertinoScrollbar(
           child: (globals.user.absences['done']
                       ? globals.user.absences['liste'].length
@@ -59,45 +113,51 @@ class AbsencesPageState extends State<AbsencesPage> {
                   header: ClassicHeader(),
                   controller: refreshController,
                   onRefresh: onRefresh,
-                  child: ListView(
-                    shrinkWrap: false,
-                    children: <Widget>[
-                      TitleSection('semesters'),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: padding,
+                    ),
+                    child: ListView(
+                      shrinkWrap: false,
+                      children: <Widget>[
+                        TitleSection('semesters'),
 
-                      //SECTION BLOCK selection du semestre
-                      Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
-                          child: Row(
-                            children: <Widget>[
-                              SemestreSelection(
-                                  's1',
-                                  'nabsence'
-                                      .plural(globals.user.absences['s1'])),
-                              SemestreSelection(
-                                  's2',
-                                  'nabsence'
-                                      .plural(globals.user.absences['s2'])),
-                            ],
-                          )),
+                        //SECTION BLOCK selection du semestre
+                        Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: Row(
+                              children: <Widget>[
+                                SemestreSelection(
+                                    's1',
+                                    'nabsence'
+                                        .plural(globals.user.absences['s1'])),
+                                SemestreSelection(
+                                    's2',
+                                    'nabsence'
+                                        .plural(globals.user.absences['s2'])),
+                              ],
+                            )),
 
-                      //!SECTION
-                      //SECTION BLOCK Absences text
-                      TitleSection('absences'),
+                        //!SECTION
+                        //SECTION BLOCK Absences text
+                        TitleSection('absences'),
 
-                      //!SECTION
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: 20.0, left: 20, right: 20),
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            itemCount: (globals.user.absences['liste'].length),
-                            itemBuilder: (BuildContext ctxt, int i) {
-                              return AbsenceTile(i);
-                            }),
-                      )
-                    ],
+                        //!SECTION
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 20.0, left: 20, right: 20),
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.vertical,
+                              itemCount:
+                                  (globals.user.absences['liste'].length),
+                              itemBuilder: (BuildContext ctxt, int i) {
+                                return AbsenceTile(i);
+                              }),
+                        )
+                      ],
+                    ),
                   ),
                 )
               : Padding(
