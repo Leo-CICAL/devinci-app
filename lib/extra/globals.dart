@@ -21,7 +21,7 @@ final storage = FlutterSecureStorage();
 // We use the database factory to open the database
 Database db;
 var store = StoreRef<String, dynamic>.main();
-User user;
+Student user;
 TimeChefUser timeChefUser;
 
 bool asXxMoy = false;

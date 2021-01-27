@@ -12,6 +12,7 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:matomo/matomo.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import 'package:package_info/package_info.dart';
@@ -20,7 +21,7 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // ignore: must_be_immutable
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends TraceableStatefulWidget {
   SettingsPage({Key key, this.scrollController}) : super(key: key);
 
   ScrollController scrollController;
@@ -165,7 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   right: 16,
                   top: 16,
                 ),
-                height: (6 * 46).toDouble(),
+                height: (7 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -371,10 +372,48 @@ class _SettingsPageState extends State<SettingsPage> {
                                     globals.prefs
                                         .setString('crashConsent', 'false');
                                   }
-                                  // FirebaseCrashlytics.instance
-                                  //     .setCrashlyticsCollectionEnabled(
-                                  //         globals.crashConsent == 'true');
                                 });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 46,
+                      margin: EdgeInsets.only(left: 24),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                        width: 0.2,
+                        color: Color(0xffACACAC),
+                      ))),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              'usage_monitoring',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ).tr(),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Switch.adaptive(
+                              value: globals.analyticsConsent,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  if (globals.analyticsConsent) {
+                                    globals.analyticsConsent = false;
+                                    globals.prefs
+                                        .setBool('analyticsConsent', false);
+                                  } else {
+                                    globals.analyticsConsent = true;
+                                    globals.prefs
+                                        .setBool('analyticsConsent', true);
+                                  }
+                                });
+                                MatomoTracker()
+                                    .setOptOut(!globals.analyticsConsent);
                               },
                             ),
                           ),

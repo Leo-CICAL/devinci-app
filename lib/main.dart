@@ -8,6 +8,7 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:matomo/matomo.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -62,13 +63,36 @@ Future<Null> main() async {
   var packageInfo = await PackageInfo.fromPlatform();
   var appVersion = 'devinci@' + packageInfo.version;
   appVersion += '+' + packageInfo.buildNumber;
-  await SentryFlutter.init(
-    (options) => options
-      ..dsn =
-          'https://d90bf661f0ef48d29264be594b6ad954@o400644.ingest.sentry.io/5279681'
-      ..release = appVersion
-      ..environment = 'prod',
-    appRunner: () => runApp(
+  globals.crashConsent = globals.prefs.getString('crashConsent') ??
+      'true'; //default to true to catch errors between now and the gdpr popup
+  if (globals.crashConsent == 'true') {
+    await SentryFlutter.init(
+      (options) => options
+        ..dsn =
+            'https://d90bf661f0ef48d29264be594b6ad954@o400644.ingest.sentry.io/5279681'
+        ..release = appVersion
+        ..environment = 'prod',
+      appRunner: () => runApp(
+        EasyLocalization(
+          supportedLocales: [
+            Locale('fr'),
+            Locale('en'),
+            Locale('de'),
+          ],
+          path: 'assets/translations', // <-- change patch to your
+          fallbackLocale: Locale('fr'),
+          child: BetterFeedback(
+              // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
+              child: Phoenix(
+                // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
+                child: MyApp(),
+              ),
+              onFeedback: betterFeedbackOnFeedback),
+        ),
+      ),
+    );
+  } else {
+    runApp(
       EasyLocalization(
         supportedLocales: [
           Locale('fr'),
@@ -85,8 +109,8 @@ Future<Null> main() async {
             ),
             onFeedback: betterFeedbackOnFeedback),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class MyApp extends StatefulWidget {

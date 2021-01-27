@@ -15,11 +15,7 @@ bool show = false;
 bool first = true;
 final RefreshController refreshController =
     RefreshController(initialRefresh: false);
-final ScrollController scrollController = ScrollController(
-  initialScrollOffset:
-      globals.isConnected ? 42 : 0, //pour cacher le choix de l'année
-  keepScrollOffset: true,
-);
+final ScrollController scrollController = ScrollController();
 String currentYear = '';
 bool changed = false;
 int index = 0;

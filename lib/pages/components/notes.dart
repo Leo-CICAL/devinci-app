@@ -275,7 +275,10 @@ Widget NoteTile(int i, int j, int y) {
 
 Widget YearsSelection() {
   Widget result = SizedBox.shrink();
-  if (globals.isConnected) {
+  if (globals.isConnected && globals.user.years.isNotEmpty) {
+    if (currentYear.isEmpty) {
+      currentYear = globals.user.years[0];
+    }
     result = Padding(
       padding: const EdgeInsets.only(top: 10.0, left: 20, right: 20),
       child: DropdownButton<String>(

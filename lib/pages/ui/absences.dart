@@ -9,11 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:matomo/matomo.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/pages/logic/absences.dart';
 
-class AbsencesPage extends StatefulWidget {
+class AbsencesPage extends TraceableStatefulWidget {
   AbsencesPage({Key key}) : super(key: key);
 
   @override

@@ -5,13 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:matomo/matomo.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-class PresencePage extends StatefulWidget {
+class PresencePage extends TraceableStatefulWidget {
   final bool inSidePanel;
   PresencePage({Key key, this.inSidePanel}) : super(key: key);
 
@@ -200,6 +201,9 @@ class _PresencePageState extends State<PresencePage> {
                         });
                         try {
                           await globals.user.setPresence(i);
+                          setState(() {
+                            buttonState = ButtonState.normal;
+                          });
                         } catch (e, stacktrace) {
                           l('needs reconnection');
                           final snackBar = SnackBar(

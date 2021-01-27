@@ -61,8 +61,10 @@ Ce projet a pour principale vocation d'aider sans nuire, c'est pourquoi le respe
   Ce projet repose en grande partie sur le framework [Flutter](https://flutter.dev/) créé par Google et basé sur le langage [Dart](https://dart.dev/) afin de proposer une expérience similaire sur Android et iOS. *Voir le projet sur [GitHub](https://github.com/flutter/flutter)*
 - ### Sentry.io
   Devinci utilise les services de Sentry pour remonter les bugs/erreurs au développeur. (*Voir le projet sur [GitHub](https://github.com/getsentry/sentry)*). Sentry est intégré a l'application grâce à cette librairie : [sentry](https://pub.dev/packages/sentry)
+- ### Matomo
+  Matomo est une platefome d'analyse d'utilisation auto-hebergé, open-source, éthique et respectueuse de la vie-privée. Les données récoltées ne sont utilisées aux « fins propres » de Google comme elles pourraient l'être si j'utilisais Google Analytics dans ce projet. [En savoir plus](https://fr.matomo.org)
 - ### Syncfusion flutter widgets
-  Il s'agit (à ma connaissance) de la seule dépendance non entièrement open-source puisque elle requiert une clé de license ([gratuite](https://www.syncfusion.com/products/communitylicense) pour les projets non commerciaux). Les widgets flutter de Syncfusion sont utilisés pour afficher l'emploi du temps dans l'application. [En savoir plus](https://www.syncfusion.com/flutter-widgets/flutter-calendar)
+  Les widgets flutter de Syncfusion sont utilisés pour afficher l'emploi du temps et la grille des salles libres dans l'application. [En savoir plus](https://www.syncfusion.com/flutter-widgets/)
 
 ## Contribution
 

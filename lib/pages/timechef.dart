@@ -6,8 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter/scheduler.dart';
+import 'package:matomo/matomo.dart';
 
-class TimeChefPage extends StatefulWidget {
+class TimeChefPage extends TraceableStatefulWidget {
   TimeChefPage({Key key}) : super(key: key);
 
   @override

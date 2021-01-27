@@ -6,11 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:matomo/matomo.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:devinci/pages/logic/notes.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-class NotesPage extends StatefulWidget {
+class NotesPage extends TraceableStatefulWidget {
   NotesPage({Key key}) : super(key: key);
 
   @override

@@ -10,6 +10,7 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter/scheduler.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/services.dart';
+import 'package:matomo/matomo.dart';
 import 'package:recase/recase.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:sembast/sembast.dart';
@@ -17,7 +18,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 Map<String, dynamic> documents;
 
-class UserPage extends StatefulWidget {
+class UserPage extends TraceableStatefulWidget {
   UserPage({Key key}) : super(key: key);
 
   @override

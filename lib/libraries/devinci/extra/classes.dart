@@ -7,6 +7,8 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter/material.dart' as material;
 import 'package:html/parser.dart' show parse;
+import 'package:matomo/matomo.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
@@ -14,13 +16,13 @@ import 'package:sembast/utils/value_utils.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:sentry/sentry.dart' as sentry;
+import 'package:sentry/sentry.dart';
 
 import 'api.dart';
 
-class User {
+class Student {
   //constructor
-  User(String username, String password) {
+  Student(String username, String password) {
     this.username = username;
     this.password = password;
   }
@@ -246,12 +248,14 @@ class User {
     tokens['uids'] = await globals.storage.read(key: 'uids') ?? '';
     tokens['SimpleSAMLAuthToken'] =
         await globals.storage.read(key: 'SimpleSAMLAuthToken') ?? '';
-
+    
     //retrieve data from secure storage
     l('h3');
     globals.notifConsent = globals.prefs.getBool('notifConsent') ?? false;
     globals.showSidePanel = globals.prefs.getBool('showSidePanel') ?? false;
-    globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'false';
+    globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'true';
+    globals.analyticsConsent =
+        globals.prefs.getBool('analyticsConsent') ?? false;
     var calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
     globals.calendarView =
         calendarViewDay ? CalendarView.day : CalendarView.workWeek;
@@ -333,12 +337,27 @@ class User {
         }
       }
     }
-    Sentry.configureScope(
-      (scope) => scope.user = sentry.User(username: tokens['alv']),
-    );
-    Sentry.configureScope(
-      (scope) => scope.setTag('app.language', 'locale'.tr()),
-    );
+    if (globals.crashConsent == 'true') {
+      try {
+        var sub = await OneSignal.shared.getPermissionSubscriptionState();
+        var sub2 = sub.subscriptionStatus;
+        var id = sub2.userId;
+        Sentry.configureScope(
+          (scope) {
+            scope.setTag('app.language', 'locale'.tr());
+            scope.user =
+                User(email: username, username: tokens['uids'], id: id);
+          },
+        );
+      } catch (e, stacktrace) {
+        Sentry.configureScope(
+          (scope) {
+            scope.setTag('app.language', 'locale'.tr());
+            scope.user = User(email: username, id: tokens['uids']);
+          },
+        );
+      }
+    }
     DevinciApi().register();
     l('done init');
     return;
@@ -639,9 +658,17 @@ class User {
             l('d : $d');
           }
           //detect language of the portail
-          Sentry.configureScope(
-            (scope) => scope.setTag('portail.language', french ? 'fr' : 'en'),
-          );
+          if (globals.crashConsent == 'true') {
+            try {
+              Sentry.configureScope(
+                (scope) =>
+                    scope.setTag('portail.language', french ? 'fr' : 'en'),
+              );
+            } catch (e, stacktrace) {
+              l(e);
+              l(stacktrace);
+            }
+          }
 
           if (french) {
             data['badge'] = RegExp(r'badge : (.*?)\n').firstMatch(d).group(1);
@@ -1231,10 +1258,12 @@ class User {
                       .querySelectorAll('a')[0]
                       .attributes['href'];
             } catch (e) {
-              await Sentry.captureException(
-                e,
-                stackTrace: e.stackTrace,
-              );
+              if (globals.crashConsent == 'true') {
+                await Sentry.captureException(
+                  e,
+                  stackTrace: e.stackTrace,
+                );
+              }
             }
             var calendrierIndex = 4;
             for (var i = 0;

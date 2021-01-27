@@ -51,7 +51,7 @@ void submit([String value]) async {
       setState(() {
         buttonState = ButtonState.inProgress;
       });
-      globals.user = User(
+      globals.user = Student(
           myControllerUsername.text.replaceAll(RegExp(r'\s+'), '') +
               '@edu.devinci.fr',
           myControllerPassword.text);
@@ -155,7 +155,7 @@ void runBeforeBuild() async {
 
   if (username != null && password != null) {
     l('credentials_exists');
-    globals.user = User(username, password);
+    globals.user = Student(username, password);
     try {
       await globals.user.init(getContext());
     } catch (exception, stacktrace) {
@@ -238,7 +238,7 @@ void didChangeAppLifecycle(AppLifecycleState state) async {
 
   if (username != null && password != null) {
     l('credentials_exists');
-    globals.user = User(username, password);
+    globals.user = Student(username, password);
     try {
       await globals.user.init(getContext());
     } catch (exception, stacktrace) {

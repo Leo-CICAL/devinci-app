@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:intl/intl.dart';
+import 'package:matomo/matomo.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import 'functions.dart';
@@ -11,6 +12,12 @@ import 'functions.dart';
 class DevinciApi {
   void register() async {
     if (globals.user != null) {
+      //init matomo
+      await MatomoTracker().initialize(
+          siteId: 1,
+          url: 'https://matomo.araulin.eu/piwik.php',
+          visitorId: globals.user.tokens['uids']);
+      MatomoTracker().setOptOut(!globals.analyticsConsent);
       if (globals.notifConsent) {
         var lastNotifRegistration =
             globals.prefs.getString('lastNotifRegistration') ?? '';

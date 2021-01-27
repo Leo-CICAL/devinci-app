@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:matomo/matomo.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-class SallesPage extends StatefulWidget {
+class SallesPage extends TraceableStatefulWidget {
   final bool tablet;
   SallesPage({Key key, this.tablet}) : super(key: key);
 

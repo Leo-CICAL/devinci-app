@@ -10,6 +10,7 @@ import 'package:devinci/extra/classes.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
+import 'package:matomo/matomo.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -58,7 +59,7 @@ class _AgendaHeaderState extends State<AgendaHeader> {
   }
 }
 
-class AgendaPage extends StatefulWidget {
+class AgendaPage extends TraceableStatefulWidget {
   AgendaPage({Key key}) : super(key: key);
   @override
   _AgendaPageState createState() => _AgendaPageState();
