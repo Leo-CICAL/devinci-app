@@ -761,9 +761,13 @@ class _IdComponentState extends State<IdComponent> {
   }
 
   void runBeforeBuild() async {
-    var sub = await OneSignal.shared.getPermissionSubscriptionState();
-    var sub2 = sub.subscriptionStatus;
-    id = sub2.userId;
+    try {
+      var sub = await OneSignal.shared.getPermissionSubscriptionState();
+      var sub2 = sub.subscriptionStatus;
+      id = sub2.userId;
+    } catch (e) {
+      id = '401';
+    }
   }
 
   String id = '';
@@ -773,8 +777,14 @@ class _IdComponentState extends State<IdComponent> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        await Clipboard.setData(ClipboardData(text: id));
-        final snackBar = SnackBar(content: Text('copied').tr(args: [id]));
+        var snackBar;
+        if (id == '401') {
+          // error while retrieving the playerId
+          snackBar = SnackBar(content: Text('error_playerid').tr());
+        } else {
+          await Clipboard.setData(ClipboardData(text: id));
+          snackBar = SnackBar(content: Text('copied').tr(args: [id]));
+        }
         Scaffold.of(context).showSnackBar(snackBar);
       }, // handle your onTap here
       child: Container(

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:crypto/crypto.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:intl/intl.dart';
@@ -15,7 +14,7 @@ class DevinciApi {
       //init matomo
       await MatomoTracker().initialize(
           siteId: 1,
-          url: 'https://matomo.araulin.eu/piwik.php',
+          url: 'https://matomo.antoineraulin.com/piwik.php',
           visitorId: globals.user.tokens['uids']);
       MatomoTracker().setOptOut(!globals.analyticsConsent);
       if (globals.notifConsent) {
@@ -39,7 +38,7 @@ class DevinciApi {
           });
           l(hashes);
           var client = HttpClient();
-          var uri = Uri.parse('https://api.devinci.araulin.tech/register');
+          var uri = Uri.parse('https://devinci.antoineraulin.com/register');
           var req = await client.postUrl(uri);
           req.headers.set('content-type', 'application/json');
           var sub = await OneSignal.shared.getPermissionSubscriptionState();
@@ -71,7 +70,7 @@ class DevinciApi {
     if (globals.user != null) {
       if (globals.notifConsent) {
         var client = HttpClient();
-        var uri = Uri.parse('https://api.devinci.araulin.tech/call');
+        var uri = Uri.parse('https://devinci.antoineraulin.com/call');
         var req = await client.postUrl(uri);
         req.headers.set('content-type', 'application/json');
         var sub = await OneSignal.shared.getPermissionSubscriptionState();

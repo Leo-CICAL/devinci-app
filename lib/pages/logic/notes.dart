@@ -45,6 +45,11 @@ Future<void> getData({bool force = false}) async {
         } catch (exception, stacktrace) {
           catcher(exception, stacktrace);
         }
+        try {
+          await globals.user.getBonus(globals.user.notesList[index][1]);
+        } catch (exception, stacktrace) {
+          catcher(exception, stacktrace);
+        }
       } catch (exception, stacktrace) {
         catcher(exception, stacktrace);
       }
@@ -71,10 +76,6 @@ Future<void> getData({bool force = false}) async {
 }
 
 void onRefresh() async {
-  l(globals.user.tokens);
-  globals.user.tokens['SimpleSAML'] = '4846432';
-  globals.user.tokens['alv'] = 'apeoie';
-  globals.user.tokens['SimpleSAMLAuthToken'] = '564ze684684';
   if (!globals.noteLocked) {
     globals.noteLocked = true;
     try {
@@ -85,7 +86,14 @@ void onRefresh() async {
       } catch (exception, stacktrace) {
         catcher(exception, stacktrace);
       }
+      try {
+        await globals.user.getBonus(globals.user.notesList[index][1]);
+      } catch (exception, stacktrace) {
+        catcher(exception, stacktrace);
+      }
     } catch (exception, stacktrace) {
+      l(exception);
+      l(stacktrace);
       l('needs reconnection');
       final snackBar = SnackBar(
         content: Text('reconnecting').tr(),
@@ -104,6 +112,11 @@ void onRefresh() async {
         currentYear = globals.user.notesList[index][0];
         try {
           await globals.user.getNotes(globals.user.notesList[index][1], index);
+        } catch (exception, stacktrace) {
+          catcher(exception, stacktrace);
+        }
+        try {
+          await globals.user.getBonus(globals.user.notesList[index][1]);
         } catch (exception, stacktrace) {
           catcher(exception, stacktrace);
         }
@@ -141,6 +154,7 @@ void catcher(var exception, StackTrace stacktrace) async {
     ]);
     var res = await req.close();
     globals.feedbackNotes = await res.transform(utf8.decoder).join();
+    globals.currentContext = getContext();
 
     await reportError(
         'notes.dart | _NotesPageState | runBeforeBuild() | user.getNotes() => $exception',

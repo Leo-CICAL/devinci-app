@@ -75,15 +75,8 @@ class NotesPageState extends State<NotesPage> {
                 controller: scrollController,
                 shrinkWrap: true,
                 children: <Widget>[
-                  MeasureSize(
-                    child: YearsSelection(),
-                    onChange: (size) {
-                      if (first) {
-                        scrollController.jumpTo(size.height);
-                        first = false;
-                      }
-                    },
-                  ),
+                  YearsSelection(),
+                  BonusSection(),
                   TitleSection('semesters',
                       padding: const EdgeInsets.only(
                           top: 20.0, left: 20, right: 20)),

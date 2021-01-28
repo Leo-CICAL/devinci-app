@@ -217,6 +217,7 @@ bool get isInDebugMode {
 /// Reports [error] along with its [stackTrace] to Sentry.io.
 Future<Null> reportError(dynamic error, dynamic stackTrace) async {
   l('Caught error: $error');
+  l(stackTrace);
   var err = error.toString();
   if (Platform.isAndroid || Platform.isIOS) {
     var packageInfo = await PackageInfo.fromPlatform();

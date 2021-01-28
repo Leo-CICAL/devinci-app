@@ -112,5 +112,12 @@
   "locale":"en",
   "lost_password":"Forgot your password?",
   "validated":"validated",
-  "reconnecting":"Reconnecting..."
+  "reconnecting":"Reconnecting...",
+  "error_playerid":"Notifications must be enabled to access the playerId",
+  "bonus":{
+    "zero":"No bonus points",
+    "one":"1 bonus point",
+    "many":"{} bonus points",
+    "other":"{} bonus points"
+  }
 }

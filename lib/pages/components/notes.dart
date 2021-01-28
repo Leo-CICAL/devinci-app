@@ -1,3 +1,4 @@
+import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/pages/logic/notes.dart';
 import 'package:flutter/material.dart';
@@ -327,6 +328,16 @@ Widget YearsSelection() {
         }).toList(),
       ),
     );
+  }
+  return result;
+}
+
+Widget BonusSection(){
+  Widget result = SizedBox.shrink();
+  if (globals.isConnected && globals.user.years.isNotEmpty && globals.user.bonus != 0.0) {
+    result = TitleSection('bonus'.plural(globals.user.bonus),
+                      padding: const EdgeInsets.only(
+                          top: 20.0, left: 20, right: 20));
   }
   return result;
 }

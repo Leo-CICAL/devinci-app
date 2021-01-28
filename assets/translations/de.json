@@ -103,7 +103,7 @@
   "attendance_notif":"Benachrichtigung über die Anwesenheit",
   "more_about":"Erfahren Sie mehr",
   "notif_more":"Persönliche Daten wie die eindeutige Kennung Ihres Geräts und ein digitaler Hash Ihrer Lektionen des Tages werden von unserem Server gesendet und verarbeitet. Gelöscht nach maximal 12 Stunden",
-  "crash_more":"Persönliche Informationen wie die eindeutige Kennung, die technischen Spezifikationen Ihres Geräts und der Fehlerbericht werden an Sentry, einen datenschutzfreundlichen Fehlerverfolgungsdienst, gesendet und von diesem verarbeitet. In keinem Fall werden diese Daten an Dritte weitergegeben oder verkauft.",
+  "crash_more":"Personenbezogene Informationen wie die eindeutige Kennung, die technischen Spezifikationen Ihres Geräts und der Fehlerbericht werden an Sentry, einen datenschutzfreundlichen Fehlerverfolgungsdienst, gesendet und von diesem verarbeitet.In keinem Fall werden diese Daten an Dritte weitergegeben oder verkauft.",
   "analytics_more":"Personenbezogene Daten wie die eindeutige Kennung, die technischen Merkmale Ihres Geräts und Ihre Nutzungsgewohnheiten der Anwendung werden an unseren Server (Matomo) gesendet und dort verarbeitet. In keinem Fall werden diese Daten an Dritte weitergegeben oder verkauft.",
   "gdpr_footer":"Diese Einstellungen können jederzeit über die Anwendungsparameter geändert werden.",
   "refuse_all":"Alle ablehnen",
@@ -112,5 +112,12 @@
   "locale":"de",
   "lost_password":"Haben Sie Ihr Passwort vergessen?",
   "validated":"validiert",
-  "reconnecting":"Die Verbindung wiederherstellen..."
+  "reconnecting":"Die Verbindung wiederherstellen...",
+  "error_playerid":"Benachrichtigungen müssen für den Zugriff auf die playerId aktiviert sein",
+  "bonus":{
+    "zero":"Keine Bonuspunkte",
+    "one":"1 Bonuspunkt",
+    "many":"{} Bonuspunkte",
+    "other":"{} Bonuspunkte"
+  }
 }  

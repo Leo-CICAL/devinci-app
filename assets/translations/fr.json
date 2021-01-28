@@ -104,7 +104,7 @@
   "more_about":"en savoir plus",
   "notif_more":"Des informations personnelles telles que l’identifiant unique de votre appareil et une empreinte numérique de vos cours de la journée (hash) seront envoyé et traité par notre serveur. Supprimé au bout de 12 h maximum",
   "crash_more":"Des informations personnelles telles que l’identifiant unique, les caractéristiques techniques de votre appareil et le rapport d’erreur seront envoyés à et traités par Sentry, un service de suivi d'erreurs respectueux de la vie privée. En aucun cas ces données ne seront cédées ou vendues à des tiers.",
-  "analytics_more":"Des informations personnelles telles que l’identifiant unique, les caractéristiques techniques de votre appareil et vos habitudes d’utilisation de l’application seront envoyé à et traité par notre serveur (Matomo). En aucun cas ces données ne seront cédées ou vendues à des tiers.",
+  "analytics_more":"Des informations personnelles telles que l’identifiant unique, les caractéristiques techniques de votre appareil et vos habitudes d’utilisation de l’application seront envoyés à et traités par notre serveur (Matomo). En aucun cas, ces données ne seront cédées ou vendues à des tiers.",
   "gdpr_footer":"Ces réglages peuvent être modifiés à tout moment depuis les paramètres de l'application",
   "refuse_all":"Refuser tout",
   "confirm":"Valider",
@@ -112,5 +112,12 @@
   "locale":"fr",
   "lost_password":"mot de passe oublié ?",
   "validated":"validée",
-  "reconnecting":"Reconnexion..."
+  "reconnecting":"Reconnexion...",
+  "error_playerid":"Les notifications doivent être activées pour avoir accès au playerId",
+  "bonus":{
+    "zero":"Pas de points bonus",
+    "one":"1 point bonus",
+    "many":"{} points bonus",
+    "other":"{} points bonus"
+  }
 }
