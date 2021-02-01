@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 
 import 'package:share_extend/share_extend.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class Cours {
   Cours(
@@ -104,7 +106,7 @@ class PDFScreen extends StatelessWidget {
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
         globals.currentTheme.isDark());
-    return PDFViewerScaffold(
+    return Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(
               //change your color here
@@ -128,7 +130,7 @@ class PDFScreen extends StatelessWidget {
             ),
           ],
         ),
-        path: pathPDF);
+        body: SfPdfViewer.file(File(pathPDF)));
   }
 }
 

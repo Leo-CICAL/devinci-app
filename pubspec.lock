@@ -216,13 +216,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
-  flutter_full_pdf_viewer:
-    dependency: "direct main"
-    description:
-      name: flutter_full_pdf_viewer
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.6"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -683,7 +676,7 @@ packages:
       name: syncfusion_flutter_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "18.4.35+1"
+    version: "18.4.39"
   syncfusion_flutter_datagrid:
     dependency: "direct main"
     description:
@@ -698,6 +691,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "18.4.35-beta"
+  syncfusion_flutter_pdf:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_pdf
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "18.4.39-beta"
+  syncfusion_flutter_pdfviewer:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_pdfviewer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "18.4.39-beta"
   syncfusion_localizations:
     dependency: "direct main"
     description:

@@ -236,6 +236,7 @@ class Student {
     globals.db = await dbFactory.openDatabase(dbPath);
     var notes =
         await globals.store.record('notes').get(globals.db) as List<dynamic>;
+    
     if (notes == null) {
       notes = [];
       await globals.store.record('notes').put(globals.db, notes);

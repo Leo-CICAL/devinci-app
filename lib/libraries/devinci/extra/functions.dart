@@ -876,3 +876,15 @@ Future<HttpClientResponse> devinciRequest(
     return null;
   }
 }
+
+void catcher(var exception, StackTrace stacktrace, String endpoint) async {
+  if (globals.isConnected) {
+    var res = await devinciRequest(
+      endpoint: endpoint,
+    );
+    if (res != null) {
+      globals.feedbackNotes = await res.transform(utf8.decoder).join();
+    }
+  }
+  await reportError(exception, stacktrace);
+}

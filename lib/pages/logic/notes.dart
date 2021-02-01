@@ -44,15 +44,15 @@ Future<void> getData({bool force = false}) async {
         try {
           await globals.user.getNotes(globals.user.notesList[index][1], index);
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace);
+          catcher(exception, stacktrace, '?my=notes');
         }
         try {
           await globals.user.getBonus(globals.user.notesList[index][1]);
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace);
+          catcher(exception, stacktrace, '?my=notes');
         }
       } catch (exception, stacktrace) {
-        catcher(exception, stacktrace);
+        catcher(exception, stacktrace, '?my=notes');
       }
     }
   }
@@ -88,12 +88,12 @@ void onRefresh() async {
       try {
         await globals.user.getNotes(globals.user.notesList[index][1], index);
       } catch (exception, stacktrace) {
-        catcher(exception, stacktrace);
+        catcher(exception, stacktrace, '?my=notes');
       }
       try {
         await globals.user.getBonus(globals.user.notesList[index][1]);
       } catch (exception, stacktrace) {
-        catcher(exception, stacktrace);
+        catcher(exception, stacktrace, '?my=notes');
       }
     } catch (exception, stacktrace) {
       l(exception);
@@ -117,15 +117,15 @@ void onRefresh() async {
         try {
           await globals.user.getNotes(globals.user.notesList[index][1], index);
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace);
+          catcher(exception, stacktrace, '?my=notes');
         }
         try {
           await globals.user.getBonus(globals.user.notesList[index][1]);
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace);
+          catcher(exception, stacktrace, '?my=notes');
         }
       } catch (exception, stacktrace) {
-        catcher(exception, stacktrace);
+        catcher(exception, stacktrace, '?my=notes');
       }
       Scaffold.of(getContext()).removeCurrentSnackBar();
 
@@ -141,26 +141,6 @@ void onRefresh() async {
     }
     refreshController.refreshCompleted();
   });
-}
-
-void catcher(var exception, StackTrace stacktrace) async {
-  if (globals.isConnected) {
-    var client = HttpClient();
-    var req = await client.getUrl(
-      Uri.parse('https://www.leonard-de-vinci.net/?my=notes'),
-    );
-    req.followRedirects = false;
-    req.cookies.addAll([
-      Cookie('alv', globals.user.tokens['alv']),
-      Cookie('SimpleSAML', globals.user.tokens['SimpleSAML']),
-      Cookie('uids', globals.user.tokens['uids']),
-      Cookie('SimpleSAMLAuthToken', globals.user.tokens['SimpleSAMLAuthToken']),
-    ]);
-    var res = await req.close();
-    globals.feedbackNotes = await res.transform(utf8.decoder).join();
-
-    await reportError(exception, stacktrace);
-  }
 }
 
 void runBeforeBuild() async {

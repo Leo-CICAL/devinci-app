@@ -188,12 +188,6 @@
       "languageVersion": "2.6"
     },
     {
-      "name": "flutter_full_pdf_viewer",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_full_pdf_viewer-1.0.6",
-      "packageUri": "lib/",
-      "languageVersion": "2.0"
-    },
-    {
       "name": "flutter_localizations",
       "rootUri": "file:///C:/src/flutter/packages/flutter_localizations",
       "packageUri": "lib/",
@@ -591,7 +585,7 @@
     },
     {
       "name": "syncfusion_flutter_core",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_core-18.4.35+1",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_core-18.4.39",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
@@ -604,6 +598,18 @@
     {
       "name": "syncfusion_flutter_datepicker",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_datepicker-18.4.35-beta",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "syncfusion_flutter_pdf",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_pdf-18.4.39-beta",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "syncfusion_flutter_pdfviewer",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_pdfviewer-18.4.39-beta",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
@@ -752,7 +758,7 @@
       "languageVersion": "2.8"
     }
   ],
-  "generated": "2021-01-28T16:27:24.971048Z",
+  "generated": "2021-02-01T14:26:06.533983Z",
   "generator": "pub",
   "generatorVersion": "2.10.5"
 }

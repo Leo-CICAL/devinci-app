@@ -6,7 +6,7 @@ import 'package:devinci/pages/salles.dart';
 import 'package:devinci/pages/settings.dart';
 import 'package:devinci/pages/ui/absences.dart';
 import 'package:devinci/pages/ui/notes.dart';
-import 'package:devinci/pages/user.dart';
+import 'package:devinci/pages/ui/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
@@ -44,7 +44,7 @@ class MainPageState extends State<MainPage> {
       NotesPage(key: globals.notesPageKey),
       AbsencesPage(key: globals.absencesPageKey),
       PresencePage(),
-      UserPage()
+      UserPage(key: globals.userPageKey)
     ];
     return res;
   }

@@ -310,10 +310,10 @@ Widget YearsSelection() {
               await globals.user
                   .getNotes(globals.user.notesList[index][1], index);
             } catch (exception, stacktrace) {
-              catcher(exception, stacktrace);
+              catcher(exception, stacktrace, '?my=notes');
             }
           } catch (exception, stacktrace) {
-            catcher(exception, stacktrace);
+            catcher(exception, stacktrace, '?my=notes');
           }
           first = true;
           setState(() {

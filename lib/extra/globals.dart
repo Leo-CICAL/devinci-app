@@ -7,6 +7,7 @@ import 'package:devinci/pages/mainPage.dart';
 import 'package:devinci/pages/ui/absences.dart';
 import 'package:devinci/pages/ui/login.dart';
 import 'package:devinci/pages/ui/notes.dart';
+import 'package:devinci/pages/ui/user.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:devinci/libraries/devinci/extra/classes.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +100,7 @@ final absencesPageKey = GlobalKey<AbsencesPageState>();
 final mainPageKey = GlobalKey<MainPageState>();
 final adminPageKey = GlobalKey<AdminPageState>();
 final loginPageKey = GlobalKey<LoginPageState>();
+final userPageKey = GlobalKey<UserPageState>();
 
 BuildContext getScaffold() {
   if (mainPageKey.currentState != null) {

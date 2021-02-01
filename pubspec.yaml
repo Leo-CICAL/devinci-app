@@ -19,6 +19,7 @@ dependencies:
   syncfusion_flutter_calendar: ^18.4.34
   syncfusion_localizations: ^18.4.34
   syncfusion_flutter_datagrid: ^18.4.34-beta
+  syncfusion_flutter_pdfviewer: ^18.4.39-beta
   pull_to_refresh: 1.6.3
   flutter_statusbarcolor: ^0.2.3 # permet de changer la couleur de la barre d'état et de navigation sur android et ios
   property_change_notifier: ^0.2.0 # permet de rebuild une interface si une variable change de valeur
@@ -31,7 +32,6 @@ dependencies:
   flutter_markdown: ^0.5.2 # permet de convertir du Markdown en RichText, utilisé pour l'affichage du changelog des mise à jour
   modal_bottom_sheet: ^1.0.0 # permet d'afficher un modal bottom sheet, utilisé pour afficher la page de paramètres
   flutter_phoenix: ^0.1.0 # permet de relancer l'application sans véritablement la quitter, une sorte de refresh, utile lorsque l'utilisateur se déconnecte
-  flutter_full_pdf_viewer: ^1.0.6 # permet d'afficher des pdf dans l'application
   share_extend: ^1.1.9 # permet d'appeler le volet de partage natif des différents os et de partager des fichiers.
   flutter_svg: ^0.19.1 # permet l'affichage d'image svg
   recase: ^3.0.1 # permet de transformer n'importe quelle phrase en flutter_svg
