@@ -147,7 +147,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    globals.currentContext = context;
+    //globals.currentContext = context;
     var res = <LocalizationsDelegate<dynamic>>[
       RefreshLocalizations.delegate,
       GlobalMaterialLocalizations.delegate,
@@ -158,6 +158,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MaterialApp(
       navigatorKey: navigatorKey,
+      navigatorObservers: [
+        SentryNavigatorObserver(),
+      ],
       localizationsDelegates: res,
       supportedLocales: context.supportedLocales,
       locale: context.locale,

@@ -76,7 +76,6 @@ class _SallesPageState extends State<SallesPage> {
 
   @override
   Widget build(BuildContext context) {
-    globals.currentContext = context;
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
         globals.currentTheme.isDark());

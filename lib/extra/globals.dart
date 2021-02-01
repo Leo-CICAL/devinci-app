@@ -32,17 +32,6 @@ String crashConsent;
 
 bool notifConsent;
 
-// class AgendaView extends PropertyChangeNotifier<String> {
-//   CalendarView _calendarView = CalendarView.day;
-
-//   CalendarView get calendarView => _calendarView;
-
-//   set calendarView(CalendarView value) {
-//     _calendarView = value;
-//     notifyListeners('calendarView');
-//   }
-// }
-
 CalendarView calendarView = CalendarView.workWeek;
 
 bool showSidePanel = false;
@@ -110,3 +99,11 @@ final absencesPageKey = GlobalKey<AbsencesPageState>();
 final mainPageKey = GlobalKey<MainPageState>();
 final adminPageKey = GlobalKey<AdminPageState>();
 final loginPageKey = GlobalKey<LoginPageState>();
+
+BuildContext getScaffold() {
+  if (mainPageKey.currentState != null) {
+    return mainPageKey.currentState.context;
+  } else {
+    return currentContext;
+  }
+}

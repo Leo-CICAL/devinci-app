@@ -130,6 +130,6 @@ BuildContext getContext() {
   if (globals.absencesPageKey.currentState != null) {
     return globals.absencesPageKey.currentState.context;
   } else {
-    return globals.currentContext;
+    return globals.getScaffold();
   }
 }

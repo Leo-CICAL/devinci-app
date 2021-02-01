@@ -97,7 +97,6 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    globals.currentContext = context;
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
         globals.currentTheme.isDark());
@@ -319,8 +318,7 @@ class MainPageState extends State<MainPage> {
                         SnackBar(content: Text('offline_msg').tr());
 
                     try {
-                      Scaffold.of(globals.currentContext)
-                          .showSnackBar(snackBar);
+                      Scaffold.of(globals.getScaffold()).showSnackBar(snackBar);
                       // ignore: empty_catches
                     } catch (e) {}
                   },

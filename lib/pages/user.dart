@@ -456,7 +456,6 @@ class _UserPageState extends State<UserPage> {
     } else if (MediaQuery.of(context).size.width > 600) {
       padding = MediaQuery.of(context).size.width * 0.08;
     }
-    globals.currentContext = context;
     if (show) {
       return CupertinoScrollbar(
         controller: scroll,

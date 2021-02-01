@@ -8,6 +8,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:sembast/utils/value_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 //DATA
 int currentSemester = 0;
@@ -69,6 +70,9 @@ Future<void> getData({bool force = false}) async {
     l(e);
   }
   if (!globals.user.notesFetched && globals.isConnected) {
+    Sentry.addBreadcrumb(Breadcrumb(
+        message:
+            'logic/notes.dart => getData() => if (!globals.user.notesFetched && globals.isConnected)'));
     globals.isLoading.setState(1, true);
   }
 
@@ -154,16 +158,16 @@ void catcher(var exception, StackTrace stacktrace) async {
     ]);
     var res = await req.close();
     globals.feedbackNotes = await res.transform(utf8.decoder).join();
-    globals.currentContext = getContext();
 
-    await reportError(
-        'notes.dart | _NotesPageState | runBeforeBuild() | user.getNotes() => $exception',
-        stacktrace);
+    await reportError(exception, stacktrace);
   }
 }
 
 void runBeforeBuild() async {
   if (!globals.user.notesFetched) {
+    Sentry.addBreadcrumb(Breadcrumb(
+        message:
+            'logic/notes.dart => runBeforeBuild() => if (!globals.user.notesFetched)'));
     await getData();
   } else {
     setState(() {
@@ -179,7 +183,7 @@ BuildContext getContext() {
   if (globals.notesPageKey.currentState != null) {
     return globals.notesPageKey.currentState.context;
   } else {
-    return globals.currentContext;
+    return globals.getScaffold();
   }
 }
 

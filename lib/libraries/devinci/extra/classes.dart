@@ -688,8 +688,7 @@ class Student {
           l("data : ${data["badge"]}|${data["client"]}|${data["idAdmin"]}|${data["ine"]}");
           // ignore: empty_catches
         } catch (e, stacktrace) {
-          l(e);
-          l(stacktrace);
+          reportToCrash(e, stacktrace);
         }
         response = await devinciRequest(endpoint: '?my=edt');
 
@@ -811,7 +810,7 @@ class Student {
               duration: const Duration(seconds: 10),
             );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-            material.Scaffold.of(globals.currentContext).showSnackBar(snackBar);
+            material.Scaffold.of(globals.getScaffold()).showSnackBar(snackBar);
           }
           absences['done'] = true;
           await globals.store.record('absences').put(globals.db, absences);
@@ -921,12 +920,15 @@ class Student {
             duration: const Duration(seconds: 10),
           );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-          material.Scaffold.of(globals.currentContext).showSnackBar(snackBar);
+          material.Scaffold.of(globals.getScaffold()).showSnackBar(snackBar);
         }
       } else {
         error = true;
         code = res.statusCode;
-        throw Exception('unhandled exception');
+        throw Exception({
+          'code': res.statusCode,
+          'message': 'unhandled exception, statusCode != 200'
+        });
       }
     } else {
       error = true;
@@ -1195,7 +1197,7 @@ class Student {
               duration: const Duration(seconds: 10),
             );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-            material.Scaffold.of(globals.currentContext).showSnackBar(snackBar);
+            material.Scaffold.of(globals.getScaffold()).showSnackBar(snackBar);
           }
         } else {
           error = true;
@@ -1394,7 +1396,7 @@ class Student {
               duration: const Duration(seconds: 10),
             );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-            material.Scaffold.of(globals.currentContext).showSnackBar(snackBar);
+            material.Scaffold.of(globals.getScaffold()).showSnackBar(snackBar);
           }
         }
       }

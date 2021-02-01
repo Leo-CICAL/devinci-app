@@ -59,7 +59,11 @@ class _PresencePageState extends State<PresencePage> {
     }
     await Future.delayed(const Duration(milliseconds: 300));
     if (globals.user.presence.isNotEmpty) {
-      _pageController.jumpToPage(globals.user.presenceIndex);
+      try {
+        _pageController.jumpToPage(globals.user.presenceIndex);
+      } catch (e, stacktrace) {
+        await reportError(e, stacktrace);
+      }
     }
   }
 
@@ -234,7 +238,7 @@ class _PresencePageState extends State<PresencePage> {
                             );
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-                            Scaffold.of(globals.currentContext)
+                            Scaffold.of(globals.getScaffold())
                                 .showSnackBar(snackBar);
                           }
                         }

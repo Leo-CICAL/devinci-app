@@ -266,7 +266,7 @@ Future<Null> reportError(dynamic error, dynamic stackTrace) async {
     );
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-    Scaffold.of(globals.currentContext).showSnackBar(snackBar);
+    Scaffold.of(globals.getScaffold()).showSnackBar(snackBar);
   }
 }
 
@@ -278,10 +278,10 @@ void reportToCrash(var err, StackTrace stackTrace) async {
         onPressed: () async {
           globals.feedbackError = err.toString();
           globals.feedbackStackTrace = stackTrace;
-          BetterFeedback.of(globals.currentContext).show();
+          BetterFeedback.of(globals.getScaffold()).show();
         }),
   );
-  Scaffold.of(globals.currentContext).showSnackBar(snackBar);
+  Scaffold.of(globals.getScaffold()).showSnackBar(snackBar);
   // Errors thrown in development mode are unlikely to be interesting. You can
   // check if you are running in dev mode using an assertion and omit sending
   // the report.
@@ -769,7 +769,7 @@ Future<String> downloadDocuments(String url, String filename) async {
     final snackBar = SnackBar(content: Text('Non disponible hors ligne'));
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-    Scaffold.of(globals.currentContext).showSnackBar(snackBar);
+    Scaffold.of(globals.getScaffold()).showSnackBar(snackBar);
   }
   return '';
 }

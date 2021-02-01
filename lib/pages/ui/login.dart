@@ -48,7 +48,6 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
         globals.currentTheme.isDark());
-    globals.currentContext = context;
 
     return WillPopScope(
         onWillPop: () async => false,

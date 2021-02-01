@@ -179,7 +179,6 @@ class _AgendaPageState extends State<AgendaPage> {
 
   @override
   Widget build(BuildContext context) {
-    globals.currentContext = context;
     return LayoutBuilder(builder: (context, constraints) {
       if (show) {
         return Column(children: <Widget>[
@@ -774,7 +773,6 @@ class CoursEditorState extends State<CoursEditor> {
 
   @override
   Widget build([BuildContext context]) {
-    globals.currentContext = context;
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
         globals.currentTheme.isDark());

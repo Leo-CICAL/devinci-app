@@ -307,6 +307,6 @@ BuildContext getContext() {
   if (globals.loginPageKey.currentState != null) {
     return globals.loginPageKey.currentState.context;
   } else {
-    return globals.currentContext;
+    return globals.getScaffold();
   }
 }
