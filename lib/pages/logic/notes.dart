@@ -40,7 +40,6 @@ Future<void> getData({bool force = false}) async {
       try {
         await globals.user.getNotesList();
         currentYear = globals.user.notesList[index][0];
-
         try {
           await globals.user.getNotes(globals.user.notesList[index][1], index);
         } catch (exception, stacktrace) {
@@ -52,7 +51,41 @@ Future<void> getData({bool force = false}) async {
           catcher(exception, stacktrace, '?my=notes');
         }
       } catch (exception, stacktrace) {
-        catcher(exception, stacktrace, '?my=notes');
+        l(exception);
+        l(stacktrace);
+        l('needs reconnection');
+        final snackBar = SnackBar(
+          content: Text('reconnecting').tr(),
+          duration: const Duration(seconds: 10),
+        );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+        Scaffold.of(getContext()).showSnackBar(snackBar);
+        try {
+          await globals.user.getTokens();
+        } catch (e, stacktrace) {
+          l(e);
+          l(stacktrace);
+        }
+        try {
+          await globals.user.getNotesList();
+          currentYear = globals.user.notesList[index][0];
+          try {
+            await globals.user
+                .getNotes(globals.user.notesList[index][1], index);
+          } catch (exception, stacktrace) {
+            catcher(exception, stacktrace, '?my=notes');
+          }
+          try {
+            await globals.user.getBonus(globals.user.notesList[index][1]);
+          } catch (exception, stacktrace) {
+            catcher(exception, stacktrace, '?my=notes');
+          }
+        } catch (exception, stacktrace) {
+          catcher(exception, stacktrace, '?my=notes');
+        }
+        Scaffold.of(getContext()).removeCurrentSnackBar();
+
+        l(globals.user.tokens);
       }
     }
   }

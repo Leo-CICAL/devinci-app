@@ -236,7 +236,7 @@ class Student {
     globals.db = await dbFactory.openDatabase(dbPath);
     var notes =
         await globals.store.record('notes').get(globals.db) as List<dynamic>;
-    
+
     if (notes == null) {
       notes = [];
       await globals.store.record('notes').put(globals.db, notes);
@@ -1238,159 +1238,164 @@ class Student {
         if (res.statusCode == 200) {
           var body = await res.transform(utf8.decoder).join();
           if (!body.contains('Validation des règlements')) {
-            var doc = parse(body);
-            //Element cert = doc.querySelector("#main > div > div:nth-child(5) > div:nth-child(2) > div > table > tbody > tr > td:nth-child(2)");
             try {
-              var certIndex = 1;
-              var imaginrIndex = 1;
-              for (var i = 1;
-                  i <
+              var doc = parse(body);
+              //Element cert = doc.querySelector("#main > div > div:nth-child(5) > div:nth-child(2) > div > table > tbody > tr > td:nth-child(2)");
+              try {
+                var certIndex = 1;
+                var imaginrIndex = 1;
+                for (var i = 1;
+                    i <
+                        doc
+                            .querySelectorAll(
+                                '.social-box.social-bordered.span6')[1]
+                            .querySelectorAll('tr')
+                            .length;
+                    i++) {
+                  l('[1]' +
                       doc
                           .querySelectorAll(
                               '.social-box.social-bordered.span6')[1]
-                          .querySelectorAll('tr')
-                          .length;
-                  i++) {
-                l('[1]' +
-                    doc
-                        .querySelectorAll(
-                            '.social-box.social-bordered.span6')[1]
-                        .querySelectorAll('tr')[i]
-                        .querySelectorAll('td')[1]
-                        .text);
-                if (doc
-                    .querySelectorAll('.social-box.social-bordered.span6')[1]
-                    .querySelectorAll('tr')[i]
-                    .querySelectorAll('td')[0]
-                    .text
-                    .contains('scolarité')) {
-                  certIndex = i;
-                } else if (doc
-                    .querySelectorAll('.social-box.social-bordered.span6')[1]
-                    .querySelectorAll('tr')[i]
-                    .querySelectorAll('td')[0]
-                    .text
-                    .contains('ImaginR')) {
-                  imaginrIndex = i;
-                }
-              }
-              var certElements = doc
-                  .querySelectorAll('.social-box.social-bordered.span6')[1]
-                  .querySelectorAll('tr')[certIndex]
-                  .querySelectorAll('td');
-
-              documents['certificat']['annee'] = certElements[1].text;
-              documents['certificat']['fr_url'] =
-                  'https://www.leonard-de-vinci.net' +
-                      certElements[2]
-                          .querySelectorAll('a')[0]
-                          .attributes['href'];
-              documents['certificat']['en_url'] =
-                  'https://www.leonard-de-vinci.net' +
-                      certElements[2]
-                          .querySelectorAll('a')[1]
-                          .attributes['href'];
-
-              l('[2]' + documents['certificat']['annee']);
-              l('[3]' + documents['certificat']['fr_url']);
-              l('[4]' + documents['certificat']['en_url']);
-
-              var imaginrElements = doc
-                  .querySelectorAll('.social-box.social-bordered.span6')[1]
-                  .querySelectorAll('tr')[imaginrIndex]
-                  .querySelectorAll('td');
-
-              documents['imaginr']['annee'] = imaginrElements[1].text;
-              documents['imaginr']['url'] = 'https://www.leonard-de-vinci.net' +
-                  imaginrElements[2]
-                      .querySelectorAll('a')[0]
-                      .attributes['href'];
-            } catch (e) {
-              if (globals.crashConsent == 'true') {
-                await Sentry.captureException(
-                  e,
-                  stackTrace: e.stackTrace,
-                );
-              }
-            }
-            var calendrierIndex = 4;
-            for (var i = 0;
-                i <
-                    doc
-                        .querySelectorAll(
-                            '.social-box.social-bordered.span6')[0]
-                        .querySelectorAll('a')
-                        .length;
-                i++) {
-              if (doc
-                      .querySelectorAll('.social-box.social-bordered.span6')[0]
-                      .querySelectorAll('a')[i]
+                          .querySelectorAll('tr')[i]
+                          .querySelectorAll('td')[1]
+                          .text);
+                  if (doc
+                      .querySelectorAll('.social-box.social-bordered.span6')[1]
+                      .querySelectorAll('tr')[i]
+                      .querySelectorAll('td')[0]
                       .text
-                      .contains('CALENDRIER ACADEMIQUE') &&
-                  !doc
-                      .querySelectorAll('.social-box.social-bordered.span6')[0]
-                      .querySelectorAll('a')[i]
+                      .contains('scolarité')) {
+                    certIndex = i;
+                  } else if (doc
+                      .querySelectorAll('.social-box.social-bordered.span6')[1]
+                      .querySelectorAll('tr')[i]
+                      .querySelectorAll('td')[0]
                       .text
-                      .contains('APPRENTISSAGE')) {
-                calendrierIndex = i;
-              }
-            }
-
-            documents['calendrier']['url'] =
-                'https://www.leonard-de-vinci.net' +
-                    doc
-                        .querySelectorAll(
-                            '.social-box.social-bordered.span6')[0]
-                        .querySelectorAll('a')[calendrierIndex]
-                        .attributes['href'];
-            documents['calendrier']['annee'] = RegExp(r'\d{4}-\d{4}')
-                .firstMatch(doc
-                    .querySelectorAll('.social-box.social-bordered.span6')[0]
-                    .querySelectorAll('a')[calendrierIndex]
-                    .text)
-                .group(0);
-
-            l('[5] calendrier : ${documents["calendrier"]["annee"]}|${documents["calendrier"]["url"]}');
-            //documents liés aux notes :
-            await getNotesList();
-            for (var item in notesList) {
-              res = await devinciRequest(endpoint: '?my=notes&p=' + item[1]);
-              if (res.statusCode == 200) {
-                body = await res.transform(utf8.decoder).join();
-                doc = parse(body);
-                if (doc.querySelectorAll('div.body').length > 1) {
-                  var filesA = doc
-                      .querySelectorAll('div.body')[
-                          doc.querySelectorAll('div.body').length - 2]
-                      .querySelectorAll('a:not(.label)');
-                  l('[6]' + filesA.toString());
-                  documents['bulletins'].clear();
-                  for (var i = 0; i < filesA.length; i += 2) {
-                    documents['bulletins'].add({
-                      'name': filesA[i]
-                          .text
-                          .substring(1, filesA[i].text.length - 1),
-                      'fr_url': 'https://www.leonard-de-vinci.net' +
-                          filesA[i].attributes['href'],
-                      'en_url': 'https://www.leonard-de-vinci.net' +
-                          filesA[i + 1].attributes['href'],
-                      'sub': RegExp(r'\s\s+(.*?)\s\s+')
-                          .firstMatch(doc
-                              .querySelectorAll('div.body')[
-                                  doc.querySelectorAll('div.body').length - 2]
-                              .querySelector('header')
-                              .text
-                              .split('\n')
-                              .last)
-                          .group(1)
-                    });
+                      .contains('ImaginR')) {
+                    imaginrIndex = i;
                   }
                 }
-                l('[7]' + documents['bulletins'].toString());
-              }
-            }
-            //res = await devinciRequest(endpoint: '?my=notes');
+                var certElements = doc
+                    .querySelectorAll('.social-box.social-bordered.span6')[1]
+                    .querySelectorAll('tr')[certIndex]
+                    .querySelectorAll('td');
 
+                documents['certificat']['annee'] = certElements[1].text;
+                documents['certificat']['fr_url'] =
+                    'https://www.leonard-de-vinci.net' +
+                        certElements[2]
+                            .querySelectorAll('a')[0]
+                            .attributes['href'];
+                documents['certificat']['en_url'] =
+                    'https://www.leonard-de-vinci.net' +
+                        certElements[2]
+                            .querySelectorAll('a')[1]
+                            .attributes['href'];
+
+                l('[2]' + documents['certificat']['annee']);
+                l('[3]' + documents['certificat']['fr_url']);
+                l('[4]' + documents['certificat']['en_url']);
+
+                var imaginrElements = doc
+                    .querySelectorAll('.social-box.social-bordered.span6')[1]
+                    .querySelectorAll('tr')[imaginrIndex]
+                    .querySelectorAll('td');
+
+                documents['imaginr']['annee'] = imaginrElements[1].text;
+                documents['imaginr']['url'] =
+                    'https://www.leonard-de-vinci.net' +
+                        imaginrElements[2]
+                            .querySelectorAll('a')[0]
+                            .attributes['href'];
+              } catch (e, stacktrace) {
+                await reportError(e, stacktrace);
+              }
+              var calendrierIndex = 4;
+              try {
+                for (var i = 0;
+                    i <
+                        doc
+                            .querySelectorAll(
+                                '.social-box.social-bordered.span6')[0]
+                            .querySelectorAll('a')
+                            .length;
+                    i++) {
+                  if (doc
+                          .querySelectorAll(
+                              '.social-box.social-bordered.span6')[0]
+                          .querySelectorAll('a')[i]
+                          .text
+                          .contains('CALENDRIER ACADEMIQUE') &&
+                      !doc
+                          .querySelectorAll(
+                              '.social-box.social-bordered.span6')[0]
+                          .querySelectorAll('a')[i]
+                          .text
+                          .contains('APPRENTISSAGE')) {
+                    calendrierIndex = i;
+                  }
+                }
+              } catch (e, stacktrace) {
+                reportError(e, stacktrace);
+              }
+
+              documents['calendrier']['url'] =
+                  'https://www.leonard-de-vinci.net' +
+                      doc
+                          .querySelectorAll(
+                              '.social-box.social-bordered.span6')[0]
+                          .querySelectorAll('a')[calendrierIndex]
+                          .attributes['href'];
+              documents['calendrier']['annee'] = RegExp(r'\d{4}-\d{4}')
+                  .firstMatch(doc
+                      .querySelectorAll('.social-box.social-bordered.span6')[0]
+                      .querySelectorAll('a')[calendrierIndex]
+                      .text)
+                  .group(0);
+
+              l('[5] calendrier : ${documents["calendrier"]["annee"]}|${documents["calendrier"]["url"]}');
+              //documents liés aux notes :
+              await getNotesList();
+              for (var item in notesList) {
+                res = await devinciRequest(endpoint: '?my=notes&p=' + item[1]);
+                if (res.statusCode == 200) {
+                  body = await res.transform(utf8.decoder).join();
+                  doc = parse(body);
+                  if (doc.querySelectorAll('div.body').length > 1) {
+                    var filesA = doc
+                        .querySelectorAll('div.body')[
+                            doc.querySelectorAll('div.body').length - 2]
+                        .querySelectorAll('a:not(.label)');
+                    l('[6]' + filesA.toString());
+                    documents['bulletins'].clear();
+                    for (var i = 0; i < filesA.length; i += 2) {
+                      documents['bulletins'].add({
+                        'name': filesA[i]
+                            .text
+                            .substring(1, filesA[i].text.length - 1),
+                        'fr_url': 'https://www.leonard-de-vinci.net' +
+                            filesA[i].attributes['href'],
+                        'en_url': 'https://www.leonard-de-vinci.net' +
+                            filesA[i + 1].attributes['href'],
+                        'sub': RegExp(r'\s\s+(.*?)\s\s+')
+                            .firstMatch(doc
+                                .querySelectorAll('div.body')[
+                                    doc.querySelectorAll('div.body').length - 2]
+                                .querySelector('header')
+                                .text
+                                .split('\n')
+                                .last)
+                            .group(1)
+                      });
+                    }
+                  }
+                  l('[7]' + documents['bulletins'].toString());
+                }
+              }
+              //res = await devinciRequest(endpoint: '?my=notes');
+            } catch (e, stacktrace) {
+              await reportError(e, stacktrace);
+            }
           } else if (body.contains('Validation des règlements')) {
             final snackBar = material.SnackBar(
               content: material.Text('school_rules_validation').tr(),

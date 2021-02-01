@@ -236,23 +236,7 @@ Future<Null> reportError(dynamic error, dynamic stackTrace) async {
         '\n appName : ${packageInfo.appName}\n packageName : ${packageInfo.packageName}\n version : ${packageInfo.version}\n buildNumber : ${packageInfo.buildNumber}\n ';
   }
   var consent = globals.prefs.getString('crashConsent');
-  if (consent == null) {
-    await dialog(
-      title: 'Erreur',
-      content:
-          "Félicitations, vous avez cassé cette application. Je parie que vous attendez que l'on vous dise ce qu'il s'est passé : ¯\\_(ツ)_/¯\nCependant, si vous souhaitez que nous resolvions cette erreur, vous pouvez accepter que l'application partage les informations liées au problème avec nous.",
-      ok: 'Accepter',
-      no: 'Refuser',
-      callback: (bool res) async {
-        if (res) {
-          await globals.prefs.setString('crashConsent', 'true');
-          reportToCrash(err, stackTrace);
-        } else {
-          await globals.prefs.setString('crashConsent', 'false');
-        }
-      },
-    );
-  } else if (consent == 'true') {
+  if (consent == 'true') {
     reportToCrash(err, stackTrace);
   } else {
     final snackBar = SnackBar(
