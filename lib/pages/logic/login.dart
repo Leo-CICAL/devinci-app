@@ -182,7 +182,7 @@ void runBeforeBuild() async {
               content: Text(
                 'unknown_error'.tr(namedArgs: {
                   'code': globals.user.code.toString(),
-                  'exception': exception
+                  'exception': exception.toString()
                 }),
               ),
               actions: <Widget>[

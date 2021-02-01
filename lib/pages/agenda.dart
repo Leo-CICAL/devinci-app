@@ -115,7 +115,7 @@ class _AgendaPageState extends State<AgendaPage> {
               await parseIcal(globals.user.data['edtUrl'], load: true);
         } catch (exception, stacktrace) {
           await reportError(
-              'agenda.dart | _AgendaPageState | getCalendar() | parseIcal() => $exception',
+              'agenda.dart | _AgendaPageState | getCalendar() | edt_url:${globals.user.data['edtUrl']} | parseIcal() => $exception',
               stacktrace);
           return;
         }

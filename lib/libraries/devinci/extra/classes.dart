@@ -548,7 +548,10 @@ class Student {
             } else {
               error = true;
               code = res.statusCode;
-              throw Exception('unhandled error');
+              throw Exception({
+                'code': code,
+                'message': 'unhandled exception, ' + res.reasonPhrase
+              });
             }
           } else {
             error = true;
@@ -727,12 +730,18 @@ class Student {
         } else {
           error = true;
           code = response.statusCode;
-          throw Exception('unhandled exception');
+          throw Exception({
+            'code': code,
+            'message': 'unhandled exception, ' + response.reasonPhrase
+          });
         }
       } else {
         error = true;
         code = response.statusCode;
-        throw Exception('unhandled exception');
+        throw Exception({
+          'code': code,
+          'message': 'unhandled exception, ' + response.reasonPhrase
+        });
       }
     } else {
       error = true;
@@ -818,7 +827,10 @@ class Student {
         } else {
           error = true;
           code = res.statusCode;
-          throw Exception('unhandled exception');
+          throw Exception({
+            'code': code,
+            'message': 'unhandled exception, ' + res.reasonPhrase
+          });
         }
       } else {
         error = true;
@@ -927,8 +939,8 @@ class Student {
         error = true;
         code = res.statusCode;
         throw Exception({
-          'code': res.statusCode,
-          'message': 'unhandled exception, statusCode != 200'
+          'code': code,
+          'message': 'unhandled exception, ' + res.reasonPhrase
         });
       }
     } else {
@@ -1164,13 +1176,27 @@ class Student {
                         if (temp.contains('Absence')) {
                           elem['note'] = 0.12345;
                         } else {
-                          elem['note'] = double.parse(texts[notesConfig['notes']
-                                      ['note']['i']]
-                                  .replaceAllMapped(
-                                      RegExp(notesConfig['notes']['note']['r']),
-                                      (match) => '')
-                                  .split(notesConfig['notes']['note']['s'])[
-                              notesConfig['notes']['note']['si']]);
+                          try {
+                            elem['note'] = double.parse(texts[
+                                    notesConfig['notes']['note']['i']]
+                                .replaceAllMapped(
+                                    RegExp(notesConfig['notes']['note']['r']),
+                                    (match) => '')
+                                .split(notesConfig['notes']['note']
+                                    ['s'])[notesConfig['notes']['note']['si']]);
+                          } catch (e, stacktrace) {
+                            Sentry.addBreadcrumb(Breadcrumb(
+                                message: 'failed to double parse : ' +
+                                    texts[notesConfig['notes']['note']['i']]
+                                        .replaceAllMapped(
+                                            RegExp(notesConfig['notes']['note']
+                                                ['r']),
+                                            (match) => '')
+                                        .split(notesConfig['notes']['note']
+                                            ['s'])[notesConfig['notes']['note']
+                                        ['si']]));
+                            reportError(e, stacktrace);
+                          }
                         }
                         elem['noteP'] = null;
                         try {
@@ -1203,7 +1229,10 @@ class Student {
         } else {
           error = true;
           code = res.statusCode;
-          throw Exception('unhandled exception');
+          throw Exception({
+            'code': code,
+            'message': 'unhandled exception, ' + res.reasonPhrase
+          });
         }
       } else {
         error = true;
@@ -1493,7 +1522,10 @@ class Student {
         } else {
           error = true;
           code = res.statusCode;
-          throw Exception('unhandled exception');
+          throw Exception({
+            'code': code,
+            'message': 'unhandled exception, ' + res.reasonPhrase
+          });
         }
       } else {
         throw Exception(400); //missing parameters
