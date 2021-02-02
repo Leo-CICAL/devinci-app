@@ -1,63 +1,40 @@
-library my_prj.globals;
-
-import 'package:devinci/libraries/admin/admin.dart';
-import 'package:devinci/libraries/timechef/classes.dart';
-import 'package:devinci/libraries/timechef/timechef.dart';
-import 'package:devinci/pages/mainPage.dart';
-import 'package:devinci/pages/ui/absences.dart';
-import 'package:devinci/pages/ui/login.dart';
-import 'package:devinci/pages/ui/notes.dart';
-import 'package:devinci/pages/ui/user.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:devinci/libraries/devinci/extra/classes.dart';
-import 'package:flutter/material.dart';
-import 'package:property_change_notifier/property_change_notifier.dart';
-import 'package:sembast/sembast.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:biometric_storage/biometric_storage.dart';
 import 'package:devinci/extra/classes.dart';
+import 'package:devinci/libraries/devinci/extra/classes.dart';
+import 'package:devinci/pages/ui/login.dart';
+import 'package:flutter/material.dart';
+import 'package:sembast/sembast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-final storage = FlutterSecureStorage();
+SharedPreferences prefs;
 
-// We use the database factory to open the database
-Database db;
-var store = StoreRef<String, dynamic>.main();
-Student user;
-TimeChefUser timeChefUser;
+BiometricStorageFile storageUsername;
+BiometricStorageFile storagePassword;
+BiometricStorageFile storageSimpleSAML;
+BiometricStorageFile storageAlv;
+BiometricStorageFile storageUids;
+BiometricStorageFile storageSimpleSAMLAuthToken;
+BiometricStorageFile storageBadge;
+BiometricStorageFile storageClient;
+BiometricStorageFile storageIdAdmin;
+BiometricStorageFile storageIne;
+BiometricStorageFile storageEdtUrl;
+BiometricStorageFile storageName;
 
-bool asXxMoy = false;
-
-BuildContext currentContext;
-
-String crashConsent;
-
-bool notifConsent;
-
-CalendarView calendarView = CalendarView.workWeek;
-
-bool showSidePanel = false;
-
-class AgendaTitle extends PropertyChangeNotifier<String> {
-  String _headerText = '';
-
-  String get headerText => _headerText;
-
-  set headerText(String value) {
-    _headerText = value;
-    notifyListeners('headerText');
-  }
+void storageDeleteAll() {
+  storageUsername.delete();
+  storagePassword.delete();
+  storageSimpleSAMLAuthToken.delete();
+  storageSimpleSAML.delete();
+  storageAlv.delete();
+  storageUids.delete();
+  storageBadge.delete();
+  storageClient.delete();
+  storageIne.delete();
+  storageIdAdmin.delete();
+  storageEdtUrl.delete();
+  storageName.delete();
 }
-
-String feedbackError = '';
-StackTrace feedbackStackTrace = StackTrace.fromString('');
-String eventId = '';
-String feedbackNotes = '';
-
-final agendaTitle = AgendaTitle();
-
-DateTime lastFetchAgenda;
-
-List<Cours> cours = <Cours>[];
 
 Map<int, Color> color = {
   50: Color.fromRGBO(136, 14, 79, .1),
@@ -72,40 +49,23 @@ Map<int, Color> color = {
   900: Color.fromRGBO(136, 14, 79, 1),
 };
 
-int selectedPage = 0;
-
-SharedPreferences prefs;
-
-bool isConnected = true;
+bool asXxMoy = false;
 
 DevinciTheme currentTheme = DevinciTheme();
 
-IsLoading isLoading = IsLoading();
-
-bool noteLocked = false;
-
-PageChanger pageChanger = PageChanger();
-
-List<Cours> customCours = <Cours>[];
-
+String crashConsent;
+bool notifConsent;
+bool showSidePanel = false;
 bool analyticsConsent = true;
+String feedbackNotes = '';
+String feedbackError = '';
+StackTrace feedbackStackTrace = StackTrace.fromString('');
+String eventId = '';
+bool isConnected = true;
+var store = StoreRef<String, dynamic>.main();
+Database db;
 
-CalendarController calendarController;
+Student user;
 
-bool showRestaurant = false;
-
-//globalkeys
-final notesPageKey = GlobalKey<NotesPageState>();
-final absencesPageKey = GlobalKey<AbsencesPageState>();
-final mainPageKey = GlobalKey<MainPageState>();
-final adminPageKey = GlobalKey<AdminPageState>();
 final loginPageKey = GlobalKey<LoginPageState>();
-final userPageKey = GlobalKey<UserPageState>();
-
-BuildContext getScaffold() {
-  if (mainPageKey.currentState != null) {
-    return mainPageKey.currentState.context;
-  } else {
-    return currentContext;
-  }
-}
+final mainScaffoldKey = GlobalKey<ScaffoldState>();

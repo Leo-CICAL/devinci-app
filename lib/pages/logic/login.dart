@@ -1,18 +1,15 @@
-// imports
 import 'dart:async';
 
-import 'package:connectivity/connectivity.dart';
+import 'package:biometric_storage/biometric_storage.dart';
+import 'package:cross_connectivity/cross_connectivity.dart';
+import 'package:devinci/extra/functions.dart';
 import 'package:devinci/libraries/devinci/extra/classes.dart';
-import 'package:devinci/libraries/devinci/extra/functions.dart';
+import 'package:devinci/libraries/f_logs/f_logs.dart';
 import 'package:devinci/libraries/flutter_progress_button/flutter_progress_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/extra/globals.dart' as globals;
-
-import '../mainPage.dart';
-
-// variables
+import 'package:easy_localization/easy_localization.dart';
 
 final myControllerUsername = TextEditingController();
 final myControllerPassword = TextEditingController();
@@ -47,7 +44,8 @@ void submit([String value]) async {
       globals.user.error = false;
     }
     if (formKey.currentState.validate()) {
-      l('valid');
+      FLog.info(
+          className: 'LoginPage Logic', methodName: 'submit', text: 'valid');
       setState(() {
         buttonState = ButtonState.inProgress;
       });
@@ -58,14 +56,13 @@ void submit([String value]) async {
       try {
         await globals.user.init(getContext());
 
-        await Navigator.push(
-          getContext(),
-          CupertinoPageRoute(
-            builder: (context) => MainPage(key: globals.mainPageKey),
-          ),
-        );
+        // await Navigator.push(
+        //   getContext(),
+        //   CupertinoPageRoute(
+        //     builder: (context) => MainPage(key: globals.mainPageKey),
+        //   ),
+        // );
       } catch (exception, stacktrace) {
-        l(exception);
         setState(() {
           buttonState = ButtonState.error;
         });
@@ -111,7 +108,8 @@ void submit([String value]) async {
         formKey.currentState.validate();
       }
     } else {
-      l('invalid');
+      FLog.info(
+          className: 'LoginPage Logic', methodName: 'submit', text: 'invalid');
       setState(() {
         buttonState = ButtonState.error;
       });
@@ -122,7 +120,8 @@ void submit([String value]) async {
               }));
     }
   } else {
-    l('invalid');
+    FLog.info(
+        className: 'LoginPage Logic', methodName: 'submit', text: 'invalid');
     setState(() {
       buttonState = ButtonState.error;
     });
@@ -141,20 +140,44 @@ void runBeforeBuild() async {
 
   var connectivityResult = await (Connectivity().checkConnectivity());
   if (!globals.isConnected) {
-    l('shortcut set offline');
+    FLog.info(
+        className: 'LoginPage Logic',
+        methodName: 'runBeforeBuild',
+        text: 'shortcut set offline');
   } else {
     globals.isConnected = globals.prefs.getBool('isConnected') ?? true;
-    if (!globals.isConnected) l('prefs set offline');
+    if (!globals.isConnected) {
+      FLog.info(
+          className: 'LoginPage Logic',
+          methodName: 'runBeforeBuild',
+          text: 'prefs set offline');
+    }
     if (globals.isConnected) {
-      l('no pref nor shortcut set to offline');
-      globals.isConnected = connectivityResult != ConnectivityResult.none;
+      FLog.info(
+          className: 'LoginPage Logic',
+          methodName: 'runBeforeBuild',
+          text: 'no pref nor shortcut set to offline');
+      globals.isConnected = connectivityResult != ConnectivityStatus.none;
     }
   }
-  username = await globals.storage.read(key: 'username');
-  password = await globals.storage.read(key: 'password');
+  globals.storageUsername =
+      await BiometricStorage().getStorage('devinci_username',
+          options: StorageFileInitOptions(
+            authenticationRequired: false,
+          ));
+  globals.storagePassword =
+      await BiometricStorage().getStorage('devinci_password',
+          options: StorageFileInitOptions(
+            authenticationRequired: false,
+          ));
+  username = await globals.storageUsername.read();
+  password = await globals.storagePassword.read();
 
   if (username != null && password != null) {
-    l('credentials_exists');
+    FLog.info(
+        className: 'LoginPage Logic',
+        methodName: 'runBeforeBuild',
+        text: 'credentials_exists');
     globals.user = Student(username, password);
     try {
       await globals.user.init(getContext());
@@ -163,7 +186,7 @@ void runBeforeBuild() async {
         show = true;
       });
 
-      l(exception.toString());
+      print(exception.toString());
 
       //user.init() throw error if credentials are wrong or if an error occurred during the process
       if (globals.user.code == 401) {
@@ -201,12 +224,12 @@ void runBeforeBuild() async {
       formKey.currentState.validate();
     }
     try {
-      await Navigator.push(
-        getContext(),
-        CupertinoPageRoute(
-          builder: (context) => MainPage(key: globals.mainPageKey),
-        ),
-      );
+      // await Navigator.push(
+      //   getContext(),
+      //   CupertinoPageRoute(
+      //     builder: (context) => MainPage(key: globals.mainPageKey),
+      //   ),
+      // );
       // ignore: empty_catches
     } catch (e) {}
   } else {
@@ -224,20 +247,44 @@ void didChangeAppLifecycle(AppLifecycleState state) async {
 
   var connectivityResult = await (Connectivity().checkConnectivity());
   if (!globals.isConnected) {
-    l('shortcut set offline');
+    FLog.info(
+        className: 'LoginPage Logic',
+        methodName: 'didChangeAppLifecycle',
+        text: 'shortcut set offline');
   } else {
     globals.isConnected = globals.prefs.getBool('isConnected') ?? true;
-    if (!globals.isConnected) l('prefs set offline');
+    if (!globals.isConnected) {
+      FLog.info(
+          className: 'LoginPage Logic',
+          methodName: 'didChangeAppLifecycle',
+          text: 'prefs set offline');
+    }
     if (globals.isConnected) {
-      l('no pref nor shortcut set to offline');
-      globals.isConnected = connectivityResult != ConnectivityResult.none;
+      FLog.info(
+          className: 'LoginPage Logic',
+          methodName: 'didChangeAppLifecycle',
+          text: 'no pref nor shortcut set to offline');
+      globals.isConnected = connectivityResult != ConnectivityStatus.none;
     }
   }
-  username = await globals.storage.read(key: 'username');
-  password = await globals.storage.read(key: 'password');
+  globals.storageUsername =
+      await BiometricStorage().getStorage('devinci_username',
+          options: StorageFileInitOptions(
+            authenticationRequired: false,
+          ));
+  globals.storagePassword =
+      await BiometricStorage().getStorage('devinci_password',
+          options: StorageFileInitOptions(
+            authenticationRequired: false,
+          ));
+  username = await globals.storageUsername.read();
+  password = await globals.storagePassword.read();
 
   if (username != null && password != null) {
-    l('credentials_exists');
+    FLog.info(
+        className: 'LoginPage Logic',
+        methodName: 'didChangeAppLifecycle',
+        text: 'credentials_exists');
     globals.user = Student(username, password);
     try {
       await globals.user.init(getContext());
@@ -245,7 +292,7 @@ void didChangeAppLifecycle(AppLifecycleState state) async {
       setState(() {
         show = true;
       });
-      l(exception);
+      print(exception);
 
       //user.init() throw error if credentials are wrong or if an error occurred during the process
       if (globals.user.code == 401) {
@@ -281,12 +328,12 @@ void didChangeAppLifecycle(AppLifecycleState state) async {
 
       formKey.currentState.validate();
     }
-    await Navigator.push(
-      getContext(),
-      CupertinoPageRoute(
-        builder: (context) => MainPage(key: globals.mainPageKey),
-      ),
-    );
+    // await Navigator.push(
+    //   getContext(),
+    //   CupertinoPageRoute(
+    //     builder: (context) => MainPage(key: globals.mainPageKey),
+    //   ),
+    // );
   } else {
     setState(() {
       show = true;
@@ -307,6 +354,6 @@ BuildContext getContext() {
   if (globals.loginPageKey.currentState != null) {
     return globals.loginPageKey.currentState.context;
   } else {
-    return globals.getScaffold();
+    //return globals.getScaffold();
   }
 }

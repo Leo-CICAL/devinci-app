@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/devinci-app.iml" filepath="$PROJECT_DIR$/.idea/devinci-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/devinci.iml" filepath="$PROJECT_DIR$/devinci.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/devinci_android.iml" filepath="$PROJECT_DIR$/android/devinci_android.iml" />
     </modules>
   </component>
 </project>

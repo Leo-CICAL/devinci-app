@@ -1,15 +1,13 @@
 import 'package:about/about.dart';
-import 'package:devinci/libraries/devinci/extra/functions.dart';
+import 'package:devinci/extra/functions.dart';
 import 'package:devinci/libraries/flutter_progress_button/flutter_progress_button.dart';
 import 'package:devinci/pages/logic/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
-import 'package:devinci/extra/globals.dart' as globals;
+import 'package:flutter_svg/svg.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:devinci/extra/globals.dart' as globals;
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -41,264 +39,245 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
-    FlutterStatusbarcolor.setStatusBarWhiteForeground(
-        globals.currentTheme.isDark());
-    FlutterStatusbarcolor.setNavigationBarColor(
-        Theme.of(context).scaffoldBackgroundColor);
-    FlutterStatusbarcolor.setNavigationBarWhiteForeground(
-        globals.currentTheme.isDark());
-
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
-          body: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle(
-                statusBarColor: Theme.of(context).scaffoldBackgroundColor,
-                statusBarIconBrightness: globals.currentTheme.isDark()
-                    ? Brightness.light
-                    : Brightness.dark),
-            child: LayoutBuilder(builder: (context, constraints) {
-              if (!show) {
-                return Center(
-                    child: CupertinoActivityIndicator(
-                  animating: true,
-                ));
+          body: LayoutBuilder(builder: (context, constraints) {
+            if (!show) {
+              return Center(
+                  child: CupertinoActivityIndicator(
+                animating: true,
+              ));
+            } else {
+              if (constraints.maxWidth > 600) {
+                return Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.only(
+                      left: constraints.maxWidth * 0.3,
+                      right: constraints.maxWidth * 0.3),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        child: SvgPicture.asset(
+                          'assets/devinci.svg',
+                          color: Theme.of(context).textTheme.bodyText1.color,
+                        ),
+                        height: 100,
+                        width: 100,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: Text(
+                          'welcome'.tr(),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      ),
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: <Widget>[
+                            TextFormField(
+                              keyboardType: TextInputType.emailAddress,
+                              autocorrect: false,
+                              key: Key('login_username'),
+                              textInputAction: TextInputAction.next,
+                              focusNode: usernameFocus,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'user'.tr(),
+                                suffixText: '@edu.devinci.fr',
+                              ),
+                              controller: myControllerUsername,
+                              onFieldSubmitted: (term) {
+                                fieldFocusChange(
+                                    context, usernameFocus, passwordFocus);
+                              },
+                              validator: validator,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: TextFormField(
+                                obscureText: true,
+                                textInputAction: TextInputAction.done,
+                                focusNode: passwordFocus,
+                                key: Key('login_password'),
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'password'.tr(),
+                                ),
+                                controller: myControllerPassword,
+                                onFieldSubmitted: submit,
+                                validator: validator,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: ProgressButton(
+                                key: Key('login_connect'),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 18),
+                                  child: Text(
+                                    'login'.tr().toUpperCase(),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: globals.currentTheme.isDark()
+                                            ? Colors.black
+                                            : Colors.white),
+                                  ),
+                                ),
+                                onPressed: submit,
+                                buttonState: buttonState,
+                                backgroundColor: Theme.of(context).accentColor,
+                                progressColor: globals.currentTheme.isDark()
+                                    ? Colors.black
+                                    : Colors.white,
+                              ),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: TextButton(
+                                    onPressed: () async {
+                                      const url =
+                                          'https://www.leonard-de-vinci.net/lost_password.php';
+                                      if (await canLaunch(url)) {
+                                        await launch(url);
+                                      } else {
+                                        throw 'Could not launch $url';
+                                      }
+                                    },
+                                    child: Text('lost_password',
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .accentColor))
+                                        .tr())),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               } else {
-                if (constraints.maxWidth > 600) {
-                  return Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(
-                        left: constraints.maxWidth * 0.3,
-                        right: constraints.maxWidth * 0.3),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          child: SvgPicture.asset(
-                            'assets/devinci.svg',
-                            color: Theme.of(context).textTheme.bodyText1.color,
-                          ),
-                          height: 100,
-                          width: 100,
+                return Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.only(left: 28.0, right: 28.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        child: SvgPicture.asset(
+                          'assets/devinci.svg',
+                          color: Theme.of(context).textTheme.bodyText1.color,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0),
-                          child: Text(
-                            'welcome'.tr(),
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontFamily: 'Roboto',
+                        height: 100,
+                        width: 100,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: Text(
+                          'welcome'.tr(),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      ),
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: <Widget>[
+                            TextFormField(
+                              keyboardType: TextInputType.emailAddress,
+                              autocorrect: false,
+                              key: Key('login_username'),
+                              textInputAction: TextInputAction.next,
+                              focusNode: usernameFocus,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'user'.tr(),
+                                suffixText: '@edu.devinci.fr',
+                              ),
+                              controller: myControllerUsername,
+                              onFieldSubmitted: (term) {
+                                fieldFocusChange(
+                                    context, usernameFocus, passwordFocus);
+                              },
+                              validator: validator,
                             ),
-                          ),
-                        ),
-                        Form(
-                          key: formKey,
-                          child: Column(
-                            children: <Widget>[
-                              TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                autocorrect: false,
-                                key: Key('login_username'),
-                                textInputAction: TextInputAction.next,
-                                focusNode: usernameFocus,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: TextFormField(
+                                obscureText: true,
+                                textInputAction: TextInputAction.done,
+                                focusNode: passwordFocus,
+                                key: Key('login_password'),
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'user'.tr(),
-                                  suffixText: '@edu.devinci.fr',
+                                  labelText: 'password'.tr(),
                                 ),
-                                controller: myControllerUsername,
-                                onFieldSubmitted: (term) {
-                                  fieldFocusChange(
-                                      context, usernameFocus, passwordFocus);
-                                },
+                                controller: myControllerPassword,
+                                onFieldSubmitted: submit,
                                 validator: validator,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20.0),
-                                child: TextFormField(
-                                  obscureText: true,
-                                  textInputAction: TextInputAction.done,
-                                  focusNode: passwordFocus,
-                                  key: Key('login_password'),
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'password'.tr(),
-                                  ),
-                                  controller: myControllerPassword,
-                                  onFieldSubmitted: submit,
-                                  validator: validator,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20.0),
-                                child: ProgressButton(
-                                  key: Key('login_connect'),
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 18),
-                                    child: Text(
-                                      'login'.tr().toUpperCase(),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: globals.currentTheme.isDark()
-                                              ? Colors.black
-                                              : Colors.white),
-                                    ),
-                                  ),
-                                  onPressed: submit,
-                                  buttonState: buttonState,
-                                  backgroundColor:
-                                      Theme.of(context).accentColor,
-                                  progressColor: globals.currentTheme.isDark()
-                                      ? Colors.black
-                                      : Colors.white,
-                                ),
-                              ),
-                              Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: TextButton(
-                                      onPressed: () async {
-                                        const url =
-                                            'https://www.leonard-de-vinci.net/lost_password.php';
-                                        if (await canLaunch(url)) {
-                                          await launch(url);
-                                        } else {
-                                          throw 'Could not launch $url';
-                                        }
-                                      },
-                                      child: Text('lost_password',
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .accentColor))
-                                          .tr())),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
-                  return Container(
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.only(left: 28.0, right: 28.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          child: SvgPicture.asset(
-                            'assets/devinci.svg',
-                            color: Theme.of(context).textTheme.bodyText1.color,
-                          ),
-                          height: 100,
-                          width: 100,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0),
-                          child: Text(
-                            'welcome'.tr(),
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontFamily: 'Roboto',
                             ),
-                          ),
-                        ),
-                        Form(
-                          key: formKey,
-                          child: Column(
-                            children: <Widget>[
-                              TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                autocorrect: false,
-                                key: Key('login_username'),
-                                textInputAction: TextInputAction.next,
-                                focusNode: usernameFocus,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'user'.tr(),
-                                  suffixText: '@edu.devinci.fr',
-                                ),
-                                controller: myControllerUsername,
-                                onFieldSubmitted: (term) {
-                                  fieldFocusChange(
-                                      context, usernameFocus, passwordFocus);
-                                },
-                                validator: validator,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20.0),
-                                child: TextFormField(
-                                  obscureText: true,
-                                  textInputAction: TextInputAction.done,
-                                  focusNode: passwordFocus,
-                                  key: Key('login_password'),
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'password'.tr(),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: ProgressButton(
+                                key: Key('login_connect'),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 18),
+                                  child: Text(
+                                    'login'.tr().toUpperCase(),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: globals.currentTheme.isDark()
+                                            ? Colors.black
+                                            : Colors.white),
                                   ),
-                                  controller: myControllerPassword,
-                                  onFieldSubmitted: submit,
-                                  validator: validator,
                                 ),
+                                onPressed: submit,
+                                buttonState: buttonState,
+                                backgroundColor: Theme.of(context).accentColor,
+                                progressColor: globals.currentTheme.isDark()
+                                    ? Colors.black
+                                    : Colors.white,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20.0),
-                                child: ProgressButton(
-                                  key: Key('login_connect'),
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 18),
-                                    child: Text(
-                                      'login'.tr().toUpperCase(),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: globals.currentTheme.isDark()
-                                              ? Colors.black
-                                              : Colors.white),
-                                    ),
-                                  ),
-                                  onPressed: submit,
-                                  buttonState: buttonState,
-                                  backgroundColor:
-                                      Theme.of(context).accentColor,
-                                  progressColor: globals.currentTheme.isDark()
-                                      ? Colors.black
-                                      : Colors.white,
-                                ),
-                              ),
-                              Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: TextButton(
-                                      onPressed: () async {
-                                        const url =
-                                            'https://www.leonard-de-vinci.net/lost_password.php';
-                                        if (await canLaunch(url)) {
-                                          await launch(url);
-                                        } else {
-                                          throw 'Could not launch $url';
-                                        }
-                                      },
-                                      child: Text('lost_password',
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .accentColor))
-                                          .tr()))
-                            ],
-                          ),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: TextButton(
+                                    onPressed: () async {
+                                      const url =
+                                          'https://www.leonard-de-vinci.net/lost_password.php';
+                                      if (await canLaunch(url)) {
+                                        await launch(url);
+                                      } else {
+                                        throw 'Could not launch $url';
+                                      }
+                                    },
+                                    child: Text('lost_password',
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .accentColor))
+                                        .tr()))
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                }
+                      ),
+                    ],
+                  ),
+                );
               }
-            }),
-          ),
+            }
+          }),
           persistentFooterButtons: show
               ? [
                   TextButton(

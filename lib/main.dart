@@ -1,39 +1,21 @@
-import 'dart:async';
-import 'package:devinci/libraries/feedback/feedback.dart';
+import 'package:biometric_storage/biometric_storage.dart';
 import 'package:devinci/pages/ui/login.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
-import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:matomo/matomo.dart';
-import 'package:package_info/package_info.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sentry/sentry.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:syncfusion_localizations/syncfusion_localizations.dart';
-import 'package:quick_actions/quick_actions.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:window_size/window_size.dart';
+
 import 'extra/classes.dart';
+import 'extra/functions.dart';
+import 'libraries/feedback/src/better_feedback.dart';
 
-Future<Null> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  //Remove this method to stop OneSignal Debugging
-  await OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
-
-  await OneSignal.shared.setRequiresUserPrivacyConsent(true);
-  await OneSignal.shared.init('0a91d723-8929-46ec-9ce7-5e72c59708e5',
-      iOSSettings: {
-        OSiOSSettings.autoPrompt: false,
-        OSiOSSettings.inAppLaunchUrl: false
-      });
-  await OneSignal.shared
-      .setInFocusDisplayType(OSNotificationDisplayType.notification);
 
   globals.prefs = await SharedPreferences.getInstance();
   var setTheme = globals.prefs.getString('theme') ?? 'system';
@@ -43,34 +25,16 @@ Future<Null> main() async {
     globals.currentTheme.setDark(
         SchedulerBinding.instance.window.platformBrightness == Brightness.dark);
   }
-  //init quick_actions
-  final quickActions = QuickActions();
-  quickActions.initialize(quickActionsCallback);
-  await quickActions.setShortcutItems(<ShortcutItem>[
-    const ShortcutItem(
-        type: 'action_edt', localizedTitle: 'EDT', icon: 'icon_edt'),
-    const ShortcutItem(
-        type: 'action_notes', localizedTitle: 'Notes', icon: 'icon_notes'),
-    const ShortcutItem(
-        type: 'action_presence',
-        localizedTitle: 'Présence',
-        icon: 'icon_presence'),
-    const ShortcutItem(
-        type: 'action_offline',
-        localizedTitle: 'Hors connexion',
-        icon: 'icon_offline'),
-  ]);
-  var packageInfo = await PackageInfo.fromPlatform();
-  var appVersion = 'devinci@' + packageInfo.version;
-  appVersion += '+' + packageInfo.buildNumber;
   globals.crashConsent = globals.prefs.getString('crashConsent') ??
       'true'; //default to true to catch errors between now and the gdpr popup
+  setWindowTitle('Devinci');
+  setWindowMinSize(const Size(600, 800));
+  setWindowMaxSize(Size.infinite);
   if (globals.crashConsent == 'true') {
-    await SentryFlutter.init(
+    await Sentry.init(
       (options) => options
         ..dsn =
             'https://d90bf661f0ef48d29264be594b6ad954@o400644.ingest.sentry.io/5279681'
-        ..release = appVersion
         ..environment = 'prod',
       appRunner: () => runApp(
         EasyLocalization(
@@ -91,7 +55,7 @@ Future<Null> main() async {
         ),
       ),
     );
-  } else {
+  } else
     runApp(
       EasyLocalization(
         supportedLocales: [
@@ -110,7 +74,6 @@ Future<Null> main() async {
             onFeedback: betterFeedbackOnFeedback),
       ),
     );
-  }
 }
 
 class MyApp extends StatefulWidget {
@@ -149,18 +112,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     //globals.currentContext = context;
     var res = <LocalizationsDelegate<dynamic>>[
-      RefreshLocalizations.delegate,
+      //RefreshLocalizations.delegate,
       GlobalMaterialLocalizations.delegate,
       GlobalWidgetsLocalizations.delegate,
-      SfGlobalLocalizations.delegate,
+      //SfGlobalLocalizations.delegate,
     ];
     res.addAll(context.localizationDelegates);
 
     return MaterialApp(
       navigatorKey: navigatorKey,
-      navigatorObservers: [
-        SentryNavigatorObserver(),
-      ],
       localizationsDelegates: res,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
