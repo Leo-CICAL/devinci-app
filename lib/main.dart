@@ -8,7 +8,6 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:matomo/matomo.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -69,7 +68,7 @@ Future<Null> main() async {
     await SentryFlutter.init(
       (options) => options
         ..dsn =
-            'https://d90bf661f0ef48d29264be594b6ad954@o400644.ingest.sentry.io/5279681'
+            'https://3b05859b04544f1fa982a411db5f1991@sentry.antoineraulin.com/2'
         ..release = appVersion
         ..environment = 'prod',
       appRunner: () => runApp(

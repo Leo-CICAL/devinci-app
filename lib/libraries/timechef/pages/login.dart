@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:f_logs/f_logs.dart';
 import '../timechef.dart';
 
 class LoginPage extends StatefulWidget {
@@ -101,7 +102,10 @@ class _LoginPageState extends State<LoginPage> {
                           globals.timeChefUser.error = false;
                         }
                         if (_formKey.currentState.validate()) {
-                          l('valid');
+                          FLog.info(
+                              className: '_LoginPageState',
+                              methodName: 'build',
+                              text: 'valid');
                           setState(() {
                             buttonState = ButtonState.inProgress;
                           });
@@ -112,7 +116,13 @@ class _LoginPageState extends State<LoginPage> {
                             await globals.timeChefUser.init();
                             globals.pageChanger.setPage(1);
                           } catch (exception, stacktrace) {
-                            l(exception);
+                            FLog.logThis(
+                                className: '_LoginPageState',
+                                methodName: 'build',
+                                text: 'exception',
+                                type: LogLevel.ERROR,
+                                exception: Exception(exception),
+                                stacktrace: stacktrace);
                             setState(() {
                               buttonState = ButtonState.error;
                             });
@@ -126,9 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                               //credentials are wrong
                               myControllerPassword.text = '';
                             } else {
-                              await reportError(
-                                  'timechef/login.dart | _LoginPageState | runBeforeBuild() | timeChefUser.init() | else => $exception',
-                                  stacktrace);
+                              await reportError(exception, stacktrace);
 
                               await showDialog(
                                 context: context,
@@ -211,7 +219,13 @@ class _LoginPageState extends State<LoginPage> {
                             await globals.timeChefUser.init();
                             globals.pageChanger.setPage(1);
                           } catch (exception, stacktrace) {
-                            l(exception);
+                            FLog.logThis(
+                                className: '_LoginPageState',
+                                methodName: 'build',
+                                text: 'exception',
+                                type: LogLevel.ERROR,
+                                exception: Exception(exception),
+                                stacktrace: stacktrace);
                             setState(() {
                               buttonState = ButtonState.error;
                             });
@@ -225,9 +239,7 @@ class _LoginPageState extends State<LoginPage> {
                               //credentials are wrong
                               myControllerPassword.text = '';
                             } else {
-                              await reportError(
-                                  'timechef/login.dart | _LoginPageState | runBeforeBuild() | timeChefUser.init() | else => $exception',
-                                  stacktrace);
+                              await reportError(exception, stacktrace);
 
                               await showDialog(
                                 context: context,

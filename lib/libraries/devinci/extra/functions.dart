@@ -20,14 +20,7 @@ import 'package:sembast/sembast.dart';
 import 'package:devinci/extra/classes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-
-void l(var msg) {
-  //stand for log
-  if (!kReleaseMode) {
-    //app is not in release mode
-    print(msg);
-  }
-}
+import 'package:f_logs/f_logs.dart';
 
 double getMatMoy(var elem) {
   if (elem['ratt'] != null) {
@@ -106,8 +99,8 @@ Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
 
   if (mainReg.hasMatch(body)) {
     var vevents = mainReg.allMatches(body);
-    // l(vevents);
-    // l(vevents.length);
+    //l(vevents);
+    //l(vevents.length);
     vevents.forEach((vevent) {
       //l('new   ');
       var veventBody = vevent.group(1);
@@ -216,8 +209,13 @@ bool get isInDebugMode {
 
 /// Reports [error] along with its [stackTrace] to Sentry.io.
 Future<Null> reportError(dynamic error, dynamic stackTrace) async {
-  l('Caught error: $error');
-  l(stackTrace);
+  FLog.logThis(
+      className: 'functions',
+      methodName: 'reportError',
+      text: 'caught an exception',
+      type: LogLevel.ERROR,
+      exception: Exception(error),
+      stacktrace: stackTrace);
   var err = error.toString();
   if (Platform.isAndroid || Platform.isIOS) {
     var packageInfo = await PackageInfo.fromPlatform();
@@ -250,7 +248,7 @@ Future<Null> reportError(dynamic error, dynamic stackTrace) async {
     );
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-    Scaffold.of(globals.getScaffold()).showSnackBar(snackBar);
+    globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
   }
 }
 
@@ -265,17 +263,22 @@ void reportToCrash(var err, StackTrace stackTrace) async {
           BetterFeedback.of(globals.getScaffold()).show();
         }),
   );
-  Scaffold.of(globals.getScaffold()).showSnackBar(snackBar);
+  globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
   // Errors thrown in development mode are unlikely to be interesting. You can
   // check if you are running in dev mode using an assertion and omit sending
   // the report.
   if (isInDebugMode) {
-    l(stackTrace);
-    l('in dev mode. Not sending report to Sentry.');
+    FLog.info(
+        className: 'functions',
+        methodName: 'reportToCrash',
+        text: 'in dev mode. Not sending report to Sentry.');
     return;
   }
   if (globals.crashConsent == 'true') {
-    l('Reporting to Sentry...');
+    FLog.info(
+        className: 'functions',
+        methodName: 'reportToCrash',
+        text: 'Reporting to Sentry...');
     await Sentry.captureException(
       err,
       stackTrace: stackTrace,
@@ -315,7 +318,10 @@ void betterFeedbackOnFeedback(
 }
 
 void quickActionsCallback(shortcutType) {
-  l(shortcutType);
+  FLog.info(
+      className: 'functions',
+      methodName: 'quickActionsCallback',
+      text: shortcutType);
   switch (shortcutType) {
     case 'action_edt':
       globals.selectedPage = 0;
@@ -344,7 +350,13 @@ Future<void> changeIcon(int iconId) async {
   try {
     await platform.invokeMethod('changeIcon', iconId);
   } catch (exception, stacktrace) {
-    await reportError(exception, stacktrace);
+    FLog.logThis(
+        className: 'functions',
+        methodName: 'changeIcon',
+        text: 'exception',
+        type: LogLevel.ERROR,
+        exception: Exception(exception),
+        stacktrace: stacktrace);
   }
 }
 
@@ -356,7 +368,13 @@ Future<void> setICal(String url) async {
       await globals.prefs.setString('ical', url);
     }
   } catch (exception, stacktrace) {
-    await reportError(exception, stacktrace);
+    FLog.logThis(
+        className: 'functions',
+        methodName: 'setIcal',
+        text: 'exception',
+        type: LogLevel.ERROR,
+        exception: Exception(exception),
+        stacktrace: stacktrace);
   }
 }
 
@@ -371,7 +389,13 @@ Future<void> dialog(
         {'title': title, 'content': content, 'ok': ok, 'cancel': no});
     callback(res);
   } catch (exception, stacktrace) {
-    await reportError(exception, stacktrace);
+    FLog.logThis(
+        className: 'functions',
+        methodName: 'dialog',
+        text: 'exception',
+        type: LogLevel.ERROR,
+        exception: Exception(exception),
+        stacktrace: stacktrace);
   }
 }
 
@@ -676,9 +700,14 @@ void showGDPR(BuildContext context) async {
           );
         });
       });
-  l('notif1 ${notif}');
-  l('crash1 ${bug}');
-  l('ana1 ${analytics}');
+  FLog.info(
+      className: 'functions', methodName: 'showGDPR', text: 'notif1 ${notif}');
+  FLog.info(
+      className: 'functions', methodName: 'showGDPR', text: 'crash1 ${bug}');
+  FLog.info(
+      className: 'functions',
+      methodName: 'showGDPR',
+      text: 'ana1 ${analytics}');
   globals.notifConsent = notif;
   await globals.prefs.setBool('notifConsent', globals.notifConsent);
   if (globals.notifConsent) {
@@ -692,9 +721,18 @@ void showGDPR(BuildContext context) async {
   await globals.prefs.setBool('analyticsConsent', globals.analyticsConsent);
   MatomoTracker().setOptOut(!globals.analyticsConsent);
 
-  l('notif ${globals.notifConsent}');
-  l('crash ${globals.crashConsent}');
-  l('ana ${globals.analyticsConsent}');
+  FLog.info(
+      className: 'functions',
+      methodName: 'showGDPR',
+      text: 'notif ${globals.notifConsent}');
+  FLog.info(
+      className: 'functions',
+      methodName: 'showGDPR',
+      text: 'crash ${globals.crashConsent}');
+  FLog.info(
+      className: 'functions',
+      methodName: 'showGDPR',
+      text: 'ana ${globals.analyticsConsent}');
 }
 
 Future<String> downloadDocuments(String url, String filename) async {
@@ -736,7 +774,10 @@ Future<String> downloadDocuments(String url, String filename) async {
       if (response.headers.value('content-type').contains('html')) {
         //c'est du html, mais bordel ou est le fichier ?
         var body = await response.transform(utf8.decoder).join();
-        l(body);
+        FLog.info(
+            className: 'functions',
+            methodName: 'downloadDocuments',
+            text: body);
       } else {
         var bytes = await consolidateHttpClientResponseBytes(response);
         await fileSave.writeAsBytes(bytes);
@@ -753,7 +794,7 @@ Future<String> downloadDocuments(String url, String filename) async {
     final snackBar = SnackBar(content: Text('Non disponible hors ligne'));
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-    Scaffold.of(globals.getScaffold()).showSnackBar(snackBar);
+    globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
   }
   return '';
 }
@@ -819,7 +860,7 @@ Future<List<Cours>> jsonToCoursList() async {
 }
 
 Future<HttpClientResponse> devinciRequest(
-    {String endpoint,
+    {String endpoint = '',
     String method = 'GET',
     bool followRedirects = false,
     List<List<String>> headers,
@@ -831,14 +872,27 @@ Future<HttpClientResponse> devinciRequest(
       globals.user.tokens['uids'] != '' &&
       globals.user.tokens['SimpleSAMLAuthToken'] != '') {
     var client = HttpClient();
-    if (log) l('[0]');
+    if (log) {
+      FLog.info(
+          className: 'functions', methodName: 'devinciRequest', text: '[0]');
+    }
     var uri = Uri.parse(replacementUrl == ''
         ? 'https://www.leonard-de-vinci.net/' + endpoint
         : replacementUrl);
-    if (log) l('[1] ${endpoint}');
+    if (log) {
+      FLog.info(
+          className: 'functions',
+          methodName: 'devinciRequest',
+          text: '[1] ${endpoint}');
+    }
     var req =
         method == 'GET' ? await client.getUrl(uri) : await client.postUrl(uri);
-    if (log) l('[1] ${req}');
+    if (log) {
+      FLog.info(
+          className: 'functions',
+          methodName: 'devinciRequest',
+          text: '[1] ${req}');
+    }
     req.followRedirects = followRedirects;
     req.cookies.addAll([
       Cookie('alv', globals.user.tokens['alv']),
@@ -854,14 +908,18 @@ Future<HttpClientResponse> devinciRequest(
     if (data != null) {
       req.write(data);
     }
-    if (log) l('[2]');
+    if (log) {
+      FLog.info(
+          className: 'functions', methodName: 'devinciRequest', text: '[2]');
+    }
     return await req.close();
   } else {
     return null;
   }
 }
 
-void catcher(var exception, StackTrace stacktrace, String endpoint) async {
+void catcher(var exception, StackTrace stacktrace, String endpoint,
+    {bool force = false}) async {
   if (globals.isConnected) {
     var res = await devinciRequest(
       endpoint: endpoint,
@@ -870,5 +928,12 @@ void catcher(var exception, StackTrace stacktrace, String endpoint) async {
       globals.feedbackNotes = await res.transform(utf8.decoder).join();
     }
   }
-  await reportError(exception, stacktrace);
+  FLog.logThis(
+      className: 'functions',
+      methodName: 'catcher',
+      text: 'exception',
+      type: LogLevel.ERROR,
+      exception: Exception(exception),
+      stacktrace: stacktrace);
+  if (force) await reportError(exception, stacktrace);
 }

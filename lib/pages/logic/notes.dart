@@ -1,6 +1,4 @@
 //DEPENDENCIES
-import 'dart:convert';
-import 'dart:io';
 import 'package:sembast/sembast.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +7,7 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:sembast/utils/value_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:f_logs/f_logs.dart';
 
 //DATA
 int currentSemester = 0;
@@ -43,17 +42,18 @@ Future<void> getData({bool force = false}) async {
         try {
           await globals.user.getNotes(globals.user.notesList[index][1], index);
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace, '?my=notes');
+          catcher(exception, stacktrace, '?my=notes', force: true);
         }
         try {
           await globals.user.getBonus(globals.user.notesList[index][1]);
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace, '?my=notes');
+          catcher(exception, stacktrace, '?my=notes', force: true);
         }
       } catch (exception, stacktrace) {
-        l(exception);
-        l(stacktrace);
-        l('needs reconnection');
+        FLog.info(
+            className: 'NotesPage Logic',
+            methodName: 'getData',
+            text: 'needs reconnection');
         final snackBar = SnackBar(
           content: Text('reconnecting').tr(),
           duration: const Duration(seconds: 10),
@@ -63,8 +63,13 @@ Future<void> getData({bool force = false}) async {
         try {
           await globals.user.getTokens();
         } catch (e, stacktrace) {
-          l(e);
-          l(stacktrace);
+          FLog.logThis(
+              className: 'NotesPage logic',
+              methodName: 'getData',
+              text: 'exception',
+              type: LogLevel.ERROR,
+              exception: Exception(e),
+              stacktrace: stacktrace);
         }
         try {
           await globals.user.getNotesList();
@@ -73,19 +78,17 @@ Future<void> getData({bool force = false}) async {
             await globals.user
                 .getNotes(globals.user.notesList[index][1], index);
           } catch (exception, stacktrace) {
-            catcher(exception, stacktrace, '?my=notes');
+            catcher(exception, stacktrace, '?my=notes', force: true);
           }
           try {
             await globals.user.getBonus(globals.user.notesList[index][1]);
           } catch (exception, stacktrace) {
-            catcher(exception, stacktrace, '?my=notes');
+            catcher(exception, stacktrace, '?my=notes', force: true);
           }
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace, '?my=notes');
+          catcher(exception, stacktrace, '?my=notes', force: true);
         }
         Scaffold.of(getContext()).removeCurrentSnackBar();
-
-        l(globals.user.tokens);
       }
     }
   }
@@ -99,8 +102,14 @@ Future<void> getData({bool force = false}) async {
     setState(() {
       show = true;
     });
-  } catch (e) {
-    l(e);
+  } catch (e, stacktrace) {
+    FLog.logThis(
+        className: 'NotesPage logic',
+        methodName: 'getData',
+        text: 'exception',
+        type: LogLevel.ERROR,
+        exception: Exception(e),
+        stacktrace: stacktrace);
   }
   if (!globals.user.notesFetched && globals.isConnected) {
     Sentry.addBreadcrumb(Breadcrumb(
@@ -121,17 +130,18 @@ void onRefresh() async {
       try {
         await globals.user.getNotes(globals.user.notesList[index][1], index);
       } catch (exception, stacktrace) {
-        catcher(exception, stacktrace, '?my=notes');
+        catcher(exception, stacktrace, '?my=notes', force: true);
       }
       try {
         await globals.user.getBonus(globals.user.notesList[index][1]);
       } catch (exception, stacktrace) {
-        catcher(exception, stacktrace, '?my=notes');
+        catcher(exception, stacktrace, '?my=notes', force: true);
       }
     } catch (exception, stacktrace) {
-      l(exception);
-      l(stacktrace);
-      l('needs reconnection');
+      FLog.info(
+          className: 'NotesPage Logic',
+          methodName: 'onRefresh',
+          text: 'needs reconnection');
       final snackBar = SnackBar(
         content: Text('reconnecting').tr(),
         duration: const Duration(seconds: 10),
@@ -141,8 +151,13 @@ void onRefresh() async {
       try {
         await globals.user.getTokens();
       } catch (e, stacktrace) {
-        l(e);
-        l(stacktrace);
+        FLog.logThis(
+            className: 'NotesPage logic',
+            methodName: 'onRefresh',
+            text: 'exception',
+            type: LogLevel.ERROR,
+            exception: Exception(e),
+            stacktrace: stacktrace);
       }
       try {
         await globals.user.getNotesList();
@@ -150,21 +165,18 @@ void onRefresh() async {
         try {
           await globals.user.getNotes(globals.user.notesList[index][1], index);
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace, '?my=notes');
+          catcher(exception, stacktrace, '?my=notes', force: true);
         }
         try {
           await globals.user.getBonus(globals.user.notesList[index][1]);
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace, '?my=notes');
+          catcher(exception, stacktrace, '?my=notes', force: true);
         }
       } catch (exception, stacktrace) {
-        catcher(exception, stacktrace, '?my=notes');
+        catcher(exception, stacktrace, '?my=notes', force: true);
       }
       Scaffold.of(getContext()).removeCurrentSnackBar();
-
-      l(globals.user.tokens);
     }
-    l(globals.user.tokens);
     globals.noteLocked = false;
   }
 

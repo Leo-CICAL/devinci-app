@@ -119,5 +119,6 @@
     "one":"1 Bonuspunkt",
     "many":"{} Bonuspunkte",
     "other":"{} Bonuspunkte"
-  }
+  },
+  "dump_logs":"Send logs"
 }  

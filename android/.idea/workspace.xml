@@ -14,33 +14,57 @@
       <change beforePath="$PROJECT_DIR$/../.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.packages" beforeDir="false" afterPath="$PROJECT_DIR$/../.packages" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/../.vscode/settings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_ads_identifier_17_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_cloud_messaging_16_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_firebase_firebase_encoders_json_17_0_0_aar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_squareup_okhttp3_okhttp_3_12_1_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_barteksc_android_pdf_viewer_2_8_2_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_github_barteksc_pdfium_android_1_7_1_aar.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/-1071645857/firebase_messaging_web.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/-1961733066/firebase_core_web.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/-33388867/firebase_core.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/1155275924/firebase_analytics_web.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/508915845/firebase_analytics.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/677332308/firebase_crashlytics.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/80447333/android-firebase_messaging.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-104792691/android-path_provider_macos.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1185544412/android-package_info.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1462784086/android-connectivity.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-1462784086/android-connectivity.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-164496646/android-shared_preferences_windows.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1719743977/android-device_info.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-1719743977/android-device_info.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-276640336/android-flutter_secure_storage.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-276640336/android-flutter_secure_storage.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-302749592/shared_preferences.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-302749592/shared_preferences.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-339147278/android-flutter_full_pdf_viewer.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-471344636/android-url_launcher.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-471344636/android-url_launcher.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-757255120/flutter_siri_suggestions.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-757255120/flutter_siri_suggestions.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1090396825/flutter_statusbarcolor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1090396825/flutter_statusbarcolor.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1394211556/android-path_provider.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1394211556/android-path_provider.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1483707452/quick_actions.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1483707452/quick_actions.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1833822574/android-flutter_email_sender.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1833822574/android-flutter_email_sender.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/233557364/android-share_extend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/233557364/android-share_extend.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/556257272/app_settings.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/556257272/app_settings.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/569132692/android-onesignal_flutter.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/569132692/android-onesignal_flutter.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/605689072/sentry_flutter.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/983129588/in_app_review.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/983129588/in_app_review.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/app/app.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../assets/translations/de.json" beforeDir="false" afterPath="$PROJECT_DIR$/../assets/translations/de.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../assets/translations/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/../assets/translations/en.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../assets/translations/fr.json" beforeDir="false" afterPath="$PROJECT_DIR$/../assets/translations/fr.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ios/Runner/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Runner/Info.plist" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../lib/extra/globals.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/extra/globals.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/extra/measureSize.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/libraries/devinci/extra/api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/libraries/devinci/extra/api.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../lib/libraries/devinci/extra/classes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/libraries/devinci/extra/classes.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../lib/libraries/devinci/extra/functions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/libraries/devinci/extra/functions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/libraries/feedback/src/feedback_functions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/libraries/feedback/src/feedback_functions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/libraries/timechef/pages/login.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/libraries/timechef/pages/login.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/libraries/timechef/timechef.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/libraries/timechef/timechef.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/main.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../lib/pages/agenda.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/agenda.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/components/user.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/components/user.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/logic/absences.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/logic/absences.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/logic/login.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/logic/login.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/logic/notes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/logic/notes.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/logic/user.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/logic/user.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../lib/pages/mainPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/mainPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/presence.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/presence.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../lib/pages/settings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/settings.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../lib/pages/ui/login.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/ui/login.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/ui/absences.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/ui/absences.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lib/pages/ui/notes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../lib/pages/ui/notes.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../pubspec.yaml" afterDir="false" />
     </list>
@@ -94,7 +118,7 @@
     <property name="android.recentlyUsedThemes" value="Theme.AppCompat.Light.DarkActionBar" />
     <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/res/drawable" />
-    <property name="memory.settings.postsync.last.time.stamp" value="1611505046540" />
+    <property name="memory.settings.postsync.last.time.stamp" value="1612202947217" />
     <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>

@@ -1,5 +1,4 @@
 import 'package:devinci/extra/CommonWidgets.dart';
-import 'package:devinci/extra/measureSize.dart';
 import 'package:devinci/pages/components/notes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +33,6 @@ class NotesPageState extends State<NotesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget result = SizedBox
-        .shrink(); //de base je met un SizedBox.shrink() parce que c'est l'"équivalent" du null en widget sans que ca casse tout si c'est ca qui est renvoyé.
-
     if (show) {
       if (!globals.isConnected && globals.user.notes.isEmpty) {
         //hors-connexion et pas de données backup

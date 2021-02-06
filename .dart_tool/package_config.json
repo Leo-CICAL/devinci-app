@@ -104,6 +104,12 @@
       "languageVersion": "1.17"
     },
     {
+      "name": "coverage",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/coverage-0.14.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.7"
+    },
+    {
       "name": "crypto",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/crypto-2.1.5",
       "packageUri": "lib/",
@@ -123,7 +129,7 @@
     },
     {
       "name": "cupertino_rounded_corners",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/cupertino_rounded_corners-1.0.3",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/cupertino_rounded_corners-1.1.3",
       "packageUri": "lib/",
       "languageVersion": "1.19"
     },
@@ -154,6 +160,12 @@
     {
       "name": "easy_localization",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/easy_localization-2.3.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.7"
+    },
+    {
+      "name": "f_logs",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/git/Flogs-739dfc90cccc0ef6707274e5d660636cf7e19947/",
       "packageUri": "lib/",
       "languageVersion": "2.7"
     },
@@ -266,6 +278,12 @@
       "languageVersion": "2.4"
     },
     {
+      "name": "http_multi_server",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/http_multi_server-2.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "http_parser",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-3.1.4",
       "packageUri": "lib/",
@@ -296,10 +314,16 @@
       "languageVersion": "2.7"
     },
     {
-      "name": "js",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/js-0.6.2",
+      "name": "io",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/io-0.3.4",
       "packageUri": "lib/",
       "languageVersion": "2.0"
+    },
+    {
+      "name": "js",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/js-0.6.3-nullsafety.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.10"
     },
     {
       "name": "logging",
@@ -332,6 +356,12 @@
       "languageVersion": "2.10"
     },
     {
+      "name": "mime",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/mime-0.9.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "modal_bottom_sheet",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/modal_bottom_sheet-1.0.0+1",
       "packageUri": "lib/",
@@ -350,6 +380,12 @@
       "languageVersion": "2.2"
     },
     {
+      "name": "node_preamble",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/node_preamble-1.4.13",
+      "packageUri": "lib/",
+      "languageVersion": "1.24"
+    },
+    {
       "name": "onesignal_flutter",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/onesignal_flutter-2.6.2",
       "packageUri": "lib/",
@@ -363,7 +399,7 @@
     },
     {
       "name": "package_info",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/package_info-0.4.3+2",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/package_info-0.4.3+4",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
@@ -417,9 +453,9 @@
     },
     {
       "name": "pedantic",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.9.2",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.10.0-nullsafety.2",
       "packageUri": "lib/",
-      "languageVersion": "2.1"
+      "languageVersion": "2.10"
     },
     {
       "name": "petitparser",
@@ -438,6 +474,12 @@
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-1.0.3",
       "packageUri": "lib/",
       "languageVersion": "2.1"
+    },
+    {
+      "name": "pool",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/pool-1.5.0-nullsafety.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.10"
     },
     {
       "name": "process",
@@ -477,19 +519,19 @@
     },
     {
       "name": "sembast",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/sembast-2.4.8+1",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/sembast-2.4.9",
       "packageUri": "lib/",
       "languageVersion": "2.9"
     },
     {
       "name": "sentry",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/sentry-4.0.3",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/sentry-4.0.4",
       "packageUri": "lib/",
       "languageVersion": "2.8"
     },
     {
       "name": "sentry_flutter",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/sentry_flutter-4.0.3",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/sentry_flutter-4.0.4",
       "packageUri": "lib/",
       "languageVersion": "2.8"
     },
@@ -531,7 +573,31 @@
     },
     {
       "name": "shared_preferences_windows",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-0.0.2+2",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-0.0.2+3",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "shelf",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/shelf-0.7.9",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "shelf_packages_handler",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/shelf_packages_handler-2.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.8"
+    },
+    {
+      "name": "shelf_static",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/shelf_static-0.2.9+2",
+      "packageUri": "lib/",
+      "languageVersion": "2.3"
+    },
+    {
+      "name": "shelf_web_socket",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/shelf_web_socket-0.2.4",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
@@ -552,6 +618,18 @@
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/smooth_page_indicator-0.2.0",
       "packageUri": "lib/",
       "languageVersion": "2.5"
+    },
+    {
+      "name": "source_map_stack_trace",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/source_map_stack_trace-2.1.0-nullsafety.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.10"
+    },
+    {
+      "name": "source_maps",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/source_maps-0.10.10-nullsafety.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.10"
     },
     {
       "name": "source_span",
@@ -579,43 +657,43 @@
     },
     {
       "name": "syncfusion_flutter_calendar",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_calendar-18.4.35",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_calendar-18.4.41",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
     {
       "name": "syncfusion_flutter_core",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_core-18.4.39",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_core-18.4.41",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
     {
       "name": "syncfusion_flutter_datagrid",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_datagrid-18.4.35-beta",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_datagrid-18.4.41-beta",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
     {
       "name": "syncfusion_flutter_datepicker",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_datepicker-18.4.35-beta",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_datepicker-18.4.41-beta",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
     {
       "name": "syncfusion_flutter_pdf",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_pdf-18.4.39-beta",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_pdf-18.4.41-beta",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
     {
       "name": "syncfusion_flutter_pdfviewer",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_pdfviewer-18.4.39-beta",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_pdfviewer-18.4.41-beta",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
     {
       "name": "syncfusion_localizations",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_localizations-18.4.35",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_localizations-18.4.41",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
@@ -632,8 +710,20 @@
       "languageVersion": "2.10"
     },
     {
+      "name": "test",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/test-1.16.0-nullsafety.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.10"
+    },
+    {
       "name": "test_api",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.19-nullsafety.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.10"
+    },
+    {
+      "name": "test_core",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/test_core-0.3.12-nullsafety.5",
       "packageUri": "lib/",
       "languageVersion": "2.10"
     },
@@ -687,7 +777,7 @@
     },
     {
       "name": "url_launcher_web",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_web-0.1.5+1",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_web-0.1.5+3",
       "packageUri": "lib/",
       "languageVersion": "2.2"
     },
@@ -716,14 +806,32 @@
       "languageVersion": "1.12"
     },
     {
+      "name": "vm_service",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/vm_service-5.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.6"
+    },
+    {
       "name": "watcher",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/watcher-0.9.7+15",
       "packageUri": "lib/",
       "languageVersion": "2.2"
     },
     {
+      "name": "web_socket_channel",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/web_socket_channel-1.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.10"
+    },
+    {
+      "name": "webkit_inspection_protocol",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/webkit_inspection_protocol-0.7.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "win32",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/win32-1.7.4",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/win32-1.7.4+1",
       "packageUri": "lib/",
       "languageVersion": "2.7"
     },
@@ -738,6 +846,12 @@
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/xml-4.5.1",
       "packageUri": "lib/",
       "languageVersion": "2.7"
+    },
+    {
+      "name": "xxtea",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/xxtea-2.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
     },
     {
       "name": "yaml",
@@ -758,7 +872,7 @@
       "languageVersion": "2.8"
     }
   ],
-  "generated": "2021-02-01T14:26:06.533983Z",
+  "generated": "2021-02-06T15:54:37.329780Z",
   "generator": "pub",
   "generatorVersion": "2.10.5"
 }

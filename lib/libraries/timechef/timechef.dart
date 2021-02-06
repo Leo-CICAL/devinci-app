@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:devinci/libraries/devinci/extra/functions.dart';
+import 'package:f_logs/f_logs.dart';
 
 class TimeChefUser {
   TimeChefUser(String username, String password) {
@@ -32,16 +33,34 @@ class TimeChefUser {
     accessToken = await globals.storage.read(key: 'SimpleSAML') ?? '';
 
     if (globals.isConnected) {
-      l('is connected');
+      FLog.info(
+          className: 'TimeChefUser', methodName: 'init', text: 'is connected');
       try {
-        l('try tokens');
+        FLog.info(
+            className: 'TimeChefUser', methodName: 'init', text: 'try tokens');
         await testToken();
-      } catch (exception) {
+      } catch (exception, stacktrace) {
+        FLog.logThis(
+            className: 'TimeChefUser',
+            methodName: 'init',
+            text: 'exception',
+            type: LogLevel.ERROR,
+            exception: Exception(exception),
+            stacktrace: stacktrace);
         try {
-          l('go for login');
+          FLog.info(
+              className: 'TimeChefUser',
+              methodName: 'init',
+              text: 'go for login');
           await login();
-        } catch (exception) {
-          l('login exception');
+        } catch (exception, stacktrace) {
+          FLog.logThis(
+              className: 'TimeChefUser',
+              methodName: 'init',
+              text: 'exception',
+              type: LogLevel.ERROR,
+              exception: Exception(exception),
+              stacktrace: stacktrace);
           //getTokens throw an exception if an error occurs during the retrieving or if credentials are wrong
           if (code == 500) {
             //the exception was thrown by a dart process, which meens that credentials may be good, but the function had trouble to access the server.
@@ -63,8 +82,15 @@ class TimeChefUser {
       password = null;
       try {
         await getData();
-        // ignore: empty_catches
-      } catch (exception) {}
+      } catch (exception, stacktrace) {
+        FLog.logThis(
+            className: 'TimeChefUser',
+            methodName: 'init',
+            text: 'exception',
+            type: LogLevel.ERROR,
+            exception: Exception(exception),
+            stacktrace: stacktrace);
+      }
     }
     return;
   }
@@ -72,34 +98,42 @@ class TimeChefUser {
   Future<void> login() async {
     var client = HttpClient();
     if (username != '' && password != '') {
-      l('cred ok');
+      FLog.info(
+          className: 'TimeChefUser', methodName: 'login', text: 'cred ok');
       var jsonMap = <String, String>{
         'authType': '',
         'password': password,
         'username': username,
       };
-      l('1');
+      FLog.info(className: 'TimeChefUser', methodName: 'login', text: '1');
       var request = await client.postUrl(
         Uri.parse('https://timechef.elior.com/api/oauth/?scope=timechef'),
       );
-      l('6');
+      FLog.info(className: 'TimeChefUser', methodName: 'login', text: '6');
       request.followRedirects = false;
-      l('2');
+      FLog.info(className: 'TimeChefUser', methodName: 'login', text: '2');
       request.headers.set('content-type', 'application/json');
-      l('3');
+      FLog.info(className: 'TimeChefUser', methodName: 'login', text: '3');
       request.headers.set('Accept', 'application/json, text/plain, */*');
-      l('4');
+      FLog.info(className: 'TimeChefUser', methodName: 'login', text: '4');
       request.add(utf8.encode(json.encode(jsonMap)));
-      l('5');
+      FLog.info(className: 'TimeChefUser', methodName: 'login', text: '5');
 
-      l(request);
+      FLog.info(
+          className: 'TimeChefUser',
+          methodName: 'login',
+          text: request.toString());
       var response = await request.close();
       var body = await response.transform(utf8.decoder).join();
-      l('login : ${response.statusCode}');
+      FLog.info(
+          className: 'TimeChefUser',
+          methodName: 'login',
+          text: 'login : ${response.statusCode}');
       if (response.statusCode == 200) {
-        l(body);
+        FLog.info(className: 'TimeChefUser', methodName: 'login', text: body);
         var resJson = json.decode(body);
-        l(resJson);
+        FLog.info(
+            className: 'TimeChefUser', methodName: 'login', text: resJson);
         accessToken = resJson['accessToken'];
       } else {
         error = true;
@@ -115,10 +149,14 @@ class TimeChefUser {
   }
 
   Future<void> testToken() async {
-    l('hi test');
+    FLog.info(
+        className: 'TimeChefUser', methodName: 'testToken', text: 'hi test');
     var client = HttpClient();
     if (accessToken != '') {
-      l('accessToken = ${accessToken}');
+      FLog.info(
+          className: 'TimeChefUser',
+          methodName: 'testToken',
+          text: 'accessToken = ${accessToken}');
       var request = await client.getUrl(
         Uri.parse('https://timechef.elior.com/api/oauth/me'),
       );
@@ -128,13 +166,16 @@ class TimeChefUser {
       var response = await request.close();
       var body = await response.transform(utf8.decoder).join();
       if (response.statusCode != 200) {
-        l('test : error : ${response.statusCode}');
         throw Exception('wrong tokens');
       } else {
-        l(body);
+        FLog.info(
+            className: 'TimeChefUser', methodName: 'testToken', text: body);
       }
     } else {
-      l('no access token');
+      FLog.info(
+          className: 'TimeChefUser',
+          methodName: 'testToken',
+          text: 'no access token');
       throw Exception('missing tokens or user has error');
     }
     return;
@@ -156,7 +197,8 @@ class TimeChefUser {
         throw Exception('wrong tokens');
       } else {
         var resJson = json.decode(body);
-        l(resJson);
+        FLog.info(
+            className: 'TimeChefUser', methodName: 'getData', text: resJson);
         solde = resJson['solde'];
       }
     } else {
@@ -201,7 +243,10 @@ class TimeChefUser {
               'detailsTxt': txt
             });
           }
-          l(transactions);
+          FLog.info(
+              className: 'TimeChefUser',
+              methodName: 'getTransactions',
+              text: transactions.toString());
         } else {}
       }
     } else {

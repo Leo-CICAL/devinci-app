@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:devinci/libraries/devinci/extra/functions.dart';
@@ -11,8 +9,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:matomo/matomo.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
-
+import 'package:f_logs/f_logs.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:sembast/sembast.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -80,9 +77,14 @@ class _AgendaPageState extends State<AgendaPage> {
       try {
         globals.cours = await parseIcal(icalUrl);
       } catch (exception, stacktrace) {
-        await reportError(
-            'agenda.dart | _AgendaPageState | getCalendar() | parseIcal() => $exception',
-            stacktrace);
+        FLog.logThis(
+            className: '_AgendaPageState',
+            methodName: 'getCalendar',
+            text: 'exception',
+            type: LogLevel.ERROR,
+            exception: Exception(exception),
+            stacktrace: stacktrace);
+        //await reportError(exception, stacktrace);
         return;
       }
       setState(() {
@@ -114,9 +116,14 @@ class _AgendaPageState extends State<AgendaPage> {
           globals.cours =
               await parseIcal(globals.user.data['edtUrl'], load: true);
         } catch (exception, stacktrace) {
-          await reportError(
-              'agenda.dart | _AgendaPageState | getCalendar() | edt_url:${globals.user.data['edtUrl']} | parseIcal() => $exception',
-              stacktrace);
+          FLog.logThis(
+              className: '_AgendaPageState',
+              methodName: 'initState',
+              text: 'exception',
+              type: LogLevel.ERROR,
+              exception: Exception(exception),
+              stacktrace: stacktrace);
+          //await reportError(exception, stacktrace);
           return;
         }
         if (mounted) {
@@ -812,7 +819,10 @@ class CoursEditorState extends State<CoursEditor> {
                               Icons.done,
                             ),
                             onPressed: () {
-                              l(_selectedCours);
+                              FLog.info(
+                                  className: 'CoursEditorState',
+                                  methodName: 'build',
+                                  text: _selectedCours.toString());
                               if (_selectedCours != null &&
                                   !_uid.contains(':')) {
                                 globals.cours.removeAt(

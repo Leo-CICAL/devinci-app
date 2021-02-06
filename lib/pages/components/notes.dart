@@ -310,10 +310,10 @@ Widget YearsSelection() {
               await globals.user
                   .getNotes(globals.user.notesList[index][1], index);
             } catch (exception, stacktrace) {
-              catcher(exception, stacktrace, '?my=notes');
+              catcher(exception, stacktrace, '?my=notes', force: true);
             }
           } catch (exception, stacktrace) {
-            catcher(exception, stacktrace, '?my=notes');
+            catcher(exception, stacktrace, '?my=notes', force: true);
           }
           first = true;
           setState(() {
@@ -332,12 +332,13 @@ Widget YearsSelection() {
   return result;
 }
 
-Widget BonusSection(){
+Widget BonusSection() {
   Widget result = SizedBox.shrink();
-  if (globals.isConnected && globals.user.years.isNotEmpty && globals.user.bonus != 0.0) {
+  if (globals.isConnected &&
+      globals.user.years.isNotEmpty &&
+      globals.user.bonus != 0.0) {
     result = TitleSection('bonus'.plural(globals.user.bonus),
-                      padding: const EdgeInsets.only(
-                          top: 20.0, left: 20, right: 20));
+        padding: const EdgeInsets.only(top: 20.0, left: 20, right: 20));
   }
   return result;
 }

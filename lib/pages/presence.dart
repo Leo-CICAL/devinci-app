@@ -1,4 +1,3 @@
-import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/libraries/flutter_progress_button/flutter_progress_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +10,7 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:f_logs/f_logs.dart';
 
 class PresencePage extends TraceableStatefulWidget {
   final bool inSidePanel;
@@ -36,7 +36,10 @@ class _PresencePageState extends State<PresencePage> {
     try {
       await globals.user.getPresence(force: true);
     } catch (e, stacktrace) {
-      l('needs reconnection');
+      FLog.info(
+          className: '_PresencePageState',
+          methodName: 'runBeforeBuild',
+          text: 'needs reconnection');
       final snackBar = SnackBar(
         content: Text('reconnecting').tr(),
         duration: const Duration(seconds: 10),
@@ -46,8 +49,13 @@ class _PresencePageState extends State<PresencePage> {
       try {
         await globals.user.getTokens();
       } catch (e, stacktrace) {
-        l(e);
-        l(stacktrace);
+        FLog.logThis(
+            className: '_PresencePageState',
+            methodName: 'runBeforeBuild',
+            text: 'exception',
+            type: LogLevel.ERROR,
+            exception: Exception(e),
+            stacktrace: stacktrace);
       }
       await globals.user.getPresence(force: true);
       Scaffold.of(context).removeCurrentSnackBar();
@@ -62,7 +70,13 @@ class _PresencePageState extends State<PresencePage> {
       try {
         _pageController.jumpToPage(globals.user.presenceIndex);
       } catch (e, stacktrace) {
-        await reportError(e, stacktrace);
+        FLog.logThis(
+            className: '_PresencePageState',
+            methodName: 'runBeforeBuild',
+            text: 'exception',
+            type: LogLevel.ERROR,
+            exception: Exception(e),
+            stacktrace: stacktrace);
       }
     }
   }
@@ -77,7 +91,10 @@ class _PresencePageState extends State<PresencePage> {
     try {
       await globals.user.getPresence(force: true);
     } catch (e, stacktrace) {
-      l('needs reconnection');
+      FLog.info(
+          className: '_PresencePageState',
+          methodName: '_onRefresh',
+          text: 'needs reconnection');
       final snackBar = SnackBar(
         content: Text('reconnecting').tr(),
         duration: const Duration(seconds: 10),
@@ -87,8 +104,13 @@ class _PresencePageState extends State<PresencePage> {
       try {
         await globals.user.getTokens();
       } catch (e, stacktrace) {
-        l(e);
-        l(stacktrace);
+        FLog.logThis(
+            className: '_PresencePageState',
+            methodName: '_onRefresh',
+            text: 'exception',
+            type: LogLevel.ERROR,
+            exception: Exception(e),
+            stacktrace: stacktrace);
       }
       await globals.user.getPresence(force: true);
       Scaffold.of(context).removeCurrentSnackBar();
@@ -209,7 +231,10 @@ class _PresencePageState extends State<PresencePage> {
                             buttonState = ButtonState.normal;
                           });
                         } catch (e, stacktrace) {
-                          l('needs reconnection');
+                          FLog.info(
+                              className: '_PresencePageState',
+                              methodName: 'pageGen',
+                              text: 'needs reconnection');
                           final snackBar = SnackBar(
                             content: Text('reconnecting').tr(),
                             duration: const Duration(seconds: 10),
@@ -219,8 +244,13 @@ class _PresencePageState extends State<PresencePage> {
                           try {
                             await globals.user.getTokens();
                           } catch (e, stacktrace) {
-                            l(e);
-                            l(stacktrace);
+                            FLog.logThis(
+                                className: '_PresencePageState',
+                                methodName: 'pageGen',
+                                text: 'exception',
+                                type: LogLevel.ERROR,
+                                exception: Exception(e),
+                                stacktrace: stacktrace);
                           }
                           Scaffold.of(context).removeCurrentSnackBar();
                           try {
@@ -228,7 +258,14 @@ class _PresencePageState extends State<PresencePage> {
                             setState(() {
                               buttonState = ButtonState.normal;
                             });
-                          } catch (exception) {
+                          } catch (exception, stacktrace) {
+                            FLog.logThis(
+                                className: '_PresencePageState',
+                                methodName: 'pageGen',
+                                text: 'exception',
+                                type: LogLevel.ERROR,
+                                exception: Exception(e),
+                                stacktrace: stacktrace);
                             setState(() {
                               buttonState = ButtonState.error;
                             });
@@ -238,7 +275,7 @@ class _PresencePageState extends State<PresencePage> {
                             );
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-                            Scaffold.of(globals.getScaffold())
+                            globals.mainScaffoldKey.currentState
                                 .showSnackBar(snackBar);
                           }
                         }

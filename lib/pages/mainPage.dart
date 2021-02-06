@@ -7,6 +7,7 @@ import 'package:devinci/pages/settings.dart';
 import 'package:devinci/pages/ui/absences.dart';
 import 'package:devinci/pages/ui/notes.dart';
 import 'package:devinci/pages/ui/user.dart';
+import 'package:f_logs/f_logs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
@@ -23,7 +24,7 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  //final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var title = globals.user.data['name'];
 
   @override
@@ -111,7 +112,7 @@ class MainPageState extends State<MainPage> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        key: _scaffoldKey,
+        key: globals.mainScaffoldKey,
         appBar: AppBar(
             elevation: 0.0,
             brightness: MediaQuery.of(context).platformBrightness,
@@ -239,7 +240,7 @@ class MainPageState extends State<MainPage> {
                         ],
                       )
                     : PopupMenuButton(
-                        captureInheritedThemes: true,
+                        //captureInheritedThemes: true,
                         icon: IconTheme(
                           data: Theme.of(context).accentIconTheme,
                           child: Icon(Icons.more_vert_outlined),
@@ -318,9 +319,18 @@ class MainPageState extends State<MainPage> {
                         SnackBar(content: Text('offline_msg').tr());
 
                     try {
-                      Scaffold.of(globals.getScaffold()).showSnackBar(snackBar);
+                      globals.mainScaffoldKey.currentState
+                          .showSnackBar(snackBar);
                       // ignore: empty_catches
-                    } catch (e) {}
+                    } catch (exception, stacktrace) {
+                      FLog.logThis(
+                          className: 'MainPageState',
+                          methodName: 'build',
+                          text: 'exception',
+                          type: LogLevel.ERROR,
+                          exception: Exception(exception),
+                          stacktrace: stacktrace);
+                    }
                   },
                 ),
             ],

@@ -1,4 +1,5 @@
 import 'package:devinci/extra/CommonWidgets.dart';
+import 'package:f_logs/f_logs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -23,7 +24,15 @@ class _MainPageState extends State<MainPage> {
         });
       }
       // ignore: empty_catches
-    } catch (e) {}
+    } catch (exception, stacktrace) {
+      FLog.logThis(
+          className: '_MainPageState TC',
+          methodName: 'runBeforeBuild',
+          text: 'exception',
+          type: LogLevel.ERROR,
+          exception: Exception(exception),
+          stacktrace: stacktrace);
+    }
   }
 
   @override

@@ -13,6 +13,7 @@ import 'package:matomo/matomo.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/pages/logic/absences.dart';
+import 'package:f_logs/f_logs.dart';
 
 class AbsencesPage extends TraceableStatefulWidget {
   AbsencesPage({Key key}) : super(key: key);
@@ -30,7 +31,10 @@ class AbsencesPageState extends State<AbsencesPage> {
         try {
           await getData(force: true);
         } catch (e) {
-          l('needs reconnection');
+          FLog.info(
+              className: 'AbsencesPageState',
+              methodName: 'initState',
+              text: 'needs reconnection');
           final snackBar = SnackBar(
             content: Text('reconnecting').tr(),
             duration: const Duration(seconds: 10),
@@ -40,12 +44,24 @@ class AbsencesPageState extends State<AbsencesPage> {
           try {
             await globals.user.getTokens();
           } catch (e, stacktrace) {
-            l(e);
-            l(stacktrace);
+            FLog.logThis(
+                className: 'AbsencesPage ui',
+                methodName: 'initState',
+                text: 'exception',
+                type: LogLevel.ERROR,
+                exception: Exception(e),
+                stacktrace: stacktrace);
           }
           try {
             await getData(force: true);
           } catch (exception, stacktrace) {
+            FLog.logThis(
+                className: 'AbsencesPage ui',
+                methodName: 'initState',
+                text: 'exception',
+                type: LogLevel.ERROR,
+                exception: Exception(e),
+                stacktrace: stacktrace);
             var client = HttpClient();
             var req = await client.getUrl(
               Uri.parse('https://www.leonard-de-vinci.net/?my=abs'),
@@ -61,13 +77,9 @@ class AbsencesPageState extends State<AbsencesPage> {
             var res = await req.close();
             globals.feedbackNotes = await res.transform(utf8.decoder).join();
 
-            await reportError(
-                'absences.dart | _AbsencesPageState | runBeforeBuild() | user.getAbsences() => $exception',
-                stacktrace);
+            await reportError(exception, stacktrace);
           }
           Scaffold.of(getContext()).removeCurrentSnackBar();
-
-          l(globals.user.tokens);
         }
         globals.isLoading.setState(2, false);
       }

@@ -101,6 +101,7 @@ final mainPageKey = GlobalKey<MainPageState>();
 final adminPageKey = GlobalKey<AdminPageState>();
 final loginPageKey = GlobalKey<LoginPageState>();
 final userPageKey = GlobalKey<UserPageState>();
+final mainScaffoldKey = GlobalKey<ScaffoldState>();
 
 BuildContext getScaffold() {
   if (mainPageKey.currentState != null) {

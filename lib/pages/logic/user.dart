@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/utils/value_utils.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:f_logs/f_logs.dart';
 
 bool show = false;
 bool pad = false;
@@ -21,7 +22,10 @@ void loaderListener() async {
     try {
       await globals.user.getDocuments();
     } catch (exception) {
-      l('needs reconnection');
+      FLog.info(
+          className: 'UserPage Logic',
+          methodName: 'loaderListener',
+          text: 'needs reconnection');
       final snackBar = SnackBar(
         content: Text('reconnecting').tr(),
         duration: const Duration(seconds: 10),
@@ -31,16 +35,21 @@ void loaderListener() async {
       try {
         await globals.user.getTokens();
       } catch (e, stacktrace) {
+        FLog.logThis(
+            className: 'UserPage logic',
+            methodName: 'loaderListener',
+            text: 'exception',
+            type: LogLevel.ERROR,
+            exception: Exception(e),
+            stacktrace: stacktrace);
         await reportError(e, stacktrace);
       }
       try {
         await globals.user.getDocuments();
       } catch (exception, stacktrace) {
-        catcher(exception, stacktrace, '?my=docs');
+        catcher(exception, stacktrace, '?my=docs', force: true);
       }
       Scaffold.of(getContext()).removeCurrentSnackBar();
-
-      l(globals.user.tokens);
     }
     setState(() {
       show = true;
@@ -62,7 +71,10 @@ void runBeforeBuild() async {
       try {
         await globals.user.getDocuments();
       } catch (exception, stacktrace) {
-        l('needs reconnection');
+        FLog.info(
+            className: 'UserPage Logic',
+            methodName: 'runBeforeBuild',
+            text: 'needs reconnection');
         final snackBar = SnackBar(
           content: Text('reconnecting').tr(),
           duration: const Duration(seconds: 10),
@@ -72,13 +84,18 @@ void runBeforeBuild() async {
         try {
           await globals.user.getTokens();
         } catch (e, stacktrace) {
-          l(e);
-          l(stacktrace);
+          FLog.logThis(
+              className: 'UserPage logic',
+              methodName: 'runBeforeBuild',
+              text: 'exception',
+              type: LogLevel.ERROR,
+              exception: Exception(e),
+              stacktrace: stacktrace);
         }
         try {
           await globals.user.getDocuments();
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace, '?my=docs');
+          catcher(exception, stacktrace, '?my=docs', force:true);
         }
         Scaffold.of(getContext()).removeCurrentSnackBar();
       }

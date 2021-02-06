@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:f_logs/f_logs.dart';
 import 'package:intl/intl.dart';
 import 'package:matomo/matomo.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-
-import 'functions.dart';
 
 class DevinciApi {
   void register() async {
@@ -36,7 +35,11 @@ class DevinciApi {
             var digest = sha256.convert(bytes);
             hashes.add(digest.toString());
           });
-          l(hashes);
+          FLog.info(
+              className: 'DevinciApi',
+              methodName: 'register',
+              text: hashes.toString());
+          //l(hashes);
           var client = HttpClient();
           var uri = Uri.parse('https://devinci.antoineraulin.com/register');
           var req = await client.postUrl(uri);
@@ -49,20 +52,38 @@ class DevinciApi {
             req.add(utf8.encode(json.encode(data)));
             var response = await req.close();
             var reply = await response.transform(utf8.decoder).join();
-            l(reply);
+            FLog.info(
+                className: 'DevinciApi', methodName: 'register', text: reply);
+            //l(reply);
             await globals.prefs.setString('lastNotifRegistration', currentDate);
             client.close();
           } else {
-            l('no player id');
+            FLog.warning(
+                className: 'DevinciApi',
+                methodName: 'register',
+                text: 'no player id');
+            //l('no player id');
           }
         } else {
-          l("can't send notif");
+          FLog.warning(
+              className: 'DevinciApi',
+              methodName: 'register',
+              text: "can't send notif");
+          //l("can't send notif");
         }
       } else {
-        l('no notif consent');
+        FLog.warning(
+            className: 'DevinciApi',
+            methodName: 'register',
+            text: 'no notif consent');
+        //l('no notif consent');
       }
     } else {
-      l('user not existing');
+      FLog.warning(
+          className: 'DevinciApi',
+          methodName: 'register',
+          text: 'user not existing');
+      //l('user not existing');
     }
   }
 
@@ -81,16 +102,29 @@ class DevinciApi {
           req.add(utf8.encode(json.encode(data)));
           var response = await req.close();
           var reply = await response.transform(utf8.decoder).join();
-          l(reply);
+          FLog.info(className: 'DevinciApi', methodName: 'call', text: reply);
+          //l(reply);
           client.close();
         } else {
-          l('no player id');
+          FLog.warning(
+              className: 'DevinciApi',
+              methodName: 'call',
+              text: 'no player id');
+          //l('no player id');
         }
       } else {
-        l('no notif consent');
+        FLog.warning(
+            className: 'DevinciApi',
+            methodName: 'call',
+            text: 'no notif consent');
+        //l('no notif consent');
       }
     } else {
-      l('user not existing');
+      FLog.warning(
+          className: 'DevinciApi',
+          methodName: 'call',
+          text: 'user not existing');
+      //l('user not existing');
     }
   }
 }

@@ -10,6 +10,7 @@ import 'package:sembast/sembast.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:sembast/utils/value_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:f_logs/f_logs.dart';
 
 //DATA
 bool show = false;
@@ -30,6 +31,13 @@ Future<void> getData({bool force = false}) async {
     try {
       await globals.user.getAbsences();
     } catch (exception, stacktrace) {
+      FLog.logThis(
+          className: 'absences logic',
+          methodName: 'getData',
+          text: 'exception',
+          type: LogLevel.ERROR,
+          exception: Exception(exception),
+          stacktrace: stacktrace);
       var client = HttpClient();
       var req = await client.getUrl(
         Uri.parse('https://www.leonard-de-vinci.net/?my=abs'),
@@ -45,9 +53,7 @@ Future<void> getData({bool force = false}) async {
       var res = await req.close();
       globals.feedbackNotes = await res.transform(utf8.decoder).join();
 
-      await reportError(
-          'absences.dart | _AbsencesPageState | runBeforeBuild() | user.getAbsences() => $exception',
-          stacktrace);
+      await reportError(exception, stacktrace);
     }
   }
   setState(() {
@@ -71,7 +77,10 @@ void runBeforeBuild() async {
       try {
         await getData();
       } catch (e) {
-        l('needs reconnection');
+        FLog.info(
+            className: 'AbsencesPage Logic',
+            methodName: 'runBeforeBuild',
+            text: 'needs reconnection');
         final snackBar = SnackBar(
           content: Text('reconnecting').tr(),
           duration: const Duration(seconds: 10),
@@ -81,12 +90,24 @@ void runBeforeBuild() async {
         try {
           await globals.user.getTokens();
         } catch (e, stacktrace) {
-          l(e);
-          l(stacktrace);
+          FLog.logThis(
+              className: 'AbsencesPage logic',
+              methodName: 'runBeforeBuild',
+              text: 'exception',
+              type: LogLevel.ERROR,
+              exception: Exception(e),
+              stacktrace: stacktrace);
         }
         try {
           await getData();
         } catch (exception, stacktrace) {
+          FLog.logThis(
+              className: 'AbsencesPage logic',
+              methodName: 'runBeforeBuild',
+              text: 'exception',
+              type: LogLevel.ERROR,
+              exception: Exception(e),
+              stacktrace: stacktrace);
           var client = HttpClient();
           var req = await client.getUrl(
             Uri.parse('https://www.leonard-de-vinci.net/?my=abs'),
@@ -102,13 +123,9 @@ void runBeforeBuild() async {
           var res = await req.close();
           globals.feedbackNotes = await res.transform(utf8.decoder).join();
 
-          await reportError(
-              'absences.dart | _AbsencesPageState | runBeforeBuild() | user.getAbsences() => $exception',
-              stacktrace);
+          await reportError(exception, stacktrace);
         }
         Scaffold.of(getContext()).removeCurrentSnackBar();
-
-        l(globals.user.tokens);
       }
     }
   }

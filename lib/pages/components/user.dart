@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:recase/recase.dart';
+import 'package:f_logs/f_logs.dart';
 
 Widget InfoSection(String main, String second) {
   return Padding(
@@ -60,13 +61,19 @@ Widget DocumentTile(
             setState(() {
               docCardData[id]['frShowButton'] = false;
             });
-            l(frUrl);
+            FLog.info(
+                className: 'UserPage Components',
+                methodName: 'DocumentTile',
+                text: frUrl);
             var rc = ReCase('${name}_$subtitle');
             var path;
             try {
               path = await downloadDocuments(frUrl, rc.camelCase);
             } catch (e) {
-              l('needs reconnection');
+              FLog.info(
+                  className: 'UserPage Components',
+                  methodName: 'DocumentTile',
+                  text: 'needs reconnection');
               final snackBar = SnackBar(
                 content: Text('reconnecting').tr(),
                 duration: const Duration(seconds: 10),
@@ -76,12 +83,25 @@ Widget DocumentTile(
               try {
                 await globals.user.getTokens();
               } catch (e, stacktrace) {
+                FLog.logThis(
+                    className: 'DocumentTile',
+                    methodName: '',
+                    text: 'exception',
+                    type: LogLevel.ERROR,
+                    exception: Exception(e),
+                    stacktrace: stacktrace);
                 await reportError(e, stacktrace);
               }
               try {
                 path = await downloadDocuments(frUrl, rc.camelCase);
               } catch (exception, stacktrace) {
-                await reportError(e, stacktrace);
+                FLog.logThis(
+                    className: 'DocumentTile',
+                    methodName: '',
+                    text: 'exception',
+                    type: LogLevel.ERROR,
+                    exception: Exception(e),
+                    stacktrace: stacktrace);
               }
               Scaffold.of(getContext()).removeCurrentSnackBar();
             }
@@ -169,7 +189,10 @@ Widget DocumentTile(
                                           docCardData[id]['frShowButton'] =
                                               false;
                                         });
-                                        l(frUrl);
+                                        FLog.info(
+                                            className: 'UserPage Components',
+                                            methodName: 'DocumentTile',
+                                            text: frUrl);
                                         var rc = ReCase('${name}_$subtitle');
                                         var path = await downloadDocuments(
                                             frUrl, rc.camelCase);
@@ -206,7 +229,10 @@ Widget DocumentTile(
                                             docCardData[id]['enShowButton'] =
                                                 false;
                                           });
-                                          l(enUrl);
+                                          FLog.info(
+                                              className: 'UserPage Components',
+                                              methodName: 'DocumentTile',
+                                              text: enUrl);
                                           var rc =
                                               ReCase('${name}_${subtitle}_en');
                                           var path = await downloadDocuments(
