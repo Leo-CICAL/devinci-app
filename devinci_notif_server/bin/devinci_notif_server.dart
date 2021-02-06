@@ -71,7 +71,7 @@ void setup() async {
     }
   }
   var client = HttpClient();
-  var uri = Uri.parse('https://api.devinci.araulin.tech/register');
+  var uri = Uri.parse('https://devinci.antoineraulin.com/register');
   var req = await client.postUrl(uri);
   req.headers.set('content-type', 'application/json');
   var data = <String, dynamic>{'id': config.id, 'hashes': hashes};
@@ -137,7 +137,7 @@ void runCron(int index, String cronStr, String cronStr2) {
 
 void call(String hash) async {
   var client = HttpClient();
-  var uri = Uri.parse('https://api.devinci.araulin.tech/call');
+  var uri = Uri.parse('https://devinci.antoineraulin.com/call');
   var req = await client.postUrl(uri);
   req.headers.set('content-type', 'application/json');
   var data = <String, dynamic>{'id': config.id, 'hash': hash};
