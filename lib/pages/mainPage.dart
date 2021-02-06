@@ -356,11 +356,11 @@ class MainPageState extends State<MainPage> {
                         : Theme.of(context).primaryColor.withAlpha(35))
                     : Colors.transparent,
                 shape: SquircleBorder(
-                  radius: 25.0,
+                  radius: BorderRadius.all(Radius.circular(25)),
                 ),
                 child: ListTile(
                   shape: SquircleBorder(
-                    radius: 25.0,
+                    radius: BorderRadius.all(Radius.circular(25)),
                   ),
                   leading: Icon(
                       globals.selectedPage == index ? selectedIcon : icon,
