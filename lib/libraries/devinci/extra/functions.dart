@@ -235,7 +235,9 @@ Future<Null> reportError(dynamic error, dynamic stackTrace) async {
   }
   var consent = globals.prefs.getString('crashConsent');
   if (consent == 'true') {
-    reportToCrash(err, stackTrace);
+    if (isInDebugMode) {
+      reportToCrash(err, stackTrace);
+    }
   } else {
     final snackBar = SnackBar(
       content: Text(
@@ -267,13 +269,6 @@ void reportToCrash(var err, StackTrace stackTrace) async {
   // Errors thrown in development mode are unlikely to be interesting. You can
   // check if you are running in dev mode using an assertion and omit sending
   // the report.
-  if (isInDebugMode) {
-    FLog.info(
-        className: 'functions',
-        methodName: 'reportToCrash',
-        text: 'in dev mode. Not sending report to Sentry.');
-    return;
-  }
   if (globals.crashConsent == 'true') {
     FLog.info(
         className: 'functions',

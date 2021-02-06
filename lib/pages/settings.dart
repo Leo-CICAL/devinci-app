@@ -671,6 +671,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   GestureDetector(
                     onTap: () async {
+                      reportToCrash(Exception('Devinci Logs sent'),StackTrace.current);
                       File logs = await FLog.exportLogs();
                       final email = Email(
                         body: '',
