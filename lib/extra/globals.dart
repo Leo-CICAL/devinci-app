@@ -11,6 +11,7 @@ import 'package:devinci/pages/ui/user.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:devinci/libraries/devinci/extra/classes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:property_change_notifier/property_change_notifier.dart';
 import 'package:sembast/sembast.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -94,6 +95,8 @@ CalendarController calendarController;
 
 bool showRestaurant = false;
 
+double bottomPadding;
+
 //globalkeys
 final notesPageKey = GlobalKey<NotesPageState>();
 final absencesPageKey = GlobalKey<AbsencesPageState>();
@@ -104,9 +107,10 @@ final userPageKey = GlobalKey<UserPageState>();
 final mainScaffoldKey = GlobalKey<ScaffoldState>();
 
 BuildContext getScaffold() {
-  if (mainPageKey.currentState != null) {
-    return mainPageKey.currentState.context;
-  } else {
-    return currentContext;
-  }
+  return Get.context;
+  // if (mainPageKey.currentState != null) {
+  //   return mainPageKey.currentState.context;
+  // } else {
+  //   return currentContext;
+  // }
 }

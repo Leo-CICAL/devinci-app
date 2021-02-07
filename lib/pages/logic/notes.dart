@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:sembast/utils/value_utils.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+// import 'package:easy_localization/easy_localization.dart';
+// import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:get/get.dart';
 import 'package:f_logs/f_logs.dart';
 
 //DATA
@@ -54,12 +55,15 @@ Future<void> getData({bool force = false}) async {
             className: 'NotesPage Logic',
             methodName: 'getData',
             text: 'needs reconnection');
-        final snackBar = SnackBar(
-          content: Text('reconnecting').tr(),
+        Get.snackbar(
+          null,
+          'reconnecting'.tr,
           duration: const Duration(seconds: 10),
+          snackPosition: SnackPosition.BOTTOM,
+          borderRadius: 0,
+          margin: EdgeInsets.only(
+              left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
         );
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-        Scaffold.of(getContext()).showSnackBar(snackBar);
         try {
           await globals.user.getTokens();
         } catch (e, stacktrace) {
@@ -88,7 +92,7 @@ Future<void> getData({bool force = false}) async {
         } catch (exception, stacktrace) {
           catcher(exception, stacktrace, '?my=notes', force: true);
         }
-        Scaffold.of(getContext()).removeCurrentSnackBar();
+        Get.back();
       }
     }
   }
@@ -98,25 +102,10 @@ Future<void> getData({bool force = false}) async {
         currentSemester = 1;
       }
     }
-
-    setState(() {
-      show = true;
-    });
-  } catch (e, stacktrace) {
-    FLog.logThis(
-        className: 'NotesPage logic',
-        methodName: 'getData',
-        text: 'exception',
-        type: LogLevel.ERROR,
-        exception: Exception(e),
-        stacktrace: stacktrace);
-  }
-  if (!globals.user.notesFetched && globals.isConnected) {
-    Sentry.addBreadcrumb(Breadcrumb(
-        message:
-            'logic/notes.dart => getData() => if (!globals.user.notesFetched && globals.isConnected)'));
-    globals.isLoading.setState(1, true);
-  }
+  } catch (e, stacktrace) {}
+  setState(() {
+    show = true;
+  });
 
   return;
 }
@@ -142,12 +131,15 @@ void onRefresh() async {
           className: 'NotesPage Logic',
           methodName: 'onRefresh',
           text: 'needs reconnection');
-      final snackBar = SnackBar(
-        content: Text('reconnecting').tr(),
+      Get.snackbar(
+        null,
+        'reconnecting'.tr,
         duration: const Duration(seconds: 10),
+        snackPosition: SnackPosition.BOTTOM,
+        borderRadius: 0,
+        margin: EdgeInsets.only(
+            left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
       );
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-      Scaffold.of(getContext()).showSnackBar(snackBar);
       try {
         await globals.user.getTokens();
       } catch (e, stacktrace) {
@@ -175,7 +167,7 @@ void onRefresh() async {
       } catch (exception, stacktrace) {
         catcher(exception, stacktrace, '?my=notes', force: true);
       }
-      Scaffold.of(getContext()).removeCurrentSnackBar();
+      Get.back();
     }
     globals.noteLocked = false;
   }
@@ -190,10 +182,10 @@ void onRefresh() async {
 
 void runBeforeBuild() async {
   if (!globals.user.notesFetched) {
-    Sentry.addBreadcrumb(Breadcrumb(
-        message:
-            'logic/notes.dart => runBeforeBuild() => if (!globals.user.notesFetched)'));
     await getData();
+    if (!globals.user.notesFetched && globals.isConnected) {
+      globals.isLoading.setState(1, true);
+    }
   } else {
     setState(() {
       if (!globals.user.notes[index]['s'][1].isEmpty && !changed) {

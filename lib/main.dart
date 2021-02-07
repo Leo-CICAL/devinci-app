@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:devinci/libraries/feedback/feedback.dart';
 import 'package:devinci/pages/ui/login.dart';
+import 'package:f_logs/f_logs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -8,16 +9,17 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:get/get.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
-import 'package:quick_actions/quick_actions.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'extra/classes.dart';
+import 'extra/translations.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,28 +44,13 @@ Future<Null> main() async {
     globals.currentTheme.setDark(
         SchedulerBinding.instance.window.platformBrightness == Brightness.dark);
   }
-  //init quick_actions
-  final quickActions = QuickActions();
-  quickActions.initialize(quickActionsCallback);
-  await quickActions.setShortcutItems(<ShortcutItem>[
-    const ShortcutItem(
-        type: 'action_edt', localizedTitle: 'EDT', icon: 'icon_edt'),
-    const ShortcutItem(
-        type: 'action_notes', localizedTitle: 'Notes', icon: 'icon_notes'),
-    const ShortcutItem(
-        type: 'action_presence',
-        localizedTitle: 'Présence',
-        icon: 'icon_presence'),
-    const ShortcutItem(
-        type: 'action_offline',
-        localizedTitle: 'Hors connexion',
-        icon: 'icon_offline'),
-  ]);
   var packageInfo = await PackageInfo.fromPlatform();
   var appVersion = 'devinci@' + packageInfo.version;
   appVersion += '+' + packageInfo.buildNumber;
   globals.crashConsent = globals.prefs.getString('crashConsent') ??
       'true'; //default to true to catch errors between now and the gdpr popup
+  print('clearing logs');
+  await FLog.clearLogs();
   if (globals.crashConsent == 'true') {
     await SentryFlutter.init(
       (options) => options
@@ -72,35 +59,23 @@ Future<Null> main() async {
         ..release = appVersion
         ..environment = 'prod',
       appRunner: () => runApp(
-        EasyLocalization(
-          supportedLocales: [
-            Locale('fr'),
-            Locale('en'),
-            Locale('de'),
-          ],
-          path: 'assets/translations', // <-- change patch to your
-          fallbackLocale: Locale('fr'),
-          child: BetterFeedback(
-              // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
-              child: Phoenix(
-                // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
-                child: MyApp(),
-              ),
-              onFeedback: betterFeedbackOnFeedback),
-        ),
-      ),
-    );
-  } else {
-    runApp(
-      EasyLocalization(
-        supportedLocales: [
-          Locale('fr'),
-          Locale('en'),
-          Locale('de'),
-        ],
-        path: 'assets/translations', // <-- change patch to your
-        fallbackLocale: Locale('fr'),
-        child: BetterFeedback(
+        // EasyLocalization(
+        //   supportedLocales: [
+        //     Locale('fr'),
+        //     Locale('en'),
+        //     Locale('de'),
+        //   ],
+        //   path: 'assets/translations', // <-- change patch to your
+        //   fallbackLocale: Locale('fr'),
+        //   child: BetterFeedback(
+        //       // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
+        //       child: Phoenix(
+        //         // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
+        //         child: MyApp(),
+        //       ),
+        //       onFeedback: betterFeedbackOnFeedback),
+        // ),
+        BetterFeedback(
             // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
             child: Phoenix(
               // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
@@ -108,6 +83,32 @@ Future<Null> main() async {
             ),
             onFeedback: betterFeedbackOnFeedback),
       ),
+    );
+  } else {
+    runApp(
+      // EasyLocalization(
+      //   supportedLocales: [
+      //     Locale('fr'),
+      //     Locale('en'),
+      //     Locale('de'),
+      //   ],
+      //   path: 'assets/translations', // <-- change patch to your
+      //   fallbackLocale: Locale('fr'),
+      //   child: BetterFeedback(
+      //       // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
+      //       child: Phoenix(
+      //         // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
+      //         child: MyApp(),
+      //       ),
+      //       onFeedback: betterFeedbackOnFeedback),
+      // ),
+      BetterFeedback(
+          // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
+          child: Phoenix(
+            // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
+            child: MyApp(),
+          ),
+          onFeedback: betterFeedbackOnFeedback),
     );
   }
 }
@@ -153,16 +154,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       GlobalWidgetsLocalizations.delegate,
       SfGlobalLocalizations.delegate,
     ];
-    res.addAll(context.localizationDelegates);
+    //res.addAll(context.localizationDelegates);
 
-    return MaterialApp(
+    return GetMaterialApp(
+      translations: DevinciTranslations(),
+      locale: Get.deviceLocale,
+      fallbackLocale: Locale('en'),
       navigatorKey: navigatorKey,
       navigatorObservers: [
         SentryNavigatorObserver(),
       ],
       localizationsDelegates: res,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
+      // supportedLocales: context.supportedLocales,
+      // locale: context.locale,
       title: 'Devinci',
       theme: ThemeData(
         primarySwatch: Colors.teal,

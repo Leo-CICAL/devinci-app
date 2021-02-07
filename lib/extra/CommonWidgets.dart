@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart';
 
 // ignore: non_constant_identifier_names
 Widget TitleSection(String title,
@@ -12,7 +13,7 @@ Widget TitleSection(String title,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text(
-            noTr ? title : title.tr(),
+            noTr ? title : title.tr,
             textAlign: TextAlign.left,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),

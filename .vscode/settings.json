@@ -3,8 +3,8 @@
         "rxdart"
     ],
     "python.pythonPath": "C:\\Users\\antoi\\anaconda3\\python.exe",
-    "editor.formatOnSave": false,
-    "[dart]": {
-        "editor.formatOnSave": false
-    }
+    // "editor.formatOnSave": false,
+    // "[dart]": {
+    //     "editor.formatOnSave": false
+    // }
 }

@@ -183,13 +183,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1"
-  easy_localization:
-    dependency: "direct main"
-    description:
-      name: easy_localization
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.3.3"
   f_logs:
     dependency: "direct main"
     description:
@@ -258,13 +251,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.5"
-  flutter_siri_suggestions:
-    dependency: "direct main"
-    description:
-      name: flutter_siri_suggestions
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2+hotfix1"
   flutter_statusbarcolor:
     dependency: "direct main"
     description:
@@ -296,6 +282,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  get:
+    dependency: "direct main"
+    description:
+      name: get
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.24.0"
   glob:
     dependency: transitive
     description:
@@ -583,13 +576,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.3"
-  quick_actions:
-    dependency: "direct main"
-    description:
-      name: quick_actions
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.0+10"
   recase:
     dependency: "direct main"
     description:

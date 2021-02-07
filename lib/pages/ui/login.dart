@@ -8,7 +8,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:devinci/extra/globals.dart' as globals;
-import 'package:easy_localization/easy_localization.dart';
+//import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -85,7 +86,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: Text(
-                            'welcome'.tr(),
+                            'welcome'.tr,
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -106,7 +107,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                 focusNode: usernameFocus,
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'user'.tr(),
+                                  labelText: 'user'.tr,
                                   suffixText: '@edu.devinci.fr',
                                 ),
                                 controller: myControllerUsername,
@@ -125,7 +126,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                   key: Key('login_password'),
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(),
-                                    labelText: 'password'.tr(),
+                                    labelText: 'password'.tr,
                                   ),
                                   controller: myControllerPassword,
                                   onFieldSubmitted: submit,
@@ -140,7 +141,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 18),
                                     child: Text(
-                                      'login'.tr().toUpperCase(),
+                                      'login'.tr.toUpperCase(),
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
@@ -170,11 +171,10 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                           throw 'Could not launch $url';
                                         }
                                       },
-                                      child: Text('lost_password',
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .accentColor))
-                                          .tr())),
+                                      child: Text('lost_password'.tr,
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .accentColor)))),
                             ],
                           ),
                         ),
@@ -199,7 +199,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: Text(
-                            'welcome'.tr(),
+                            'welcome'.tr,
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -220,7 +220,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                 focusNode: usernameFocus,
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'user'.tr(),
+                                  labelText: 'user'.tr,
                                   suffixText: '@edu.devinci.fr',
                                 ),
                                 controller: myControllerUsername,
@@ -239,7 +239,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                   key: Key('login_password'),
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(),
-                                    labelText: 'password'.tr(),
+                                    labelText: 'password'.tr,
                                   ),
                                   controller: myControllerPassword,
                                   onFieldSubmitted: submit,
@@ -254,7 +254,7 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 18),
                                     child: Text(
-                                      'login'.tr().toUpperCase(),
+                                      'login'.tr.toUpperCase(),
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
@@ -284,11 +284,10 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                           throw 'Could not launch $url';
                                         }
                                       },
-                                      child: Text('lost_password',
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .accentColor))
-                                          .tr()))
+                                      child: Text('lost_password'.tr,
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .accentColor))))
                             ],
                           ),
                         ),
@@ -303,10 +302,9 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
               ? [
                   TextButton(
                       key: Key('login_cgu'),
-                      child: Text('TOS',
-                              style: TextStyle(
-                                  color: Theme.of(context).accentColor))
-                          .tr(),
+                      child: Text('TOS'.tr,
+                          style:
+                              TextStyle(color: Theme.of(context).accentColor)),
                       onPressed: () {
                         showMarkdownPage(
                           applicationIcon: SizedBox(
@@ -332,10 +330,9 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                       }),
                   TextButton(
                       key: Key('login_privacy'),
-                      child: Text('PP',
-                              style: TextStyle(
-                                  color: Theme.of(context).accentColor))
-                          .tr(),
+                      child: Text('PP'.tr,
+                          style:
+                              TextStyle(color: Theme.of(context).accentColor)),
                       onPressed: () {
                         showMarkdownPage(
                           applicationIcon: SizedBox(

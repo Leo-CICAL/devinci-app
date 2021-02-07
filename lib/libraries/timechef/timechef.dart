@@ -133,7 +133,9 @@ class TimeChefUser {
         FLog.info(className: 'TimeChefUser', methodName: 'login', text: body);
         var resJson = json.decode(body);
         FLog.info(
-            className: 'TimeChefUser', methodName: 'login', text: resJson);
+            className: 'TimeChefUser',
+            methodName: 'login',
+            text: resJson.toString());
         accessToken = resJson['accessToken'];
       } else {
         error = true;
@@ -198,7 +200,9 @@ class TimeChefUser {
       } else {
         var resJson = json.decode(body);
         FLog.info(
-            className: 'TimeChefUser', methodName: 'getData', text: resJson);
+            className: 'TimeChefUser',
+            methodName: 'getData',
+            text: resJson.toString());
         solde = resJson['solde'];
       }
     } else {

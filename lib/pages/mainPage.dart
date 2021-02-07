@@ -14,7 +14,8 @@ import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:devinci/extra/globals.dart' as globals;
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key}) : super(key: key);
@@ -55,25 +56,25 @@ class MainPageState extends State<MainPage> {
       BottomNavigationBarItem(
         icon: Icon(
             globals.selectedPage == 0 ? Icons.today : Icons.today_outlined),
-        label: 'time_schedule'.tr(),
+        label: 'time_schedule'.tr,
       ),
       BottomNavigationBarItem(
         icon: Icon(globals.selectedPage == 1
             ? Icons.assignment
             : Icons.assignment_outlined),
-        label: 'grades'.tr(),
+        label: 'grades'.tr,
       ),
       BottomNavigationBarItem(
         icon: Icon(globals.selectedPage == 2
             ? Icons.watch_later
             : Icons.watch_later_outlined),
-        label: 'absences'.tr(),
+        label: 'absences'.tr,
       ),
       BottomNavigationBarItem(
         icon: Icon(globals.selectedPage == 3
             ? DevinciIcons.megaphone_filled
             : DevinciIcons.megaphone_outlined),
-        label: 'attendance'.tr(),
+        label: 'attendance'.tr,
       ),
       BottomNavigationBarItem(
         icon: Icon(
@@ -283,7 +284,7 @@ class MainPageState extends State<MainPage> {
                           ].map((String choice) {
                             return PopupMenuItem<String>(
                               value: choice,
-                              child: Text(choice).tr(),
+                              child: Text(choice.tr),
                             );
                           }).toList();
                         },
@@ -315,22 +316,18 @@ class MainPageState extends State<MainPage> {
                     child: Icon(Icons.offline_bolt),
                   ),
                   onPressed: () {
-                    final snackBar =
-                        SnackBar(content: Text('offline_msg').tr());
-
-                    try {
-                      globals.mainScaffoldKey.currentState
-                          .showSnackBar(snackBar);
-                      // ignore: empty_catches
-                    } catch (exception, stacktrace) {
-                      FLog.logThis(
-                          className: 'MainPageState',
-                          methodName: 'build',
-                          text: 'exception',
-                          type: LogLevel.ERROR,
-                          exception: Exception(exception),
-                          stacktrace: stacktrace);
-                    }
+                    Get.snackbar(
+                      null,
+                      'offline_msg'.tr,
+                      duration: const Duration(seconds: 6),
+                      snackPosition: SnackPosition.BOTTOM,
+                      borderRadius: 0,
+                      margin: EdgeInsets.only(
+                          left: 8,
+                          right: 8,
+                          top: 0,
+                          bottom: globals.bottomPadding),
+                    );
                   },
                 ),
             ],
@@ -367,15 +364,11 @@ class MainPageState extends State<MainPage> {
                       color: globals.selectedPage == index
                           ? Theme.of(context).accentColor
                           : Theme.of(context).textTheme.bodyText1.color),
-                  title: Text(title,
-                          style: TextStyle(
-                              color: globals.selectedPage == index
-                                  ? Theme.of(context).accentColor
-                                  : Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .color))
-                      .tr(),
+                  title: Text(title.tr,
+                      style: TextStyle(
+                          color: globals.selectedPage == index
+                              ? Theme.of(context).accentColor
+                              : Theme.of(context).textTheme.bodyText1.color)),
                   selected: globals.selectedPage == index,
                   onTap: callback,
                 ),
@@ -487,8 +480,10 @@ class MainPageState extends State<MainPage> {
         }),
         bottomNavigationBar: LayoutBuilder(builder: (context, constraints) {
           if (constraints.maxWidth > 1000) {
+            globals.bottomPadding = 0;
             return SizedBox.shrink();
           } else {
+            globals.bottomPadding = 64;
             return Theme(
               data: Theme.of(context).copyWith(
                 // sets the background color of the `BottomNavigationBar`

@@ -9,7 +9,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sembast/sembast.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:sembast/utils/value_utils.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart';
+//import 'package:easy_localization/easy_localization.dart';
 import 'package:f_logs/f_logs.dart';
 
 //DATA
@@ -81,12 +82,15 @@ void runBeforeBuild() async {
             className: 'AbsencesPage Logic',
             methodName: 'runBeforeBuild',
             text: 'needs reconnection');
-        final snackBar = SnackBar(
-          content: Text('reconnecting').tr(),
+        Get.snackbar(
+          null,
+          'reconnecting'.tr,
           duration: const Duration(seconds: 10),
+          snackPosition: SnackPosition.BOTTOM,
+          borderRadius: 0,
+          margin: EdgeInsets.only(
+              left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
         );
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-        Scaffold.of(getContext()).showSnackBar(snackBar);
         try {
           await globals.user.getTokens();
         } catch (e, stacktrace) {
@@ -125,7 +129,7 @@ void runBeforeBuild() async {
 
           await reportError(exception, stacktrace);
         }
-        Scaffold.of(getContext()).removeCurrentSnackBar();
+        Get.back();
       }
     }
   }

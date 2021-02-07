@@ -15,7 +15,8 @@ import 'package:sembast/sembast_io.dart';
 import 'package:sembast/utils/value_utils.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart';
 import 'package:sentry/sentry.dart';
 
 import 'api.dart';
@@ -397,7 +398,7 @@ class Student {
         var id = sub2.userId;
         Sentry.configureScope(
           (scope) {
-            scope.setTag('app.language', 'locale'.tr());
+            scope.setTag('app.language', 'locale'.tr);
             scope.user =
                 User(email: username, username: tokens['uids'], id: id);
           },
@@ -412,7 +413,7 @@ class Student {
             stacktrace: stacktrace);
         Sentry.configureScope(
           (scope) {
-            scope.setTag('app.language', 'locale'.tr());
+            scope.setTag('app.language', 'locale'.tr);
             scope.user = User(email: username, id: tokens['uids']);
           },
         );
@@ -1071,12 +1072,15 @@ class Student {
                 methodName: 'getAbsences',
                 text: absences['liste'].toString());
           } else if (body.contains('Validation des règlements')) {
-            final snackBar = material.SnackBar(
-              content: material.Text('school_rules_validation').tr(),
+            Get.snackbar(
+              'warning'.tr,
+              'school_rules_validation'.tr,
               duration: const Duration(seconds: 10),
+              snackPosition: SnackPosition.BOTTOM,
+              borderRadius: 0,
+              margin: material.EdgeInsets.only(
+                  left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
             );
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-            globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
           }
           absences['done'] = true;
           await globals.store.record('absences').put(globals.db, absences);
@@ -1188,12 +1192,15 @@ class Student {
             notesList.add([name, p]);
           }
         } else {
-          final snackBar = material.SnackBar(
-            content: material.Text('school_rules_validation').tr(),
+          Get.snackbar(
+            'warning'.tr,
+            'school_rules_validation'.tr,
             duration: const Duration(seconds: 10),
+            snackPosition: SnackPosition.BOTTOM,
+            borderRadius: 0,
+            margin: material.EdgeInsets.only(
+                left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
           );
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-          globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
         }
       } else {
         error = true;
@@ -1290,7 +1297,7 @@ class Student {
                     FLog.logThis(
                         className: 'Student',
                         methodName: 'getNotes',
-                        text: 'module moy exception',
+                        text: 'exception',
                         type: LogLevel.ERROR,
                         exception: Exception(e),
                         stacktrace: stacktrace);
@@ -1306,7 +1313,7 @@ class Student {
                     FLog.logThis(
                         className: 'Student',
                         methodName: 'getNotes',
-                        text: 'module nf exception',
+                        text: 'exception',
                         type: LogLevel.ERROR,
                         exception: Exception(e),
                         stacktrace: stacktrace);
@@ -1322,7 +1329,7 @@ class Student {
                     FLog.logThis(
                         className: 'Student',
                         methodName: 'getNotes',
-                        text: 'module moyP exception',
+                        text: 'exception',
                         type: LogLevel.ERROR,
                         exception: Exception(e),
                         stacktrace: stacktrace);
@@ -1334,219 +1341,219 @@ class Student {
 
                 var ddlist = li.querySelector('ol');
                 var j = 0;
-                ddlist.children.forEach((lii) {
-                  ddhandle = lii.querySelector('div');
-                  texts = ddhandle.text.split('\n');
-                  //String prettyprint = encoder.convert(texts);
-                  //l(prettyprint);
-                  elem = {
-                    'matiere': '',
-                    'moy': 0.0,
-                    'moyP': 0.0,
-                    'notes': [],
-                    'c': true
-                  };
+                try {
+                  ddlist.children.forEach((lii) {
+                    ddhandle = lii.querySelector('div');
+                    texts = ddhandle.text.split('\n');
+                    //String prettyprint = encoder.convert(texts);
+                    //l(prettyprint);
+                    elem = {
+                      'matiere': '',
+                      'moy': 0.0,
+                      'moyP': 0.0,
+                      'notes': [],
+                      'c': true
+                    };
 
-                  elem['matiere'] = texts[notesConfig['matieres']['mi']]
-                      .replaceAllMapped(
-                          RegExp(notesConfig['matieres']['mr']), (match) => '');
-                  elem['moy'] = null;
-                  elem['moyP'] = null;
-                  if (!texts[notesConfig['matieres']['ei']]
-                      .contains(notesConfig['matieres']['eStr'])) {
-                    try {
-                      elem['moy'] = double.parse(texts[notesConfig['matieres']
-                              ['!e']['moy']['i']]
-                          .replaceAllMapped(
-                              RegExp(notesConfig['matieres']['!e']['moy']['r']),
-                              (match) => '')
-                          .split(notesConfig['matieres']['!e']['moy']
-                              ['s'])[notesConfig['matieres']['!e']['moy']
-                          ['si']]);
-                    } catch (e, stacktrace) {
+                    elem['matiere'] = texts[notesConfig['matieres']['mi']]
+                        .replaceAllMapped(RegExp(notesConfig['matieres']['mr']),
+                            (match) => '');
+                    elem['moy'] = null;
+                    elem['moyP'] = null;
+                    if (!texts[notesConfig['matieres']['ei']]
+                        .contains(notesConfig['matieres']['eStr'])) {
                       try {
-                        if (texts[notesConfig['matieres']['!e']['moy']['i']]
+                        elem['moy'] = double.parse(
+                            texts[notesConfig['matieres']['!e']['moy']['i']]
                                 .replaceAllMapped(
                                     RegExp(notesConfig['matieres']['!e']['moy']
                                         ['r']),
                                     (match) => '')
                                 .split(notesConfig['matieres']['!e']['moy']
                                     ['s'])[notesConfig['matieres']['!e']['moy']
-                                ['si']] ==
-                            'Validé') {
-                          elem['moy'] = 100.0;
-                        }
+                                ['si']]);
                       } catch (e, stacktrace) {
-                        FLog.logThis(
-                            className: 'Student',
-                            methodName: 'getNotes',
-                            text: 'matiere moy exception v2',
-                            type: LogLevel.ERROR,
-                            exception: Exception(e),
-                            stacktrace: stacktrace);
-                      }
-                    }
-                    FLog.info(
-                        className: 'Student',
-                        methodName: 'getNotes',
-                        text: elem['moy'].toString());
-                    try {
-                      if (!texts[notesConfig['matieres']['!e']['ri']]
-                          .contains(notesConfig['matieres']['!e']['rStr'])) {
                         try {
-                          elem['moyP'] = double.parse(RegExp(
-                                  notesConfig['matieres']['!e']['!r']['moyP']
-                                      ['r'])
-                              .firstMatch(texts[notesConfig['matieres']['!e']
-                                      ['!r']['moyP']['i']] +
-                                  notesConfig['matieres']['!e']['!r']['moyP']
-                                      ['+'])
-                              .group(1));
-                        } catch (e, stacktrace) {
-                          FLog.logThis(
-                              className: 'Student',
-                              methodName: 'getNotes',
-                              text: 'matiere moyP exception',
-                              type: LogLevel.ERROR,
-                              exception: Exception(e),
-                              stacktrace: stacktrace);
-                          elem['moyP'] = null;
-                        }
-                      } else {
-                        var noteR = double.parse(RegExp(notesConfig['matieres']
-                                ['!e']['r']['noteR']['r'])
-                            .firstMatch(texts[notesConfig['matieres']['!e']['r']
-                                    ['noteR']['i']] +
-                                notesConfig['matieres']['!e']['r']['noteR']
-                                    ['+'])
-                            .group(1));
-                        if (noteR > elem['moy']) {
-                          if (noteR > 10) {
-                            elem['moy'] = 10.0;
-                          } else {
-                            elem['moy'] = noteR;
+                          if (texts[notesConfig['matieres']['!e']['moy']['i']]
+                                  .replaceAllMapped(
+                                      RegExp(notesConfig['matieres']['!e']
+                                          ['moy']['r']),
+                                      (match) => '')
+                                  .split(notesConfig['matieres']['!e']['moy']
+                                      ['s'])[notesConfig['matieres']['!e']
+                                  ['moy']['si']] ==
+                              'Validé') {
+                            elem['moy'] = 100.0;
                           }
-                        }
-                        var e = {
-                          'nom':
-                              'MESIMF120419-CC-1 Rattrapage' + 're_take'.tr(),
-                          'note': noteR,
-                          'noteP': null,
-                          //"date": timestamp
-                        };
-
-                        elem['notes'].add(e);
-
-                        elem['moyP'] = double.parse(RegExp(
-                                notesConfig['matieres']['!e']['r']['moyP']['r'])
-                            .firstMatch(texts[notesConfig['matieres']['!e']['r']
-                                    ['moyP']['i']] +
-                                notesConfig['matieres']['!e']['r']['moyP']['+'])
-                            .group(1));
-                      }
-                    } catch (e, stacktrace) {
-                      FLog.logThis(
-                          className: 'Student',
-                          methodName: 'getNotes',
-                          text: 'exception',
-                          type: LogLevel.ERROR,
-                          exception: Exception(e),
-                          stacktrace: stacktrace);
-                    }
-                  }
-                  nn['s'][y][i]['matieres'].add(elem);
-                  //nn["s${y + 1}"][i]["matieres"].add(elem);
-                  ddlist = lii.querySelector('ol');
-                  if (ddlist != null) {
-                    ddlist.children.forEach((liii) {
-                      ddhandle = liii.querySelector('div');
-                      texts = ddhandle.text.split('\n');
-                      elem = {
-                        'nom': '',
-                        'note': 0.0,
-                        'noteP': 0.0,
-                        //"date": timestamp
-                      };
-                      elem['nom'] = texts[notesConfig['notes']['n']['i']]
-                          .replaceAllMapped(
-                              RegExp(notesConfig['notes']['n']['r']),
-                              (match) => '');
-                      if (texts.length < notesConfig['notes']['tl']) {
-                        elem['note'] = null;
-                        elem['noteP'] = null;
-                      } else {
-                        var temp = texts[notesConfig['notes']['note']['i']]
-                                .replaceAllMapped(
-                                    RegExp(notesConfig['notes']['note']['r']),
-                                    (match) => '')
-                                .split(notesConfig['notes']['note']['s'])[
-                            notesConfig['notes']['note']['si']];
-                        if (temp.contains('Absence')) {
-                          elem['note'] = 0.12345;
-                        } else {
-                          try {
-                            elem['note'] = double.parse(texts[
-                                    notesConfig['notes']['note']['i']]
-                                .replaceAllMapped(
-                                    RegExp(notesConfig['notes']['note']['r']),
-                                    (match) => '')
-                                .split(notesConfig['notes']['note']
-                                    ['s'])[notesConfig['notes']['note']['si']]);
-                          } catch (e, stacktrace) {
-                            Sentry.addBreadcrumb(Breadcrumb(
-                                message: 'failed to double parse : ' +
-                                    texts[notesConfig['notes']['note']['i']]
-                                        .replaceAllMapped(
-                                            RegExp(notesConfig['notes']['note']
-                                                ['r']),
-                                            (match) => '')
-                                        .split(notesConfig['notes']['note']
-                                            ['s'])[notesConfig['notes']['note']
-                                        ['si']]));
-                            FLog.logThis(
-                                className: 'Student',
-                                methodName: 'getNotes',
-                                text: 'exception',
-                                type: LogLevel.ERROR,
-                                exception: Exception(e),
-                                stacktrace: stacktrace);
-                            reportError(e, stacktrace);
-                          }
-                        }
-                        elem['noteP'] = null;
-                        try {
-                          elem['noteP'] = double.parse(
-                              RegExp(notesConfig['notes']['nP']['r'])
-                                  .firstMatch(
-                                      texts[notesConfig['notes']['nP']['i']] +
-                                          notesConfig['notes']['nP']['+'])
-                                  .group(1));
                         } catch (e, stacktrace) {
                           FLog.logThis(
                               className: 'Student',
                               methodName: 'getNotes',
                               text: 'exception',
-                              type: LogLevel.ERROR,
+                              type: LogLevel.INFO,
                               exception: Exception(e),
                               stacktrace: stacktrace);
                         }
                       }
-                      nn['s'][y][i]['matieres'][j]['notes'].add(elem);
-                      //nn["s${y + 1}"][i]["matieres"][j]["notes"].add(elem);
-                    });
-                  }
-                  j++;
-                });
+                      FLog.info(
+                          className: 'Student',
+                          methodName: 'getNotes moy',
+                          text: elem['moy'].toString());
+                      try {
+                        if (!texts[notesConfig['matieres']['!e']['ri']]
+                            .contains(notesConfig['matieres']['!e']['rStr'])) {
+                          try {
+                            elem['moyP'] = double.parse(RegExp(
+                                    notesConfig['matieres']['!e']['!r']['moyP']
+                                        ['r'])
+                                .firstMatch(texts[notesConfig['matieres']['!e']
+                                        ['!r']['moyP']['i']] +
+                                    notesConfig['matieres']['!e']['!r']['moyP']
+                                        ['+'])
+                                .group(1));
+                          } catch (e) {
+                            elem['moyP'] = null;
+                          }
+                        } else {
+                          var noteR = double.parse(RegExp(
+                                  notesConfig['matieres']['!e']['r']['noteR']
+                                      ['r'])
+                              .firstMatch(texts[notesConfig['matieres']['!e']
+                                      ['r']['noteR']['i']] +
+                                  notesConfig['matieres']['!e']['r']['noteR']
+                                      ['+'])
+                              .group(1));
+                          if (noteR > elem['moy']) {
+                            if (noteR > 10) {
+                              elem['moy'] = 10.0;
+                            } else {
+                              elem['moy'] = noteR;
+                            }
+                          }
+                          var e = {
+                            'nom':
+                                'MESIMF120419-CC-1 Rattrapage' + 're_take'.tr,
+                            'note': noteR,
+                            'noteP': null,
+                            //"date": timestamp
+                          };
+
+                          elem['notes'].add(e);
+
+                          elem['moyP'] = double.parse(RegExp(
+                                  notesConfig['matieres']['!e']['r']['moyP']
+                                      ['r'])
+                              .firstMatch(texts[notesConfig['matieres']['!e']
+                                      ['r']['moyP']['i']] +
+                                  notesConfig['matieres']['!e']['r']['moyP']
+                                      ['+'])
+                              .group(1));
+                        }
+                      } catch (e, stacktrace) {
+                        FLog.logThis(
+                            className: 'Student',
+                            methodName: 'getNotes',
+                            text: 'exception',
+                            type: LogLevel.INFO,
+                            exception: Exception(e),
+                            stacktrace: stacktrace);
+                      }
+                    }
+                    nn['s'][y][i]['matieres'].add(elem);
+                    //nn["s${y + 1}"][i]["matieres"].add(elem);
+                    ddlist = lii.querySelector('ol');
+                    if (ddlist != null) {
+                      ddlist.children.forEach((liii) {
+                        ddhandle = liii.querySelector('div');
+                        texts = ddhandle.text.split('\n');
+                        elem = {
+                          'nom': '',
+                          'note': 0.0,
+                          'noteP': 0.0,
+                          //"date": timestamp
+                        };
+                        elem['nom'] = texts[notesConfig['notes']['n']['i']]
+                            .replaceAllMapped(
+                                RegExp(notesConfig['notes']['n']['r']),
+                                (match) => '');
+                        if (texts.length < notesConfig['notes']['tl']) {
+                          elem['note'] = null;
+                          elem['noteP'] = null;
+                        } else {
+                          var temp = texts[notesConfig['notes']['note']['i']]
+                                  .replaceAllMapped(
+                                      RegExp(notesConfig['notes']['note']['r']),
+                                      (match) => '')
+                                  .split(notesConfig['notes']['note']['s'])[
+                              notesConfig['notes']['note']['si']];
+                          if (temp.contains('Absence')) {
+                            elem['note'] = 0.12345;
+                          } else {
+                            try {
+                              elem['note'] = double.parse(texts[
+                                      notesConfig['notes']['note']['i']]
+                                  .replaceAllMapped(
+                                      RegExp(notesConfig['notes']['note']['r']),
+                                      (match) => '')
+                                  .split(notesConfig['notes']['note']
+                                      ['s'])[notesConfig['notes']['note']
+                                  ['si']]);
+                            } catch (e, stacktrace) {
+                              FLog.logThis(
+                                  className: 'Student',
+                                  methodName: 'getNotes',
+                                  text: 'exception',
+                                  type: LogLevel.INFO,
+                                  exception: Exception(e),
+                                  stacktrace: stacktrace);
+                            }
+                          }
+                          elem['noteP'] = null;
+                          try {
+                            elem['noteP'] = double.parse(
+                                RegExp(notesConfig['notes']['nP']['r'])
+                                    .firstMatch(
+                                        texts[notesConfig['notes']['nP']['i']] +
+                                            notesConfig['notes']['nP']['+'])
+                                    .group(1));
+                          } catch (e, stacktrace) {
+                            FLog.logThis(
+                                className: 'Student',
+                                methodName: 'getNotes',
+                                text: 'exception',
+                                type: LogLevel.INFO,
+                                exception: Exception(e),
+                                stacktrace: stacktrace);
+                          }
+                        }
+                        nn['s'][y][i]['matieres'][j]['notes'].add(elem);
+                        //nn["s${y + 1}"][i]["matieres"][j]["notes"].add(elem);
+                      });
+                    }
+                    j++;
+                  });
+                } catch (e, stacktrace) {
+                  FLog.logThis(
+                      className: 'Student',
+                      methodName: 'getNotes',
+                      text: 'exception',
+                      type: LogLevel.INFO,
+                      exception: Exception(e),
+                      stacktrace: stacktrace);
+                }
                 i++;
               }
             }
           } else if (body.contains('Validation des règlements')) {
-            final snackBar = material.SnackBar(
-              content: material.Text('school_rules_validation').tr(),
+            Get.snackbar(
+              'warning'.tr,
+              'school_rules_validation'.tr,
               duration: const Duration(seconds: 10),
+              snackPosition: SnackPosition.BOTTOM,
+              borderRadius: 0,
+              margin: material.EdgeInsets.only(
+                  left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
             );
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-            globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
           }
         } else {
           error = true;
@@ -1589,6 +1596,7 @@ class Student {
       if (res != null) {
         if (res.statusCode == 200) {
           var body = await res.transform(utf8.decoder).join();
+          FLog.info(text: body);
           if (!body.contains('Validation des règlements')) {
             try {
               var doc = parse(body);
@@ -1704,22 +1712,32 @@ class Student {
                     type: LogLevel.ERROR,
                     exception: Exception(e),
                     stacktrace: stacktrace);
-                await reportError(e, stacktrace);
               }
 
-              documents['calendrier']['url'] =
-                  'https://www.leonard-de-vinci.net' +
-                      doc
-                          .querySelectorAll(
-                              '.social-box.social-bordered.span6')[0]
-                          .querySelectorAll('a')[calendrierIndex]
-                          .attributes['href'];
-              documents['calendrier']['annee'] = RegExp(r'\d{4}-\d{4}')
-                  .firstMatch(doc
-                      .querySelectorAll('.social-box.social-bordered.span6')[0]
-                      .querySelectorAll('a')[calendrierIndex]
-                      .text)
-                  .group(0);
+              try {
+                documents['calendrier']['url'] =
+                    'https://www.leonard-de-vinci.net' +
+                        doc
+                            .querySelectorAll(
+                                '.social-box.social-bordered.span6')[0]
+                            .querySelectorAll('a')[calendrierIndex]
+                            .attributes['href'];
+                documents['calendrier']['annee'] = RegExp(r'\d{4}-\d{4}')
+                    .firstMatch(doc
+                        .querySelectorAll(
+                            '.social-box.social-bordered.span6')[0]
+                        .querySelectorAll('a')[calendrierIndex]
+                        .text)
+                    .group(0);
+              } catch (e, stacktrace) {
+                FLog.logThis(
+                    className: 'Student',
+                    methodName: 'getDocuments',
+                    text: 'exception',
+                    type: LogLevel.ERROR,
+                    exception: Exception(e),
+                    stacktrace: stacktrace);
+              }
 
               FLog.info(
                   className: 'Student',
@@ -1782,12 +1800,15 @@ class Student {
               await reportError(e, stacktrace);
             }
           } else if (body.contains('Validation des règlements')) {
-            final snackBar = material.SnackBar(
-              content: material.Text('school_rules_validation').tr(),
+            Get.snackbar(
+              'warning'.tr,
+              'school_rules_validation'.tr,
               duration: const Duration(seconds: 10),
+              snackPosition: SnackPosition.BOTTOM,
+              borderRadius: 0,
+              margin: material.EdgeInsets.only(
+                  left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
             );
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-            globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
           }
         }
       }

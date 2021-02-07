@@ -2,7 +2,8 @@ import 'package:devinci/extra/classes.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
+//import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/utils/value_utils.dart';
@@ -26,12 +27,15 @@ void loaderListener() async {
           className: 'UserPage Logic',
           methodName: 'loaderListener',
           text: 'needs reconnection');
-      final snackBar = SnackBar(
-        content: Text('reconnecting').tr(),
+      Get.snackbar(
+        null,
+        'reconnecting'.tr,
         duration: const Duration(seconds: 10),
+        snackPosition: SnackPosition.BOTTOM,
+        borderRadius: 0,
+        margin: EdgeInsets.only(
+            left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
       );
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-      Scaffold.of(getContext()).showSnackBar(snackBar);
       try {
         await globals.user.getTokens();
       } catch (e, stacktrace) {
@@ -49,7 +53,7 @@ void loaderListener() async {
       } catch (exception, stacktrace) {
         catcher(exception, stacktrace, '?my=docs', force: true);
       }
-      Scaffold.of(getContext()).removeCurrentSnackBar();
+      Get.back();
     }
     setState(() {
       show = true;
@@ -75,12 +79,15 @@ void runBeforeBuild() async {
             className: 'UserPage Logic',
             methodName: 'runBeforeBuild',
             text: 'needs reconnection');
-        final snackBar = SnackBar(
-          content: Text('reconnecting').tr(),
+        Get.snackbar(
+          null,
+          'reconnecting'.tr,
           duration: const Duration(seconds: 10),
+          snackPosition: SnackPosition.BOTTOM,
+          borderRadius: 0,
+          margin: EdgeInsets.only(
+              left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
         );
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-        Scaffold.of(getContext()).showSnackBar(snackBar);
         try {
           await globals.user.getTokens();
         } catch (e, stacktrace) {
@@ -95,9 +102,9 @@ void runBeforeBuild() async {
         try {
           await globals.user.getDocuments();
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace, '?my=docs', force:true);
+          catcher(exception, stacktrace, '?my=docs', force: true);
         }
-        Scaffold.of(getContext()).removeCurrentSnackBar();
+        Get.back();
       }
     } else {
       globals.user.documents = cloneMap(documents);
@@ -133,10 +140,16 @@ void showCustomMenu(String data, String title) {
     setState(() {
       if (delta == 1) {
         Clipboard.setData(ClipboardData(text: data));
-        final snackBar = SnackBar(content: Text('copied').tr(args: [title]));
-
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-        Scaffold.of(getContext()).showSnackBar(snackBar);
+        Get.snackbar(
+          null,
+          'copied'.trArgs([title]),
+          duration: const Duration(seconds: 6),
+          snackPosition: SnackPosition.BOTTOM,
+          borderRadius: 5,
+          animationDuration: const Duration(milliseconds: 500),
+          margin: EdgeInsets.only(
+              left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
+        );
       } else {
         ShareExtend.share(data, 'text', sharePanelTitle: title);
       }

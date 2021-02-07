@@ -7,7 +7,8 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/libraries/flutter_progress_button/flutter_progress_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart';
+//import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:f_logs/f_logs.dart';
 
@@ -28,11 +29,11 @@ bool show = false;
 String validator(String value) {
   if (globals.user != null) {
     if (globals.user.error) {
-      return 'wrong_id'.tr();
+      return 'wrong_id'.tr;
     }
   }
   if (value.isEmpty) {
-    return 'no_empty'.tr();
+    return 'no_empty'.tr;
   }
   return null;
 }
@@ -94,16 +95,12 @@ void submit([String value]) async {
             builder: (BuildContext context) {
               // return object of type Dialog
               return AlertDialog(
-                title: Text('error').tr(),
-                content: Text(
-                  'unknown_error'.tr(namedArgs: {
-                    'code': globals.user.code.toString(),
-                    'exception': exception
-                  }),
-                ),
+                title: Text('error'.tr),
+                content: Text('unknown_error'
+                    .trArgs([globals.user.code.toString(), exception])),
                 actions: <Widget>[
                   TextButton(
-                    child: Text('close').tr(),
+                    child: Text('close'.tr),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -204,16 +201,14 @@ void runBeforeBuild() async {
           context: getContext(),
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('error').tr(),
+              title: Text('error'.tr),
               content: Text(
-                'unknown_error'.tr(namedArgs: {
-                  'code': globals.user.code.toString(),
-                  'exception': exception.toString()
-                }),
+                'unknown_error'
+                    .trArgs([globals.user.code.toString(), exception]),
               ),
               actions: <Widget>[
                 TextButton(
-                  child: Text('close').tr(),
+                  child: Text('close'.tr),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -303,16 +298,14 @@ void didChangeAppLifecycle(AppLifecycleState state) async {
           context: getContext(),
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('error').tr(),
+              title: Text('error'.tr),
               content: Text(
-                'unknown_error'.tr(namedArgs: {
-                  'code': globals.user.code.toString(),
-                  'exception': exception
-                }),
+                'unknown_error'
+                    .trArgs([globals.user.code.toString(), exception]),
               ),
               actions: <Widget>[
                 TextButton(
-                  child: Text('close').tr(),
+                  child: Text('close'.tr),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

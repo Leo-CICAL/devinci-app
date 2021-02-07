@@ -8,7 +8,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:matomo/matomo.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:devinci/pages/logic/notes.dart';
-import 'package:easy_localization/easy_localization.dart';
+//import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart';
 
 class NotesPage extends TraceableStatefulWidget {
   NotesPage({Key key}) : super(key: key);
@@ -43,7 +44,7 @@ class NotesPageState extends State<NotesPage> {
               Icon(Icons.wifi_off_rounded, size: 32),
               Padding(
                 padding: const EdgeInsets.only(top: 8),
-                child: Text('offline').tr(),
+                child: Text('offline'.tr),
               ),
             ],
           ),

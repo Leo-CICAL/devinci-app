@@ -2,7 +2,8 @@ import 'package:devinci/extra/classes.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/pages/logic/user.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
+//import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:recase/recase.dart';
 import 'package:f_logs/f_logs.dart';
@@ -23,7 +24,7 @@ Widget InfoSection(String main, String second) {
             child: RichText(
               textAlign: TextAlign.left,
               text: TextSpan(
-                text: main.tr() + ': ',
+                text: main.tr + ': ',
                 style: Theme.of(getContext()).textTheme.bodyText1,
                 children: <TextSpan>[
                   TextSpan(
@@ -41,7 +42,7 @@ Widget InfoSection(String main, String second) {
 
 Widget DocumentTile(
     String name, String subtitle, String frUrl, String enUrl, int id) {
-  name = name.tr();
+  name = name.tr;
   return Padding(
     padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
     child: Card(
@@ -74,12 +75,15 @@ Widget DocumentTile(
                   className: 'UserPage Components',
                   methodName: 'DocumentTile',
                   text: 'needs reconnection');
-              final snackBar = SnackBar(
-                content: Text('reconnecting').tr(),
+              Get.snackbar(
+                null,
+                'reconnecting'.tr,
                 duration: const Duration(seconds: 10),
+                snackPosition: SnackPosition.BOTTOM,
+                borderRadius: 0,
+                margin: EdgeInsets.only(
+                    left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
               );
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-              Scaffold.of(getContext()).showSnackBar(snackBar);
               try {
                 await globals.user.getTokens();
               } catch (e, stacktrace) {
@@ -103,7 +107,7 @@ Widget DocumentTile(
                     exception: Exception(e),
                     stacktrace: stacktrace);
               }
-              Scaffold.of(getContext()).removeCurrentSnackBar();
+              Get.back();
             }
             setState(() {
               docCardData[id]['frShowButton'] = true;
@@ -210,9 +214,8 @@ Widget DocumentTile(
                                           );
                                         }
                                       },
-                                      child: Text(enUrl != ''
-                                          ? 'Français'
-                                          : 'open'.tr()),
+                                      child: Text(
+                                          enUrl != '' ? 'Français' : 'open'.tr),
                                     )
                                   : Container(
                                       child: Center(

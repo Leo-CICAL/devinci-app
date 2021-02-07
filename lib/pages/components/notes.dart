@@ -3,7 +3,8 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/pages/logic/notes.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
-import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart';
+//import 'package:easy_localization/easy_localization.dart';
 
 Widget SemestreSelection(int sem) {
   return Expanded(
@@ -36,13 +37,13 @@ Widget SemestreSelection(int sem) {
                 padding: const EdgeInsets.only(
                     left: 0.0, top: 3, right: 0, bottom: 14),
                 child: Text(
-                  's$sem',
+                  's$sem'.tr,
                   style: TextStyle(
                       color: globals.currentTheme.isDark()
                           ? Color(0xffE1E2E1)
                           : Color(0xffACACAC),
                       fontSize: 16),
-                ).tr(),
+                ),
               )
             ],
           ),
@@ -103,7 +104,7 @@ Widget MatiereTile(int i, int j) {
                               : (getMatMoy(globals.user.notes[index]['s'][currentSemester]
                                               [i]['matieres'][j]) ==
                                           100
-                                      ? 'validated'.tr()
+                                      ? 'validated'.tr
                                       : getMatMoy(globals.user.notes[index]['s']
                                           [currentSemester][i]['matieres'][j]))
                                   .toString(),
@@ -244,7 +245,7 @@ Widget NoteTile(int i, int j, int y) {
                                     ['matieres'][j]['notes'][y]['noteP'] ==
                                 null
                             ? ''
-                            : 'promo_average'.tr(),
+                            : 'promo_average'.tr,
                         style:
                             TextStyle(color: Color(0xff787878), fontSize: 12),
                         children: <TextSpan>[
