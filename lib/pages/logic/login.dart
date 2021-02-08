@@ -59,7 +59,7 @@ void submit([String value]) async {
               '@edu.devinci.fr',
           myControllerPassword.text);
       try {
-        await globals.user.init(getContext());
+        await globals.user.init();
 
         await Navigator.push(
           getContext(),
@@ -176,7 +176,7 @@ void runBeforeBuild() async {
         text: 'credentials_exists');
     globals.user = Student(username, password);
     try {
-      await globals.user.init(getContext());
+      await globals.user.init();
     } catch (exception, stacktrace) {
       setState(() {
         show = true;
@@ -275,7 +275,7 @@ void didChangeAppLifecycle(AppLifecycleState state) async {
         text: 'credentials_exists');
     globals.user = Student(username, password);
     try {
-      await globals.user.init(getContext());
+      await globals.user.init();
     } catch (exception, stacktrace) {
       setState(() {
         show = true;

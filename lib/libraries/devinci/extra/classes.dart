@@ -206,7 +206,7 @@ class Student {
     },
   };
 
-  Future<void> init(material.BuildContext context) async {
+  Future<void> init() async {
     //fetch notesConfig
     try {
       var client = HttpClient();

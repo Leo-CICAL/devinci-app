@@ -147,15 +147,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    //globals.currentContext = context;
-    var res = <LocalizationsDelegate<dynamic>>[
-      RefreshLocalizations.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      SfGlobalLocalizations.delegate,
-    ];
-    //res.addAll(context.localizationDelegates);
-
     return GetMaterialApp(
       translations: DevinciTranslations(),
       locale: Get.deviceLocale,
@@ -164,8 +155,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       navigatorObservers: [
         SentryNavigatorObserver(),
       ],
-      localizationsDelegates: res,
-      // supportedLocales: context.supportedLocales,
+      localizationsDelegates: {
+        RefreshLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        SfGlobalLocalizations.delegate,
+      },
+      supportedLocales: const [
+        Locale('en'),
+        Locale('fr'),
+        Locale('de'),
+      ],
       // locale: context.locale,
       title: 'Devinci',
       theme: ThemeData(

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:about/about.dart';
-import 'package:app_settings/app_settings.dart';
 import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/cupertino.dart';
@@ -170,7 +169,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   right: 16,
                   top: 16,
                 ),
-                height: (7 * 46).toDouble(),
+                height: (6 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -272,36 +271,6 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        await AppSettings.openAppSettings();
-                      }, // handle your onTap here
-                      child: Container(
-                        height: 46,
-                        margin: EdgeInsets.only(left: 24),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                          width: 0.2,
-                          color: Color(0xffACACAC),
-                        ))),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                'notif_settings'.tr,
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 8),
-                              child: Icon(Icons.navigate_next,
-                                  color: Color(0xffACACAC)),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                     Container(
