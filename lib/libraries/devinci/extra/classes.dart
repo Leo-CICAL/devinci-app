@@ -15,8 +15,7 @@ import 'package:sembast/sembast_io.dart';
 import 'package:sembast/utils/value_utils.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-// import 'package:easy_localization/easy_localization.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:sentry/sentry.dart';
 
 import 'api.dart';
@@ -398,22 +397,15 @@ class Student {
         var id = sub2.userId;
         Sentry.configureScope(
           (scope) {
-            scope.setTag('app.language', 'locale'.tr);
+            scope.setTag('app.language', 'locale'.tr());
             scope.user =
                 User(email: username, username: tokens['uids'], id: id);
           },
         );
-      } catch (e, stacktrace) {
-        FLog.logThis(
-            className: 'Student',
-            methodName: 'init',
-            text: 'Sentry.configureScope exception',
-            type: LogLevel.ERROR,
-            exception: Exception(e),
-            stacktrace: stacktrace);
+      } catch (e) {
         Sentry.configureScope(
           (scope) {
-            scope.setTag('app.language', 'locale'.tr);
+            scope.setTag('app.language', 'locale'.tr());
             scope.user = User(email: username, id: tokens['uids']);
           },
         );
@@ -1072,15 +1064,12 @@ class Student {
                 methodName: 'getAbsences',
                 text: absences['liste'].toString());
           } else if (body.contains('Validation des règlements')) {
-            Get.snackbar(
-              'warning'.tr,
-              'school_rules_validation'.tr,
+            final snackBar = material.SnackBar(
+              content: material.Text('school_rules_validation').tr(),
               duration: const Duration(seconds: 10),
-              snackPosition: SnackPosition.BOTTOM,
-              borderRadius: 0,
-              margin: material.EdgeInsets.only(
-                  left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
             );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+            await showSnackBar(snackBar);
           }
           absences['done'] = true;
           await globals.store.record('absences').put(globals.db, absences);
@@ -1192,15 +1181,12 @@ class Student {
             notesList.add([name, p]);
           }
         } else {
-          Get.snackbar(
-            'warning'.tr,
-            'school_rules_validation'.tr,
+          final snackBar = material.SnackBar(
+            content: material.Text('school_rules_validation').tr(),
             duration: const Duration(seconds: 10),
-            snackPosition: SnackPosition.BOTTOM,
-            borderRadius: 0,
-            margin: material.EdgeInsets.only(
-                left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
           );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+          await showSnackBar(snackBar);
         }
       } else {
         error = true;
@@ -1297,7 +1283,7 @@ class Student {
                     FLog.logThis(
                         className: 'Student',
                         methodName: 'getNotes',
-                        text: 'exception',
+                        text: 'module moy exception',
                         type: LogLevel.ERROR,
                         exception: Exception(e),
                         stacktrace: stacktrace);
@@ -1313,7 +1299,7 @@ class Student {
                     FLog.logThis(
                         className: 'Student',
                         methodName: 'getNotes',
-                        text: 'exception',
+                        text: 'module nf exception',
                         type: LogLevel.ERROR,
                         exception: Exception(e),
                         stacktrace: stacktrace);
@@ -1329,7 +1315,7 @@ class Student {
                     FLog.logThis(
                         className: 'Student',
                         methodName: 'getNotes',
-                        text: 'exception',
+                        text: 'module moyP exception',
                         type: LogLevel.ERROR,
                         exception: Exception(e),
                         stacktrace: stacktrace);
@@ -1389,15 +1375,15 @@ class Student {
                           FLog.logThis(
                               className: 'Student',
                               methodName: 'getNotes',
-                              text: 'exception',
-                              type: LogLevel.INFO,
+                              text: 'matiere moy exception v2',
+                              type: LogLevel.ERROR,
                               exception: Exception(e),
                               stacktrace: stacktrace);
                         }
                       }
                       FLog.info(
                           className: 'Student',
-                          methodName: 'getNotes moy',
+                          methodName: 'getNotes',
                           text: elem['moy'].toString());
                       try {
                         if (!texts[notesConfig['matieres']['!e']['ri']]
@@ -1411,7 +1397,14 @@ class Student {
                                     notesConfig['matieres']['!e']['!r']['moyP']
                                         ['+'])
                                 .group(1));
-                          } catch (e) {
+                          } catch (e, stacktrace) {
+                            FLog.logThis(
+                                className: 'Student',
+                                methodName: 'getNotes',
+                                text: 'matiere moyP exception',
+                                type: LogLevel.ERROR,
+                                exception: Exception(e),
+                                stacktrace: stacktrace);
                             elem['moyP'] = null;
                           }
                         } else {
@@ -1432,7 +1425,7 @@ class Student {
                           }
                           var e = {
                             'nom':
-                                'MESIMF120419-CC-1 Rattrapage' + 're_take'.tr,
+                                'MESIMF120419-CC-1 Rattrapage' + 're_take'.tr(),
                             'note': noteR,
                             'noteP': null,
                             //"date": timestamp
@@ -1454,7 +1447,7 @@ class Student {
                             className: 'Student',
                             methodName: 'getNotes',
                             text: 'exception',
-                            type: LogLevel.INFO,
+                            type: LogLevel.ERROR,
                             exception: Exception(e),
                             stacktrace: stacktrace);
                       }
@@ -1499,13 +1492,24 @@ class Student {
                                       ['s'])[notesConfig['notes']['note']
                                   ['si']]);
                             } catch (e, stacktrace) {
+                              Sentry.addBreadcrumb(Breadcrumb(
+                                  message: 'failed to double parse : ' +
+                                      texts[notesConfig['notes']['note']['i']]
+                                          .replaceAllMapped(
+                                              RegExp(notesConfig['notes']
+                                                  ['note']['r']),
+                                              (match) => '')
+                                          .split(notesConfig['notes']['note']
+                                              ['s'])[notesConfig['notes']
+                                          ['note']['si']]));
                               FLog.logThis(
                                   className: 'Student',
                                   methodName: 'getNotes',
                                   text: 'exception',
-                                  type: LogLevel.INFO,
+                                  type: LogLevel.ERROR,
                                   exception: Exception(e),
                                   stacktrace: stacktrace);
+                              reportError(e, stacktrace);
                             }
                           }
                           elem['noteP'] = null;
@@ -1521,7 +1525,7 @@ class Student {
                                 className: 'Student',
                                 methodName: 'getNotes',
                                 text: 'exception',
-                                type: LogLevel.INFO,
+                                type: LogLevel.ERROR,
                                 exception: Exception(e),
                                 stacktrace: stacktrace);
                           }
@@ -1536,8 +1540,8 @@ class Student {
                   FLog.logThis(
                       className: 'Student',
                       methodName: 'getNotes',
-                      text: 'exception',
-                      type: LogLevel.INFO,
+                      text: 'error',
+                      type: LogLevel.ERROR,
                       exception: Exception(e),
                       stacktrace: stacktrace);
                 }
@@ -1545,15 +1549,12 @@ class Student {
               }
             }
           } else if (body.contains('Validation des règlements')) {
-            Get.snackbar(
-              'warning'.tr,
-              'school_rules_validation'.tr,
+            final snackBar = material.SnackBar(
+              content: material.Text('school_rules_validation').tr(),
               duration: const Duration(seconds: 10),
-              snackPosition: SnackPosition.BOTTOM,
-              borderRadius: 0,
-              margin: material.EdgeInsets.only(
-                  left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
             );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+            await showSnackBar(snackBar);
           }
         } else {
           error = true;
@@ -1596,7 +1597,6 @@ class Student {
       if (res != null) {
         if (res.statusCode == 200) {
           var body = await res.transform(utf8.decoder).join();
-          FLog.info(text: body);
           if (!body.contains('Validation des règlements')) {
             try {
               var doc = parse(body);
@@ -1712,32 +1712,22 @@ class Student {
                     type: LogLevel.ERROR,
                     exception: Exception(e),
                     stacktrace: stacktrace);
+                await reportError(e, stacktrace);
               }
 
-              try {
-                documents['calendrier']['url'] =
-                    'https://www.leonard-de-vinci.net' +
-                        doc
-                            .querySelectorAll(
-                                '.social-box.social-bordered.span6')[0]
-                            .querySelectorAll('a')[calendrierIndex]
-                            .attributes['href'];
-                documents['calendrier']['annee'] = RegExp(r'\d{4}-\d{4}')
-                    .firstMatch(doc
-                        .querySelectorAll(
-                            '.social-box.social-bordered.span6')[0]
-                        .querySelectorAll('a')[calendrierIndex]
-                        .text)
-                    .group(0);
-              } catch (e, stacktrace) {
-                FLog.logThis(
-                    className: 'Student',
-                    methodName: 'getDocuments',
-                    text: 'exception',
-                    type: LogLevel.ERROR,
-                    exception: Exception(e),
-                    stacktrace: stacktrace);
-              }
+              documents['calendrier']['url'] =
+                  'https://www.leonard-de-vinci.net' +
+                      doc
+                          .querySelectorAll(
+                              '.social-box.social-bordered.span6')[0]
+                          .querySelectorAll('a')[calendrierIndex]
+                          .attributes['href'];
+              documents['calendrier']['annee'] = RegExp(r'\d{4}-\d{4}')
+                  .firstMatch(doc
+                      .querySelectorAll('.social-box.social-bordered.span6')[0]
+                      .querySelectorAll('a')[calendrierIndex]
+                      .text)
+                  .group(0);
 
               FLog.info(
                   className: 'Student',
@@ -1800,15 +1790,12 @@ class Student {
               await reportError(e, stacktrace);
             }
           } else if (body.contains('Validation des règlements')) {
-            Get.snackbar(
-              'warning'.tr,
-              'school_rules_validation'.tr,
+            final snackBar = material.SnackBar(
+              content: material.Text('school_rules_validation').tr(),
               duration: const Duration(seconds: 10),
-              snackPosition: SnackPosition.BOTTOM,
-              borderRadius: 0,
-              margin: material.EdgeInsets.only(
-                  left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
             );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+            await showSnackBar(snackBar);
           }
         }
       }
@@ -1843,6 +1830,7 @@ class Student {
                 'seance_pk': '',
                 'zoom': '',
                 'zoom_pwd': '',
+                'validation_date': '',
               });
             }
             for (var i = 0; i < trs.length; i++) {
@@ -1896,6 +1884,24 @@ class Student {
                         .group(1);
                   } else if (body.contains('Vous avez été noté présent')) {
                     presence[i]['type'] = 'done';
+                    try{
+                      var doc = parse(body);
+                      var validationText = doc
+                          .querySelector(
+                              '#body_presence > div.alert.alert-success')
+                          .text;
+                      presence[i]['validation_date'] = RegExp(r'à (.*?) ')
+                        .firstMatch(validationText)
+                        .group(1);
+                    }catch(e, stacktrace){
+                      FLog.logThis(
+                    className: 'Student',
+                    methodName: 'getPresence',
+                    text: 'exception',
+                    type: LogLevel.ERROR,
+                    exception: Exception(e),
+                    stacktrace: stacktrace);
+                    }
                   } else if (body.contains('clôturé')) {
                     presence[i]['type'] = 'closed';
                   }

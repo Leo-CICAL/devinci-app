@@ -5,10 +5,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:matomo/matomo.dart';
+import 'package:one_context/one_context.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
-import 'package:get/get.dart';
-//import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SallesPage extends TraceableStatefulWidget {
   final bool tablet;
@@ -63,7 +63,7 @@ class _SallesPageState extends State<SallesPage> {
     var res = <GridColumn>[];
     res.add(GridTextColumn(
         mappingName: 'salles',
-        headerText: 'rooms'.tr,
+        headerText: 'rooms'.tr(),
         cellStyle: DataGridCellStyle(textStyle: TextStyle(fontSize: 12)),
         padding: EdgeInsets.only(left: 6)));
     for (var elem in globals.user.sallesStr) {
@@ -106,9 +106,9 @@ class _SallesPageState extends State<SallesPage> {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           automaticallyImplyLeading: false,
           title: Text(
-            'free_room'.tr,
+            'free_room',
             style: Theme.of(context).textTheme.headline1,
-          ),
+          ).tr(),
           actions: <Widget>[
             IconButton(
               icon: IconTheme(
@@ -116,7 +116,8 @@ class _SallesPageState extends State<SallesPage> {
                 child: Icon(Icons.close),
               ),
               onPressed: () async {
-                Navigator.of(context).pop();
+                OneContext().pop();
+                //Navigator.of(context).pop();
               },
             ),
           ],

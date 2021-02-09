@@ -2,9 +2,9 @@ import 'package:devinci/extra/classes.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/pages/logic/user.dart';
 import 'package:flutter/material.dart';
-//import 'package:easy_localization/easy_localization.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:one_context/one_context.dart';
 import 'package:recase/recase.dart';
 import 'package:f_logs/f_logs.dart';
 
@@ -14,17 +14,9 @@ Widget InfoSection(String main, String second) {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          GestureDetector(
-            // This does not give the tap position ...
-            onLongPress: () {
-              showCustomMenu(second, main);
-            },
-            // Have to remember it on tap-down.
-            onTapDown: storePosition,
-            child: RichText(
-              textAlign: TextAlign.left,
-              text: TextSpan(
-                text: main.tr + ': ',
+          SelectableText.rich(
+              TextSpan(
+                text: main.tr() + ': ',
                 style: Theme.of(getContext()).textTheme.bodyText1,
                 children: <TextSpan>[
                   TextSpan(
@@ -34,7 +26,6 @@ Widget InfoSection(String main, String second) {
                       )),
                 ],
               ),
-            ),
           ),
         ],
       ));
@@ -42,7 +33,7 @@ Widget InfoSection(String main, String second) {
 
 Widget DocumentTile(
     String name, String subtitle, String frUrl, String enUrl, int id) {
-  name = name.tr;
+  name = name.tr();
   return Padding(
     padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
     child: Card(
@@ -75,15 +66,12 @@ Widget DocumentTile(
                   className: 'UserPage Components',
                   methodName: 'DocumentTile',
                   text: 'needs reconnection');
-              Get.snackbar(
-                null,
-                'reconnecting'.tr,
+              final snackBar = SnackBar(
+                content: Text('reconnecting').tr(),
                 duration: const Duration(seconds: 10),
-                snackPosition: SnackPosition.BOTTOM,
-                borderRadius: 0,
-                margin: EdgeInsets.only(
-                    left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
               );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+              await showSnackBar(snackBar);
               try {
                 await globals.user.getTokens();
               } catch (e, stacktrace) {
@@ -107,16 +95,17 @@ Widget DocumentTile(
                     exception: Exception(e),
                     stacktrace: stacktrace);
               }
-              Get.back();
+              Scaffold.of(getContext()).removeCurrentSnackBar();
             }
             setState(() {
               docCardData[id]['frShowButton'] = true;
             });
             if (path != '') {
-              await Navigator.push(
-                getContext(),
-                MaterialPageRoute(builder: (context) => PDFScreen(path, name)),
-              );
+              await OneContext().push(MaterialPageRoute(builder: (_) => PDFScreen(path, name)));
+              // await Navigator.push(
+              //   getContext(),
+              //   MaterialPageRoute(builder: (context) => PDFScreen(path, name)),
+              // );
             }
           }
         }, // handle your onTap here
@@ -206,16 +195,18 @@ Widget DocumentTile(
                                               true;
                                         });
                                         if (path != '') {
-                                          await Navigator.push(
-                                            getContext(),
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    PDFScreen(path, name)),
-                                          );
+                                          await OneContext().push(MaterialPageRoute(builder: (_) => PDFScreen(path, name)));
+                                          // await Navigator.push(
+                                          //   getContext(),
+                                          //   MaterialPageRoute(
+                                          //       builder: (context) =>
+                                          //           PDFScreen(path, name)),
+                                          // );
                                         }
                                       },
-                                      child: Text(
-                                          enUrl != '' ? 'Français' : 'open'.tr),
+                                      child: Text(enUrl != ''
+                                          ? 'Français'
+                                          : 'open'.tr()),
                                     )
                                   : Container(
                                       child: Center(
@@ -246,12 +237,13 @@ Widget DocumentTile(
                                                 true;
                                           });
                                           if (path != '') {
-                                            await Navigator.push(
-                                              getContext(),
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PDFScreen(path, name)),
-                                            );
+                                            await OneContext().push(MaterialPageRoute(builder: (_) => PDFScreen(path, name)));
+                                            // await Navigator.push(
+                                            //   getContext(),
+                                            //   MaterialPageRoute(
+                                            //       builder: (context) =>
+                                            //           PDFScreen(path, name)),
+                                            // );
                                           }
                                         },
                                         child: Text('English'),

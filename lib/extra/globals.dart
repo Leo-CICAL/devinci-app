@@ -11,8 +11,6 @@ import 'package:devinci/pages/ui/user.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:devinci/libraries/devinci/extra/classes.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-// import 'package:property_change_notifier/property_change_notifier.dart';
 import 'package:sembast/sembast.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,7 +26,7 @@ TimeChefUser timeChefUser;
 
 bool asXxMoy = false;
 
-//BuildContext currentContext;
+BuildContext currentContext;
 
 String crashConsent;
 
@@ -37,17 +35,6 @@ bool notifConsent;
 CalendarView calendarView = CalendarView.workWeek;
 
 bool showSidePanel = false;
-
-class AgendaTitle with ChangeNotifier {
-  String _headerText = '';
-
-  String get headerText => _headerText;
-
-  set headerText(String value) {
-    _headerText = value;
-    notifyListeners();
-  }
-}
 
 String feedbackError = '';
 StackTrace feedbackStackTrace = StackTrace.fromString('');
@@ -95,17 +82,11 @@ CalendarController calendarController;
 
 bool showRestaurant = false;
 
-double bottomPadding;
-
 //globalkeys
 final notesPageKey = GlobalKey<NotesPageState>();
 final absencesPageKey = GlobalKey<AbsencesPageState>();
 final mainPageKey = GlobalKey<MainPageState>();
+final mainScaffoldKey = GlobalKey<ScaffoldState>();
 final adminPageKey = GlobalKey<AdminPageState>();
 final loginPageKey = GlobalKey<LoginPageState>();
 final userPageKey = GlobalKey<UserPageState>();
-final mainScaffoldKey = GlobalKey<ScaffoldState>();
-
-BuildContext getScaffold() {
-  return Get.context;
-}

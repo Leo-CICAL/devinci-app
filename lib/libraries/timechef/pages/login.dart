@@ -6,9 +6,9 @@ import 'package:devinci/libraries/flutter_progress_button/flutter_progress_butto
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:one_context/one_context.dart';
 import 'package:url_launcher/url_launcher.dart';
-//import 'package:easy_localization/easy_localization.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:f_logs/f_logs.dart';
 import '../timechef.dart';
 
@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                     focusNode: _usernameFocus,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'user'.tr,
+                      labelText: 'user'.tr(),
                     ),
                     controller: myControllerUsername,
                     onFieldSubmitted: (term) {
@@ -76,11 +76,11 @@ class _LoginPageState extends State<LoginPage> {
                     validator: (value) {
                       if (globals.timeChefUser != null) {
                         if (globals.timeChefUser.error) {
-                          return 'wrong_id'.tr;
+                          return 'wrong_id'.tr();
                         }
                       }
                       if (value.isEmpty) {
-                        return 'no_empty'.tr;
+                        return 'no_empty'.tr();
                       }
                       return null;
                     },
@@ -93,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                       focusNode: _passwordFocus,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'password'.tr,
+                        labelText: 'password'.tr(),
                       ),
                       controller: myControllerPassword,
                       onFieldSubmitted: (value) async {
@@ -144,18 +144,19 @@ class _LoginPageState extends State<LoginPage> {
                                 builder: (BuildContext context) {
                                   // return object of type Dialog
                                   return AlertDialog(
-                                    title: Text('error'.tr),
+                                    title: Text('error').tr(),
                                     content: Text(
-                                      'unknown_error'.trArgs([
-                                        globals.user.code.toString(),
-                                        exception
-                                      ]),
+                                      'unknown_error'.tr(namedArgs: {
+                                        'code': globals.user.code.toString(),
+                                        'exception': exception
+                                      }),
                                     ),
                                     actions: <Widget>[
                                       TextButton(
-                                        child: Text('close'.tr),
+                                        child: Text('close').tr(),
                                         onPressed: () {
-                                          Navigator.of(context).pop();
+                                          OneContext().pop();
+                                          //Navigator.of(context).pop();
                                         },
                                       ),
                                     ],
@@ -184,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
                           }
                         }
                         if (value.isEmpty) {
-                          return 'no_empty'.tr;
+                          return 'no_empty'.tr();
                         }
                         return null;
                       },
@@ -196,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 18),
                         child: Text(
-                          'login'.tr.toUpperCase(),
+                          'login'.tr().toUpperCase(),
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -247,18 +248,19 @@ class _LoginPageState extends State<LoginPage> {
                                 builder: (BuildContext context) {
                                   // return object of type Dialog
                                   return AlertDialog(
-                                    title: Text('error'.tr),
+                                    title: Text('error').tr(),
                                     content: Text(
-                                      'unknown_error'.trArgs([
-                                        globals.user.code.toString(),
-                                        exception
-                                      ]),
+                                      'unknown_error'.tr(namedArgs: {
+                                        'code': globals.user.code.toString(),
+                                        'exception': exception
+                                      }),
                                     ),
                                     actions: <Widget>[
                                       TextButton(
-                                        child: Text('close'.tr),
+                                        child: Text('close').tr(),
                                         onPressed: () {
-                                          Navigator.of(context).pop();
+                                          OneContext().pop();
+                                          //Navigator.of(context).pop();
                                         },
                                       ),
                                     ],
@@ -298,9 +300,10 @@ class _LoginPageState extends State<LoginPage> {
                               throw 'Could not launch $url';
                             }
                           },
-                          child: Text('no_account'.tr,
-                              style: TextStyle(
-                                  color: Theme.of(context).accentColor))))
+                          child: Text('no_account',
+                                  style: TextStyle(
+                                      color: Theme.of(context).accentColor))
+                              .tr()))
                 ],
               ),
             ),
@@ -319,8 +322,9 @@ class _LoginPageState extends State<LoginPage> {
                   overlayColor: MaterialStateProperty.resolveWith((states) {
                 return Theme.of(context).accentColor.withOpacity(0.2);
               })),
-              child: Text('login'.tr,
-                  style: TextStyle(color: Theme.of(context).accentColor))),
+              child: Text('login',
+                      style: TextStyle(color: Theme.of(context).accentColor))
+                  .tr()),
           padding: EdgeInsets.only(left: 16));
     }
   }

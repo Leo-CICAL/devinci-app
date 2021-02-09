@@ -2,9 +2,9 @@ import 'package:devinci/extra/classes.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/material.dart';
-//import 'package:easy_localization/easy_localization.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
+import 'package:one_context/one_context.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/utils/value_utils.dart';
 import 'package:share_extend/share_extend.dart';
@@ -27,15 +27,12 @@ void loaderListener() async {
           className: 'UserPage Logic',
           methodName: 'loaderListener',
           text: 'needs reconnection');
-      Get.snackbar(
-        null,
-        'reconnecting'.tr,
+      final snackBar = SnackBar(
+        content: Text('reconnecting').tr(),
         duration: const Duration(seconds: 10),
-        snackPosition: SnackPosition.BOTTOM,
-        borderRadius: 0,
-        margin: EdgeInsets.only(
-            left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
       );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+      await showSnackBar(snackBar);
       try {
         await globals.user.getTokens();
       } catch (e, stacktrace) {
@@ -53,7 +50,7 @@ void loaderListener() async {
       } catch (exception, stacktrace) {
         catcher(exception, stacktrace, '?my=docs', force: true);
       }
-      Get.back();
+      Scaffold.of(getContext()).removeCurrentSnackBar();
     }
     setState(() {
       show = true;
@@ -79,15 +76,12 @@ void runBeforeBuild() async {
             className: 'UserPage Logic',
             methodName: 'runBeforeBuild',
             text: 'needs reconnection');
-        Get.snackbar(
-          null,
-          'reconnecting'.tr,
+        final snackBar = SnackBar(
+          content: Text('reconnecting').tr(),
           duration: const Duration(seconds: 10),
-          snackPosition: SnackPosition.BOTTOM,
-          borderRadius: 0,
-          margin: EdgeInsets.only(
-              left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
         );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+        await showSnackBar(snackBar);
         try {
           await globals.user.getTokens();
         } catch (e, stacktrace) {
@@ -102,9 +96,9 @@ void runBeforeBuild() async {
         try {
           await globals.user.getDocuments();
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace, '?my=docs', force: true);
+          catcher(exception, stacktrace, '?my=docs', force:true);
         }
-        Get.back();
+        Scaffold.of(getContext()).removeCurrentSnackBar();
       }
     } else {
       globals.user.documents = cloneMap(documents);
@@ -140,16 +134,10 @@ void showCustomMenu(String data, String title) {
     setState(() {
       if (delta == 1) {
         Clipboard.setData(ClipboardData(text: data));
-        Get.snackbar(
-          null,
-          'copied'.trArgs([title]),
-          duration: const Duration(seconds: 6),
-          snackPosition: SnackPosition.BOTTOM,
-          borderRadius: 5,
-          animationDuration: const Duration(milliseconds: 500),
-          margin: EdgeInsets.only(
-              left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
-        );
+        final snackBar = SnackBar(content: Text('copied').tr(args: [title]));
+
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+        showSnackBar(snackBar);
       } else {
         ShareExtend.share(data, 'text', sharePanelTitle: title);
       }
@@ -164,8 +152,10 @@ void storePosition(TapDownDetails details) {
 BuildContext getContext() {
   if (globals.userPageKey.currentState != null) {
     return globals.userPageKey.currentState.context;
+  }else if (globals.mainPageKey.currentState != null) {
+    return globals.mainPageKey.currentState.context;
   } else {
-    return globals.getScaffold();
+    return OneContext().context;
   }
 }
 

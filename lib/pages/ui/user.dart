@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:matomo/matomo.dart';
 import 'package:devinci/extra/globals.dart' as globals;
-//import 'package:easy_localization/easy_localization.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class UserPage extends TraceableStatefulWidget {
   UserPage({Key key}) : super(key: key);
@@ -45,10 +44,10 @@ class UserPageState extends State<UserPage> {
             children: <Widget>[
               ExpansionTile(
                 title: Text(
-                  'private_info'.tr,
+                  'private_info',
                   textAlign: TextAlign.left,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
+                ).tr(),
                 children: <Widget>[
                   InfoSection('id', globals.user.tokens['uids']),
                   InfoSection('#card', globals.user.data['badge']),

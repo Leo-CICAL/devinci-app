@@ -5,8 +5,7 @@ import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 
 import 'package:share_extend/share_extend.dart';
-// import 'package:easy_localization/easy_localization.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class Cours {
@@ -168,7 +167,7 @@ class ContextEntryState extends State<ContextEntry> {
             height: 20,
             child: TextButton(
               onPressed: copy,
-              child: Text('copy'.tr),
+              child: Text('copy').tr(),
             ),
           ),
         ),
@@ -177,7 +176,7 @@ class ContextEntryState extends State<ContextEntry> {
             height: 20,
             child: TextButton(
               onPressed: share,
-              child: Text('share'.tr),
+              child: Text('share').tr(),
             ),
           ),
         ),
@@ -197,5 +196,16 @@ class MyBehavior extends ScrollBehavior {
   Widget buildViewportChrome(
       BuildContext context, Widget child, AxisDirection axisDirection) {
     return child;
+  }
+}
+
+class AgendaTitle with ChangeNotifier {
+  String _headerText = '';
+
+  String get headerText => _headerText;
+
+  set headerText(String value) {
+    _headerText = value;
+    notifyListeners();
   }
 }

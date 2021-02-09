@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:one_context/one_context.dart';
 
 /// Function which gets called when the user submits his feedback.
 /// [context] is a [BuildContext] with a [MaterialApp] ancestor.
@@ -46,7 +47,8 @@ void alertFeedbackFunction(
           TextButton(
             child: const Text('Close'),
             onPressed: () {
-              Navigator.pop(context);
+              OneContext().pop();
+              //Navigator.pop(context);
             },
           )
         ],

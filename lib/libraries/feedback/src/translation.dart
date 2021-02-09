@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 abstract class FeedbackTranslation {
   String get submitButtonText;
@@ -9,16 +9,16 @@ abstract class FeedbackTranslation {
 
 class EnTranslation implements FeedbackTranslation {
   @override
-  String get submitButtonText => 'send'.tr;
+  String get submitButtonText => 'send'.tr();
 
   @override
-  String get feedbackDescriptionText => 'more_info'.tr;
+  String get feedbackDescriptionText => 'more_info'.tr();
 
   @override
-  String get draw => 'draw'.tr;
+  String get draw => 'draw'.tr();
 
   @override
-  String get navigate => 'navigate'.tr;
+  String get navigate => 'navigate'.tr();
 }
 
 class DeTranslation implements FeedbackTranslation {

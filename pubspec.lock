@@ -162,6 +162,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1"
+  easy_localization:
+    dependency: "direct main"
+    description:
+      name: easy_localization
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.3"
   f_logs:
     dependency: "direct main"
     description:
@@ -261,13 +268,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  get:
-    dependency: "direct main"
-    description:
-      name: get
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.24.0"
   glob:
     dependency: transitive
     description:
@@ -415,6 +415,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.13"
+  one_context:
+    dependency: "direct main"
+    description:
+      name: one_context
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.0"
   onesignal_flutter:
     dependency: "direct main"
     description:
@@ -720,49 +727,49 @@ packages:
       name: syncfusion_flutter_calendar
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "18.4.41"
+    version: "18.4.42"
   syncfusion_flutter_core:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "18.4.41"
+    version: "18.4.42"
   syncfusion_flutter_datagrid:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_datagrid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "18.4.41-beta"
+    version: "18.4.42-beta"
   syncfusion_flutter_datepicker:
     dependency: transitive
     description:
       name: syncfusion_flutter_datepicker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "18.4.41-beta"
+    version: "18.4.42-beta"
   syncfusion_flutter_pdf:
     dependency: transitive
     description:
       name: syncfusion_flutter_pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "18.4.41-beta"
+    version: "18.4.42-beta"
   syncfusion_flutter_pdfviewer:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_pdfviewer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "18.4.41-beta"
+    version: "18.4.42-beta"
   syncfusion_localizations:
     dependency: "direct main"
     description:
       name: syncfusion_localizations
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "18.4.41"
+    version: "18.4.42"
   synchronized:
     dependency: transitive
     description:

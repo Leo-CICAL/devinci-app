@@ -10,11 +10,10 @@ import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:matomo/matomo.dart';
 import 'package:f_logs/f_logs.dart';
+import 'package:one_context/one_context.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:sembast/sembast.dart';
-import 'package:get/get.dart';
-import 'package:recase/recase.dart';
-// import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 Function setAgendaHeaderState;
 
@@ -99,7 +98,7 @@ class _AgendaPageState extends State<AgendaPage> {
       });
     }
     if (!privacyConsent) {
-      Timer(Duration(seconds: 2), () => showGDPR());
+      Timer(Duration(seconds: 1), () => showGDPR(context));
       await globals.prefs.setBool('privacyConsent', true);
     }
     return;
@@ -179,11 +178,11 @@ class _AgendaPageState extends State<AgendaPage> {
 
     _startTime = TimeOfDay(hour: _from.hour, minute: _from.minute);
     _endTime = TimeOfDay(hour: _to.hour, minute: _to.minute);
-
-    Navigator.push<Widget>(
-      context,
-      MaterialPageRoute(builder: (BuildContext context) => CoursEditor()),
-    );
+    OneContext().push(MaterialPageRoute(builder: (_) => CoursEditor()));
+    // Navigator.push<Widget>(
+    //   context,
+    //   MaterialPageRoute(builder: (BuildContext context) => CoursEditor()),
+    // );
   }
 
   @override
@@ -225,7 +224,7 @@ class _AgendaPageState extends State<AgendaPage> {
                     .format(viewChangedDetails.visibleDates[
                         viewChangedDetails.visibleDates.length ~/ 2])
                     .toString()
-                    .titleCase;
+                    .capitalize();
                 SchedulerBinding.instance.addPostFrameCallback((duration) {
                   setAgendaHeaderState(() {});
                 });
@@ -267,7 +266,7 @@ class MeetingDataSource extends CalendarDataSource {
       if (appointments[index].site != '' &&
           appointments[index].site != 'La Défense' &&
           appointments[index].site != 'Online') {
-        title += '- ${'location'.tr}: ' + appointments[index].site;
+        title += '- ${'location'.tr()}: ' + appointments[index].site;
       }
       title += '\n${appointments[index].prof}';
     } else if (globals.calendarView == CalendarView.month) {
@@ -363,7 +362,7 @@ class CoursEditorState extends State<CoursEditor> {
                     fontWeight: FontWeight.w400),
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'title'.tr,
+                  hintText: 'title'.tr(),
                 ),
               ),
             ),
@@ -389,7 +388,7 @@ class CoursEditorState extends State<CoursEditor> {
                     fontWeight: FontWeight.w400),
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'teacher'.tr,
+                  hintText: 'teacher'.tr(),
                 ),
               ),
             ),
@@ -413,7 +412,7 @@ class CoursEditorState extends State<CoursEditor> {
                     fontWeight: FontWeight.w400),
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'varlocation'.tr,
+                  hintText: 'varlocation'.tr(),
                 ),
               ),
             ),
@@ -439,7 +438,7 @@ class CoursEditorState extends State<CoursEditor> {
                     fontWeight: FontWeight.w400),
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'group'.tr,
+                  hintText: 'group'.tr(),
                 ),
               ),
             ),
@@ -693,7 +692,7 @@ class CoursEditorState extends State<CoursEditor> {
               contentPadding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
               leading: Icon(Icons.lens, color: color),
               title: _uid.contains(':')
-                  ? Text(flag.tr)
+                  ? Text(flag).tr()
                   : DropdownButton<String>(
                       value: flag,
                       icon: Icon(Icons.expand_more_rounded),
@@ -719,7 +718,7 @@ class CoursEditorState extends State<CoursEditor> {
                       ].map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value.tr),
+                          child: Text(value).tr(),
                         );
                       }).toList(),
                     ),
@@ -732,47 +731,48 @@ class CoursEditorState extends State<CoursEditor> {
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: OutlinedButton(
-                      onPressed: () {
-                        if (_selectedCours != null && !_uid.contains(':')) {
-                          globals.cours
-                              .removeAt(globals.cours.indexOf(_selectedCours));
-                          globals.customCours.removeAt(
-                              globals.customCours.indexOf(_selectedCours));
-                        }
-                        globals.store
-                            .record('customCours')
-                            .put(globals.db, coursListToJson());
-                        _selectedCours = null;
-                        globals.calendarView =
-                            globals.calendarView == CalendarView.day
-                                ? CalendarView.workWeek
-                                : CalendarView.day;
-                        globals.calendarView =
-                            globals.calendarView == CalendarView.workWeek
-                                ? CalendarView.day
-                                : CalendarView.workWeek;
-
-                        Navigator.pop(context);
-                      },
-                      style: ButtonStyle(overlayColor:
-                          MaterialStateProperty.resolveWith((states) {
-                        return (globals.currentTheme.isDark()
-                                ? Colors.redAccent
-                                : Colors.red.shade700)
-                            .withOpacity(0.2);
-                      }), side: MaterialStateProperty.resolveWith((states) {
-                        return BorderSide(
-                            color: globals.currentTheme.isDark()
-                                ? Colors.redAccent
-                                : Colors.red.shade700,
-                            width: 2);
-                      })),
-                      child: Text('delete_event'.tr,
-                          style: TextStyle(
+                        onPressed: () {
+                          if (_selectedCours != null && !_uid.contains(':')) {
+                            globals.cours.removeAt(
+                                globals.cours.indexOf(_selectedCours));
+                            globals.customCours.removeAt(
+                                globals.customCours.indexOf(_selectedCours));
+                          }
+                          globals.store
+                              .record('customCours')
+                              .put(globals.db, coursListToJson());
+                          _selectedCours = null;
+                          globals.calendarView =
+                              globals.calendarView == CalendarView.day
+                                  ? CalendarView.workWeek
+                                  : CalendarView.day;
+                          globals.calendarView =
+                              globals.calendarView == CalendarView.workWeek
+                                  ? CalendarView.day
+                                  : CalendarView.workWeek;
+                          OneContext().pop();
+                          //Navigator.pop(context);
+                        },
+                        style: ButtonStyle(overlayColor:
+                            MaterialStateProperty.resolveWith((states) {
+                          return (globals.currentTheme.isDark()
+                                  ? Colors.redAccent
+                                  : Colors.red.shade700)
+                              .withOpacity(0.2);
+                        }), side: MaterialStateProperty.resolveWith((states) {
+                          return BorderSide(
                               color: globals.currentTheme.isDark()
                                   ? Colors.redAccent
-                                  : Colors.red.shade700)),
-                    ))
+                                  : Colors.red.shade700,
+                              width: 2);
+                        })),
+                        child: Text('delete_event',
+                                style: TextStyle(
+                                    color: globals.currentTheme.isDark()
+                                        ? Colors.redAccent
+                                        : Colors.red.shade700))
+                            .tr()),
+                  )
                 : Container(),
             Container(),
           ],
@@ -795,8 +795,9 @@ class CoursEditorState extends State<CoursEditor> {
           appBar: AppBar(
             //backgroundColor: _colorCollection[_selectedColorIndex],
             title: Text(
-                (_title == '' || addButton ? 'new_event' : 'detail_event').tr,
-                style: Theme.of(context).textTheme.bodyText2),
+                    _title == '' || addButton ? 'new_event' : 'detail_event',
+                    style: Theme.of(context).textTheme.bodyText2)
+                .tr(),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             leading: IconTheme(
                 data: Theme.of(context).accentIconTheme,
@@ -805,7 +806,8 @@ class CoursEditorState extends State<CoursEditor> {
                     Icons.close,
                   ),
                   onPressed: () {
-                    Navigator.pop(context);
+                    OneContext().pop();
+                    //Navigator.pop(context);
                   },
                 )),
             actions: _uid.contains(':') && !addButton
@@ -859,8 +861,8 @@ class CoursEditorState extends State<CoursEditor> {
                                           CalendarView.workWeek
                                       ? CalendarView.day
                                       : CalendarView.workWeek;
-
-                              Navigator.pop(context);
+                              OneContext().pop();
+                              //Navigator.pop(context);
                             })),
                   ],
           ),

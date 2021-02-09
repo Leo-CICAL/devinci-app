@@ -11,11 +11,15 @@ class DevinciApi {
   void register() async {
     if (globals.user != null) {
       //init matomo
+      try{
       await MatomoTracker().initialize(
           siteId: 1,
           url: 'https://matomo.antoineraulin.com/piwik.php',
           visitorId: globals.user.tokens['uids']);
       MatomoTracker().setOptOut(!globals.analyticsConsent);
+      }catch(e){
+        
+      }
       if (globals.notifConsent) {
         var lastNotifRegistration =
             globals.prefs.getString('lastNotifRegistration') ?? '';
@@ -44,7 +48,6 @@ class DevinciApi {
           var uri = Uri.parse('https://devinci.antoineraulin.com/register');
           var req = await client.postUrl(uri);
           req.headers.set('content-type', 'application/json');
-          try{
           var sub = await OneSignal.shared.getPermissionSubscriptionState();
           var sub2 = sub.subscriptionStatus;
           var id = sub2.userId;
@@ -64,14 +67,6 @@ class DevinciApi {
                 methodName: 'register',
                 text: 'no player id');
             //l('no player id');
-          }}catch(exception, stacktrace){
-            FLog.logThis(
-              className: 'DevinciApi',
-              methodName: 'register',
-              text: 'exception',
-              type: LogLevel.ERROR,
-              exception: Exception(exception),
-              stacktrace: stacktrace);
           }
         } else {
           FLog.warning(
@@ -103,7 +98,6 @@ class DevinciApi {
         var uri = Uri.parse('https://devinci.antoineraulin.com/call');
         var req = await client.postUrl(uri);
         req.headers.set('content-type', 'application/json');
-        try{
         var sub = await OneSignal.shared.getPermissionSubscriptionState();
         var sub2 = sub.subscriptionStatus;
         var id = sub2.userId;
@@ -121,15 +115,6 @@ class DevinciApi {
               methodName: 'call',
               text: 'no player id');
           //l('no player id');
-        }
-        }catch(exception, stacktrace){
-          FLog.logThis(
-              className: 'DevinciApi',
-              methodName: 'call',
-              text: 'exception',
-              type: LogLevel.ERROR,
-              exception: Exception(exception),
-              stacktrace: stacktrace);
         }
       } else {
         FLog.warning(

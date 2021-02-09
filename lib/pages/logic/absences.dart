@@ -5,12 +5,12 @@ import 'dart:io';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:one_context/one_context.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sembast/sembast.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:sembast/utils/value_utils.dart';
-import 'package:get/get.dart';
-//import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:f_logs/f_logs.dart';
 
 //DATA
@@ -82,15 +82,12 @@ void runBeforeBuild() async {
             className: 'AbsencesPage Logic',
             methodName: 'runBeforeBuild',
             text: 'needs reconnection');
-        Get.snackbar(
-          null,
-          'reconnecting'.tr,
+        final snackBar = SnackBar(
+          content: Text('reconnecting').tr(),
           duration: const Duration(seconds: 10),
-          snackPosition: SnackPosition.BOTTOM,
-          borderRadius: 0,
-          margin: EdgeInsets.only(
-              left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
         );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+        await showSnackBar(snackBar);
         try {
           await globals.user.getTokens();
         } catch (e, stacktrace) {
@@ -129,7 +126,7 @@ void runBeforeBuild() async {
 
           await reportError(exception, stacktrace);
         }
-        Get.back();
+        Scaffold.of(getContext()).removeCurrentSnackBar();
       }
     }
   }
@@ -150,7 +147,9 @@ void onRefresh() async {
 BuildContext getContext() {
   if (globals.absencesPageKey.currentState != null) {
     return globals.absencesPageKey.currentState.context;
+  } else if (globals.mainPageKey.currentState != null) {
+    return globals.mainPageKey.currentState.context;
   } else {
-    return globals.getScaffold();
+    return OneContext().context;
   }
 }

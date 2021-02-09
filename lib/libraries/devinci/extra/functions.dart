@@ -16,10 +16,10 @@ import 'dart:typed_data';
 import 'package:devinci/libraries/feedback/feedback.dart';
 import 'package:sembast/sembast.dart';
 import 'package:devinci/extra/classes.dart';
-// import 'package:easy_localization/easy_localization.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:f_logs/f_logs.dart';
+import 'package:one_context/one_context.dart';
 
 double getMatMoy(var elem) {
   if (elem['ratt'] != null) {
@@ -194,18 +194,6 @@ Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
   return results;
 }
 
-bool get isInDebugMode {
-  // Assume you're in production mode.
-  var inDebugMode = false;
-
-  // Assert expressions are only evaluated during development. They are ignored
-  // in production. Therefore, this code only sets `inDebugMode` to true
-  // in a development environment.
-  assert(inDebugMode = true);
-
-  return inDebugMode;
-}
-
 /// Reports [error] along with its [stackTrace] to Sentry.io.
 Future<Null> reportError(dynamic error, dynamic stackTrace) async {
   FLog.logThis(
@@ -219,35 +207,33 @@ Future<Null> reportError(dynamic error, dynamic stackTrace) async {
   if (consent == 'true') {
     reportToCrash(error, stackTrace);
   } else {
-    Get.snackbar('error'.tr, 'error_no_send'.tr,
-        duration: const Duration(seconds: 10),
-        snackPosition: SnackPosition.BOTTOM,
-        borderRadius: 0,
-        margin: EdgeInsets.only(
-            left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
-        mainButton: FlatButton(
-            onPressed: () => reportToCrash(error, stackTrace),
-            child: Text('send'.tr)));
+    final snackBar = SnackBar(
+      content: Text(
+          "Une erreur est survenue, mais nous n'avons pas envoyer de rapport d'incident"),
+      action: SnackBarAction(
+        label: 'Envoyer',
+        onPressed: () => reportToCrash(error, stackTrace),
+      ),
+      duration: const Duration(seconds: 6),
+    );
+
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+    await showSnackBar(snackBar);
   }
 }
 
 void reportToCrash(var err, StackTrace stackTrace) async {
-  Get.snackbar('error'.tr, 'error_msg'.tr,
-      duration: const Duration(seconds: 10),
-      snackPosition: SnackPosition.BOTTOM,
-      borderRadius: 0,
-      margin: EdgeInsets.only(
-          left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
-      mainButton: FlatButton(
-          onPressed: () async {
-            globals.feedbackError = err.toString();
-            globals.feedbackStackTrace = stackTrace;
-            BetterFeedback.of(globals.getScaffold()).show();
-          },
-          child: Text('add_details'.tr)));
-  // Errors thrown in development mode are unlikely to be interesting. You can
-  // check if you are running in dev mode using an assertion and omit sending
-  // the report.
+  final snackBar = SnackBar(
+    content: Text('Une erreur est survenue'),
+    action: SnackBarAction(
+        label: 'Ajouter des informations',
+        onPressed: () async {
+          globals.feedbackError = err.toString();
+          globals.feedbackStackTrace = stackTrace;
+          BetterFeedback.of(OneContext().context).show();
+        }),
+  );
+  await showSnackBar(snackBar);
   if (globals.crashConsent == 'true') {
     FLog.info(
         className: 'functions',
@@ -260,17 +246,7 @@ void reportToCrash(var err, StackTrace stackTrace) async {
   }
 }
 
-extension DevinciTrans on String {
-  String plural(num arg) {
-    if (arg < 2) {
-      var key = '<2' + this;
-      return key.trArgs([arg.toString()]);
-    } else {
-      var key = '>=2' + this;
-      return key.trArgs([arg.toString()]);
-    }
-  }
-}
+String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
 void betterFeedbackOnFeedback(
   BuildContext context,
@@ -299,6 +275,33 @@ void betterFeedbackOnFeedback(
   );
 
   await FlutterEmailSender.send(email);
+}
+
+void quickActionsCallback(shortcutType) {
+  FLog.info(
+      className: 'functions',
+      methodName: 'quickActionsCallback',
+      text: shortcutType);
+  switch (shortcutType) {
+    case 'action_edt':
+      globals.selectedPage = 0;
+      return;
+      break;
+    case 'action_notes':
+      globals.selectedPage = 1;
+      return;
+      break;
+    case 'action_presence':
+      globals.selectedPage = 3;
+      return;
+      break;
+    case 'action_offline':
+      globals.isConnected = false;
+      return;
+      break;
+    default:
+      return;
+  }
 }
 
 const platform = MethodChannel('eu.araulin.devinci/channel');
@@ -356,7 +359,17 @@ Future<void> dialog(
   }
 }
 
-void showGDPR() async {
+Future<void> showSnackBar(SnackBar snack, {forceOneContext:false}) async {
+  if(forceOneContext || globals.mainScaffoldKey.currentState == null){
+    print('show with onecontext');
+    await OneContext().showSnackBar(builder: (_) => snack);
+  }
+  else {
+    await globals.mainScaffoldKey.currentState.showSnackBar(snack);
+  }
+}
+
+void showGDPR(BuildContext context) async {
   var notif = false;
   if (Platform.isAndroid) {
     notif = true;
@@ -366,38 +379,34 @@ void showGDPR() async {
   var show_bug = false;
   var analytics = true;
   var show_analytics = false;
-  await showDialog<bool>(
-      context: globals.getScaffold(),
+  await showDialog(
+      context: context,
       builder: (BuildContext context2) {
         return StatefulBuilder(builder: (context2, setState) {
           return SimpleDialog(
-            backgroundColor:
-                Theme.of(globals.getScaffold()).scaffoldBackgroundColor,
-            title: Text('gdpr_title'.tr,
-                style: TextStyle(
-                    color: Theme.of(globals.getScaffold())
-                        .textTheme
-                        .headline1
-                        .color)),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            title: Text('gdpr_title',
+                    style: TextStyle(
+                        color: Theme.of(context).textTheme.headline1.color))
+                .tr(),
             children: <Widget>[
               Center(
                 child: Padding(
                   padding:
                       const EdgeInsets.only(bottom: 8, left: 16, right: 16),
-                  child: Text('gdpr_consent'.tr,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: Theme.of(globals.getScaffold())
-                              .textTheme
-                              .headline1
-                              .color)),
+                  child: Text('gdpr_consent',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color:
+                                  Theme.of(context).textTheme.headline1.color))
+                      .tr(),
                 ),
               ),
               SwitchListTile(
                 value: notif,
-                activeColor: Theme.of(globals.getScaffold()).accentColor,
+                activeColor: Theme.of(context).accentColor,
                 secondary: Container(
                   height: 32,
                   width: 32,
@@ -405,15 +414,10 @@ void showGDPR() async {
                     borderRadius: BorderRadius.circular(25),
                     color: globals.currentTheme.isDark()
                         ? Colors.white.withOpacity(0.2)
-                        : Theme.of(globals.getScaffold())
-                            .accentColor
-                            .withOpacity(0.15),
+                        : Theme.of(context).accentColor.withOpacity(0.15),
                   ),
                   child: Icon(Icons.notifications_active_outlined,
-                      color: Theme.of(globals.getScaffold())
-                          .textTheme
-                          .headline1
-                          .color,
+                      color: Theme.of(context).textTheme.headline1.color,
                       size: 18),
                 ),
                 onChanged: (bool value) {
@@ -427,7 +431,7 @@ void showGDPR() async {
                 },
                 title: RichText(
                   text: TextSpan(
-                    text: 'attendance_notif'.tr + '\n',
+                    text: 'attendance_notif'.tr() + '\n',
                     style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
@@ -438,7 +442,7 @@ void showGDPR() async {
                       show_notif
                           ? WidgetSpan(child: SizedBox.shrink())
                           : TextSpan(
-                              text: 'more_about'.tr,
+                              text: 'more_about'.tr(),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   setState(() {
@@ -464,18 +468,19 @@ void showGDPR() async {
                             show_notif = false;
                           });
                         },
-                        child: Text('notif_more'.tr,
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.normal,
-                                color: globals.currentTheme.isDark()
-                                    ? Colors.blueGrey[200]
-                                    : Colors.blueGrey[600])),
+                        child: Text('notif_more',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.normal,
+                                    color: globals.currentTheme.isDark()
+                                        ? Colors.blueGrey[200]
+                                        : Colors.blueGrey[600]))
+                            .tr(),
                       ),
               ),
               SwitchListTile(
                 value: bug,
-                activeColor: Theme.of(globals.getScaffold()).accentColor,
+                activeColor: Theme.of(context).accentColor,
                 secondary: Container(
                   height: 32,
                   width: 32,
@@ -483,15 +488,10 @@ void showGDPR() async {
                     borderRadius: BorderRadius.circular(25),
                     color: globals.currentTheme.isDark()
                         ? Colors.white.withOpacity(0.2)
-                        : Theme.of(globals.getScaffold())
-                            .accentColor
-                            .withOpacity(0.15),
+                        : Theme.of(context).accentColor.withOpacity(0.15),
                   ),
                   child: Icon(Icons.bug_report_outlined,
-                      color: Theme.of(globals.getScaffold())
-                          .textTheme
-                          .headline1
-                          .color,
+                      color: Theme.of(context).textTheme.headline1.color,
                       size: 18),
                 ),
                 onChanged: (bool value) {
@@ -501,7 +501,7 @@ void showGDPR() async {
                 },
                 title: RichText(
                   text: TextSpan(
-                    text: 'error_report'.tr + '\n',
+                    text: 'error_report'.tr() + '\n',
                     style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
@@ -512,7 +512,7 @@ void showGDPR() async {
                       show_bug
                           ? WidgetSpan(child: SizedBox.shrink())
                           : TextSpan(
-                              text: 'more_about'.tr,
+                              text: 'more_about'.tr(),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   setState(() {
@@ -538,18 +538,19 @@ void showGDPR() async {
                             show_bug = false;
                           });
                         },
-                        child: Text('crash_more'.tr,
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.normal,
-                                color: globals.currentTheme.isDark()
-                                    ? Colors.blueGrey[200]
-                                    : Colors.blueGrey[600])),
+                        child: Text('crash_more',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.normal,
+                                    color: globals.currentTheme.isDark()
+                                        ? Colors.blueGrey[200]
+                                        : Colors.blueGrey[600]))
+                            .tr(),
                       ),
               ),
               SwitchListTile(
                 value: analytics,
-                activeColor: Theme.of(globals.getScaffold()).accentColor,
+                activeColor: Theme.of(context).accentColor,
                 secondary: Container(
                   height: 32,
                   width: 32,
@@ -557,15 +558,10 @@ void showGDPR() async {
                     borderRadius: BorderRadius.circular(25),
                     color: globals.currentTheme.isDark()
                         ? Colors.white.withOpacity(0.2)
-                        : Theme.of(globals.getScaffold())
-                            .accentColor
-                            .withOpacity(0.15),
+                        : Theme.of(context).accentColor.withOpacity(0.15),
                   ),
                   child: Icon(Icons.insights_rounded,
-                      color: Theme.of(globals.getScaffold())
-                          .textTheme
-                          .headline1
-                          .color,
+                      color: Theme.of(context).textTheme.headline1.color,
                       size: 18),
                 ),
                 onChanged: (bool value) {
@@ -575,7 +571,7 @@ void showGDPR() async {
                 },
                 title: RichText(
                   text: TextSpan(
-                    text: 'usage_monitoring'.tr + '\n',
+                    text: 'usage_monitoring'.tr() + '\n',
                     style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
@@ -586,7 +582,7 @@ void showGDPR() async {
                       show_analytics
                           ? WidgetSpan(child: SizedBox.shrink())
                           : TextSpan(
-                              text: 'more_about'.tr,
+                              text: 'more_about'.tr(),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   setState(() {
@@ -612,27 +608,28 @@ void showGDPR() async {
                             show_analytics = false;
                           });
                         },
-                        child: Text('analytics_more'.tr,
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.normal,
-                                color: globals.currentTheme.isDark()
-                                    ? Colors.blueGrey[200]
-                                    : Colors.blueGrey[600])),
+                        child: Text('analytics_more',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.normal,
+                                    color: globals.currentTheme.isDark()
+                                        ? Colors.blueGrey[200]
+                                        : Colors.blueGrey[600]))
+                            .tr(),
                       ),
               ),
               Center(
                 child: Padding(
                   padding:
                       const EdgeInsets.only(bottom: 8, left: 16, right: 16),
-                  child: Text('gdpr_footer'.tr,
+                  child: Text('gdpr_footer',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,
                         color: globals.currentTheme.isDark()
                             ? Colors.blueGrey[100]
                             : Colors.blueGrey[800],
-                      )),
+                      )).tr(),
                 ),
               ),
               Row(
@@ -647,27 +644,24 @@ void showGDPR() async {
                         });
                       },
                       child: Center(
-                          child: Text('refuse_all'.tr,
+                          child: Text('refuse_all',
                               style: TextStyle(
-                                color:
-                                    Theme.of(globals.getScaffold()).accentColor,
-                              ))),
+                                color: Theme.of(context).accentColor,
+                              )).tr()),
                     ),
                   ),
                   Expanded(
                     child: SimpleDialogOption(
                       onPressed: () {
-                        Navigator.pop(context2, true);
+                        Navigator.pop(context2);
                       },
                       child: Center(
-                          child: Text('confirm'.tr,
+                          child: Text('confirm',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(globals.getScaffold())
-                                    .textTheme
-                                    .headline1
-                                    .color,
-                              ))),
+                                color:
+                                    Theme.of(context).textTheme.headline1.color,
+                              )).tr()),
                     ),
                   ),
                 ],
@@ -767,15 +761,10 @@ Future<String> downloadDocuments(String url, String filename) async {
   } else if (await fileSave.exists()) {
     return fileSave.path;
   } else {
-    Get.snackbar(
-      'documents'.tr,
-      'unavailable_doc'.tr,
-      duration: const Duration(seconds: 6),
-      snackPosition: SnackPosition.BOTTOM,
-      borderRadius: 0,
-      margin: EdgeInsets.only(
-          left: 8, right: 8, top: 0, bottom: globals.bottomPadding),
-    );
+    final snackBar = SnackBar(content: Text('Non disponible hors ligne'));
+
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+    await showSnackBar(snackBar);
   }
   return '';
 }
