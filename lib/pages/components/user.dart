@@ -4,6 +4,7 @@ import 'package:devinci/pages/logic/user.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:one_context/one_context.dart';
 import 'package:recase/recase.dart';
 import 'package:f_logs/f_logs.dart';
 
@@ -13,16 +14,8 @@ Widget InfoSection(String main, String second) {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          GestureDetector(
-            // This does not give the tap position ...
-            onLongPress: () {
-              showCustomMenu(second, main);
-            },
-            // Have to remember it on tap-down.
-            onTapDown: storePosition,
-            child: RichText(
-              textAlign: TextAlign.left,
-              text: TextSpan(
+          SelectableText.rich(
+              TextSpan(
                 text: main.tr() + ': ',
                 style: Theme.of(getContext()).textTheme.bodyText1,
                 children: <TextSpan>[
@@ -33,7 +26,6 @@ Widget InfoSection(String main, String second) {
                       )),
                 ],
               ),
-            ),
           ),
         ],
       ));
@@ -79,7 +71,7 @@ Widget DocumentTile(
                 duration: const Duration(seconds: 10),
               );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-              Scaffold.of(getContext()).showSnackBar(snackBar);
+              await showSnackBar(snackBar);
               try {
                 await globals.user.getTokens();
               } catch (e, stacktrace) {
@@ -109,10 +101,11 @@ Widget DocumentTile(
               docCardData[id]['frShowButton'] = true;
             });
             if (path != '') {
-              await Navigator.push(
-                getContext(),
-                MaterialPageRoute(builder: (context) => PDFScreen(path, name)),
-              );
+              await OneContext().push(MaterialPageRoute(builder: (_) => PDFScreen(path, name)));
+              // await Navigator.push(
+              //   getContext(),
+              //   MaterialPageRoute(builder: (context) => PDFScreen(path, name)),
+              // );
             }
           }
         }, // handle your onTap here
@@ -202,12 +195,13 @@ Widget DocumentTile(
                                               true;
                                         });
                                         if (path != '') {
-                                          await Navigator.push(
-                                            getContext(),
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    PDFScreen(path, name)),
-                                          );
+                                          await OneContext().push(MaterialPageRoute(builder: (_) => PDFScreen(path, name)));
+                                          // await Navigator.push(
+                                          //   getContext(),
+                                          //   MaterialPageRoute(
+                                          //       builder: (context) =>
+                                          //           PDFScreen(path, name)),
+                                          // );
                                         }
                                       },
                                       child: Text(enUrl != ''
@@ -243,12 +237,13 @@ Widget DocumentTile(
                                                 true;
                                           });
                                           if (path != '') {
-                                            await Navigator.push(
-                                              getContext(),
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PDFScreen(path, name)),
-                                            );
+                                            await OneContext().push(MaterialPageRoute(builder: (_) => PDFScreen(path, name)));
+                                            // await Navigator.push(
+                                            //   getContext(),
+                                            //   MaterialPageRoute(
+                                            //       builder: (context) =>
+                                            //           PDFScreen(path, name)),
+                                            // );
                                           }
                                         },
                                         child: Text('English'),

@@ -1,6 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:about/about.dart';
-import 'package:app_settings/app_settings.dart';
 import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,9 +14,8 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:matomo/matomo.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:path_provider/path_provider.dart';
-
 import 'package:package_info/package_info.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -168,7 +167,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   right: 16,
                   top: 16,
                 ),
-                height: (7 * 46).toDouble(),
+                height: (6 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -270,36 +269,6 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        await AppSettings.openAppSettings();
-                      }, // handle your onTap here
-                      child: Container(
-                        height: 46,
-                        margin: EdgeInsets.only(left: 24),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                          width: 0.2,
-                          color: Color(0xffACACAC),
-                        ))),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                'notif_settings',
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ).tr(),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 8),
-                              child: Icon(Icons.navigate_next,
-                                  color: Color(0xffACACAC)),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                     Container(
@@ -459,8 +428,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   left: 16,
                   right: 16,
                   top: 28,
+                  bottom:28,
                 ),
-                height: (8 * 46).toDouble(),
+                height: (9 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -671,7 +641,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      File logs = await FLog.exportLogs();
+                      await Sentry.captureMessage('Devinci logs sent');
+                      var logs = await FLog.exportLogs();
                       final email = Email(
                         body: '',
                         subject: 'Devinci - Logs',
@@ -708,6 +679,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
+                  StatusComponent(),
                   VersionComponent(),
                   IdComponent(),
                   Container(
@@ -730,6 +702,97 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class StatusComponent extends StatefulWidget {
+  StatusComponent({Key key}) : super(key: key);
+
+  @override
+  _StatusComponentState createState() => _StatusComponentState();
+}
+
+class _StatusComponentState extends State<StatusComponent> {
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
+  }
+
+  String state = 'verifying';
+
+  void runBeforeBuild() async {
+    try {
+      var client = HttpClient();
+      var uri = Uri.parse('https://devinci.antoineraulin.com/health');
+      var req = await client.getUrl(uri);
+      var res = await req.close();
+      if (res.statusCode == 200) {
+        var body = await res.transform(utf8.decoder).join();
+        if (body == '"OK"') {
+          setState(() {
+            state = 'connected';
+          });
+        } else {
+          setState(() {
+            state = 'not_connected';
+          });
+        }
+      } else {
+        setState(() {
+          state = 'not_connected';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        state = 'not_connected';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 46,
+      margin: EdgeInsets.only(left: 24),
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        width: 0.2,
+        color: Color(0xffACACAC),
+      ))),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                text: 'Notifications : ',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w300,
+                  color: Theme.of(context).textTheme.bodyText1.color,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: state.tr(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      //fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: state == 'connected'
+                          ? Theme.of(context).accentColor
+                          : (state == 'not_connected'
+                              ? Colors.redAccent.shade200
+                              : Theme.of(context).textTheme.bodyText1.color),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -826,7 +889,7 @@ class _IdComponentState extends State<IdComponent> {
           await Clipboard.setData(ClipboardData(text: id));
           snackBar = SnackBar(content: Text('copied').tr(args: [id]));
         }
-        Scaffold.of(context).showSnackBar(snackBar);
+        await showSnackBar(snackBar, forceOneContext: true);
       }, // handle your onTap here
       child: Container(
         height: 46,

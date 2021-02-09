@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:devinci/libraries/feedback/feedback.dart';
 import 'package:devinci/pages/ui/login.dart';
+import 'package:f_logs/f_logs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -8,13 +9,13 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:one_context/one_context.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
-import 'package:quick_actions/quick_actions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'extra/classes.dart';
@@ -43,27 +44,14 @@ Future<Null> main() async {
         SchedulerBinding.instance.window.platformBrightness == Brightness.dark);
   }
   //init quick_actions
-  final quickActions = QuickActions();
-  quickActions.initialize(quickActionsCallback);
-  await quickActions.setShortcutItems(<ShortcutItem>[
-    const ShortcutItem(
-        type: 'action_edt', localizedTitle: 'EDT', icon: 'icon_edt'),
-    const ShortcutItem(
-        type: 'action_notes', localizedTitle: 'Notes', icon: 'icon_notes'),
-    const ShortcutItem(
-        type: 'action_presence',
-        localizedTitle: 'Présence',
-        icon: 'icon_presence'),
-    const ShortcutItem(
-        type: 'action_offline',
-        localizedTitle: 'Hors connexion',
-        icon: 'icon_offline'),
-  ]);
+  
   var packageInfo = await PackageInfo.fromPlatform();
   var appVersion = 'devinci@' + packageInfo.version;
   appVersion += '+' + packageInfo.buildNumber;
   globals.crashConsent = globals.prefs.getString('crashConsent') ??
       'true'; //default to true to catch errors between now and the gdpr popup
+      print('clearing logs');
+  await FLog.clearLogs();
   if (globals.crashConsent == 'true') {
     await SentryFlutter.init(
       (options) => options
@@ -142,7 +130,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
-  final navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +143,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     res.addAll(context.localizationDelegates);
 
     return MaterialApp(
-      navigatorKey: navigatorKey,
+      navigatorKey: OneContext().key,
       navigatorObservers: [
         SentryNavigatorObserver(),
       ],
@@ -168,7 +155,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         primarySwatch: Colors.teal,
         primaryColor: Colors.teal,
         accentColor: Colors.teal[800],
-        textSelectionColor: Colors.teal[900],
+        textSelectionColor: Colors.teal.withOpacity(0.4),
         textSelectionHandleColor: Colors.teal[800],
         cursorColor: Colors.teal,
         scaffoldBackgroundColor: Color(0xffFAFAFA),
@@ -247,12 +234,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           ),
         ),
       ),
-      builder: (context, child) {
-        return ScrollConfiguration(
-          behavior: MyBehavior(),
-          child: child,
-        );
-      },
+      builder: OneContext().builder,
       themeMode: globals.currentTheme.currentTheme(),
       home: LoginPage(title: 'Devinci', key: globals.loginPageKey),
       debugShowCheckedModeBanner: false,

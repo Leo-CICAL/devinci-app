@@ -11,11 +11,15 @@ class DevinciApi {
   void register() async {
     if (globals.user != null) {
       //init matomo
+      try{
       await MatomoTracker().initialize(
           siteId: 1,
           url: 'https://matomo.antoineraulin.com/piwik.php',
           visitorId: globals.user.tokens['uids']);
       MatomoTracker().setOptOut(!globals.analyticsConsent);
+      }catch(e){
+        
+      }
       if (globals.notifConsent) {
         var lastNotifRegistration =
             globals.prefs.getString('lastNotifRegistration') ?? '';

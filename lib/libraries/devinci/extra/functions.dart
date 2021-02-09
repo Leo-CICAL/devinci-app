@@ -11,9 +11,7 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:matomo/matomo.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:device_info/device_info.dart';
 import 'dart:io' show Platform;
-import 'package:package_info/package_info.dart';
 import 'dart:typed_data';
 import 'package:devinci/libraries/feedback/feedback.dart';
 import 'package:sembast/sembast.dart';
@@ -21,6 +19,7 @@ import 'package:devinci/extra/classes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:f_logs/f_logs.dart';
+import 'package:one_context/one_context.dart';
 
 double getMatMoy(var elem) {
   if (elem['ratt'] != null) {
@@ -195,18 +194,6 @@ Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
   return results;
 }
 
-bool get isInDebugMode {
-  // Assume you're in production mode.
-  var inDebugMode = false;
-
-  // Assert expressions are only evaluated during development. They are ignored
-  // in production. Therefore, this code only sets `inDebugMode` to true
-  // in a development environment.
-  assert(inDebugMode = true);
-
-  return inDebugMode;
-}
-
 /// Reports [error] along with its [stackTrace] to Sentry.io.
 Future<Null> reportError(dynamic error, dynamic stackTrace) async {
   FLog.logThis(
@@ -216,39 +203,22 @@ Future<Null> reportError(dynamic error, dynamic stackTrace) async {
       type: LogLevel.ERROR,
       exception: Exception(error),
       stacktrace: stackTrace);
-  var err = error.toString();
-  if (Platform.isAndroid || Platform.isIOS) {
-    var packageInfo = await PackageInfo.fromPlatform();
-    var deviceInfo = DeviceInfoPlugin();
-    if (Platform.isIOS) {
-      var iosInfo = await deviceInfo.iosInfo;
-      err +=
-          '\ndevice info : ${iosInfo.name} : ${iosInfo.model} \n ios : ${iosInfo.systemVersion}\n physical device : ${iosInfo.isPhysicalDevice}';
-    } else {
-      var androidInfo = await deviceInfo.androidInfo;
-
-      err +=
-          '\ndevice info : ${androidInfo.product}:${androidInfo.brand} \n android : ${androidInfo.version.release}\n physical device : ${androidInfo.isPhysicalDevice}';
-    }
-    err +=
-        '\n appName : ${packageInfo.appName}\n packageName : ${packageInfo.packageName}\n version : ${packageInfo.version}\n buildNumber : ${packageInfo.buildNumber}\n ';
-  }
   var consent = globals.prefs.getString('crashConsent');
   if (consent == 'true') {
-    reportToCrash(err, stackTrace);
+    reportToCrash(error, stackTrace);
   } else {
     final snackBar = SnackBar(
       content: Text(
           "Une erreur est survenue, mais nous n'avons pas envoyer de rapport d'incident"),
       action: SnackBarAction(
         label: 'Envoyer',
-        onPressed: () => reportToCrash(err, stackTrace),
+        onPressed: () => reportToCrash(error, stackTrace),
       ),
       duration: const Duration(seconds: 6),
     );
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-    globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
+    await showSnackBar(snackBar);
   }
 }
 
@@ -260,20 +230,10 @@ void reportToCrash(var err, StackTrace stackTrace) async {
         onPressed: () async {
           globals.feedbackError = err.toString();
           globals.feedbackStackTrace = stackTrace;
-          BetterFeedback.of(globals.getScaffold()).show();
+          BetterFeedback.of(OneContext().context).show();
         }),
   );
-  globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
-  // Errors thrown in development mode are unlikely to be interesting. You can
-  // check if you are running in dev mode using an assertion and omit sending
-  // the report.
-  if (isInDebugMode) {
-    FLog.info(
-        className: 'functions',
-        methodName: 'reportToCrash',
-        text: 'in dev mode. Not sending report to Sentry.');
-    return;
-  }
+  await showSnackBar(snackBar);
   if (globals.crashConsent == 'true') {
     FLog.info(
         className: 'functions',
@@ -399,6 +359,16 @@ Future<void> dialog(
   }
 }
 
+Future<void> showSnackBar(SnackBar snack, {forceOneContext:false}) async {
+  if(forceOneContext || globals.mainScaffoldKey.currentState == null){
+    print('show with onecontext');
+    await OneContext().showSnackBar(builder: (_) => snack);
+  }
+  else {
+    await globals.mainScaffoldKey.currentState.showSnackBar(snack);
+  }
+}
+
 void showGDPR(BuildContext context) async {
   var notif = false;
   if (Platform.isAndroid) {
@@ -409,7 +379,7 @@ void showGDPR(BuildContext context) async {
   var show_bug = false;
   var analytics = true;
   var show_analytics = false;
-  await showDialog<bool>(
+  await showDialog(
       context: context,
       builder: (BuildContext context2) {
         return StatefulBuilder(builder: (context2, setState) {
@@ -683,7 +653,7 @@ void showGDPR(BuildContext context) async {
                   Expanded(
                     child: SimpleDialogOption(
                       onPressed: () {
-                        Navigator.pop(context2, true);
+                        Navigator.pop(context2);
                       },
                       child: Center(
                           child: Text('confirm',
@@ -794,7 +764,7 @@ Future<String> downloadDocuments(String url, String filename) async {
     final snackBar = SnackBar(content: Text('Non disponible hors ligne'));
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-    globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
+    await showSnackBar(snackBar);
   }
   return '';
 }

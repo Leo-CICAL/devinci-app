@@ -1,4 +1,5 @@
 //DEPENDENCIES
+import 'package:one_context/one_context.dart';
 import 'package:sembast/sembast.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,7 @@ Future<void> getData({bool force = false}) async {
           duration: const Duration(seconds: 10),
         );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-        Scaffold.of(getContext()).showSnackBar(snackBar);
+       await showSnackBar(snackBar);
         try {
           await globals.user.getTokens();
         } catch (e, stacktrace) {
@@ -98,25 +99,10 @@ Future<void> getData({bool force = false}) async {
         currentSemester = 1;
       }
     }
-
-    setState(() {
-      show = true;
-    });
-  } catch (e, stacktrace) {
-    FLog.logThis(
-        className: 'NotesPage logic',
-        methodName: 'getData',
-        text: 'exception',
-        type: LogLevel.ERROR,
-        exception: Exception(e),
-        stacktrace: stacktrace);
-  }
-  if (!globals.user.notesFetched && globals.isConnected) {
-    Sentry.addBreadcrumb(Breadcrumb(
-        message:
-            'logic/notes.dart => getData() => if (!globals.user.notesFetched && globals.isConnected)'));
-    globals.isLoading.setState(1, true);
-  }
+} catch (e, stacktrace) {}
+  setState(() {
+    show = true;
+  });
 
   return;
 }
@@ -147,7 +133,7 @@ void onRefresh() async {
         duration: const Duration(seconds: 10),
       );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-      Scaffold.of(getContext()).showSnackBar(snackBar);
+      await showSnackBar(snackBar);
       try {
         await globals.user.getTokens();
       } catch (e, stacktrace) {
@@ -194,6 +180,9 @@ void runBeforeBuild() async {
         message:
             'logic/notes.dart => runBeforeBuild() => if (!globals.user.notesFetched)'));
     await getData();
+    if (!globals.user.notesFetched && globals.isConnected) {
+      globals.isLoading.setState(1, true);
+    }
   } else {
     setState(() {
       if (!globals.user.notes[index]['s'][1].isEmpty && !changed) {
@@ -207,8 +196,10 @@ void runBeforeBuild() async {
 BuildContext getContext() {
   if (globals.notesPageKey.currentState != null) {
     return globals.notesPageKey.currentState.context;
+  } else if (globals.mainPageKey.currentState != null) {
+    return globals.mainPageKey.currentState.context;
   } else {
-    return globals.getScaffold();
+    return OneContext().context;
   }
 }
 

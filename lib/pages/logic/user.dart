@@ -4,6 +4,7 @@ import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
+import 'package:one_context/one_context.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/utils/value_utils.dart';
 import 'package:share_extend/share_extend.dart';
@@ -31,7 +32,7 @@ void loaderListener() async {
         duration: const Duration(seconds: 10),
       );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-      Scaffold.of(getContext()).showSnackBar(snackBar);
+      await showSnackBar(snackBar);
       try {
         await globals.user.getTokens();
       } catch (e, stacktrace) {
@@ -80,7 +81,7 @@ void runBeforeBuild() async {
           duration: const Duration(seconds: 10),
         );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-        Scaffold.of(getContext()).showSnackBar(snackBar);
+        await showSnackBar(snackBar);
         try {
           await globals.user.getTokens();
         } catch (e, stacktrace) {
@@ -136,7 +137,7 @@ void showCustomMenu(String data, String title) {
         final snackBar = SnackBar(content: Text('copied').tr(args: [title]));
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-        Scaffold.of(getContext()).showSnackBar(snackBar);
+        showSnackBar(snackBar);
       } else {
         ShareExtend.share(data, 'text', sharePanelTitle: title);
       }
@@ -151,8 +152,10 @@ void storePosition(TapDownDetails details) {
 BuildContext getContext() {
   if (globals.userPageKey.currentState != null) {
     return globals.userPageKey.currentState.context;
+  }else if (globals.mainPageKey.currentState != null) {
+    return globals.mainPageKey.currentState.context;
   } else {
-    return globals.getScaffold();
+    return OneContext().context;
   }
 }
 

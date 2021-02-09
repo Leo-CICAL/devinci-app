@@ -120,5 +120,7 @@
     "many":"{} points bonus",
     "other":"{} points bonus"
   },
-  "dump_logs":"Envoyer les logs"
+  "dump_logs":"Envoyer les logs",
+  "offline_mode":"Mode hors-ligne",
+  "attendance_validation_date":"noté présent à "
 }

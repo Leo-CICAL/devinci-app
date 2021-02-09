@@ -10,6 +10,7 @@ import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:matomo/matomo.dart';
 import 'package:f_logs/f_logs.dart';
+import 'package:one_context/one_context.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:sembast/sembast.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -97,7 +98,7 @@ class _AgendaPageState extends State<AgendaPage> {
       });
     }
     if (!privacyConsent) {
-      Timer(Duration(seconds: 2), () => showGDPR(context));
+      Timer(Duration(seconds: 1), () => showGDPR(context));
       await globals.prefs.setBool('privacyConsent', true);
     }
     return;
@@ -177,11 +178,11 @@ class _AgendaPageState extends State<AgendaPage> {
 
     _startTime = TimeOfDay(hour: _from.hour, minute: _from.minute);
     _endTime = TimeOfDay(hour: _to.hour, minute: _to.minute);
-
-    Navigator.push<Widget>(
-      context,
-      MaterialPageRoute(builder: (BuildContext context) => CoursEditor()),
-    );
+    OneContext().push(MaterialPageRoute(builder: (_) => CoursEditor()));
+    // Navigator.push<Widget>(
+    //   context,
+    //   MaterialPageRoute(builder: (BuildContext context) => CoursEditor()),
+    // );
   }
 
   @override
@@ -749,8 +750,8 @@ class CoursEditorState extends State<CoursEditor> {
                               globals.calendarView == CalendarView.workWeek
                                   ? CalendarView.day
                                   : CalendarView.workWeek;
-
-                          Navigator.pop(context);
+                          OneContext().pop();
+                          //Navigator.pop(context);
                         },
                         style: ButtonStyle(overlayColor:
                             MaterialStateProperty.resolveWith((states) {
@@ -805,7 +806,8 @@ class CoursEditorState extends State<CoursEditor> {
                     Icons.close,
                   ),
                   onPressed: () {
-                    Navigator.pop(context);
+                    OneContext().pop();
+                    //Navigator.pop(context);
                   },
                 )),
             actions: _uid.contains(':') && !addButton
@@ -859,8 +861,8 @@ class CoursEditorState extends State<CoursEditor> {
                                           CalendarView.workWeek
                                       ? CalendarView.day
                                       : CalendarView.workWeek;
-
-                              Navigator.pop(context);
+                              OneContext().pop();
+                              //Navigator.pop(context);
                             })),
                   ],
           ),

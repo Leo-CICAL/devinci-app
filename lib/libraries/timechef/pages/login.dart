@@ -6,6 +6,7 @@ import 'package:devinci/libraries/flutter_progress_button/flutter_progress_butto
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
+import 'package:one_context/one_context.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:f_logs/f_logs.dart';
@@ -154,7 +155,8 @@ class _LoginPageState extends State<LoginPage> {
                                       TextButton(
                                         child: Text('close').tr(),
                                         onPressed: () {
-                                          Navigator.of(context).pop();
+                                          OneContext().pop();
+                                          //Navigator.of(context).pop();
                                         },
                                       ),
                                     ],
@@ -257,7 +259,8 @@ class _LoginPageState extends State<LoginPage> {
                                       TextButton(
                                         child: Text('close').tr(),
                                         onPressed: () {
-                                          Navigator.of(context).pop();
+                                          OneContext().pop();
+                                          //Navigator.of(context).pop();
                                         },
                                       ),
                                     ],

@@ -6,7 +6,7 @@
   "unknown_error": "An unknown error happened.\n\nCode : {code}\nInformation: {exception}",
   "close": "Close",
   "welcome": "Welcome",
-  "wrong_id": " Incorrect username",
+  "wrong_id": " Incorrect credentials",
   "user": "Username",
   "no_empty": "Cannot be empty",
   "password": "Password",
@@ -120,5 +120,7 @@
     "many":"{} bonus points",
     "other":"{} bonus points"
   },
-  "dump_logs":"Send logs"
+  "dump_logs":"Send logs",
+  "offline_mode":"Offline mode",
+  "attendance_validation_date":"marked present at "
 }

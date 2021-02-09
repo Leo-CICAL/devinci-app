@@ -198,3 +198,14 @@ class MyBehavior extends ScrollBehavior {
     return child;
   }
 }
+
+class AgendaTitle with ChangeNotifier {
+  String _headerText = '';
+
+  String get headerText => _headerText;
+
+  set headerText(String value) {
+    _headerText = value;
+    notifyListeners();
+  }
+}

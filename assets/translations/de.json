@@ -120,5 +120,7 @@
     "many":"{} Bonuspunkte",
     "other":"{} Bonuspunkte"
   },
-  "dump_logs":"Send logs"
+  "dump_logs":"Send logs",
+  "offline_mode":"Offline-Betrieb",
+  "attendance_validation_date":"markiert vorhanden bei "
 }  

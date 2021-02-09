@@ -40,7 +40,7 @@ class AbsencesPageState extends State<AbsencesPage> {
             duration: const Duration(seconds: 10),
           );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-          Scaffold.of(getContext()).showSnackBar(snackBar);
+          await showSnackBar(snackBar);
           try {
             await globals.user.getTokens();
           } catch (e, stacktrace) {

@@ -12,9 +12,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:one_context/one_context.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:easy_localization/easy_localization.dart';
+import 'package:devinci/libraries/devinci/extra/functions.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key key}) : super(key: key);
@@ -130,13 +132,17 @@ class MainPageState extends State<MainPage> {
                     child: Icon(Icons.add_outlined),
                   ),
                   onPressed: () async {
-                    await Navigator.push<Widget>(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => CoursEditor(
-                                addButton: true,
-                              )),
-                    );
+                    await OneContext().push(MaterialPageRoute(
+                        builder: (_) => CoursEditor(
+                              addButton: true,
+                            )));
+                    // await Navigator.push<Widget>(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (BuildContext context) => CoursEditor(
+                    //             addButton: true,
+                    //           )),
+                    // );
                   },
                 ),
                 SizedBox.shrink(),
@@ -208,14 +214,18 @@ class MainPageState extends State<MainPage> {
                               child: Icon(Icons.refresh_rounded),
                             ),
                             onPressed: () async {
-                              await Navigator.push<Widget>(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        CoursEditor(
-                                          addButton: true,
-                                        )),
-                              );
+                              await OneContext().push(MaterialPageRoute(
+                                  builder: (_) => CoursEditor(
+                                        addButton: true,
+                                      )));
+                              // await Navigator.push<Widget>(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (BuildContext context) =>
+                              //           CoursEditor(
+                              //             addButton: true,
+                              //           )),
+                              // );
                             },
                           ),
                           MediaQuery.of(context).orientation ==
@@ -249,12 +259,14 @@ class MainPageState extends State<MainPage> {
                           if (choice == 'refresh') {
                             globals.isLoading.setState(0, true);
                           } else if (choice == 'free_room') {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => SallesPage(),
-                              ),
-                            );
+                            OneContext().push(CupertinoPageRoute(
+                                builder: (_) => SallesPage()));
+                            // Navigator.push(
+                            //   context,
+                            //   CupertinoPageRoute(
+                            //     builder: (context) => SallesPage(),
+                            //   ),
+                            // );
                           } else {
                             setState(() {
                               if (globals.calendarView == CalendarView.day) {
@@ -319,8 +331,7 @@ class MainPageState extends State<MainPage> {
                         SnackBar(content: Text('offline_msg').tr());
 
                     try {
-                      globals.mainScaffoldKey.currentState
-                          .showSnackBar(snackBar);
+                      showSnackBar(snackBar);
                       // ignore: empty_catches
                     } catch (exception, stacktrace) {
                       FLog.logThis(

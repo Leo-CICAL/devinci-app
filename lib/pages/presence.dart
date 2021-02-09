@@ -45,7 +45,7 @@ class _PresencePageState extends State<PresencePage> {
         duration: const Duration(seconds: 10),
       );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-      Scaffold.of(context).showSnackBar(snackBar);
+      await showSnackBar(snackBar);
       try {
         await globals.user.getTokens();
       } catch (e, stacktrace) {
@@ -100,7 +100,7 @@ class _PresencePageState extends State<PresencePage> {
         duration: const Duration(seconds: 10),
       );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-      Scaffold.of(context).showSnackBar(snackBar);
+      await showSnackBar(snackBar);
       try {
         await globals.user.getTokens();
       } catch (e, stacktrace) {
@@ -240,7 +240,7 @@ class _PresencePageState extends State<PresencePage> {
                             duration: const Duration(seconds: 10),
                           );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-                          Scaffold.of(context).showSnackBar(snackBar);
+                          await showSnackBar(snackBar);
                           try {
                             await globals.user.getTokens();
                           } catch (e, stacktrace) {
@@ -275,8 +275,7 @@ class _PresencePageState extends State<PresencePage> {
                             );
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-                            globals.mainScaffoldKey.currentState
-                                .showSnackBar(snackBar);
+                            await showSnackBar(snackBar);
                           }
                         }
                       },
@@ -371,7 +370,7 @@ class _PresencePageState extends State<PresencePage> {
                   ),
                 ),
                 Visibility(
-                  visible: globals.user.presence[i]['zoom_pwd'] != '',
+                  visible: globals.user.presence[i]['validation_date'] != '',
                   child: Padding(
                     padding: EdgeInsets.only(
                         top: 12,
@@ -380,6 +379,28 @@ class _PresencePageState extends State<PresencePage> {
                     child: Center(
                       child: RichText(
                         text: TextSpan(
+                          text: '${'attendance_validation_date'.tr()}',
+                          style: DefaultTextStyle.of(context).style,
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: globals.user.presence[i]['validation_date'],
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: globals.user.presence[i]['zoom_pwd'] != '',
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 12,
+                        left: widget.inSidePanel != null ? 16 : 48,
+                        right: widget.inSidePanel != null ? 16 : 48),
+                    child: Center(
+                      child: SelectableText.rich(
+                        TextSpan(
                           text: '${'password'.tr()} : ',
                           style: DefaultTextStyle.of(context).style,
                           children: <TextSpan>[

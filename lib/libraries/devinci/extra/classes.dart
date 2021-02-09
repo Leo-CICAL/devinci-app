@@ -205,7 +205,7 @@ class Student {
     },
   };
 
-  Future<void> init(material.BuildContext context) async {
+  Future<void> init() async {
     //fetch notesConfig
     try {
       var client = HttpClient();
@@ -402,14 +402,7 @@ class Student {
                 User(email: username, username: tokens['uids'], id: id);
           },
         );
-      } catch (e, stacktrace) {
-        FLog.logThis(
-            className: 'Student',
-            methodName: 'init',
-            text: 'Sentry.configureScope exception',
-            type: LogLevel.ERROR,
-            exception: Exception(e),
-            stacktrace: stacktrace);
+      } catch (e) {
         Sentry.configureScope(
           (scope) {
             scope.setTag('app.language', 'locale'.tr());
@@ -1076,7 +1069,7 @@ class Student {
               duration: const Duration(seconds: 10),
             );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-            globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
+            await showSnackBar(snackBar);
           }
           absences['done'] = true;
           await globals.store.record('absences').put(globals.db, absences);
@@ -1193,7 +1186,7 @@ class Student {
             duration: const Duration(seconds: 10),
           );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-          globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
+          await showSnackBar(snackBar);
         }
       } else {
         error = true;
@@ -1334,175 +1327,200 @@ class Student {
 
                 var ddlist = li.querySelector('ol');
                 var j = 0;
-                ddlist.children.forEach((lii) {
-                  ddhandle = lii.querySelector('div');
-                  texts = ddhandle.text.split('\n');
-                  //String prettyprint = encoder.convert(texts);
-                  //l(prettyprint);
-                  elem = {
-                    'matiere': '',
-                    'moy': 0.0,
-                    'moyP': 0.0,
-                    'notes': [],
-                    'c': true
-                  };
+                try {
+                  ddlist.children.forEach((lii) {
+                    ddhandle = lii.querySelector('div');
+                    texts = ddhandle.text.split('\n');
+                    //String prettyprint = encoder.convert(texts);
+                    //l(prettyprint);
+                    elem = {
+                      'matiere': '',
+                      'moy': 0.0,
+                      'moyP': 0.0,
+                      'notes': [],
+                      'c': true
+                    };
 
-                  elem['matiere'] = texts[notesConfig['matieres']['mi']]
-                      .replaceAllMapped(
-                          RegExp(notesConfig['matieres']['mr']), (match) => '');
-                  elem['moy'] = null;
-                  elem['moyP'] = null;
-                  if (!texts[notesConfig['matieres']['ei']]
-                      .contains(notesConfig['matieres']['eStr'])) {
-                    try {
-                      elem['moy'] = double.parse(texts[notesConfig['matieres']
-                              ['!e']['moy']['i']]
-                          .replaceAllMapped(
-                              RegExp(notesConfig['matieres']['!e']['moy']['r']),
-                              (match) => '')
-                          .split(notesConfig['matieres']['!e']['moy']
-                              ['s'])[notesConfig['matieres']['!e']['moy']
-                          ['si']]);
-                    } catch (e, stacktrace) {
+                    elem['matiere'] = texts[notesConfig['matieres']['mi']]
+                        .replaceAllMapped(RegExp(notesConfig['matieres']['mr']),
+                            (match) => '');
+                    elem['moy'] = null;
+                    elem['moyP'] = null;
+                    if (!texts[notesConfig['matieres']['ei']]
+                        .contains(notesConfig['matieres']['eStr'])) {
                       try {
-                        if (texts[notesConfig['matieres']['!e']['moy']['i']]
+                        elem['moy'] = double.parse(
+                            texts[notesConfig['matieres']['!e']['moy']['i']]
                                 .replaceAllMapped(
                                     RegExp(notesConfig['matieres']['!e']['moy']
                                         ['r']),
                                     (match) => '')
                                 .split(notesConfig['matieres']['!e']['moy']
                                     ['s'])[notesConfig['matieres']['!e']['moy']
-                                ['si']] ==
-                            'Validé') {
-                          elem['moy'] = 100.0;
+                                ['si']]);
+                      } catch (e, stacktrace) {
+                        try {
+                          if (texts[notesConfig['matieres']['!e']['moy']['i']]
+                                  .replaceAllMapped(
+                                      RegExp(notesConfig['matieres']['!e']
+                                          ['moy']['r']),
+                                      (match) => '')
+                                  .split(notesConfig['matieres']['!e']['moy']
+                                      ['s'])[notesConfig['matieres']['!e']
+                                  ['moy']['si']] ==
+                              'Validé') {
+                            elem['moy'] = 100.0;
+                          }
+                        } catch (e, stacktrace) {
+                          FLog.logThis(
+                              className: 'Student',
+                              methodName: 'getNotes',
+                              text: 'matiere moy exception v2',
+                              type: LogLevel.ERROR,
+                              exception: Exception(e),
+                              stacktrace: stacktrace);
+                        }
+                      }
+                      FLog.info(
+                          className: 'Student',
+                          methodName: 'getNotes',
+                          text: elem['moy'].toString());
+                      try {
+                        if (!texts[notesConfig['matieres']['!e']['ri']]
+                            .contains(notesConfig['matieres']['!e']['rStr'])) {
+                          try {
+                            elem['moyP'] = double.parse(RegExp(
+                                    notesConfig['matieres']['!e']['!r']['moyP']
+                                        ['r'])
+                                .firstMatch(texts[notesConfig['matieres']['!e']
+                                        ['!r']['moyP']['i']] +
+                                    notesConfig['matieres']['!e']['!r']['moyP']
+                                        ['+'])
+                                .group(1));
+                          } catch (e, stacktrace) {
+                            FLog.logThis(
+                                className: 'Student',
+                                methodName: 'getNotes',
+                                text: 'matiere moyP exception',
+                                type: LogLevel.ERROR,
+                                exception: Exception(e),
+                                stacktrace: stacktrace);
+                            elem['moyP'] = null;
+                          }
+                        } else {
+                          var noteR = double.parse(RegExp(
+                                  notesConfig['matieres']['!e']['r']['noteR']
+                                      ['r'])
+                              .firstMatch(texts[notesConfig['matieres']['!e']
+                                      ['r']['noteR']['i']] +
+                                  notesConfig['matieres']['!e']['r']['noteR']
+                                      ['+'])
+                              .group(1));
+                          if (noteR > elem['moy']) {
+                            if (noteR > 10) {
+                              elem['moy'] = 10.0;
+                            } else {
+                              elem['moy'] = noteR;
+                            }
+                          }
+                          var e = {
+                            'nom':
+                                'MESIMF120419-CC-1 Rattrapage' + 're_take'.tr(),
+                            'note': noteR,
+                            'noteP': null,
+                            //"date": timestamp
+                          };
+
+                          elem['notes'].add(e);
+
+                          elem['moyP'] = double.parse(RegExp(
+                                  notesConfig['matieres']['!e']['r']['moyP']
+                                      ['r'])
+                              .firstMatch(texts[notesConfig['matieres']['!e']
+                                      ['r']['moyP']['i']] +
+                                  notesConfig['matieres']['!e']['r']['moyP']
+                                      ['+'])
+                              .group(1));
                         }
                       } catch (e, stacktrace) {
                         FLog.logThis(
                             className: 'Student',
                             methodName: 'getNotes',
-                            text: 'matiere moy exception v2',
+                            text: 'exception',
                             type: LogLevel.ERROR,
                             exception: Exception(e),
                             stacktrace: stacktrace);
                       }
                     }
-                    FLog.info(
-                        className: 'Student',
-                        methodName: 'getNotes',
-                        text: elem['moy'].toString());
-                    try {
-                      if (!texts[notesConfig['matieres']['!e']['ri']]
-                          .contains(notesConfig['matieres']['!e']['rStr'])) {
-                        try {
-                          elem['moyP'] = double.parse(RegExp(
-                                  notesConfig['matieres']['!e']['!r']['moyP']
-                                      ['r'])
-                              .firstMatch(texts[notesConfig['matieres']['!e']
-                                      ['!r']['moyP']['i']] +
-                                  notesConfig['matieres']['!e']['!r']['moyP']
-                                      ['+'])
-                              .group(1));
-                        } catch (e, stacktrace) {
-                          FLog.logThis(
-                              className: 'Student',
-                              methodName: 'getNotes',
-                              text: 'matiere moyP exception',
-                              type: LogLevel.ERROR,
-                              exception: Exception(e),
-                              stacktrace: stacktrace);
-                          elem['moyP'] = null;
-                        }
-                      } else {
-                        var noteR = double.parse(RegExp(notesConfig['matieres']
-                                ['!e']['r']['noteR']['r'])
-                            .firstMatch(texts[notesConfig['matieres']['!e']['r']
-                                    ['noteR']['i']] +
-                                notesConfig['matieres']['!e']['r']['noteR']
-                                    ['+'])
-                            .group(1));
-                        if (noteR > elem['moy']) {
-                          if (noteR > 10) {
-                            elem['moy'] = 10.0;
-                          } else {
-                            elem['moy'] = noteR;
-                          }
-                        }
-                        var e = {
-                          'nom':
-                              'MESIMF120419-CC-1 Rattrapage' + 're_take'.tr(),
-                          'note': noteR,
-                          'noteP': null,
+                    nn['s'][y][i]['matieres'].add(elem);
+                    //nn["s${y + 1}"][i]["matieres"].add(elem);
+                    ddlist = lii.querySelector('ol');
+                    if (ddlist != null) {
+                      ddlist.children.forEach((liii) {
+                        ddhandle = liii.querySelector('div');
+                        texts = ddhandle.text.split('\n');
+                        elem = {
+                          'nom': '',
+                          'note': 0.0,
+                          'noteP': 0.0,
                           //"date": timestamp
                         };
-
-                        elem['notes'].add(e);
-
-                        elem['moyP'] = double.parse(RegExp(
-                                notesConfig['matieres']['!e']['r']['moyP']['r'])
-                            .firstMatch(texts[notesConfig['matieres']['!e']['r']
-                                    ['moyP']['i']] +
-                                notesConfig['matieres']['!e']['r']['moyP']['+'])
-                            .group(1));
-                      }
-                    } catch (e, stacktrace) {
-                      FLog.logThis(
-                          className: 'Student',
-                          methodName: 'getNotes',
-                          text: 'exception',
-                          type: LogLevel.ERROR,
-                          exception: Exception(e),
-                          stacktrace: stacktrace);
-                    }
-                  }
-                  nn['s'][y][i]['matieres'].add(elem);
-                  //nn["s${y + 1}"][i]["matieres"].add(elem);
-                  ddlist = lii.querySelector('ol');
-                  if (ddlist != null) {
-                    ddlist.children.forEach((liii) {
-                      ddhandle = liii.querySelector('div');
-                      texts = ddhandle.text.split('\n');
-                      elem = {
-                        'nom': '',
-                        'note': 0.0,
-                        'noteP': 0.0,
-                        //"date": timestamp
-                      };
-                      elem['nom'] = texts[notesConfig['notes']['n']['i']]
-                          .replaceAllMapped(
-                              RegExp(notesConfig['notes']['n']['r']),
-                              (match) => '');
-                      if (texts.length < notesConfig['notes']['tl']) {
-                        elem['note'] = null;
-                        elem['noteP'] = null;
-                      } else {
-                        var temp = texts[notesConfig['notes']['note']['i']]
-                                .replaceAllMapped(
-                                    RegExp(notesConfig['notes']['note']['r']),
-                                    (match) => '')
-                                .split(notesConfig['notes']['note']['s'])[
-                            notesConfig['notes']['note']['si']];
-                        if (temp.contains('Absence')) {
-                          elem['note'] = 0.12345;
+                        elem['nom'] = texts[notesConfig['notes']['n']['i']]
+                            .replaceAllMapped(
+                                RegExp(notesConfig['notes']['n']['r']),
+                                (match) => '');
+                        if (texts.length < notesConfig['notes']['tl']) {
+                          elem['note'] = null;
+                          elem['noteP'] = null;
                         } else {
+                          var temp = texts[notesConfig['notes']['note']['i']]
+                                  .replaceAllMapped(
+                                      RegExp(notesConfig['notes']['note']['r']),
+                                      (match) => '')
+                                  .split(notesConfig['notes']['note']['s'])[
+                              notesConfig['notes']['note']['si']];
+                          if (temp.contains('Absence')) {
+                            elem['note'] = 0.12345;
+                          } else {
+                            try {
+                              elem['note'] = double.parse(texts[
+                                      notesConfig['notes']['note']['i']]
+                                  .replaceAllMapped(
+                                      RegExp(notesConfig['notes']['note']['r']),
+                                      (match) => '')
+                                  .split(notesConfig['notes']['note']
+                                      ['s'])[notesConfig['notes']['note']
+                                  ['si']]);
+                            } catch (e, stacktrace) {
+                              Sentry.addBreadcrumb(Breadcrumb(
+                                  message: 'failed to double parse : ' +
+                                      texts[notesConfig['notes']['note']['i']]
+                                          .replaceAllMapped(
+                                              RegExp(notesConfig['notes']
+                                                  ['note']['r']),
+                                              (match) => '')
+                                          .split(notesConfig['notes']['note']
+                                              ['s'])[notesConfig['notes']
+                                          ['note']['si']]));
+                              FLog.logThis(
+                                  className: 'Student',
+                                  methodName: 'getNotes',
+                                  text: 'exception',
+                                  type: LogLevel.ERROR,
+                                  exception: Exception(e),
+                                  stacktrace: stacktrace);
+                              reportError(e, stacktrace);
+                            }
+                          }
+                          elem['noteP'] = null;
                           try {
-                            elem['note'] = double.parse(texts[
-                                    notesConfig['notes']['note']['i']]
-                                .replaceAllMapped(
-                                    RegExp(notesConfig['notes']['note']['r']),
-                                    (match) => '')
-                                .split(notesConfig['notes']['note']
-                                    ['s'])[notesConfig['notes']['note']['si']]);
+                            elem['noteP'] = double.parse(
+                                RegExp(notesConfig['notes']['nP']['r'])
+                                    .firstMatch(
+                                        texts[notesConfig['notes']['nP']['i']] +
+                                            notesConfig['notes']['nP']['+'])
+                                    .group(1));
                           } catch (e, stacktrace) {
-                            Sentry.addBreadcrumb(Breadcrumb(
-                                message: 'failed to double parse : ' +
-                                    texts[notesConfig['notes']['note']['i']]
-                                        .replaceAllMapped(
-                                            RegExp(notesConfig['notes']['note']
-                                                ['r']),
-                                            (match) => '')
-                                        .split(notesConfig['notes']['note']
-                                            ['s'])[notesConfig['notes']['note']
-                                        ['si']]));
                             FLog.logThis(
                                 className: 'Student',
                                 methodName: 'getNotes',
@@ -1510,33 +1528,23 @@ class Student {
                                 type: LogLevel.ERROR,
                                 exception: Exception(e),
                                 stacktrace: stacktrace);
-                            reportError(e, stacktrace);
                           }
                         }
-                        elem['noteP'] = null;
-                        try {
-                          elem['noteP'] = double.parse(
-                              RegExp(notesConfig['notes']['nP']['r'])
-                                  .firstMatch(
-                                      texts[notesConfig['notes']['nP']['i']] +
-                                          notesConfig['notes']['nP']['+'])
-                                  .group(1));
-                        } catch (e, stacktrace) {
-                          FLog.logThis(
-                              className: 'Student',
-                              methodName: 'getNotes',
-                              text: 'exception',
-                              type: LogLevel.ERROR,
-                              exception: Exception(e),
-                              stacktrace: stacktrace);
-                        }
-                      }
-                      nn['s'][y][i]['matieres'][j]['notes'].add(elem);
-                      //nn["s${y + 1}"][i]["matieres"][j]["notes"].add(elem);
-                    });
-                  }
-                  j++;
-                });
+                        nn['s'][y][i]['matieres'][j]['notes'].add(elem);
+                        //nn["s${y + 1}"][i]["matieres"][j]["notes"].add(elem);
+                      });
+                    }
+                    j++;
+                  });
+                } catch (e, stacktrace) {
+                  FLog.logThis(
+                      className: 'Student',
+                      methodName: 'getNotes',
+                      text: 'error',
+                      type: LogLevel.ERROR,
+                      exception: Exception(e),
+                      stacktrace: stacktrace);
+                }
                 i++;
               }
             }
@@ -1546,7 +1554,7 @@ class Student {
               duration: const Duration(seconds: 10),
             );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-            globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
+            await showSnackBar(snackBar);
           }
         } else {
           error = true;
@@ -1787,7 +1795,7 @@ class Student {
               duration: const Duration(seconds: 10),
             );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-            globals.mainScaffoldKey.currentState.showSnackBar(snackBar);
+            await showSnackBar(snackBar);
           }
         }
       }
@@ -1822,6 +1830,7 @@ class Student {
                 'seance_pk': '',
                 'zoom': '',
                 'zoom_pwd': '',
+                'validation_date': '',
               });
             }
             for (var i = 0; i < trs.length; i++) {
@@ -1875,6 +1884,24 @@ class Student {
                         .group(1);
                   } else if (body.contains('Vous avez été noté présent')) {
                     presence[i]['type'] = 'done';
+                    try{
+                      var doc = parse(body);
+                      var validationText = doc
+                          .querySelector(
+                              '#body_presence > div.alert.alert-success')
+                          .text;
+                      presence[i]['validation_date'] = RegExp(r'à (.*?) ')
+                        .firstMatch(validationText)
+                        .group(1);
+                    }catch(e, stacktrace){
+                      FLog.logThis(
+                    className: 'Student',
+                    methodName: 'getPresence',
+                    text: 'exception',
+                    type: LogLevel.ERROR,
+                    exception: Exception(e),
+                    stacktrace: stacktrace);
+                    }
                   } else if (body.contains('clôturé')) {
                     presence[i]['type'] = 'closed';
                   }

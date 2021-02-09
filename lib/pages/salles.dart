@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:matomo/matomo.dart';
+import 'package:one_context/one_context.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -115,7 +116,8 @@ class _SallesPageState extends State<SallesPage> {
                 child: Icon(Icons.close),
               ),
               onPressed: () async {
-                Navigator.of(context).pop();
+                OneContext().pop();
+                //Navigator.of(context).pop();
               },
             ),
           ],

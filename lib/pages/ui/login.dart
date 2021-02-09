@@ -6,11 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info/package_info.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -65,242 +67,127 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                   animating: true,
                 ));
               } else {
-                if (constraints.maxWidth > 600) {
-                  return Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(
-                        left: constraints.maxWidth * 0.3,
-                        right: constraints.maxWidth * 0.3),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          child: SvgPicture.asset(
-                            'assets/devinci.svg',
-                            color: Theme.of(context).textTheme.bodyText1.color,
-                          ),
-                          height: 100,
-                          width: 100,
+                return Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.symmetric(
+                    horizontal: constraints.maxWidth > 600
+                        ? constraints.maxWidth * 0.3
+                        : 28.0,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        child: SvgPicture.asset(
+                          'assets/devinci.svg',
+                          color: Theme.of(context).textTheme.bodyText1.color,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0),
-                          child: Text(
-                            'welcome'.tr(),
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontFamily: 'Roboto',
+                        height: 68,
+                        width: 68,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20.0),
+                        child: Text(
+                          'welcome'.tr(),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      ),
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: <Widget>[
+                            TextFormField(
+                              keyboardType: TextInputType.emailAddress,
+                              autocorrect: false,
+                              key: Key('login_username'),
+                              textInputAction: TextInputAction.next,
+                              focusNode: usernameFocus,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'user'.tr(),
+                                suffixText: '@edu.devinci.fr',
+                              ),
+                              controller: myControllerUsername,
+                              onFieldSubmitted: (term) {
+                                fieldFocusChange(
+                                    context, usernameFocus, passwordFocus);
+                              },
+                              validator: validator,
                             ),
-                          ),
-                        ),
-                        Form(
-                          key: formKey,
-                          child: Column(
-                            children: <Widget>[
-                              TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                autocorrect: false,
-                                key: Key('login_username'),
-                                textInputAction: TextInputAction.next,
-                                focusNode: usernameFocus,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: TextFormField(
+                                obscureText: true,
+                                textInputAction: TextInputAction.done,
+                                focusNode: passwordFocus,
+                                key: Key('login_password'),
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'user'.tr(),
-                                  suffixText: '@edu.devinci.fr',
+                                  labelText: 'password'.tr(),
                                 ),
-                                controller: myControllerUsername,
-                                onFieldSubmitted: (term) {
-                                  fieldFocusChange(
-                                      context, usernameFocus, passwordFocus);
-                                },
+                                controller: myControllerPassword,
+                                onFieldSubmitted: submit,
                                 validator: validator,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20.0),
-                                child: TextFormField(
-                                  obscureText: true,
-                                  textInputAction: TextInputAction.done,
-                                  focusNode: passwordFocus,
-                                  key: Key('login_password'),
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'password'.tr(),
-                                  ),
-                                  controller: myControllerPassword,
-                                  onFieldSubmitted: submit,
-                                  validator: validator,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20.0),
-                                child: ProgressButton(
-                                  key: Key('login_connect'),
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 18),
-                                    child: Text(
-                                      'login'.tr().toUpperCase(),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: globals.currentTheme.isDark()
-                                              ? Colors.black
-                                              : Colors.white),
-                                    ),
-                                  ),
-                                  onPressed: submit,
-                                  buttonState: buttonState,
-                                  backgroundColor:
-                                      Theme.of(context).accentColor,
-                                  progressColor: globals.currentTheme.isDark()
-                                      ? Colors.black
-                                      : Colors.white,
-                                ),
-                              ),
-                              Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: TextButton(
-                                      onPressed: () async {
-                                        const url =
-                                            'https://www.leonard-de-vinci.net/lost_password.php';
-                                        if (await canLaunch(url)) {
-                                          await launch(url);
-                                        } else {
-                                          throw 'Could not launch $url';
-                                        }
-                                      },
-                                      child: Text('lost_password',
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .accentColor))
-                                          .tr())),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
-                  return Container(
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.only(left: 28.0, right: 28.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          child: SvgPicture.asset(
-                            'assets/devinci.svg',
-                            color: Theme.of(context).textTheme.bodyText1.color,
-                          ),
-                          height: 100,
-                          width: 100,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0),
-                          child: Text(
-                            'welcome'.tr(),
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontFamily: 'Roboto',
                             ),
-                          ),
-                        ),
-                        Form(
-                          key: formKey,
-                          child: Column(
-                            children: <Widget>[
-                              TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                autocorrect: false,
-                                key: Key('login_username'),
-                                textInputAction: TextInputAction.next,
-                                focusNode: usernameFocus,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'user'.tr(),
-                                  suffixText: '@edu.devinci.fr',
-                                ),
-                                controller: myControllerUsername,
-                                onFieldSubmitted: (term) {
-                                  fieldFocusChange(
-                                      context, usernameFocus, passwordFocus);
-                                },
-                                validator: validator,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20.0),
-                                child: TextFormField(
-                                  obscureText: true,
-                                  textInputAction: TextInputAction.done,
-                                  focusNode: passwordFocus,
-                                  key: Key('login_password'),
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'password'.tr(),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20.0),
+                              child: ProgressButton(
+                                key: Key('login_connect'),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 18),
+                                  child: Text(
+                                    'login'.tr().toUpperCase(),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: globals.currentTheme.isDark()
+                                            ? Colors.black
+                                            : Colors.white),
                                   ),
-                                  controller: myControllerPassword,
-                                  onFieldSubmitted: submit,
-                                  validator: validator,
                                 ),
+                                onPressed: submit,
+                                buttonState: buttonState,
+                                backgroundColor: Theme.of(context).accentColor,
+                                progressColor: globals.currentTheme.isDark()
+                                    ? Colors.black
+                                    : Colors.white,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20.0),
-                                child: ProgressButton(
-                                  key: Key('login_connect'),
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 18),
-                                    child: Text(
-                                      'login'.tr().toUpperCase(),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: globals.currentTheme.isDark()
-                                              ? Colors.black
-                                              : Colors.white),
-                                    ),
-                                  ),
-                                  onPressed: submit,
-                                  buttonState: buttonState,
-                                  backgroundColor:
-                                      Theme.of(context).accentColor,
-                                  progressColor: globals.currentTheme.isDark()
-                                      ? Colors.black
-                                      : Colors.white,
-                                ),
-                              ),
-                              Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: TextButton(
-                                      onPressed: () async {
-                                        const url =
-                                            'https://www.leonard-de-vinci.net/lost_password.php';
-                                        if (await canLaunch(url)) {
-                                          await launch(url);
-                                        } else {
-                                          throw 'Could not launch $url';
-                                        }
-                                      },
-                                      child: Text('lost_password',
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .accentColor))
-                                          .tr()))
-                            ],
-                          ),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: TextButton(
+                                    onPressed: () async {
+                                      const url =
+                                          'https://www.leonard-de-vinci.net/lost_password.php';
+                                      if (await canLaunch(url)) {
+                                        await launch(url);
+                                      } else {
+                                        throw 'Could not launch $url';
+                                      }
+                                    },
+                                    child: Text('lost_password',
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .accentColor))
+                                        .tr())),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                }
+                      ),
+                    ],
+                  ),
+                );
               }
             }),
           ),
           persistentFooterButtons: show
               ? [
+                  VersionComponent(),
                   TextButton(
                       key: Key('login_cgu'),
                       child: Text('TOS',
@@ -360,7 +247,54 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                         );
                       })
                 ]
-              : null,
+              : [
+                  TextButton(
+                      key: Key('login_offline'),
+                      child: Text('offline_mode',
+                              style: TextStyle(
+                                  color: Theme.of(context).accentColor))
+                          .tr(),
+                      onPressed: () {
+                        globals.isConnected = false;
+                        loginProcess();
+                      })
+                ],
         ));
+  }
+}
+
+class VersionComponent extends StatefulWidget {
+  VersionComponent({Key key}) : super(key: key);
+
+  @override
+  _VersionComponentState createState() => _VersionComponentState();
+}
+
+class _VersionComponentState extends State<VersionComponent> {
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
+  }
+
+  void runBeforeBuild() async {
+    var packageInfo = await PackageInfo.fromPlatform();
+    appVersion = packageInfo.version;
+    appVersion += '#' + packageInfo.buildNumber;
+    setState(() {
+      show = true;
+    });
+  }
+
+  String appVersion = '';
+  bool show = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      key: Key('login_version'),
+      onPressed: null,
+      child: Text('V' + (show ? appVersion : '...')),
+    );
   }
 }
