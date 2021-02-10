@@ -1507,16 +1507,6 @@ class Student {
                                       ['s'])[notesConfig['notes']['note']
                                   ['si']]);
                             } catch (e, stacktrace) {
-                              Sentry.addBreadcrumb(Breadcrumb(
-                                  message: 'failed to double parse : ' +
-                                      texts[notesConfig['notes']['note']['i']]
-                                          .replaceAllMapped(
-                                              RegExp(notesConfig['notes']
-                                                  ['note']['r']),
-                                              (match) => '')
-                                          .split(notesConfig['notes']['note']
-                                              ['s'])[notesConfig['notes']
-                                          ['note']['si']]));
                               FLog.logThis(
                                   className: 'Student',
                                   methodName: 'getNotes',
@@ -1524,7 +1514,6 @@ class Student {
                                   type: LogLevel.ERROR,
                                   exception: Exception(e),
                                   stacktrace: stacktrace);
-                              reportError(e, stacktrace);
                             }
                           }
                           elem['noteP'] = null;
