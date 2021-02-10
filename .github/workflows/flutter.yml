@@ -1,0 +1,5 @@
+- name: Dart/Flutter Package Analyzer
+  uses: axel-op/dart-package-analyzer@v3
+
+- name: Analyze Dart
+  uses: zgosalvez/github-actions-analyze-dart@v1.4.0

@@ -35,7 +35,7 @@ class _PresencePageState extends State<PresencePage> {
   void runBeforeBuild() async {
     try {
       await globals.user.getPresence(force: true);
-    } catch (e, stacktrace) {
+    } catch (e) {
       FLog.info(
           className: '_PresencePageState',
           methodName: 'runBeforeBuild',
@@ -90,7 +90,7 @@ class _PresencePageState extends State<PresencePage> {
   void _onRefresh() async {
     try {
       await globals.user.getPresence(force: true);
-    } catch (e, stacktrace) {
+    } catch (e) {
       FLog.info(
           className: '_PresencePageState',
           methodName: '_onRefresh',
@@ -230,7 +230,7 @@ class _PresencePageState extends State<PresencePage> {
                           setState(() {
                             buttonState = ButtonState.normal;
                           });
-                        } catch (e, stacktrace) {
+                        } catch (e) {
                           FLog.info(
                               className: '_PresencePageState',
                               methodName: 'pageGen',
@@ -383,7 +383,8 @@ class _PresencePageState extends State<PresencePage> {
                           style: DefaultTextStyle.of(context).style,
                           children: <TextSpan>[
                             TextSpan(
-                                text: globals.user.presence[i]['validation_date'],
+                                text: globals.user.presence[i]
+                                    ['validation_date'],
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                           ],
                         ),

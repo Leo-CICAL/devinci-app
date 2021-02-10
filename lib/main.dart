@@ -18,15 +18,15 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'extra/classes.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   //Remove this method to stop OneSignal Debugging
+  globals.prefs = await SharedPreferences.getInstance();
   await OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
-
-  await OneSignal.shared.setRequiresUserPrivacyConsent(true);
+  globals.notifConsent = globals.prefs.getBool('notifConsent') ?? false;
+  await OneSignal.shared.setRequiresUserPrivacyConsent(!globals.notifConsent);
   await OneSignal.shared.init('0a91d723-8929-46ec-9ce7-5e72c59708e5',
       iOSSettings: {
         OSiOSSettings.autoPrompt: false,
@@ -35,7 +35,6 @@ Future<Null> main() async {
   await OneSignal.shared
       .setInFocusDisplayType(OSNotificationDisplayType.notification);
 
-  globals.prefs = await SharedPreferences.getInstance();
   var setTheme = globals.prefs.getString('theme') ?? 'system';
   if (setTheme != 'system') {
     globals.currentTheme.setDark(setTheme == 'dark');
@@ -44,20 +43,21 @@ Future<Null> main() async {
         SchedulerBinding.instance.window.platformBrightness == Brightness.dark);
   }
   //init quick_actions
-  
+
   var packageInfo = await PackageInfo.fromPlatform();
-  var appVersion = 'devinci@' + packageInfo.version;
-  appVersion += '+' + packageInfo.buildNumber;
+  globals.release = 'devinci@' + packageInfo.version;
+  globals.release += '+' + packageInfo.buildNumber;
   globals.crashConsent = globals.prefs.getString('crashConsent') ??
       'true'; //default to true to catch errors between now and the gdpr popup
-      print('clearing logs');
+  print('clearing logs');
   await FLog.clearLogs();
   if (globals.crashConsent == 'true') {
     await SentryFlutter.init(
       (options) => options
         ..dsn =
             'https://3b05859b04544f1fa982a411db5f1991@sentry.antoineraulin.com/2'
-        ..release = appVersion
+        ..release = globals.release
+        ..beforeSend = beforeSend
         ..environment = 'prod',
       appRunner: () => runApp(
         EasyLocalization(
@@ -129,7 +129,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       globals.currentTheme.setDark(brightness == Brightness.dark);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

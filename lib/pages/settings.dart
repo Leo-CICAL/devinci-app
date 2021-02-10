@@ -299,6 +299,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                       .consentGranted(globals.notifConsent);
                                   globals.prefs.setBool(
                                       'notifConsent', globals.notifConsent);
+                                  OneSignal.shared
+                                      .consentGranted(globals.notifConsent);
                                   if (globals.notifConsent) {
                                     OneSignal.shared
                                         .promptUserForPushNotificationPermission(
@@ -428,7 +430,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   left: 16,
                   right: 16,
                   top: 28,
-                  bottom:28,
+                  bottom: 28,
                 ),
                 height: (9 * 46).toDouble(),
                 decoration: BoxDecoration(

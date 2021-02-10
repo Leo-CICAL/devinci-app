@@ -71,7 +71,7 @@ void runBeforeBuild() async {
     if (documents == null) {
       try {
         await globals.user.getDocuments();
-      } catch (exception, stacktrace) {
+      } catch (exception) {
         FLog.info(
             className: 'UserPage Logic',
             methodName: 'runBeforeBuild',
@@ -96,7 +96,7 @@ void runBeforeBuild() async {
         try {
           await globals.user.getDocuments();
         } catch (exception, stacktrace) {
-          catcher(exception, stacktrace, '?my=docs', force:true);
+          catcher(exception, stacktrace, '?my=docs', force: true);
         }
         Scaffold.of(getContext()).removeCurrentSnackBar();
       }
@@ -152,7 +152,7 @@ void storePosition(TapDownDetails details) {
 BuildContext getContext() {
   if (globals.userPageKey.currentState != null) {
     return globals.userPageKey.currentState.context;
-  }else if (globals.mainPageKey.currentState != null) {
+  } else if (globals.mainPageKey.currentState != null) {
     return globals.mainPageKey.currentState.context;
   } else {
     return OneContext().context;

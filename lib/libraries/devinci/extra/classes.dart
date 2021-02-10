@@ -261,6 +261,11 @@ class Student {
     FLog.info(className: 'Student', methodName: 'init', text: 'h3');
     //l('h3');
     globals.notifConsent = globals.prefs.getBool('notifConsent') ?? false;
+    await OneSignal.shared.consentGranted(globals.notifConsent);
+    if (globals.notifConsent) {
+      await OneSignal.shared
+          .promptUserForPushNotificationPermission(fallbackToSettings: true);
+    }
     globals.showSidePanel = globals.prefs.getBool('showSidePanel') ?? false;
     globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'true';
     globals.analyticsConsent =
@@ -390,7 +395,7 @@ class Student {
         }
       }
     }
-    if (globals.crashConsent == 'true') {
+    if (globals.notifConsent) {
       try {
         var sub = await OneSignal.shared.getPermissionSubscriptionState();
         var sub2 = sub.subscriptionStatus;
@@ -895,7 +900,17 @@ class Student {
 
           if (french) {
             data['badge'] = RegExp(r'badge : (.*?)\n').firstMatch(d).group(1);
-            data['client'] = RegExp(r'client (.*?)\n').firstMatch(d).group(1);
+            try {
+              data['client'] = RegExp(r'client (.*?)\n').firstMatch(d).group(1);
+            } catch (e, stacktrace) {
+              FLog.logThis(
+                  className: 'Student',
+                  methodName: 'getData',
+                  text: 'exception',
+                  type: LogLevel.SEVERE,
+                  exception: Exception(e),
+                  stacktrace: stacktrace);
+            }
             data['idAdmin'] =
                 RegExp(r'Administratif (.*?)\n').firstMatch(d).group(1);
           } else {
@@ -1145,10 +1160,10 @@ class Student {
         throw Exception({'code': 400, 'message': 'missing parameters'});
       }
     } else {
-      throw Exception({
+      throw HttpException({
         'code': 503,
         'message': 'service unavailable, globals.isConnected == false'
-      }); //service unavailable
+      }.toString()); //service unavailable
     }
     return;
   }
@@ -1358,7 +1373,7 @@ class Student {
                                 .split(notesConfig['matieres']['!e']['moy']
                                     ['s'])[notesConfig['matieres']['!e']['moy']
                                 ['si']]);
-                      } catch (e, stacktrace) {
+                      } catch (e) {
                         try {
                           if (texts[notesConfig['matieres']['!e']['moy']['i']]
                                   .replaceAllMapped(
@@ -1715,19 +1730,30 @@ class Student {
                 await reportError(e, stacktrace);
               }
 
-              documents['calendrier']['url'] =
-                  'https://www.leonard-de-vinci.net' +
-                      doc
-                          .querySelectorAll(
-                              '.social-box.social-bordered.span6')[0]
-                          .querySelectorAll('a')[calendrierIndex]
-                          .attributes['href'];
-              documents['calendrier']['annee'] = RegExp(r'\d{4}-\d{4}')
-                  .firstMatch(doc
-                      .querySelectorAll('.social-box.social-bordered.span6')[0]
-                      .querySelectorAll('a')[calendrierIndex]
-                      .text)
-                  .group(0);
+              try {
+                documents['calendrier']['url'] =
+                    'https://www.leonard-de-vinci.net' +
+                        doc
+                            .querySelectorAll(
+                                '.social-box.social-bordered.span6')[0]
+                            .querySelectorAll('a')[calendrierIndex]
+                            .attributes['href'];
+                documents['calendrier']['annee'] = RegExp(r'\d{4}-\d{4}')
+                    .firstMatch(doc
+                        .querySelectorAll(
+                            '.social-box.social-bordered.span6')[0]
+                        .querySelectorAll('a')[calendrierIndex]
+                        .text)
+                    .group(0);
+              } catch (e, stacktrace) {
+                FLog.logThis(
+                    className: 'Student',
+                    methodName: 'getDocuments',
+                    text: 'exception',
+                    type: LogLevel.SEVERE,
+                    exception: Exception(e),
+                    stacktrace: stacktrace);
+              }
 
               FLog.info(
                   className: 'Student',
@@ -1884,23 +1910,23 @@ class Student {
                         .group(1);
                   } else if (body.contains('Vous avez été noté présent')) {
                     presence[i]['type'] = 'done';
-                    try{
+                    try {
                       var doc = parse(body);
                       var validationText = doc
                           .querySelector(
                               '#body_presence > div.alert.alert-success')
                           .text;
                       presence[i]['validation_date'] = RegExp(r'à (.*?) ')
-                        .firstMatch(validationText)
-                        .group(1);
-                    }catch(e, stacktrace){
+                          .firstMatch(validationText)
+                          .group(1);
+                    } catch (e, stacktrace) {
                       FLog.logThis(
-                    className: 'Student',
-                    methodName: 'getPresence',
-                    text: 'exception',
-                    type: LogLevel.ERROR,
-                    exception: Exception(e),
-                    stacktrace: stacktrace);
+                          className: 'Student',
+                          methodName: 'getPresence',
+                          text: 'exception',
+                          type: LogLevel.ERROR,
+                          exception: Exception(e),
+                          stacktrace: stacktrace);
                     }
                   } else if (body.contains('clôturé')) {
                     presence[i]['type'] = 'closed';
@@ -1923,7 +1949,7 @@ class Student {
         throw Exception(400); //missing parameters
       }
     } else {
-      throw Exception(503); //service unavailable
+      throw HttpException(503.toString()); //service unavailable
     }
     FLog.info(
         className: 'Student',
@@ -1981,7 +2007,7 @@ class Student {
         throw Exception(400); //missing parameters
       }
     } else {
-      throw Exception(503); //service unavailable
+      throw HttpException(503.toString()); //service unavailable
     }
     return;
   }

@@ -2,13 +2,9 @@
 import 'dart:async';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:devinci/libraries/admin/admin.dart';
 import 'package:devinci/libraries/devinci/extra/classes.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/libraries/flutter_progress_button/flutter_progress_button.dart';
-import 'package:devinci/pages/ui/absences.dart';
-import 'package:devinci/pages/ui/notes.dart';
-import 'package:devinci/pages/ui/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';

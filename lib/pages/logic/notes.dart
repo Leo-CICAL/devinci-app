@@ -50,7 +50,7 @@ Future<void> getData({bool force = false}) async {
         } catch (exception, stacktrace) {
           catcher(exception, stacktrace, '?my=notes', force: true);
         }
-      } catch (exception, stacktrace) {
+      } catch (exception) {
         FLog.info(
             className: 'NotesPage Logic',
             methodName: 'getData',
@@ -60,7 +60,7 @@ Future<void> getData({bool force = false}) async {
           duration: const Duration(seconds: 10),
         );
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-       await showSnackBar(snackBar);
+        await showSnackBar(snackBar);
         try {
           await globals.user.getTokens();
         } catch (e, stacktrace) {
@@ -99,7 +99,7 @@ Future<void> getData({bool force = false}) async {
         currentSemester = 1;
       }
     }
-} catch (e, stacktrace) {}
+  } catch (e) {}
   setState(() {
     show = true;
   });
@@ -123,7 +123,7 @@ void onRefresh() async {
       } catch (exception, stacktrace) {
         catcher(exception, stacktrace, '?my=notes', force: true);
       }
-    } catch (exception, stacktrace) {
+    } catch (exception) {
       FLog.info(
           className: 'NotesPage Logic',
           methodName: 'onRefresh',

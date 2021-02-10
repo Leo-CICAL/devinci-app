@@ -359,12 +359,11 @@ Future<void> dialog(
   }
 }
 
-Future<void> showSnackBar(SnackBar snack, {forceOneContext:false}) async {
-  if(forceOneContext || globals.mainScaffoldKey.currentState == null){
+Future<void> showSnackBar(SnackBar snack, {forceOneContext = false}) async {
+  if (forceOneContext || globals.mainScaffoldKey.currentState == null) {
     print('show with onecontext');
     await OneContext().showSnackBar(builder: (_) => snack);
-  }
-  else {
+  } else {
     await globals.mainScaffoldKey.currentState.showSnackBar(snack);
   }
 }
@@ -906,4 +905,24 @@ void catcher(var exception, StackTrace stacktrace, String endpoint,
       exception: Exception(exception),
       stacktrace: stacktrace);
   if (force) await reportError(exception, stacktrace);
+}
+
+SentryEvent beforeSend(SentryEvent event, {dynamic hint}) {
+  // Modify the event here:
+
+  if (event.exception is SocketException ||
+      event.exception is HttpException ||
+      event.exception is HandshakeException) {
+    event = null;
+  }
+  if (globals.release.isNotEmpty) {
+    event = event.copyWith(
+        release: globals
+            .release); // We change the name of the release to harmonize between ios and android
+  }
+  var dev = false;
+  assert(dev = true);
+  event = event.copyWith(environment: dev ? 'dev' : 'public');
+
+  return event;
 }

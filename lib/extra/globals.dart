@@ -90,3 +90,5 @@ final mainScaffoldKey = GlobalKey<ScaffoldState>();
 final adminPageKey = GlobalKey<AdminPageState>();
 final loginPageKey = GlobalKey<LoginPageState>();
 final userPageKey = GlobalKey<UserPageState>();
+
+String release = '';

@@ -11,15 +11,13 @@ class DevinciApi {
   void register() async {
     if (globals.user != null) {
       //init matomo
-      try{
-      await MatomoTracker().initialize(
-          siteId: 1,
-          url: 'https://matomo.antoineraulin.com/piwik.php',
-          visitorId: globals.user.tokens['uids']);
-      MatomoTracker().setOptOut(!globals.analyticsConsent);
-      }catch(e){
-        
-      }
+      try {
+        await MatomoTracker().initialize(
+            siteId: 1,
+            url: 'https://matomo.antoineraulin.com/piwik.php',
+            visitorId: globals.user.tokens['uids']);
+        MatomoTracker().setOptOut(!globals.analyticsConsent);
+      } catch (e) {}
       if (globals.notifConsent) {
         var lastNotifRegistration =
             globals.prefs.getString('lastNotifRegistration') ?? '';
@@ -44,29 +42,40 @@ class DevinciApi {
               methodName: 'register',
               text: hashes.toString());
           //l(hashes);
-          var client = HttpClient();
-          var uri = Uri.parse('https://devinci.antoineraulin.com/register');
-          var req = await client.postUrl(uri);
-          req.headers.set('content-type', 'application/json');
-          var sub = await OneSignal.shared.getPermissionSubscriptionState();
-          var sub2 = sub.subscriptionStatus;
-          var id = sub2.userId;
-          if (id != '') {
-            var data = <String, dynamic>{'id': id, 'hashes': hashes};
-            req.add(utf8.encode(json.encode(data)));
-            var response = await req.close();
-            var reply = await response.transform(utf8.decoder).join();
-            FLog.info(
-                className: 'DevinciApi', methodName: 'register', text: reply);
-            //l(reply);
-            await globals.prefs.setString('lastNotifRegistration', currentDate);
-            client.close();
-          } else {
-            FLog.warning(
+          try {
+            var client = HttpClient();
+            var uri = Uri.parse('https://devinci.antoineraulin.com/register');
+            var req = await client.postUrl(uri);
+            req.headers.set('content-type', 'application/json');
+            var sub = await OneSignal.shared.getPermissionSubscriptionState();
+            var sub2 = sub.subscriptionStatus;
+            var id = sub2.userId;
+            if (id != '') {
+              var data = <String, dynamic>{'id': id, 'hashes': hashes};
+              req.add(utf8.encode(json.encode(data)));
+              var response = await req.close();
+              var reply = await response.transform(utf8.decoder).join();
+              FLog.info(
+                  className: 'DevinciApi', methodName: 'register', text: reply);
+              //l(reply);
+              await globals.prefs
+                  .setString('lastNotifRegistration', currentDate);
+              client.close();
+            } else {
+              FLog.warning(
+                  className: 'DevinciApi',
+                  methodName: 'register',
+                  text: 'no player id');
+              //l('no player id');
+            }
+          } catch (err, stacktrace) {
+            FLog.logThis(
                 className: 'DevinciApi',
                 methodName: 'register',
-                text: 'no player id');
-            //l('no player id');
+                text: 'exception',
+                type: LogLevel.ERROR,
+                exception: Exception(err),
+                stacktrace: stacktrace);
           }
         } else {
           FLog.warning(
