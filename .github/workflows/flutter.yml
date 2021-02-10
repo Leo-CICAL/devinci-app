@@ -1,5 +1,16 @@
-- name: Dart/Flutter Package Analyzer
-  uses: axel-op/dart-package-analyzer@v3
+on: push
 
-- name: Analyze Dart
-  uses: zgosalvez/github-actions-analyze-dart@v1.4.0
+name: Flutter Analyzer
+
+jobs:
+  build:
+    name: Example
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
+      - run: flutter pub get
+      - name: Analyze Dart
+        uses: axel-op/dart-package-analyzer@v3
