@@ -1,12 +1,12 @@
 {
-  "name": "stibot",
+  "name": "DevinciBot",
   "version": "1.0.0",
-  "description": "Bot de NationsGlory Lime",
+  "description": "Bot de DevinciApp",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Romain Pathe",
+  "author": "Romain.P",
   "license": "ISC",
   "dependencies": {
     "ascii-table": "0.0.9",
