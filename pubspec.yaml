@@ -47,7 +47,7 @@ dependencies:
   flutter_whatsnew:
     git:
       url: https://github.com/antoineraulin/flutter_whatsnew
-  introduction_screen: ^1.0.9
+  showcaseview: ^0.1.6
   one_context: ^0.5.0
   matomo: ^0.0.6
   f_logs:

@@ -431,9 +431,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   left: 16,
                   right: 16,
                   top: 28,
-                  bottom: 28,
                 ),
-                height: (10 * 46).toDouble(),
+                height: (7 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -443,21 +442,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: Column(children: <Widget>[
                   GestureDetector(
                     onTap: () async {
-                      // if (Platform.isAndroid) {
-                      //   final inAppReview = InAppReview.instance;
-
-                      //   if (await inAppReview.isAvailable()) {
-                      //     await inAppReview.requestReview();
-                      //   }
-                      // } else {
-                      //   final email = Email(
-                      //     body: '',
-                      //     subject: 'Devinci - Feedback',
-                      //     recipients: ['devinci@araulin.eu'],
-                      //     isHTML: false,
-                      //   );
-                      //   await FlutterEmailSender.send(email);
-                      // }
                       Wiredash.of(context).show();
                     }, // handle your onTap here
                     child: Container(
@@ -675,6 +659,63 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   GestureDetector(
                     onTap: () async {
+                      await globals.prefs.setBool('showcase_notes', true);
+                      await globals.prefs.setBool('showcase_agenda', true);
+                      await showDialog<void>(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('show_guide').tr(),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  Text('show_guide_desc').tr(),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('OK',
+                                    style: TextStyle(
+                                        color: Theme.of(context).accentColor)),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }, // handle your onTap here
+                    child: Container(
+                      height: 46,
+                      margin: EdgeInsets.only(left: 24),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                        width: 0.2,
+                        color: Color(0xffACACAC),
+                      ))),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              'show_guide',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ).tr(),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Icon(Icons.navigate_next,
+                                color: Color(0xffACACAC)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
                       await Sentry.captureMessage('Devinci logs sent');
                       var logs = await FLog.exportLogs();
                       final email = Email(
@@ -690,12 +731,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     child: Container(
                       height: 46,
                       margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
                       child: Row(
                         children: <Widget>[
                           Expanded(
@@ -713,6 +748,23 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
+                ]),
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 28,
+                  bottom: 28,
+                ),
+                height: (4 * 46).toDouble(),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12.0),
+                    )),
+                child: Column(children: <Widget>[
                   StatusComponent(),
                   VersionComponent(),
                   IdComponent(),

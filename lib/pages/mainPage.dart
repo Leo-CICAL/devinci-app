@@ -13,10 +13,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:one_context/one_context.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
+
+class ShowCasePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ShowCaseWidget(
+      onStart: (index, key) {
+        print('onStart: $index, $key');
+      },
+      onComplete: (index, key) {
+        print('onComplete: $index, $key');
+      },
+      builder:
+          Builder(builder: (context) => MainPage(key: globals.mainPageKey)),
+      autoPlay: false,
+    );
+  }
+}
 
 class MainPage extends StatefulWidget {
   MainPage({Key key}) : super(key: key);
@@ -126,24 +144,37 @@ class MainPageState extends State<MainPage> {
             ),
             actions: <Widget>[
               [
-                IconButton(
-                  icon: IconTheme(
-                    data: Theme.of(context).accentIconTheme,
-                    child: Icon(Icons.add_outlined),
+                Showcase.withWidget(
+                  key: globals.showcase_add,
+                  // description: ,
+                  container: Container(
+                      width: 200,
+                      child: Text(
+                        'showcase_add'.tr(),
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      )),
+                  height: 200,
+                  width: 200,
+                  child: IconButton(
+                    icon: IconTheme(
+                      data: Theme.of(context).accentIconTheme,
+                      child: Icon(Icons.add_outlined),
+                    ),
+                    onPressed: () async {
+                      await OneContext().push(MaterialPageRoute(
+                          builder: (_) => CoursEditor(
+                                addButton: true,
+                              )));
+                      // await Navigator.push<Widget>(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (BuildContext context) => CoursEditor(
+                      //             addButton: true,
+                      //           )),
+                      // );
+                    },
                   ),
-                  onPressed: () async {
-                    await OneContext().push(MaterialPageRoute(
-                        builder: (_) => CoursEditor(
-                              addButton: true,
-                            )));
-                    // await Navigator.push<Widget>(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (BuildContext context) => CoursEditor(
-                    //             addButton: true,
-                    //           )),
-                    // );
-                  },
                 ),
                 SizedBox.shrink(),
                 SizedBox.shrink(),
@@ -168,14 +199,26 @@ class MainPageState extends State<MainPage> {
                 SizedBox.shrink(),
               ].elementAt(globals.selectedPage),
               [
-                IconButton(
-                  icon: IconTheme(
-                    data: Theme.of(context).accentIconTheme,
-                    child: Icon(Icons.today_outlined),
+                Showcase.withWidget(
+                  key: globals.showcase_today,
+                  container: Container(
+                      width: 200,
+                      child: Text(
+                        'showcase_today'.tr(),
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      )),
+                  height: 200,
+                  width: 200,
+                  child: IconButton(
+                    icon: IconTheme(
+                      data: Theme.of(context).accentIconTheme,
+                      child: Icon(Icons.today_outlined),
+                    ),
+                    onPressed: () async {
+                      globals.calendarController.displayDate = DateTime.now();
+                    },
                   ),
-                  onPressed: () async {
-                    globals.calendarController.displayDate = DateTime.now();
-                  },
                 ),
                 globals.isLoading.state(1)
                     ? Padding(
@@ -249,56 +292,70 @@ class MainPageState extends State<MainPage> {
                                 ),
                         ],
                       )
-                    : PopupMenuButton(
-                        //captureInheritedThemes: true,
-                        icon: IconTheme(
-                          data: Theme.of(context).accentIconTheme,
-                          child: Icon(Icons.more_vert_outlined),
+                    : Showcase.withWidget(
+                        key: globals.showcase_moreMenu,
+                        container: Container(
+                            width: 200,
+                            child: Text(
+                              'showcase_more_menu'.tr(),
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.right,
+                            )),
+                        height: 200,
+                        width: 200,
+                        child: PopupMenuButton(
+                          //captureInheritedThemes: true,
+                          icon: IconTheme(
+                            data: Theme.of(context).accentIconTheme,
+                            child: Icon(Icons.more_vert_outlined),
+                          ),
+                          onSelected: (String choice) {
+                            if (choice == 'refresh') {
+                              globals.isLoading.setState(0, true);
+                            } else if (choice == 'free_room') {
+                              OneContext().push(CupertinoPageRoute(
+                                  builder: (_) => SallesPage()));
+                              // Navigator.push(
+                              //   context,
+                              //   CupertinoPageRoute(
+                              //     builder: (context) => SallesPage(),
+                              //   ),
+                              // );
+                            } else {
+                              setState(() {
+                                if (globals.calendarView == CalendarView.day) {
+                                  globals.calendarView = CalendarView.workWeek;
+                                  globals.prefs
+                                      .setBool('calendarViewDay', false);
+                                  globals.calendarController.view =
+                                      CalendarView.workWeek;
+                                } else {
+                                  globals.calendarView = CalendarView.day;
+                                  globals.prefs
+                                      .setBool('calendarViewDay', true);
+                                  globals.calendarController.view =
+                                      CalendarView.day;
+                                }
+                              });
+                            }
+                          },
+                          padding: EdgeInsets.zero,
+                          // initialValue: choices[_selection],
+                          itemBuilder: (BuildContext context) {
+                            return [
+                              globals.calendarView == CalendarView.day
+                                  ? 'week'
+                                  : 'day',
+                              'refresh',
+                              'free_room'
+                            ].map((String choice) {
+                              return PopupMenuItem<String>(
+                                value: choice,
+                                child: Text(choice).tr(),
+                              );
+                            }).toList();
+                          },
                         ),
-                        onSelected: (String choice) {
-                          if (choice == 'refresh') {
-                            globals.isLoading.setState(0, true);
-                          } else if (choice == 'free_room') {
-                            OneContext().push(CupertinoPageRoute(
-                                builder: (_) => SallesPage()));
-                            // Navigator.push(
-                            //   context,
-                            //   CupertinoPageRoute(
-                            //     builder: (context) => SallesPage(),
-                            //   ),
-                            // );
-                          } else {
-                            setState(() {
-                              if (globals.calendarView == CalendarView.day) {
-                                globals.calendarView = CalendarView.workWeek;
-                                globals.prefs.setBool('calendarViewDay', false);
-                                globals.calendarController.view =
-                                    CalendarView.workWeek;
-                              } else {
-                                globals.calendarView = CalendarView.day;
-                                globals.prefs.setBool('calendarViewDay', true);
-                                globals.calendarController.view =
-                                    CalendarView.day;
-                              }
-                            });
-                          }
-                        },
-                        padding: EdgeInsets.zero,
-                        // initialValue: choices[_selection],
-                        itemBuilder: (BuildContext context) {
-                          return [
-                            globals.calendarView == CalendarView.day
-                                ? 'week'
-                                : 'day',
-                            'refresh',
-                            'free_room'
-                          ].map((String choice) {
-                            return PopupMenuItem<String>(
-                              value: choice,
-                              child: Text(choice).tr(),
-                            );
-                          }).toList();
-                        },
                       ),
                 SizedBox.shrink(),
                 SizedBox.shrink(),

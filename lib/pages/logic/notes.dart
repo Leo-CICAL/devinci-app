@@ -9,6 +9,7 @@ import 'package:sembast/utils/value_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:f_logs/f_logs.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 //DATA
 int currentSemester = 0;
@@ -190,6 +191,12 @@ void runBeforeBuild() async {
       }
       show = true;
     });
+  }
+  if (globals.prefs.getBool('showcase_notes') ?? true) {
+    await globals.prefs.setBool('showcase_notes', false);
+    ShowCaseWidget.of(getContext()).startShowCase([
+      globals.showcase_selectSemester,
+    ]);
   }
 }
 

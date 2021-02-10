@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:matomo/matomo.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:one_context/one_context.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:sembast/sembast.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -97,12 +98,20 @@ class _AgendaPageState extends State<AgendaPage> {
         show = true;
       });
     }
+    if (globals.prefs.getBool('showcase_agenda') ?? true) {
+      await globals.prefs.setBool('showcase_agenda', false);
+      ShowCaseWidget.of(context).startShowCase([
+        globals.showcase_add,
+        globals.showcase_today,
+        globals.showcase_moreMenu,
+        globals.showcase_addCalendar
+      ]);
+    }
     if (!privacyConsent) {
       Timer(Duration(seconds: 1), () => showGDPR(context));
       await globals.prefs.setBool('privacyConsent', true);
     } else {
-      //var lastVersion = globals.prefs.getString('lastV') ?? '';
-      var lastVersion = '';
+      var lastVersion = globals.prefs.getString('lastV') ?? '';
       if (lastVersion == '' || lastVersion != globals.release) {
         Timer(Duration(seconds: 1), () => showChangelog(context));
         await globals.prefs.setString('lastV', globals.release);

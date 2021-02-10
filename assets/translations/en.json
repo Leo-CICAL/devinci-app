@@ -126,5 +126,12 @@
   "connected": "connected",
   "not_connected": "not connected",
   "whatsnew": "What's New ?",
-  "continue": "Continue"
+  "continue": "Continue",
+  "showcase_add": "Add an event to the schedule",
+  "showcase_today": "Allows you to go back\nto today in the schedule",
+  "showcase_more_menu": "3 sub-menus:\n- Day/Week (changes the shape of the calendar),\n- Refresh (refreshes the schedule),\n- Free rooms (shows the free rooms in the school)",
+  "showcase_add_calendar": "Clicking on an empty space in the schedule allows you to add an event.",
+  "showcase_select_semester": "Allows you to select the semester to be displayed",
+  "show_guide": "Follow the guide",
+  "show_guide_desc": "You can now follow (again) the presentation guide for the Schedule and Grades pages."
 }

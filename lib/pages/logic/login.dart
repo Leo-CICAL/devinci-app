@@ -61,8 +61,8 @@ void submit([String value]) async {
           myControllerPassword.text);
       try {
         await globals.user.init();
-        await OneContext().push(CupertinoPageRoute(
-            builder: (_) => MainPage(key: globals.mainPageKey)));
+        await OneContext()
+            .push(CupertinoPageRoute(builder: (_) => ShowCasePage()));
         // await Navigator.push(
         //   getContext(),
         //   CupertinoPageRoute(
@@ -245,7 +245,7 @@ void loginProcess() async {
         await Navigator.push(
           getContext(),
           CupertinoPageRoute(
-            builder: (context) => MainPage(key: globals.mainPageKey),
+            builder: (context) => ShowCasePage(),
           ),
         );
       }

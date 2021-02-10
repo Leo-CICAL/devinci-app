@@ -126,5 +126,12 @@
   "connected": "connecté",
   "not_connected": "non connecté",
   "whatsnew": "Nouveautés",
-  "continue": "Continuer"
+  "continue": "Continuer",
+  "showcase_add": "Ajouter un événement à l'emploi du temps",
+  "showcase_today": "Permet de revenir à aujourd'hui\n dans l'emploi du temps",
+  "showcase_more_menu": "3 sous-menus:\n- Jour/Semaine (change la forme du calendrier),\n- rafraîchir (rafraîchir l'emploi du temps),\n- Salles libres (montre les salles libres dans l'école)",
+  "showcase_add_calendar": "Cliquer sur un espace vide de l'emploi du temps permet d'ajouter un événement",
+  "showcase_select_semester": "Permet de sélectionner le semestre à afficher",
+  "show_guide": "Suivre le guide",
+  "show_guide_desc": "Vous pouvez désormais (re)suivre le guide de présentation pour les pages EDT et Notes."
 }

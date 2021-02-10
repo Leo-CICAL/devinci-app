@@ -998,6 +998,17 @@ void showChangelog(BuildContext context) {
             ),
           ),
           ListTile(
+            leading: const Icon(Icons.beenhere_rounded),
+            title: Text(
+              'Guide de présentation',
+              textScaleFactor: 1.0,
+            ),
+            subtitle: Text(
+              "L'application possède maintenant un guide de présentation des fonctionnalités 'cachées', notamment pour les pages EDT et Notes. Le guide s'affiche d'office pour les nouveaux utilisateurs et peut être réactivé depuis les paramètres.",
+              textScaleFactor: 1.0,
+            ),
+          ),
+          ListTile(
             leading: const Icon(Icons.bug_report_outlined),
             title: Text(
               'Correctifs',

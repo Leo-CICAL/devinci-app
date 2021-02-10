@@ -92,3 +92,9 @@ final loginPageKey = GlobalKey<LoginPageState>();
 final userPageKey = GlobalKey<UserPageState>();
 
 String release = '';
+
+GlobalKey showcase_add = GlobalKey();
+GlobalKey showcase_today = GlobalKey();
+GlobalKey showcase_moreMenu = GlobalKey();
+GlobalKey showcase_addCalendar = GlobalKey();
+GlobalKey showcase_selectSemester = GlobalKey();
