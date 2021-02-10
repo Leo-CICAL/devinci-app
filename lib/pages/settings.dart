@@ -20,6 +20,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:f_logs/f_logs.dart';
+import 'package:wiredash/wiredash.dart';
 
 // ignore: must_be_immutable
 class SettingsPage extends TraceableStatefulWidget {
@@ -432,7 +433,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   top: 28,
                   bottom: 28,
                 ),
-                height: (9 * 46).toDouble(),
+                height: (10 * 46).toDouble(),
                 decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     shape: BoxShape.rectangle,
@@ -442,21 +443,22 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: Column(children: <Widget>[
                   GestureDetector(
                     onTap: () async {
-                      if (Platform.isAndroid) {
-                        final inAppReview = InAppReview.instance;
+                      // if (Platform.isAndroid) {
+                      //   final inAppReview = InAppReview.instance;
 
-                        if (await inAppReview.isAvailable()) {
-                          await inAppReview.requestReview();
-                        }
-                      } else {
-                        final email = Email(
-                          body: '',
-                          subject: 'Devinci - Feedback',
-                          recipients: ['devinci@araulin.eu'],
-                          isHTML: false,
-                        );
-                        await FlutterEmailSender.send(email);
-                      }
+                      //   if (await inAppReview.isAvailable()) {
+                      //     await inAppReview.requestReview();
+                      //   }
+                      // } else {
+                      //   final email = Email(
+                      //     body: '',
+                      //     subject: 'Devinci - Feedback',
+                      //     recipients: ['devinci@araulin.eu'],
+                      //     isHTML: false,
+                      //   );
+                      //   await FlutterEmailSender.send(email);
+                      // }
+                      Wiredash.of(context).show();
                     }, // handle your onTap here
                     child: Container(
                       height: 46,
@@ -629,6 +631,36 @@ class _SettingsPageState extends State<SettingsPage> {
                           Expanded(
                             child: Text(
                               'support',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ).tr(),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Icon(Icons.navigate_next,
+                                color: Color(0xffACACAC)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      showChangelog(context);
+                    }, // handle your onTap here
+                    child: Container(
+                      height: 46,
+                      margin: EdgeInsets.only(left: 24),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                        width: 0.2,
+                        color: Color(0xffACACAC),
+                      ))),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              'whatsnew',
                               style: Theme.of(context).textTheme.subtitle1,
                             ).tr(),
                           ),

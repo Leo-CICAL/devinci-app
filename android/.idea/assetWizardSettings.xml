@@ -100,8 +100,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\antoi\Téléchargements\icon.png" />
-                                                <entry key="scalingPercent" value="111" />
+                                                <entry key="imagePath" value="C:\Users\antoi\Documents\Dev\devinci-app\assets\devinci.svg" />
+                                                <entry key="scalingPercent" value="66" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -135,6 +135,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
+                                      <entry key="backgroundColor" value="ffffff" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -323,11 +324,6 @@
                                 </PersistentState>
                               </value>
                             </entry>
-                          </map>
-                        </option>
-                        <option name="values">
-                          <map>
-                            <entry key="outputIconType" value="ACTIONBAR" />
                           </map>
                         </option>
                       </PersistentState>

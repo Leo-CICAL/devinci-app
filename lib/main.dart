@@ -18,6 +18,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:wiredash/wiredash.dart';
+
+import 'config.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -68,13 +71,15 @@ Future<Null> main() async {
           ],
           path: 'assets/translations', // <-- change patch to your
           fallbackLocale: Locale('fr'),
-          child: BetterFeedback(
+          child:
+              //BetterFeedback(
               // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
-              child: Phoenix(
-                // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
-                child: MyApp(),
-              ),
-              onFeedback: betterFeedbackOnFeedback),
+              //child:
+              Phoenix(
+            // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
+            child: MyApp(),
+          ),
+          //onFeedback: betterFeedbackOnFeedback),
         ),
       ),
     );
@@ -88,13 +93,15 @@ Future<Null> main() async {
         ],
         path: 'assets/translations', // <-- change patch to your
         fallbackLocale: Locale('fr'),
-        child: BetterFeedback(
+        child:
+            //BetterFeedback(
             // BetterFeedback est une librairie qui permet d'envoyer un feedback avec une capture d'écran de l'app, c'est pourquoi on lance l'app dans BetterFeedback pour qu'il puisse se lancer par dessus et prendre la capture d'écran.
-            child: Phoenix(
-              // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
-              child: MyApp(),
-            ),
-            onFeedback: betterFeedbackOnFeedback),
+            //child:
+            Phoenix(
+          // Phoenix permet de redémarrer l'app sans vraiment en sortir, c'est utile si l'utilisateur se déconnecte afin de lui représenter la page de connexion.
+          child: MyApp(),
+        ),
+        //onFeedback: betterFeedbackOnFeedback),
       ),
     );
   }
@@ -141,102 +148,107 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     ];
     res.addAll(context.localizationDelegates);
 
-    return MaterialApp(
+    return Wiredash(
+      projectId: 'devinci-q5z3r2m',
+      secret: Config.wiredash_key,
       navigatorKey: OneContext().key,
-      navigatorObservers: [
-        SentryNavigatorObserver(),
-      ],
-      localizationsDelegates: res,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      title: 'Devinci',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-        primaryColor: Colors.teal,
-        accentColor: Colors.teal[800],
-        textSelectionColor: Colors.teal.withOpacity(0.4),
-        textSelectionHandleColor: Colors.teal[800],
-        cursorColor: Colors.teal,
-        scaffoldBackgroundColor: Color(0xffFAFAFA),
-        cardColor: Colors.white,
-        indicatorColor: Colors.teal[800],
-        accentIconTheme: IconThemeData(color: Colors.black),
-        unselectedWidgetColor: Colors.black,
-        fontFamily: 'ProductSans',
-        textTheme: TextTheme(
-          headline1: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 32,
-            color: Colors.black,
-          ),
-          headline2: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 26,
-            color: Colors.black,
-          ),
-          bodyText1: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: Colors.black,
-          ),
-          bodyText2: TextStyle(
-            fontWeight: FontWeight.normal,
-            fontSize: 18,
-            color: Colors.black,
-          ),
-          subtitle1: TextStyle(
-            fontWeight: FontWeight.normal,
-            fontSize: 16,
-            color: Colors.black,
-          ),
-        ),
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.teal,
-        accentColor: Colors.tealAccent[200],
-        textSelectionColor: Colors.tealAccent[700],
-        textSelectionHandleColor: Colors.tealAccent[200],
-        cursorColor: Colors.teal,
-        backgroundColor: Color(0xff121212),
-        scaffoldBackgroundColor: Color(0xff121212),
-        cardColor: Color(0xff1E1E1E),
-        indicatorColor: Colors.tealAccent[200],
-        accentIconTheme: IconThemeData(color: Colors.white),
-        unselectedWidgetColor: Colors.white,
-        fontFamily: 'ProductSans',
-        textTheme: TextTheme(
-          headline1: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 32,
-            color: Colors.white,
-          ),
-          headline2: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 26,
-            color: Colors.white,
-          ),
-          bodyText1: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: Colors.white,
-          ),
-          bodyText2: TextStyle(
-            fontWeight: FontWeight.normal,
-            fontSize: 18,
-            color: Colors.white,
-          ),
-          subtitle1: TextStyle(
-            fontWeight: FontWeight.normal,
-            fontSize: 16,
-            color: Colors.white,
+      child: MaterialApp(
+        navigatorKey: OneContext().key,
+        navigatorObservers: [
+          SentryNavigatorObserver(),
+        ],
+        localizationsDelegates: res,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        title: 'Devinci',
+        theme: ThemeData(
+          primarySwatch: Colors.teal,
+          primaryColor: Colors.teal,
+          accentColor: Colors.teal[800],
+          textSelectionColor: Colors.teal.withOpacity(0.4),
+          textSelectionHandleColor: Colors.teal[800],
+          cursorColor: Colors.teal,
+          scaffoldBackgroundColor: Color(0xffFAFAFA),
+          cardColor: Colors.white,
+          indicatorColor: Colors.teal[800],
+          accentIconTheme: IconThemeData(color: Colors.black),
+          unselectedWidgetColor: Colors.black,
+          fontFamily: 'ProductSans',
+          textTheme: TextTheme(
+            headline1: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 32,
+              color: Colors.black,
+            ),
+            headline2: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 26,
+              color: Colors.black,
+            ),
+            bodyText1: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.black,
+            ),
+            bodyText2: TextStyle(
+              fontWeight: FontWeight.normal,
+              fontSize: 18,
+              color: Colors.black,
+            ),
+            subtitle1: TextStyle(
+              fontWeight: FontWeight.normal,
+              fontSize: 16,
+              color: Colors.black,
+            ),
           ),
         ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          primaryColor: Colors.teal,
+          accentColor: Colors.tealAccent[200],
+          textSelectionColor: Colors.tealAccent[700],
+          textSelectionHandleColor: Colors.tealAccent[200],
+          cursorColor: Colors.teal,
+          backgroundColor: Color(0xff121212),
+          scaffoldBackgroundColor: Color(0xff121212),
+          cardColor: Color(0xff1E1E1E),
+          indicatorColor: Colors.tealAccent[200],
+          accentIconTheme: IconThemeData(color: Colors.white),
+          unselectedWidgetColor: Colors.white,
+          fontFamily: 'ProductSans',
+          textTheme: TextTheme(
+            headline1: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 32,
+              color: Colors.white,
+            ),
+            headline2: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 26,
+              color: Colors.white,
+            ),
+            bodyText1: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.white,
+            ),
+            bodyText2: TextStyle(
+              fontWeight: FontWeight.normal,
+              fontSize: 18,
+              color: Colors.white,
+            ),
+            subtitle1: TextStyle(
+              fontWeight: FontWeight.normal,
+              fontSize: 16,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        builder: OneContext().builder,
+        themeMode: globals.currentTheme.currentTheme(),
+        home: LoginPage(title: 'Devinci', key: globals.loginPageKey),
+        debugShowCheckedModeBanner: false,
       ),
-      builder: OneContext().builder,
-      themeMode: globals.currentTheme.currentTheme(),
-      home: LoginPage(title: 'Devinci', key: globals.loginPageKey),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

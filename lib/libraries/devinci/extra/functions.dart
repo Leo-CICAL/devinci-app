@@ -8,6 +8,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:flutter_whatsnew/flutter_whatsnew.dart';
 import 'package:matomo/matomo.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -925,4 +926,91 @@ SentryEvent beforeSend(SentryEvent event, {dynamic hint}) {
   event = event.copyWith(environment: dev ? 'dev' : 'public');
 
   return event;
+}
+
+void showChangelog(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => WhatsNewPage(
+        buttonColor: Theme.of(context).accentColor,
+        title: Text(
+          'whatsnew'.tr(),
+          textScaleFactor: 1.0,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            // Text Style Needed to Look like iOS 11
+            fontSize: 22.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        buttonText: Text('continue'.tr(),
+            textScaleFactor: 1.0,
+            style: TextStyle(
+                color: globals.currentTheme.isDark()
+                    ? Colors.black
+                    : Colors.white)),
+        // Create a List of WhatsNewItem for use in the Whats New Page
+        // Create as many as you need, it will be scrollable
+        items: <ListTile>[
+          ListTile(
+            leading: const Icon(Icons.app_registration),
+            title: Text(
+              '(Android) Icône',
+              textScaleFactor: 1.0,
+            ), //Title is the only Required Item
+            subtitle: Text(
+              "Amélioration de la forme de l'icône pour mieux s'adapter aux différentes formes possibles sur Android.",
+              textScaleFactor: 1.0,
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.notifications_active_outlined),
+            title: Text(
+              'Notifications de présence',
+              textScaleFactor: 1.0,
+            ),
+            subtitle: Text(
+              "Correction d'un bug empêchant le bon fonctionnement des notifications",
+              textScaleFactor: 1.0,
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.feedback_outlined),
+            title: Text(
+              'Feedback',
+              textScaleFactor: 1.0,
+            ),
+            subtitle: Text(
+              "Introduction d'un nouveau système de feedback dans l'application, dans les paramètres de l'app vous pouvez maintenant 'écrire un commentaire' sur un bug que vous rencontrez dans l'app, une fonctionnalité que vous aimeriez avoir dans l'application un de ces jours, ou juste pour dire merci !",
+              textScaleFactor: 1.0,
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.track_changes_rounded),
+            title: Text(
+              'Changelog',
+              textScaleFactor: 1.0,
+            ),
+            subtitle: Text(
+              "À chaque nouvelle mise à jour, cette fenêtre s'affichera pour vous expliquer ce qui change",
+              textScaleFactor: 1.0,
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.bug_report_outlined),
+            title: Text(
+              'Correctifs',
+              textScaleFactor: 1.0,
+            ),
+            subtitle: Text(
+              "Correction d'autres bugs",
+              textScaleFactor: 1.0,
+            ),
+          ),
+        ], //Required
+      ),
+      fullscreenDialog: false,
+    ),
+  );
 }

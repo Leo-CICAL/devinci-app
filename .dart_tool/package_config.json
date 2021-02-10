@@ -140,6 +140,12 @@
       "languageVersion": "2.0"
     },
     {
+      "name": "dots_indicator",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/dots_indicator-1.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "easy_localization",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/easy_localization-2.3.3",
       "packageUri": "lib/",
@@ -236,6 +242,12 @@
       "languageVersion": "2.0"
     },
     {
+      "name": "flutter_whatsnew",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/git/flutter_whatsnew-5add8c6e2bf912e0472aa94c14f800bebb2026be/",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "glob",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/glob-1.2.0",
       "packageUri": "lib/",
@@ -288,6 +300,12 @@
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/intl_translation-0.17.10+1",
       "packageUri": "lib/",
       "languageVersion": "2.7"
+    },
+    {
+      "name": "introduction_screen",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/introduction_screen-1.0.9",
+      "packageUri": "lib/",
+      "languageVersion": "2.2"
     },
     {
       "name": "io",
@@ -800,6 +818,12 @@
       "languageVersion": "2.7"
     },
     {
+      "name": "wiredash",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/wiredash-0.4.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.8"
+    },
+    {
       "name": "xdg_directories",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/xdg_directories-0.1.2",
       "packageUri": "lib/",
@@ -836,7 +860,7 @@
       "languageVersion": "2.8"
     }
   ],
-  "generated": "2021-02-10T08:54:04.160991Z",
+  "generated": "2021-02-10T16:22:50.643951Z",
   "generator": "pub",
   "generatorVersion": "2.10.5"
 }

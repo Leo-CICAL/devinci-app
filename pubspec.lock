@@ -162,6 +162,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1"
+  dots_indicator:
+    dependency: transitive
+    description:
+      name: dots_indicator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   easy_localization:
     dependency: "direct main"
     description:
@@ -268,6 +275,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_whatsnew:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "5add8c6e2bf912e0472aa94c14f800bebb2026be"
+      url: "https://github.com/antoineraulin/flutter_whatsnew"
+    source: git
+    version: "1.0.3"
   glob:
     dependency: transitive
     description:
@@ -331,6 +347,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.17.10+1"
+  introduction_screen:
+    dependency: "direct main"
+    description:
+      name: introduction_screen
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.9"
   io:
     dependency: transitive
     description:
@@ -924,6 +947,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.4+1"
+  wiredash:
+    dependency: "direct main"
+    description:
+      name: wiredash
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.2"
   xdg_directories:
     dependency: transitive
     description:

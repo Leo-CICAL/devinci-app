@@ -100,6 +100,13 @@ class _AgendaPageState extends State<AgendaPage> {
     if (!privacyConsent) {
       Timer(Duration(seconds: 1), () => showGDPR(context));
       await globals.prefs.setBool('privacyConsent', true);
+    } else {
+      //var lastVersion = globals.prefs.getString('lastV') ?? '';
+      var lastVersion = '';
+      if (lastVersion == '' || lastVersion != globals.release) {
+        Timer(Duration(seconds: 1), () => showChangelog(context));
+        await globals.prefs.setString('lastV', globals.release);
+      }
     }
     return;
   }
