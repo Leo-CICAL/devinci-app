@@ -4,7 +4,7 @@ name: Flutter Analyzer
 
 jobs:
   build:
-    name: Example
+    name: Flutter Analyzer
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
