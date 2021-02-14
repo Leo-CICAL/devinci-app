@@ -68,6 +68,12 @@
       "languageVersion": "2.10"
     },
     {
+      "name": "confetti",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/confetti-0.5.4+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "connectivity",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity-2.0.2",
       "packageUri": "lib/",
@@ -272,18 +278,6 @@
       "languageVersion": "2.3"
     },
     {
-      "name": "in_app_review",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/in_app_review-1.0.4",
-      "packageUri": "lib/",
-      "languageVersion": "2.1"
-    },
-    {
-      "name": "in_app_review_platform_interface",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/in_app_review_platform_interface-1.0.5",
-      "packageUri": "lib/",
-      "languageVersion": "2.1"
-    },
-    {
       "name": "intl",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.16.1",
       "packageUri": "lib/",
@@ -486,6 +480,18 @@
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/pull_to_refresh-1.6.3",
       "packageUri": "lib/",
       "languageVersion": "2.1"
+    },
+    {
+      "name": "purchases_flutter",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/purchases_flutter-2.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "random_color",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/random_color-1.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
     },
     {
       "name": "recase",
@@ -854,7 +860,7 @@
       "languageVersion": "2.8"
     }
   ],
-  "generated": "2021-02-10T17:42:13.831740Z",
+  "generated": "2021-02-14T08:39:29.237281Z",
   "generator": "pub",
   "generatorVersion": "2.10.5"
 }

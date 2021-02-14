@@ -101,15 +101,15 @@ void submit([String value]) async {
                 content: Text(
                   'unknown_error'.tr(namedArgs: {
                     'code': globals.user.code.toString(),
-                    'exception': exception
+                    'exception': exception.toString()
                   }),
                 ),
                 actions: <Widget>[
                   TextButton(
                     child: Text('close').tr(),
                     onPressed: () {
-                      OneContext().pop();
-                      //Navigator.of(context).pop();
+                      //OneContext().pop();
+                      Navigator.of(context).pop();
                     },
                   ),
                 ],
@@ -225,8 +225,8 @@ void loginProcess() async {
                 TextButton(
                   child: Text('close').tr(),
                   onPressed: () {
-                    OneContext().pop();
-                    //Navigator.of(context).pop();
+                    //OneContext().pop();
+                    Navigator.of(context).pop();
                   },
                 ),
               ],

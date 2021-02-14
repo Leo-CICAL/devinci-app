@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -8,19 +9,23 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_whatsnew/flutter_whatsnew.dart';
 import 'package:matomo/matomo.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io' show Platform;
 import 'dart:typed_data';
 import 'package:devinci/libraries/feedback/feedback.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:sembast/sembast.dart';
 import 'package:devinci/extra/classes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:one_context/one_context.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 double getMatMoy(var elem) {
   if (elem['ratt'] != null) {
@@ -928,6 +933,326 @@ SentryEvent beforeSend(SentryEvent event, {dynamic hint}) {
   return event;
 }
 
+Future<bool> showDonate(BuildContext context) async {
+  return await showBarModalBottomSheet(
+    context: context,
+    builder: (context) => Padding(
+      padding: const EdgeInsets.only(bottom: 24.0),
+      child: ListView(
+        shrinkWrap: true,
+        controller: ModalScrollController.of(context),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('donate',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline2)
+                .tr(),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+            child: Text('donate_explain',
+                    style: Theme.of(context).textTheme.bodyText2,
+                    textAlign: TextAlign.center)
+                .tr(),
+          ),
+          ListTile(
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 3),
+                child: Text('🍟'),
+              ),
+              title: Text('little_chips').tr(),
+              trailing: FlatButton(
+                  child: Text('1,49€',
+                      style: TextStyle(
+                          color: globals.currentTheme.isDark()
+                              ? Colors.black
+                              : Colors.white)),
+                  color: Theme.of(context).accentColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      side: BorderSide.none),
+                  onPressed: () async {
+                    try {
+                      var offerings = await Purchases.getOfferings();
+                      var friteOffering = offerings.getOffering('frite');
+                      var fritePackage = friteOffering.getPackage('frite');
+                      try {
+                        var purchaserInfo =
+                            await Purchases.purchasePackage(fritePackage);
+                        var isDonor =
+                            purchaserInfo.entitlements.all["donor"].isActive;
+                        if (isDonor) {
+                          Navigator.pop(context, true);
+                        }
+                      } on PlatformException catch (e, stacktrace) {
+                        var errorCode = PurchasesErrorHelper.getErrorCode(e);
+                        var snackMsg = '';
+                        switch (errorCode) {
+                          case PurchasesErrorCode.purchaseCancelledError:
+                            snackMsg = 'purchaseCancelledError'.tr();
+                            break;
+                          case PurchasesErrorCode.purchaseNotAllowedError:
+                            snackMsg = 'purchaseNotAllowedError'.tr();
+                            await reportError(e, stacktrace);
+                            break;
+                          case PurchasesErrorCode.purchaseInvalidError:
+                            snackMsg = 'purchaseInvalidError'.tr();
+                            break;
+                          case PurchasesErrorCode
+                              .productNotAvailableForPurchaseError:
+                            snackMsg =
+                                'productNotAvailableForPurchaseError'.tr();
+                            break;
+
+                          case PurchasesErrorCode.networkError:
+                            snackMsg = 'networkError'.tr();
+                            break;
+                          case PurchasesErrorCode.paymentPendingError:
+                            snackMsg = 'paymentPendingError'.tr();
+                            break;
+                          case PurchasesErrorCode.invalidCredentialsError:
+                            snackMsg = 'invalidCredentialsError'.tr();
+                            await reportError(e, stacktrace);
+                            break;
+                          case PurchasesErrorCode
+                              .unexpectedBackendResponseError:
+                            snackMsg = 'unexpectedBackendResponseError'.tr();
+                            await reportError(e, stacktrace);
+                            break;
+                          default:
+                            snackMsg = 'TransactionError'.tr();
+                            await reportError(e, stacktrace);
+                            break;
+                        }
+                        final snackBar = SnackBar(
+                          content: Text(snackMsg),
+                          duration: const Duration(seconds: 10),
+                        );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+                        await showSnackBar(snackBar, forceOneContext: true);
+                      }
+                    } on PlatformException catch (e) {
+                      print(e);
+                    }
+                  })),
+          ListTile(
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 3),
+                child: Text('🍔'),
+              ),
+              title: Text('whooper').tr(),
+              trailing: FlatButton(
+                  child: Text('3,89€',
+                      style: TextStyle(
+                          color: globals.currentTheme.isDark()
+                              ? Colors.black
+                              : Colors.white)),
+                  color: Theme.of(context).accentColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      side: BorderSide.none),
+                  onPressed: () async {
+                    try {
+                      var offerings = await Purchases.getOfferings();
+                      var friteOffering = offerings.getOffering('whooper');
+                      var fritePackage = friteOffering.getPackage('whooper');
+                      try {
+                        var purchaserInfo =
+                            await Purchases.purchasePackage(fritePackage);
+                        var isDonor =
+                            purchaserInfo.entitlements.all["donor"].isActive;
+                        if (isDonor) {
+                          Navigator.pop(context, true);
+                        }
+                      } on PlatformException catch (e, stacktrace) {
+                        var errorCode = PurchasesErrorHelper.getErrorCode(e);
+                        var snackMsg = '';
+                        switch (errorCode) {
+                          case PurchasesErrorCode.purchaseCancelledError:
+                            snackMsg = 'purchaseCancelledError'.tr();
+                            break;
+                          case PurchasesErrorCode.purchaseNotAllowedError:
+                            snackMsg = 'purchaseNotAllowedError'.tr();
+                            await reportError(e, stacktrace);
+                            break;
+                          case PurchasesErrorCode.purchaseInvalidError:
+                            snackMsg = 'purchaseInvalidError'.tr();
+                            break;
+                          case PurchasesErrorCode
+                              .productNotAvailableForPurchaseError:
+                            snackMsg =
+                                'productNotAvailableForPurchaseError'.tr();
+                            break;
+
+                          case PurchasesErrorCode.networkError:
+                            snackMsg = 'networkError'.tr();
+                            break;
+                          case PurchasesErrorCode.paymentPendingError:
+                            snackMsg = 'paymentPendingError'.tr();
+                            break;
+                          case PurchasesErrorCode.invalidCredentialsError:
+                            snackMsg = 'invalidCredentialsError'.tr();
+                            await reportError(e, stacktrace);
+                            break;
+                          case PurchasesErrorCode
+                              .unexpectedBackendResponseError:
+                            snackMsg = 'unexpectedBackendResponseError'.tr();
+                            await reportError(e, stacktrace);
+                            break;
+                          default:
+                            snackMsg = 'TransactionError'.tr();
+                            await reportError(e, stacktrace);
+                            break;
+                        }
+                        final snackBar = SnackBar(
+                          content: Text(snackMsg),
+                          duration: const Duration(seconds: 10),
+                        );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+                        await showSnackBar(snackBar, forceOneContext: true);
+                      }
+                    } on PlatformException catch (e) {
+                      print(e);
+                    }
+                  })),
+          ListTile(
+              leading: Container(
+                width: 28,
+                child: SvgPicture.asset(
+                  'assets/bk.svg',
+                  height: 32,
+                  width: 28,
+                  fit: BoxFit.cover,
+                  placeholderBuilder: (BuildContext context) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 3),
+                      child: Text('BK'),
+                    );
+                  },
+                ),
+              ),
+              title: Text('menu_bk').tr(),
+              trailing: FlatButton(
+                  child: Text('9,90€',
+                      style: TextStyle(
+                          color: globals.currentTheme.isDark()
+                              ? Colors.black
+                              : Colors.white)),
+                  color: Theme.of(context).accentColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      side: BorderSide.none),
+                  onPressed: () async {
+                    try {
+                      var offerings = await Purchases.getOfferings();
+                      var friteOffering = offerings.getOffering('bk');
+                      var fritePackage = friteOffering.getPackage('bk');
+                      try {
+                        var purchaserInfo =
+                            await Purchases.purchasePackage(fritePackage);
+                        var isDonor =
+                            purchaserInfo.entitlements.all["donor"].isActive;
+                        if (isDonor) {
+                          Navigator.pop(context, true);
+                        }
+                      } on PlatformException catch (e, stacktrace) {
+                        var errorCode = PurchasesErrorHelper.getErrorCode(e);
+                        var snackMsg = '';
+                        switch (errorCode) {
+                          case PurchasesErrorCode.purchaseCancelledError:
+                            snackMsg = 'purchaseCancelledError'.tr();
+                            break;
+                          case PurchasesErrorCode.purchaseNotAllowedError:
+                            snackMsg = 'purchaseNotAllowedError'.tr();
+                            await reportError(e, stacktrace);
+                            break;
+                          case PurchasesErrorCode.purchaseInvalidError:
+                            snackMsg = 'purchaseInvalidError'.tr();
+                            break;
+                          case PurchasesErrorCode
+                              .productNotAvailableForPurchaseError:
+                            snackMsg =
+                                'productNotAvailableForPurchaseError'.tr();
+                            break;
+
+                          case PurchasesErrorCode.networkError:
+                            snackMsg = 'networkError'.tr();
+                            break;
+                          case PurchasesErrorCode.paymentPendingError:
+                            snackMsg = 'paymentPendingError'.tr();
+                            break;
+                          case PurchasesErrorCode.invalidCredentialsError:
+                            snackMsg = 'invalidCredentialsError'.tr();
+                            await reportError(e, stacktrace);
+                            break;
+                          case PurchasesErrorCode
+                              .unexpectedBackendResponseError:
+                            snackMsg = 'unexpectedBackendResponseError'.tr();
+                            await reportError(e, stacktrace);
+                            break;
+                          default:
+                            snackMsg = 'TransactionError'.tr();
+                            await reportError(e, stacktrace);
+                            break;
+                        }
+                        final snackBar = SnackBar(
+                          content: Text(snackMsg),
+                          duration: const Duration(seconds: 10),
+                        );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+                        await showSnackBar(snackBar, forceOneContext: true);
+                      }
+                    } on PlatformException catch (e) {
+                      print(e);
+                    }
+                  })),
+          ListTile(
+              leading: Container(
+                width: 28,
+                child: SvgPicture.asset(
+                  'assets/github.svg',
+                  height: 32,
+                  width: 28,
+                  color: Theme.of(context).textTheme.headline1.color,
+                  fit: BoxFit.contain,
+                  placeholderBuilder: (BuildContext context) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 3),
+                      child: Text('GH'),
+                    );
+                  },
+                ),
+              ),
+              title: Text('like_github').tr(),
+              trailing: FlatButton(
+                  child: Icon(
+                    Icons.star_rounded,
+                    color: globals.currentTheme.isDark()
+                        ? Colors.black
+                        : Colors.white,
+                  ),
+                  color: Theme.of(context).accentColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      side: BorderSide.none),
+                  onPressed: () async {
+                    const url = 'https://github.com/antoineraulin/devinci-app';
+                    if (await canLaunch(url)) {
+                      await launch(
+                        url,
+                      );
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  })),
+        ],
+      ),
+    ),
+  );
+}
+
 void showChangelog(BuildContext context) {
   Navigator.push(
     context,
@@ -1005,6 +1330,17 @@ void showChangelog(BuildContext context) {
             ),
             subtitle: Text(
               "L'application possède maintenant un guide de présentation des fonctionnalités 'cachées', notamment pour les pages EDT et Notes. Le guide s'affiche d'office pour les nouveaux utilisateurs et peut être réactivé depuis les paramètres.",
+              textScaleFactor: 1.0,
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.volunteer_activism),
+            title: Text(
+              'Faire un don',
+              textScaleFactor: 1.0,
+            ),
+            subtitle: Text(
+              "Si vous aimez l'application et que vous souhaitez aider son développement, la page des paramètres propose maintenant un menu pour faire des dons. Plus d'info sur 'Faire un don' dans les paramètres.",
               textScaleFactor: 1.0,
             ),
           ),

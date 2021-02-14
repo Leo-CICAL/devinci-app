@@ -259,8 +259,8 @@ class _LoginPageState extends State<LoginPage> {
                                       TextButton(
                                         child: Text('close').tr(),
                                         onPressed: () {
-                                          OneContext().pop();
-                                          //Navigator.of(context).pop();
+                                          //OneContext().pop();
+                                          Navigator.of(context).pop();
                                         },
                                       ),
                                     ],

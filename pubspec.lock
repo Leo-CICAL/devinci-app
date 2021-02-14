@@ -78,6 +78,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0-nullsafety.3"
+  confetti:
+    dependency: "direct main"
+    description:
+      name: confetti
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.4+1"
   connectivity:
     dependency: "direct main"
     description:
@@ -312,20 +319,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.4"
-  in_app_review:
-    dependency: "direct main"
-    description:
-      name: in_app_review
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.4"
-  in_app_review_platform_interface:
-    dependency: transitive
-    description:
-      name: in_app_review_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.5"
   intl:
     dependency: "direct main"
     description:
@@ -564,6 +557,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.3"
+  purchases_flutter:
+    dependency: "direct main"
+    description:
+      name: purchases_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.3"
+  random_color:
+    dependency: transitive
+    description:
+      name: random_color
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.5"
   recase:
     dependency: "direct main"
     description:

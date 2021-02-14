@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:devinci/libraries/feedback/feedback.dart';
 import 'package:devinci/pages/ui/login.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +11,7 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:one_context/one_context.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -24,6 +24,9 @@ import 'config.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  //init donation processor
+  await Purchases.setDebugLogsEnabled(true);
 
   //Remove this method to stop OneSignal Debugging
   globals.prefs = await SharedPreferences.getInstance();

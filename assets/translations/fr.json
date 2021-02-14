@@ -133,5 +133,21 @@
   "showcase_add_calendar": "Cliquer sur un espace vide de l'emploi du temps permet d'ajouter un événement",
   "showcase_select_semester": "Permet de sélectionner le semestre à afficher",
   "show_guide": "Suivre le guide",
-  "show_guide_desc": "Vous pouvez désormais (re)suivre le guide de présentation pour les pages EDT et Notes."
+  "show_guide_desc": "Vous pouvez désormais (re)suivre le guide de présentation pour les pages EDT et Notes.",
+  "thanks": "Merci !",
+  "thanks_donation": "Ce don me fait extrêmement plaisir, à défaut de réellement payer mes déjeuners il permettra de pérenniser cette aventure en assurant le maintien de l'app sur l'App Store et le Play Store.\n\nEn te remerciant chaleureusement,\nAntoine Raulin",
+  "donate": "Faire un don",
+  "donate_explain": "Tu aimes une fonctionnalité de l'app ou tu te sens juste super généreux aujourd'hui ?\nEn faisant un don, tu m'aides à développer Devinci et payer les frais de fonctionnement.\nTu peux aussi m'aider en laissant un like sur la page GitHub du projet ou un avis dans l'App Store ou le Play Store.",
+  "little_chips": "Une petite frite",
+  "whooper": "Un Whooper",
+  "menu_bk": "Un menu chez Burger King",
+  "like_github": "Un like sur GitHub",
+  "purchaseCancelledError": "Achat annulé",
+  "purchaseNotAllowedError": "Achat non autorisé",
+  "purchaseInvalidError": "Achat invalide",
+  "productNotAvailableForPurchaseError": "Produit non disponible à l'achat. Désolé",
+  "networkError": "Erreur réseau",
+  "paymentPendingError": "Paiement en attente de traitement. Merci !",
+  "unexpectedBackendResponseError": "Erreur serveur. Désolé",
+  "TransactionError": "Erreur lors de la transaction."
 }

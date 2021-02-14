@@ -10,6 +10,7 @@ import 'package:flutter/material.dart' as material;
 import 'package:html/parser.dart' show parse;
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/utils/value_utils.dart';
@@ -395,6 +396,8 @@ class Student {
         }
       }
     }
+    await Purchases.setup('abVHNSbIPgVJOcqxFbCKdUdxTLPzcagC',
+        appUserId: tokens['uids']);
     if (globals.notifConsent) {
       try {
         var sub = await OneSignal.shared.getPermissionSubscriptionState();
@@ -902,6 +905,9 @@ class Student {
             data['badge'] = RegExp(r'badge : (.*?)\n').firstMatch(d).group(1);
             try {
               data['client'] = RegExp(r'client (.*?)\n').firstMatch(d).group(1);
+
+              data['idAdmin'] =
+                  RegExp(r'Administratif (.*?)\n').firstMatch(d).group(1);
             } catch (e, stacktrace) {
               FLog.logThis(
                   className: 'Student',
@@ -911,8 +917,6 @@ class Student {
                   exception: Exception(e),
                   stacktrace: stacktrace);
             }
-            data['idAdmin'] =
-                RegExp(r'Administratif (.*?)\n').firstMatch(d).group(1);
           } else {
             data['badge'] =
                 RegExp(r'Badge Number : (.*?)\n').firstMatch(d).group(1);
@@ -1824,7 +1828,8 @@ class Student {
 
   Future<void> getPresence({bool force = false}) async {
     if (globals.isConnected || force) {
-      var res = await devinciRequest(endpoint: 'student/presences/');
+      var res = await devinciRequest(
+          endpoint: 'student/presences/', followRedirects: true);
       if (res != null) {
         if (res.statusCode == 200) {
           var body = await res.transform(utf8.decoder).join();
@@ -1931,7 +1936,8 @@ class Student {
           code = res.statusCode;
           throw Exception({
             'code': code,
-            'message': 'unhandled exception, ' + res.reasonPhrase
+            'message': 'unhandled exception, ' + res.reasonPhrase,
+            'url': res.redirects
           });
         }
       } else {

@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:about/about.dart';
+import 'package:confetti/confetti.dart';
 import 'package:devinci/extra/CommonWidgets.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,9 +17,9 @@ import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:matomo/matomo.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info/package_info.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:wiredash/wiredash.dart';
@@ -36,10 +38,59 @@ class _SettingsPageState extends State<SettingsPage> {
   final ScrollController scrollController;
   _SettingsPageState(this.scrollController);
 
+  ConfettiController _controllerTopCenter;
+
   @override
   void initState() {
     super.initState();
+    _controllerTopCenter =
+        ConfettiController(duration: const Duration(seconds: 6));
+    Purchases.addPurchaserInfoUpdateListener((info) async {
+      if (info.entitlements.all["donor"].isActive) {
+        try {
+          await scrollController.jumpTo(0);
+          _controllerTopCenter.play();
+        } on Exception catch (e) {
+          // TODO
+        }
+        Timer(Duration(seconds: 6), () async {
+          await showDialog<void>(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('thanks').tr(),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text('thanks_donation').tr(),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('close',
+                            style:
+                                TextStyle(color: Theme.of(context).accentColor))
+                        .tr(),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        });
+      }
+    });
     //SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
+  }
+
+  @override
+  void dispose() {
+    _controllerTopCenter.dispose();
+    super.dispose();
   }
 
   void runBeforeBuild() async {
@@ -61,343 +112,637 @@ class _SettingsPageState extends State<SettingsPage> {
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
         globals.currentTheme.isDark());
-
-    return Material(
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0.0,
-          brightness: MediaQuery.of(context).platformBrightness,
-          centerTitle: false,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: Padding(
-            padding: EdgeInsets.only(top: 30, bottom: 28),
-            child: Text(
-              'settings',
-              style: Theme.of(context).textTheme.headline1,
-            ).tr(),
+    return Stack(children: [
+      Material(
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            elevation: 0.0,
+            brightness: MediaQuery.of(context).platformBrightness,
+            centerTitle: false,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            title: Padding(
+              padding: EdgeInsets.only(top: 30, bottom: 28),
+              child: Text(
+                'settings',
+                style: Theme.of(context).textTheme.headline1,
+              ).tr(),
+            ),
           ),
-        ),
-        body: SafeArea(
-          bottom: false,
-          child: ListView(
-            shrinkWrap: true,
-            controller: scrollController,
-            children: <Widget>[
-              Platform.isIOS
-                  ? (Column(
-                      children: [
-                        TitleSection('icon_change'),
-                        Container(
-                          margin: EdgeInsets.only(top: 18, bottom: 18),
-                          height: 100.0,
-                          child: ListView(
-                            // This next line does the trick.
-                            scrollDirection: Axis.horizontal,
+          body: SafeArea(
+            bottom: false,
+            child: ListView(
+              shrinkWrap: true,
+              controller: scrollController,
+              children: <Widget>[
+                Platform.isIOS
+                    ? (Column(
+                        children: [
+                          TitleSection('icon_change'),
+                          Container(
+                            margin: EdgeInsets.only(top: 18, bottom: 18),
+                            height: 100.0,
+                            child: ListView(
+                              // This next line does the trick.
+                              scrollDirection: Axis.horizontal,
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(left: 18),
+                                  child: InkWell(
+                                    onTap: () => setState(() {
+                                      changeIcon(0);
+                                    }), // handle your onTap here
+                                    child: CircleAvatar(
+                                      backgroundImage:
+                                          AssetImage('assets/icon_blanc_a.png'),
+                                      radius: 50,
+                                    ),
+                                  ),
+                                  height: 100,
+                                  width: 100,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 18),
+                                  child: InkWell(
+                                    onTap: () => setState(() {
+                                      changeIcon(1);
+                                    }), // handle your onTap here
+                                    child: CircleAvatar(
+                                      backgroundImage:
+                                          AssetImage('assets/icon_noir_a.png'),
+                                      radius: 50,
+                                    ),
+                                  ),
+                                  height: 100,
+                                  width: 100,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 18),
+                                  child: InkWell(
+                                    onTap: () => setState(() {
+                                      changeIcon(2);
+                                    }), // handle your onTap here
+                                    child: CircleAvatar(
+                                      backgroundImage:
+                                          AssetImage('assets/icon_blanc_b.png'),
+                                      radius: 50,
+                                    ),
+                                  ),
+                                  height: 100,
+                                  width: 100,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 18, right: 18),
+                                  child: InkWell(
+                                    onTap: () => setState(() {
+                                      changeIcon(3);
+                                    }), // handle your onTap here
+                                    child: CircleAvatar(
+                                      backgroundImage:
+                                          AssetImage('assets/icon_noir_b.png'),
+                                      radius: 50,
+                                    ),
+                                  ),
+                                  height: 100,
+                                  width: 100,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ))
+                    : SizedBox.shrink(),
+                //TitleSection("Paramètres avancés"),
+                Container(
+                  margin: EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 16,
+                  ),
+                  height: (6 * 46).toDouble(),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(12.0),
+                      )),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: 46,
+                        margin: EdgeInsets.only(left: 24),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                          width: 0.2,
+                          color: Color(0xffACACAC),
+                        ))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                'offline',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ).tr(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Switch.adaptive(
+                                value: !globals.isConnected,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    globals.isConnected = !globals.isConnected;
+                                    globals.prefs.setBool(
+                                        'isConnected', globals.isConnected);
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 46,
+                        margin: EdgeInsets.only(left: 24),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                          width: 0.2,
+                          color: Color(0xffACACAC),
+                        ))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                'theme',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ).tr(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 9),
+                              child: ButtonTheme(
+                                alignedDropdown: true,
+                                child: DropdownButton<String>(
+                                  value: theme,
+                                  icon: Icon(Icons.expand_more_rounded),
+                                  iconSize: 24,
+                                  elevation: 16,
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                  underline: Container(
+                                    height: 0,
+                                    color: Colors.transparent,
+                                  ),
+                                  onChanged: (String newValue) {
+                                    setState(() {
+                                      theme = newValue;
+                                      globals.prefs
+                                          .setString('theme', newValue);
+                                      if (newValue != 'system') {
+                                        globals.currentTheme
+                                            .setDark(newValue == 'dark');
+                                      } else {
+                                        globals.currentTheme.setDark(
+                                            MediaQuery.of(context)
+                                                    .platformBrightness ==
+                                                Brightness.dark);
+                                      }
+                                    });
+                                  },
+                                  items: <String>[
+                                    'system',
+                                    'dark',
+                                    'light',
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value).tr(),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 46,
+                        margin: EdgeInsets.only(left: 24),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                          width: 0.2,
+                          color: Color(0xffACACAC),
+                        ))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                'attendance_notif',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ).tr(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Switch.adaptive(
+                                value: globals.notifConsent,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    globals.notifConsent = value;
+                                    OneSignal.shared
+                                        .consentGranted(globals.notifConsent);
+                                    globals.prefs.setBool(
+                                        'notifConsent', globals.notifConsent);
+                                    OneSignal.shared
+                                        .consentGranted(globals.notifConsent);
+                                    if (globals.notifConsent) {
+                                      OneSignal.shared
+                                          .promptUserForPushNotificationPermission(
+                                              fallbackToSettings: true);
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 46,
+                        margin: EdgeInsets.only(left: 24),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                          width: 0.2,
+                          color: Color(0xffACACAC),
+                        ))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                'error_report',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ).tr(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Switch.adaptive(
+                                value: globals.crashConsent == 'true',
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    if (globals.crashConsent == 'false') {
+                                      globals.crashConsent = 'true';
+                                      globals.prefs
+                                          .setString('crashConsent', 'true');
+                                    } else {
+                                      globals.crashConsent = 'false';
+                                      globals.prefs
+                                          .setString('crashConsent', 'false');
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 46,
+                        margin: EdgeInsets.only(left: 24),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                          width: 0.2,
+                          color: Color(0xffACACAC),
+                        ))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                'usage_monitoring',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ).tr(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Switch.adaptive(
+                                value: globals.analyticsConsent,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    if (globals.analyticsConsent) {
+                                      globals.analyticsConsent = false;
+                                      globals.prefs
+                                          .setBool('analyticsConsent', false);
+                                    } else {
+                                      globals.analyticsConsent = true;
+                                      globals.prefs
+                                          .setBool('analyticsConsent', true);
+                                    }
+                                  });
+                                  MatomoTracker()
+                                      .setOptOut(!globals.analyticsConsent);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          globals.user.reset();
+                          Phoenix.rebirth(context);
+                        }, // handle your onTap here
+                        child: Container(
+                          height: 46,
+                          margin: EdgeInsets.only(left: 24),
+                          child: Row(
                             children: <Widget>[
-                              Container(
-                                margin: EdgeInsets.only(left: 18),
-                                child: InkWell(
-                                  onTap: () => setState(() {
-                                    changeIcon(0);
-                                  }), // handle your onTap here
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('assets/icon_blanc_a.png'),
-                                    radius: 50,
-                                  ),
-                                ),
-                                height: 100,
-                                width: 100,
+                              Expanded(
+                                child: Text('logout',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.redAccent.shade200))
+                                    .tr(),
                               ),
-                              Container(
-                                margin: EdgeInsets.only(left: 18),
-                                child: InkWell(
-                                  onTap: () => setState(() {
-                                    changeIcon(1);
-                                  }), // handle your onTap here
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('assets/icon_noir_a.png'),
-                                    radius: 50,
-                                  ),
+                              Padding(
+                                padding: EdgeInsets.only(right: 8),
+                                child: Icon(
+                                  Icons.navigate_next,
+                                  color: Color(0xffACACAC),
                                 ),
-                                height: 100,
-                                width: 100,
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 18),
-                                child: InkWell(
-                                  onTap: () => setState(() {
-                                    changeIcon(2);
-                                  }), // handle your onTap here
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('assets/icon_blanc_b.png'),
-                                    radius: 50,
-                                  ),
-                                ),
-                                height: 100,
-                                width: 100,
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 18, right: 18),
-                                child: InkWell(
-                                  onTap: () => setState(() {
-                                    changeIcon(3);
-                                  }), // handle your onTap here
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('assets/icon_noir_b.png'),
-                                    radius: 50,
-                                  ),
-                                ),
-                                height: 100,
-                                width: 100,
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ))
-                  : SizedBox.shrink(),
-              //TitleSection("Paramètres avancés"),
-              Container(
-                margin: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 16,
+                      ),
+                    ],
+                  ),
                 ),
-                height: (6 * 46).toDouble(),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12.0),
-                    )),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'offline',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Switch.adaptive(
-                              value: !globals.isConnected,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  globals.isConnected = !globals.isConnected;
-                                  globals.prefs.setBool(
-                                      'isConnected', globals.isConnected);
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'theme',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 9),
-                            child: ButtonTheme(
-                              alignedDropdown: true,
-                              child: DropdownButton<String>(
-                                value: theme,
-                                icon: Icon(Icons.expand_more_rounded),
-                                iconSize: 24,
-                                elevation: 16,
+                Container(
+                  margin: EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 28,
+                  ),
+                  height: (7 * 46).toDouble(),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(12.0),
+                      )),
+                  child: Column(children: <Widget>[
+                    GestureDetector(
+                      onTap: () async {
+                        Wiredash.of(context).show();
+                      }, // handle your onTap here
+                      child: Container(
+                        height: 46,
+                        margin: EdgeInsets.only(left: 24),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                          width: 0.2,
+                          color: Color(0xffACACAC),
+                        ))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                'write_comment',
                                 style: Theme.of(context).textTheme.subtitle1,
-                                underline: Container(
-                                  height: 0,
-                                  color: Colors.transparent,
-                                ),
-                                onChanged: (String newValue) {
-                                  setState(() {
-                                    theme = newValue;
-                                    globals.prefs.setString('theme', newValue);
-                                    if (newValue != 'system') {
-                                      globals.currentTheme
-                                          .setDark(newValue == 'dark');
-                                    } else {
-                                      globals.currentTheme.setDark(
-                                          MediaQuery.of(context)
-                                                  .platformBrightness ==
-                                              Brightness.dark);
-                                    }
-                                  });
-                                },
-                                items: <String>[
-                                  'system',
-                                  'dark',
-                                  'light',
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value).tr(),
-                                  );
-                                }).toList(),
-                              ),
+                              ).tr(),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'attendance_notif',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Switch.adaptive(
-                              value: globals.notifConsent,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  globals.notifConsent = value;
-                                  OneSignal.shared
-                                      .consentGranted(globals.notifConsent);
-                                  globals.prefs.setBool(
-                                      'notifConsent', globals.notifConsent);
-                                  OneSignal.shared
-                                      .consentGranted(globals.notifConsent);
-                                  if (globals.notifConsent) {
-                                    OneSignal.shared
-                                        .promptUserForPushNotificationPermission(
-                                            fallbackToSettings: true);
-                                  }
-                                });
-                              },
+                            Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Icon(Icons.navigate_next,
+                                  color: Color(0xffACACAC)),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'error_report',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Switch.adaptive(
-                              value: globals.crashConsent == 'true',
-                              onChanged: (bool value) {
-                                setState(() {
-                                  if (globals.crashConsent == 'false') {
-                                    globals.crashConsent = 'true';
-                                    globals.prefs
-                                        .setString('crashConsent', 'true');
-                                  } else {
-                                    globals.crashConsent = 'false';
-                                    globals.prefs
-                                        .setString('crashConsent', 'false');
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'usage_monitoring',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Switch.adaptive(
-                              value: globals.analyticsConsent,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  if (globals.analyticsConsent) {
-                                    globals.analyticsConsent = false;
-                                    globals.prefs
-                                        .setBool('analyticsConsent', false);
-                                  } else {
-                                    globals.analyticsConsent = true;
-                                    globals.prefs
-                                        .setBool('analyticsConsent', true);
-                                  }
-                                });
-                                MatomoTracker()
-                                    .setOptOut(!globals.analyticsConsent);
-                              },
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     GestureDetector(
                       onTap: () async {
-                        globals.user.reset();
-                        Phoenix.rebirth(context);
+                        await showAboutPage(
+                          title: Text('about').tr(),
+                          context: context,
+                          applicationVersion:
+                              'Version {{ version }}, build #{{ buildNumber }}',
+                          applicationLegalese:
+                              'Copyright © Antoine Raulin, {{ year }}',
+                          applicationDescription: Container(
+                            height: 160,
+                            child: Markdown(
+                                padding: const EdgeInsets.all(0),
+                                styleSheet: MarkdownStyleSheet(
+                                    p: Theme.of(context).textTheme.bodyText2),
+                                data: 'app_description'.tr()),
+                          ),
+                          children: <Widget>[
+                            MarkdownPageListTile(
+                              filename: 'assets/LICENSE',
+                              title: Text('see_license').tr(),
+                              icon: Icon(Icons.description_outlined),
+                            ),
+                            MarkdownPageListTile(
+                              filename: 'assets/CONTRIBUTING.md',
+                              title: Text('contribution_guide').tr(),
+                              icon: Icon(Icons.share_outlined),
+                            ),
+                            LicensesPageListTile(
+                              title: Text('open_source_licenses').tr(),
+                              icon: Icon(Icons.favorite_outlined),
+                            ),
+                            MarkdownPageListTile(
+                              filename: 'assets/tos.md',
+                              title: Text('TOS_full').tr(),
+                              icon: Icon(Icons.gavel_outlined),
+                            ),
+                            MarkdownPageListTile(
+                              filename: 'assets/privacy.md',
+                              title: Text('PP').tr(),
+                              icon: Icon(Icons.security_outlined),
+                            ),
+                          ],
+                          applicationIcon: SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Container(
+                              child: Center(
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/icon_blanc_a.png'),
+                                  radius: 50,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }, // handle your onTap here
+                      child: Container(
+                        height: 46,
+                        margin: EdgeInsets.only(left: 24),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                          width: 0.2,
+                          color: Color(0xffACACAC),
+                        ))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                'about',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ).tr(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Icon(Icons.navigate_next,
+                                  color: Color(0xffACACAC)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        const url = 'https://discord.gg/wttsfQP';
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      },
+                      child: Container(
+                        height: 46,
+                        margin: EdgeInsets.only(left: 24),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                          width: 0.2,
+                          color: Color(0xffACACAC),
+                        ))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                'join_discord',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ).tr(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Icon(Icons.navigate_next,
+                                  color: Color(0xffACACAC)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        showChangelog(context);
+                      }, // handle your onTap here
+                      child: Container(
+                        height: 46,
+                        margin: EdgeInsets.only(left: 24),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                          width: 0.2,
+                          color: Color(0xffACACAC),
+                        ))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                'whatsnew',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ).tr(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Icon(Icons.navigate_next,
+                                  color: Color(0xffACACAC)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        await globals.prefs.setBool('showcase_notes', true);
+                        await globals.prefs.setBool('showcase_agenda', true);
+                        await showDialog<void>(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('show_guide').tr(),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: <Widget>[
+                                    Text('show_guide_desc').tr(),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('OK',
+                                      style: TextStyle(
+                                          color:
+                                              Theme.of(context).accentColor)),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }, // handle your onTap here
+                      child: Container(
+                        height: 46,
+                        margin: EdgeInsets.only(left: 24),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                          width: 0.2,
+                          color: Color(0xffACACAC),
+                        ))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                'show_guide',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ).tr(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Icon(Icons.navigate_next,
+                                  color: Color(0xffACACAC)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        await Sentry.captureMessage('Devinci logs sent');
+                        var logs = await FLog.exportLogs();
+                        final email = Email(
+                          body: '',
+                          subject: 'Devinci - Logs',
+                          recipients: ['devinci@araulin.eu'],
+                          attachmentPaths: [logs.path],
+                          isHTML: false,
+                        );
+
+                        await FlutterEmailSender.send(email);
                       }, // handle your onTap here
                       child: Container(
                         height: 46,
@@ -405,391 +750,133 @@ class _SettingsPageState extends State<SettingsPage> {
                         child: Row(
                           children: <Widget>[
                             Expanded(
-                              child: Text('logout',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.redAccent.shade200))
-                                  .tr(),
+                              child: Text(
+                                'dump_logs',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ).tr(),
                             ),
                             Padding(
                               padding: EdgeInsets.only(right: 8),
-                              child: Icon(
-                                Icons.navigate_next,
-                                color: Color(0xffACACAC),
-                              ),
+                              child: Icon(Icons.navigate_next,
+                                  color: Color(0xffACACAC)),
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 28,
-                ),
-                height: (7 * 46).toDouble(),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12.0),
-                    )),
-                child: Column(children: <Widget>[
-                  GestureDetector(
-                    onTap: () async {
-                      Wiredash.of(context).show();
-                    }, // handle your onTap here
-                    child: Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'write_comment',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.navigate_next,
-                                color: Color(0xffACACAC)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      await showAboutPage(
-                        title: Text('about').tr(),
-                        context: context,
-                        applicationVersion:
-                            'Version {{ version }}, build #{{ buildNumber }}',
-                        applicationLegalese:
-                            'Copyright © Antoine Raulin, {{ year }}',
-                        applicationDescription: Container(
-                          height: 160,
-                          child: Markdown(
-                              padding: const EdgeInsets.all(0),
-                              styleSheet: MarkdownStyleSheet(
-                                  p: Theme.of(context).textTheme.bodyText2),
-                              data: 'app_description'.tr()),
-                        ),
-                        children: <Widget>[
-                          MarkdownPageListTile(
-                            filename: 'assets/LICENSE',
-                            title: Text('see_license').tr(),
-                            icon: Icon(Icons.description_outlined),
-                          ),
-                          MarkdownPageListTile(
-                            filename: 'assets/CONTRIBUTING.md',
-                            title: Text('contribution_guide').tr(),
-                            icon: Icon(Icons.share_outlined),
-                          ),
-                          LicensesPageListTile(
-                            title: Text('open_source_licenses').tr(),
-                            icon: Icon(Icons.favorite_outlined),
-                          ),
-                          MarkdownPageListTile(
-                            filename: 'assets/tos.md',
-                            title: Text('TOS_full').tr(),
-                            icon: Icon(Icons.gavel_outlined),
-                          ),
-                          MarkdownPageListTile(
-                            filename: 'assets/privacy.md',
-                            title: Text('PP').tr(),
-                            icon: Icon(Icons.security_outlined),
-                          ),
-                        ],
-                        applicationIcon: SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: Container(
-                            child: Center(
-                              child: CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('assets/icon_blanc_a.png'),
-                                radius: 50,
-                              ),
+                    GestureDetector(
+                      onTap: () async {
+                        var isDonor = await showDonate(context) ?? false;
+                        if (isDonor) {
+                          await scrollController.jumpTo(0);
+                          _controllerTopCenter.play();
+                          Timer(Duration(seconds: 6), () async {
+                            await showDialog<void>(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('thanks').tr(),
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text('thanks_donation').tr(),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('close',
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .accentColor))
+                                          .tr(),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          });
+                        }
+                      }, // handle your onTap here
+                      child: Container(
+                        height: 46,
+                        margin: EdgeInsets.only(left: 24),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                'donate',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ).tr(),
                             ),
-                          ),
-                        ),
-                      );
-                    }, // handle your onTap here
-                    child: Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'about',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.navigate_next,
-                                color: Color(0xffACACAC)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      const url = 'https://discord.gg/wttsfQP';
-                      if (await canLaunch(url)) {
-                        await launch(url);
-                      } else {
-                        throw 'Could not launch $url';
-                      }
-                    },
-                    child: Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'join_discord',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.navigate_next,
-                                color: Color(0xffACACAC)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      const url =
-                          'https://github.com/antoineraulin/devinci-app';
-                      if (await canLaunch(url)) {
-                        await launch(
-                          url,
-                        );
-                      } else {
-                        throw 'Could not launch $url';
-                      }
-                    }, // handle your onTap here
-                    child: Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'support',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.navigate_next,
-                                color: Color(0xffACACAC)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      showChangelog(context);
-                    }, // handle your onTap here
-                    child: Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'whatsnew',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.navigate_next,
-                                color: Color(0xffACACAC)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      await globals.prefs.setBool('showcase_notes', true);
-                      await globals.prefs.setBool('showcase_agenda', true);
-                      await showDialog<void>(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('show_guide').tr(),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text('show_guide_desc').tr(),
-                                ],
-                              ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Icon(Icons.navigate_next,
+                                  color: Color(0xffACACAC)),
                             ),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('OK',
-                                    style: TextStyle(
-                                        color: Theme.of(context).accentColor)),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }, // handle your onTap here
-                    child: Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                        width: 0.2,
-                        color: Color(0xffACACAC),
-                      ))),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'show_guide',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.navigate_next,
-                                color: Color(0xffACACAC)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      await Sentry.captureMessage('Devinci logs sent');
-                      var logs = await FLog.exportLogs();
-                      final email = Email(
-                        body: '',
-                        subject: 'Devinci - Logs',
-                        recipients: ['devinci@araulin.eu'],
-                        attachmentPaths: [logs.path],
-                        isHTML: false,
-                      );
-
-                      await FlutterEmailSender.send(email);
-                    }, // handle your onTap here
-                    child: Container(
-                      height: 46,
-                      margin: EdgeInsets.only(left: 24),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              'dump_logs',
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ).tr(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: Icon(Icons.navigate_next,
-                                color: Color(0xffACACAC)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ]),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 28,
-                  bottom: 28,
-                ),
-                height: (4 * 46).toDouble(),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12.0),
-                    )),
-                child: Column(children: <Widget>[
-                  StatusComponent(),
-                  VersionComponent(),
-                  IdComponent(),
-                  Container(
-                    height: 46,
-                    margin: EdgeInsets.only(left: 24),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text('footer',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w300,
-                              )).tr(),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
+                  ]),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 28,
+                    bottom: 28,
                   ),
-                ]),
-              ),
-            ],
+                  height: (4 * 46).toDouble(),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(12.0),
+                      )),
+                  child: Column(children: <Widget>[
+                    StatusComponent(),
+                    VersionComponent(),
+                    IdComponent(),
+                    Container(
+                      height: 46,
+                      margin: EdgeInsets.only(left: 24),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text('footer',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w300,
+                                )).tr(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    );
+      Align(
+        alignment: Alignment.topCenter,
+        child: ConfettiWidget(
+          confettiController: _controllerTopCenter,
+          blastDirection: 3.14 / 2,
+          maxBlastForce: 5, // set a lower max blast force
+          minBlastForce: 2, // set a lower min blast force
+          emissionFrequency: 0.05,
+          numberOfParticles: 50, // a lot of particles at once
+          gravity: 0.1,
+        ),
+      ),
+    ]);
   }
 }
 
