@@ -20,7 +20,7 @@ config({
 });
 
 client.on("ready", () => {
-    console.log('DevinciBot est actuellement lancer')
+    console.log('DevinciBot est actuellement lancé')
     console.log(`
     #####################################
     #                                   #
@@ -31,7 +31,7 @@ client.on("ready", () => {
 
     client.user.setPresence({ 
             activity: { 
-                name: 'Vous aides dans vos cours !', 
+                name: process.env.ACTIVITY_STATUS, 
                 type: 'CUSTOM_STATUS',
             }, 
             status: 'online' 
