@@ -35,7 +35,7 @@ module.exports = {
             }
         }) 
 
-        if (args[0] == "add" && message.author.id == "251801773486899210"){
+        if (args[0] == "add" && message.author.id == env.SONDAGE_ADMIN){
             let is = false;
             let promises = []
             config.whitelist.forEach(e=>{
@@ -52,7 +52,7 @@ module.exports = {
                     fs.writeFileSync(env.STORAGE_PATH +"sondage_config.json", JSON.stringify(config));
                 }
             })
-        } else if (args[0] == "remove" && message.author.id == "251801773486899210") {
+        } else if (args[0] == "remove" && message.author.id == env.SONDAGE_ADMIN) {
             let promises = []
             for (let i = 0; config.whitelist > i; i++){
                 promises.push(new Promise((resolve) => { 
