@@ -7,6 +7,8 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:one_context/one_context.dart';
 import 'package:recase/recase.dart';
 import 'package:f_logs/f_logs.dart';
+import 'package:provider/provider.dart';
+import 'package:devinci/extra/classes.dart';
 
 Widget InfoSection(String main, String second) {
   return Padding(
@@ -15,17 +17,17 @@ Widget InfoSection(String main, String second) {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SelectableText.rich(
-              TextSpan(
-                text: main.tr() + ': ',
-                style: Theme.of(getContext()).textTheme.bodyText1,
-                children: <TextSpan>[
-                  TextSpan(
-                      text: second,
-                      style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                      )),
-                ],
-              ),
+            TextSpan(
+              text: main.tr() + ': ',
+              style: Theme.of(getContext()).textTheme.bodyText1,
+              children: <TextSpan>[
+                TextSpan(
+                    text: second,
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                    )),
+              ],
+            ),
           ),
         ],
       ));
@@ -37,7 +39,7 @@ Widget DocumentTile(
   return Padding(
     padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
     child: Card(
-      elevation: globals.currentTheme.isDark() ? 4 : 1,
+      elevation: CustomTheme.instanceOf(getContext()).isDark() ? 4 : 1,
       //color: Theme.of(context).cardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       child: InkWell(
@@ -101,7 +103,8 @@ Widget DocumentTile(
               docCardData[id]['frShowButton'] = true;
             });
             if (path != '') {
-              await OneContext().push(MaterialPageRoute(builder: (_) => PDFScreen(path, name)));
+              await OneContext().push(
+                  MaterialPageRoute(builder: (_) => PDFScreen(path, name)));
               // await Navigator.push(
               //   getContext(),
               //   MaterialPageRoute(builder: (context) => PDFScreen(path, name)),
@@ -195,7 +198,10 @@ Widget DocumentTile(
                                               true;
                                         });
                                         if (path != '') {
-                                          await OneContext().push(MaterialPageRoute(builder: (_) => PDFScreen(path, name)));
+                                          await OneContext().push(
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      PDFScreen(path, name)));
                                           // await Navigator.push(
                                           //   getContext(),
                                           //   MaterialPageRoute(
@@ -237,7 +243,10 @@ Widget DocumentTile(
                                                 true;
                                           });
                                           if (path != '') {
-                                            await OneContext().push(MaterialPageRoute(builder: (_) => PDFScreen(path, name)));
+                                            await OneContext().push(
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        PDFScreen(path, name)));
                                             // await Navigator.push(
                                             //   getContext(),
                                             //   MaterialPageRoute(

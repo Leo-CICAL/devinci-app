@@ -26,6 +26,8 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:one_context/one_context.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
+import 'package:devinci/extra/classes.dart';
 
 double getMatMoy(var elem) {
   if (elem['ratt'] != null) {
@@ -164,11 +166,14 @@ Future<List<Cours>> parseIcal(String icsUrl, {bool load = false}) async {
       if (location == 'SANS SALLE') {
         site = '';
       }
-      var color = (globals.currentTheme.isDark()
-          ? Colors.redAccent
-          : Colors.red.shade700);
+      var color =
+          (CustomTheme.instanceOf(globals.mainScaffoldKey.currentContext)
+                  .isDark()
+              ? Colors.redAccent
+              : Colors.red.shade700);
       if (flag == 'distanciel') {
-        color = (globals.currentTheme.isDark()
+        color = (CustomTheme.instanceOf(globals.mainScaffoldKey.currentContext)
+                .isDark()
             ? Color(0xffFFDE03)
             : Color(0xffFF8A5C));
       } else if (flag == 'presentiel') {
@@ -417,7 +422,7 @@ void showGDPR(BuildContext context) async {
                   width: 32,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(25),
-                    color: globals.currentTheme.isDark()
+                    color: CustomTheme.instanceOf(context).isDark()
                         ? Colors.white.withOpacity(0.2)
                         : Theme.of(context).accentColor.withOpacity(0.15),
                   ),
@@ -440,7 +445,7 @@ void showGDPR(BuildContext context) async {
                     style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
-                        color: globals.currentTheme.isDark()
+                        color: CustomTheme.instanceOf(context).isDark()
                             ? Colors.blueGrey[100]
                             : Colors.blueGrey[800]),
                     children: <InlineSpan>[
@@ -459,9 +464,10 @@ void showGDPR(BuildContext context) async {
                               style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.normal,
-                                  color: globals.currentTheme.isDark()
-                                      ? Colors.blueGrey[200]
-                                      : Colors.blueGrey[600])),
+                                  color:
+                                      CustomTheme.instanceOf(context).isDark()
+                                          ? Colors.blueGrey[200]
+                                          : Colors.blueGrey[600])),
                     ],
                   ),
                 ),
@@ -477,9 +483,10 @@ void showGDPR(BuildContext context) async {
                                 style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.normal,
-                                    color: globals.currentTheme.isDark()
-                                        ? Colors.blueGrey[200]
-                                        : Colors.blueGrey[600]))
+                                    color:
+                                        CustomTheme.instanceOf(context).isDark()
+                                            ? Colors.blueGrey[200]
+                                            : Colors.blueGrey[600]))
                             .tr(),
                       ),
               ),
@@ -491,7 +498,7 @@ void showGDPR(BuildContext context) async {
                   width: 32,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(25),
-                    color: globals.currentTheme.isDark()
+                    color: CustomTheme.instanceOf(context).isDark()
                         ? Colors.white.withOpacity(0.2)
                         : Theme.of(context).accentColor.withOpacity(0.15),
                   ),
@@ -510,7 +517,7 @@ void showGDPR(BuildContext context) async {
                     style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
-                        color: globals.currentTheme.isDark()
+                        color: CustomTheme.instanceOf(context).isDark()
                             ? Colors.blueGrey[100]
                             : Colors.blueGrey[800]),
                     children: <InlineSpan>[
@@ -529,9 +536,10 @@ void showGDPR(BuildContext context) async {
                               style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.normal,
-                                  color: globals.currentTheme.isDark()
-                                      ? Colors.blueGrey[200]
-                                      : Colors.blueGrey[600])),
+                                  color:
+                                      CustomTheme.instanceOf(context).isDark()
+                                          ? Colors.blueGrey[200]
+                                          : Colors.blueGrey[600])),
                     ],
                   ),
                 ),
@@ -547,9 +555,10 @@ void showGDPR(BuildContext context) async {
                                 style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.normal,
-                                    color: globals.currentTheme.isDark()
-                                        ? Colors.blueGrey[200]
-                                        : Colors.blueGrey[600]))
+                                    color:
+                                        CustomTheme.instanceOf(context).isDark()
+                                            ? Colors.blueGrey[200]
+                                            : Colors.blueGrey[600]))
                             .tr(),
                       ),
               ),
@@ -561,7 +570,7 @@ void showGDPR(BuildContext context) async {
                   width: 32,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(25),
-                    color: globals.currentTheme.isDark()
+                    color: CustomTheme.instanceOf(context).isDark()
                         ? Colors.white.withOpacity(0.2)
                         : Theme.of(context).accentColor.withOpacity(0.15),
                   ),
@@ -580,7 +589,7 @@ void showGDPR(BuildContext context) async {
                     style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
-                        color: globals.currentTheme.isDark()
+                        color: CustomTheme.instanceOf(context).isDark()
                             ? Colors.blueGrey[100]
                             : Colors.blueGrey[800]),
                     children: <InlineSpan>[
@@ -599,9 +608,10 @@ void showGDPR(BuildContext context) async {
                               style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.normal,
-                                  color: globals.currentTheme.isDark()
-                                      ? Colors.blueGrey[200]
-                                      : Colors.blueGrey[600])),
+                                  color:
+                                      CustomTheme.instanceOf(context).isDark()
+                                          ? Colors.blueGrey[200]
+                                          : Colors.blueGrey[600])),
                     ],
                   ),
                 ),
@@ -617,9 +627,10 @@ void showGDPR(BuildContext context) async {
                                 style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.normal,
-                                    color: globals.currentTheme.isDark()
-                                        ? Colors.blueGrey[200]
-                                        : Colors.blueGrey[600]))
+                                    color:
+                                        CustomTheme.instanceOf(context).isDark()
+                                            ? Colors.blueGrey[200]
+                                            : Colors.blueGrey[600]))
                             .tr(),
                       ),
               ),
@@ -631,7 +642,7 @@ void showGDPR(BuildContext context) async {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,
-                        color: globals.currentTheme.isDark()
+                        color: CustomTheme.instanceOf(context).isDark()
                             ? Colors.blueGrey[100]
                             : Colors.blueGrey[800],
                       )).tr(),
@@ -966,7 +977,7 @@ Future<bool> showDonate(BuildContext context) async {
               trailing: FlatButton(
                   child: Text('1,49€',
                       style: TextStyle(
-                          color: globals.currentTheme.isDark()
+                          color: CustomTheme.instanceOf(context).isDark()
                               ? Colors.black
                               : Colors.white)),
                   color: Theme.of(context).accentColor,
@@ -1046,7 +1057,7 @@ Future<bool> showDonate(BuildContext context) async {
               trailing: FlatButton(
                   child: Text('3,89€',
                       style: TextStyle(
-                          color: globals.currentTheme.isDark()
+                          color: CustomTheme.instanceOf(context).isDark()
                               ? Colors.black
                               : Colors.white)),
                   color: Theme.of(context).accentColor,
@@ -1137,7 +1148,7 @@ Future<bool> showDonate(BuildContext context) async {
               trailing: FlatButton(
                   child: Text('9,90€',
                       style: TextStyle(
-                          color: globals.currentTheme.isDark()
+                          color: CustomTheme.instanceOf(context).isDark()
                               ? Colors.black
                               : Colors.white)),
                   color: Theme.of(context).accentColor,
@@ -1229,7 +1240,7 @@ Future<bool> showDonate(BuildContext context) async {
               trailing: FlatButton(
                   child: Icon(
                     Icons.star_rounded,
-                    color: globals.currentTheme.isDark()
+                    color: CustomTheme.instanceOf(context).isDark()
                         ? Colors.black
                         : Colors.white,
                   ),
@@ -1272,7 +1283,7 @@ void showChangelog(BuildContext context) {
         buttonText: Text('continue'.tr(),
             textScaleFactor: 1.0,
             style: TextStyle(
-                color: globals.currentTheme.isDark()
+                color: CustomTheme.instanceOf(context).isDark()
                     ? Colors.black
                     : Colors.white)),
         // Create a List of WhatsNewItem for use in the Whats New Page

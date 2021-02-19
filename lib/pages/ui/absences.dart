@@ -14,6 +14,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/pages/logic/absences.dart';
 import 'package:f_logs/f_logs.dart';
+import 'package:provider/provider.dart';
+import 'package:devinci/extra/classes.dart';
 
 class AbsencesPage extends TraceableStatefulWidget {
   AbsencesPage({Key key}) : super(key: key);
@@ -184,7 +186,7 @@ class AbsencesPageState extends State<AbsencesPage> {
                           width: 150,
                           child: Center(
                             child: SvgPicture.asset(
-                              globals.currentTheme.isDark()
+                              CustomTheme.instanceOf(context).isDark()
                                   ? 'assets/absencesok.svg'
                                   : 'assets/absencesok2.svg',
                             ),

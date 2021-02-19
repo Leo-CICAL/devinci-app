@@ -66,8 +66,6 @@ SharedPreferences prefs;
 
 bool isConnected = true;
 
-DevinciTheme currentTheme = DevinciTheme();
-
 IsLoading isLoading = IsLoading();
 
 bool noteLocked = false;

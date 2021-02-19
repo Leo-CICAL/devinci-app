@@ -11,6 +11,8 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:f_logs/f_logs.dart';
+import 'package:provider/provider.dart';
+import 'package:devinci/extra/classes.dart';
 
 class PresencePage extends TraceableStatefulWidget {
   final bool inSidePanel;
@@ -216,7 +218,7 @@ class _PresencePageState extends State<PresencePage> {
                           style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: globals.currentTheme.isDark()
+                              color: CustomTheme.instanceOf(context).isDark()
                                   ? Colors.black
                                   : Colors.white),
                         ).tr(),
@@ -281,7 +283,7 @@ class _PresencePageState extends State<PresencePage> {
                       },
                       buttonState: buttonState,
                       backgroundColor: Theme.of(context).accentColor,
-                      progressColor: globals.currentTheme.isDark()
+                      progressColor: CustomTheme.instanceOf(context).isDark()
                           ? Colors.black
                           : Colors.white,
                     ),
@@ -295,7 +297,7 @@ class _PresencePageState extends State<PresencePage> {
                       ),
                       onPressed: null,
                       buttonState: buttonState,
-                      backgroundColor: globals.currentTheme.isDark()
+                      backgroundColor: CustomTheme.instanceOf(context).isDark()
                           ? Color(0xFF313131)
                           : Color(0xFFDFDFDF),
                     ),
@@ -312,7 +314,7 @@ class _PresencePageState extends State<PresencePage> {
                       ),
                       onPressed: null,
                       buttonState: buttonState,
-                      backgroundColor: globals.currentTheme.isDark()
+                      backgroundColor: CustomTheme.instanceOf(context).isDark()
                           ? Color(0xFF313131)
                           : Color(0xFFDFDFDF),
                     ),
@@ -330,7 +332,7 @@ class _PresencePageState extends State<PresencePage> {
                       ),
                       onPressed: null,
                       buttonState: buttonState,
-                      backgroundColor: globals.currentTheme.isDark()
+                      backgroundColor: CustomTheme.instanceOf(context).isDark()
                           ? Colors.redAccent
                           : Colors.red.shade700,
                     ),
@@ -363,7 +365,7 @@ class _PresencePageState extends State<PresencePage> {
                         }
                       },
                       buttonState: ButtonState.normal,
-                      backgroundColor: globals.currentTheme.isDark()
+                      backgroundColor: CustomTheme.instanceOf(context).isDark()
                           ? Colors.blueAccent.shade200
                           : Color(0xFF2D8CFF),
                     ),

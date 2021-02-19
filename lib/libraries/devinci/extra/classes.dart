@@ -213,7 +213,7 @@ class Student {
       client.connectionTimeout = const Duration(seconds: 4);
       var req = await client.getUrl(
         Uri.parse(
-          'https://devinci.araulin.tech/nc.json',
+          'https://devinci.raulin.tech/nc.json',
         ),
       );
       var res = await req.close();

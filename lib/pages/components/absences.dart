@@ -3,6 +3,8 @@ import 'package:devinci/pages/logic/absences.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
+import 'package:devinci/extra/classes.dart';
 
 Widget SemestreSelection(String sem, String subtitle) {
   return Expanded(
@@ -12,7 +14,7 @@ Widget SemestreSelection(String sem, String subtitle) {
           top: 0,
           right: sem == 's2' ? 20.0 : 10.0),
       child: Card(
-        elevation: globals.currentTheme.isDark() ? 4 : 2,
+        elevation: CustomTheme.instanceOf(getContext()).isDark() ? 4 : 2,
         color: Theme.of(getContext()).cardColor,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -69,7 +71,7 @@ Widget AbsenceTile(int i) {
   return Padding(
     padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
     child: Card(
-      elevation: globals.currentTheme.isDark() ? 4 : 1,
+      elevation: CustomTheme.instanceOf(getContext()).isDark() ? 4 : 1,
       color: Theme.of(getContext()).cardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       child: Container(

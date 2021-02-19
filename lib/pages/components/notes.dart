@@ -4,6 +4,8 @@ import 'package:devinci/pages/logic/notes.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
+import 'package:devinci/extra/classes.dart';
 
 Widget SemestreSelection(int sem) {
   return Expanded(
@@ -11,7 +13,7 @@ Widget SemestreSelection(int sem) {
       padding: EdgeInsets.only(
           left: sem == 0 ? 20.0 : 10.0, top: 0, right: sem == 1 ? 20.0 : 10.0),
       child: Card(
-        elevation: globals.currentTheme.isDark() ? 4 : 2,
+        elevation: CustomTheme.instanceOf(getContext()).isDark() ? 4 : 2,
         color: Theme.of(getContext()).cardColor,
         shape: currentSemester == sem
             ? RoundedRectangleBorder(
@@ -38,7 +40,7 @@ Widget SemestreSelection(int sem) {
                 child: Text(
                   's$sem',
                   style: TextStyle(
-                      color: globals.currentTheme.isDark()
+                      color: CustomTheme.instanceOf(getContext()).isDark()
                           ? Color(0xffE1E2E1)
                           : Color(0xffACACAC),
                       fontSize: 16),
@@ -56,7 +58,7 @@ Widget MatiereTile(int i, int j) {
   return Padding(
     padding: const EdgeInsets.only(left: 0.0, bottom: 5, right: 0),
     child: Card(
-        elevation: globals.currentTheme.isDark() ? 4 : 2,
+        elevation: CustomTheme.instanceOf(getContext()).isDark() ? 4 : 2,
         color: Theme.of(getContext()).cardColor,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -119,7 +121,7 @@ Widget MatiereTile(int i, int j) {
                                               ['matieres'][j]) ==
                                           0
                                       ? Color(0xffCA3E47)
-                                      : (globals.currentTheme.isDark()
+                                      : (CustomTheme.instanceOf(getContext()).isDark()
                                           ? Color(0xffFFDE03)
                                           : Color(0xffFF8A5C)),
                               fontWeight: FontWeight.bold,
@@ -160,7 +162,7 @@ Widget NoteTile(int i, int j, int y) {
     child: Padding(
       padding: const EdgeInsets.only(left: 24.0, bottom: 5, right: 0),
       child: Card(
-        elevation: globals.currentTheme.isDark() ? 4 : 1,
+        elevation: CustomTheme.instanceOf(getContext()).isDark() ? 4 : 1,
         color: Theme.of(getContext()).cardColor,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -224,7 +226,7 @@ Widget NoteTile(int i, int j, int y) {
                                                         ['notes'][y]['note'] ==
                                                     0
                                                 ? Color(0xffCA3E47)
-                                                : (globals.currentTheme.isDark()
+                                                : (CustomTheme.instanceOf(getContext()).isDark()
                                                     ? Color(0xffFFDE03)
                                                     : Color(0xffFF8A5C))),
                                       ),
@@ -291,7 +293,9 @@ Widget YearsSelection() {
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 14,
-          color: globals.currentTheme.isDark() ? Colors.white : Colors.black,
+          color: CustomTheme.instanceOf(getContext()).isDark()
+              ? Colors.white
+              : Colors.black,
         ),
         underline: Container(
           height: 0,

@@ -9,6 +9,7 @@ import 'package:one_context/one_context.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
 
 class SallesPage extends TraceableStatefulWidget {
   final bool tablet;
@@ -46,7 +47,7 @@ class _SallesPageState extends State<SallesPage> {
             .occupation[globals.user.sallesStr.indexOf(column.mappingName)];
         return Container(
           color: state
-              ? (globals.currentTheme.isDark()
+              ? (CustomTheme.instanceOf(context).isDark()
                   ? Colors.deepOrangeAccent.shade400
                   : Colors.deepOrange)
               : Theme.of(context).scaffoldBackgroundColor,
@@ -79,11 +80,11 @@ class _SallesPageState extends State<SallesPage> {
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
-        globals.currentTheme.isDark());
+        CustomTheme.instanceOf(context).isDark());
     FlutterStatusbarcolor.setNavigationBarColor(
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
-        globals.currentTheme.isDark());
+        CustomTheme.instanceOf(context).isDark());
     if (widget.tablet != null) {
       return show
           ? SfDataGrid(

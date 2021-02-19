@@ -12,6 +12,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
+import 'package:provider/provider.dart';
+import 'package:devinci/extra/classes.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -44,11 +46,11 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
-        globals.currentTheme.isDark());
+        CustomTheme.instanceOf(context).isDark());
     FlutterStatusbarcolor.setNavigationBarColor(
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
-        globals.currentTheme.isDark());
+        CustomTheme.instanceOf(context).isDark());
 
     return WillPopScope(
         onWillPop: () async => false,
@@ -56,9 +58,10 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
           body: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle(
                 statusBarColor: Theme.of(context).scaffoldBackgroundColor,
-                statusBarIconBrightness: globals.currentTheme.isDark()
-                    ? Brightness.light
-                    : Brightness.dark),
+                statusBarIconBrightness:
+                    CustomTheme.instanceOf(context).isDark()
+                        ? Brightness.light
+                        : Brightness.dark),
             child: LayoutBuilder(builder: (context, constraints) {
               if (!show) {
                 return Center(
@@ -145,7 +148,8 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
-                                        color: globals.currentTheme.isDark()
+                                        color: CustomTheme.instanceOf(context)
+                                                .isDark()
                                             ? Colors.black
                                             : Colors.white),
                                   ),
@@ -153,9 +157,10 @@ class LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                                 onPressed: submit,
                                 buttonState: buttonState,
                                 backgroundColor: Theme.of(context).accentColor,
-                                progressColor: globals.currentTheme.isDark()
-                                    ? Colors.black
-                                    : Colors.white,
+                                progressColor:
+                                    CustomTheme.instanceOf(context).isDark()
+                                        ? Colors.black
+                                        : Colors.white,
                               ),
                             ),
                             Padding(

@@ -18,6 +18,8 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
+import 'package:provider/provider.dart';
+import 'package:devinci/extra/classes.dart';
 
 class ShowCasePage extends StatelessWidget {
   @override
@@ -120,11 +122,11 @@ class MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
-        globals.currentTheme.isDark());
+        CustomTheme.instanceOf(context).isDark());
     FlutterStatusbarcolor.setNavigationBarColor(
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
-        globals.currentTheme.isDark());
+        CustomTheme.instanceOf(context).isDark());
     if (globals.selectedPage > 4 && MediaQuery.of(context).size.width <= 1000) {
       globals.selectedPage = 4;
     }
@@ -419,7 +421,7 @@ class MainPageState extends State<MainPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Material(
                 color: globals.selectedPage == index
-                    ? (globals.currentTheme.isDark()
+                    ? (CustomTheme.instanceOf(context).isDark()
                         ? Colors.grey.withAlpha(50)
                         : Theme.of(context).primaryColor.withAlpha(35))
                     : Colors.transparent,

@@ -15,6 +15,8 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:sembast/sembast.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
+import 'package:devinci/extra/classes.dart';
 
 Function setAgendaHeaderState;
 
@@ -228,7 +230,7 @@ class _AgendaPageState extends State<AgendaPage> {
               selectionDecoration: BoxDecoration(
                 color: Colors.transparent,
                 border: Border.all(
-                    color: globals.currentTheme.isDark()
+                    color: CustomTheme.instanceOf(context).isDark()
                         ? Colors.white
                         : Colors.black,
                     width: 2),
@@ -298,9 +300,12 @@ class MeetingDataSource extends CalendarDataSource {
   @override
   Color getColor(int index) {
     Color color =
-        (globals.currentTheme.isDark() ? Colors.blueAccent : Colors.blue);
+        (CustomTheme.instanceOf(globals.mainScaffoldKey.currentContext).isDark()
+            ? Colors.blueAccent
+            : Colors.blue);
     if (appointments[index].flag == 'distanciel') {
-      color = (globals.currentTheme.isDark()
+      color = (CustomTheme.instanceOf(globals.mainScaffoldKey.currentContext)
+              .isDark()
           ? Colors.deepOrangeAccent.shade400
           : Colors.deepOrange);
     } else if (appointments[index].flag == 'presentiel') {
@@ -346,10 +351,11 @@ class CoursEditorState extends State<CoursEditor> {
       _startTime = TimeOfDay(hour: _from.hour, minute: _from.minute);
       _endTime = TimeOfDay(hour: _to.hour, minute: _to.minute);
     }
-    Color color =
-        (globals.currentTheme.isDark() ? Colors.blueAccent : Colors.blue);
+    Color color = (CustomTheme.instanceOf(context).isDark()
+        ? Colors.blueAccent
+        : Colors.blue);
     if (flag == 'remote') {
-      color = (globals.currentTheme.isDark()
+      color = (CustomTheme.instanceOf(context).isDark()
           ? Colors.deepOrangeAccent.shade400
           : Colors.deepOrange);
     } else if (flag == 'face_to_face') {
@@ -492,7 +498,9 @@ class CoursEditorState extends State<CoursEditor> {
                                           return Theme(
                                             data: ThemeData(
                                               brightness:
-                                                  globals.currentTheme.isDark()
+                                                  CustomTheme.instanceOf(
+                                                              context)
+                                                          .isDark()
                                                       ? Brightness.dark
                                                       : Brightness.light,
                                               // colorScheme:
@@ -543,10 +551,12 @@ class CoursEditorState extends State<CoursEditor> {
                                               Widget child) {
                                             return Theme(
                                               data: ThemeData(
-                                                brightness: globals.currentTheme
-                                                        .isDark()
-                                                    ? Brightness.dark
-                                                    : Brightness.light,
+                                                brightness:
+                                                    CustomTheme.instanceOf(
+                                                                context)
+                                                            .isDark()
+                                                        ? Brightness.dark
+                                                        : Brightness.light,
                                                 // colorScheme:
                                                 //     _getColorScheme(widget.model),
                                                 accentColor: Theme.of(context)
@@ -609,7 +619,9 @@ class CoursEditorState extends State<CoursEditor> {
                                           return Theme(
                                             data: ThemeData(
                                               brightness:
-                                                  globals.currentTheme.isDark()
+                                                  CustomTheme.instanceOf(
+                                                              context)
+                                                          .isDark()
                                                       ? Brightness.dark
                                                       : Brightness.light,
                                               // colorScheme:
@@ -663,10 +675,12 @@ class CoursEditorState extends State<CoursEditor> {
                                               Widget child) {
                                             return Theme(
                                               data: ThemeData(
-                                                brightness: globals.currentTheme
-                                                        .isDark()
-                                                    ? Brightness.dark
-                                                    : Brightness.light,
+                                                brightness:
+                                                    CustomTheme.instanceOf(
+                                                                context)
+                                                            .isDark()
+                                                        ? Brightness.dark
+                                                        : Brightness.light,
                                                 // colorScheme:
                                                 //     _getColorScheme(widget.model),
                                                 accentColor: Theme.of(context)
@@ -771,22 +785,23 @@ class CoursEditorState extends State<CoursEditor> {
                         },
                         style: ButtonStyle(overlayColor:
                             MaterialStateProperty.resolveWith((states) {
-                          return (globals.currentTheme.isDark()
+                          return (CustomTheme.instanceOf(context).isDark()
                                   ? Colors.redAccent
                                   : Colors.red.shade700)
                               .withOpacity(0.2);
                         }), side: MaterialStateProperty.resolveWith((states) {
                           return BorderSide(
-                              color: globals.currentTheme.isDark()
+                              color: CustomTheme.instanceOf(context).isDark()
                                   ? Colors.redAccent
                                   : Colors.red.shade700,
                               width: 2);
                         })),
                         child: Text('delete_event',
                                 style: TextStyle(
-                                    color: globals.currentTheme.isDark()
-                                        ? Colors.redAccent
-                                        : Colors.red.shade700))
+                                    color:
+                                        CustomTheme.instanceOf(context).isDark()
+                                            ? Colors.redAccent
+                                            : Colors.red.shade700))
                             .tr()),
                   )
                 : Container(),
@@ -799,11 +814,11 @@ class CoursEditorState extends State<CoursEditor> {
   Widget build([BuildContext context]) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
-        globals.currentTheme.isDark());
+        CustomTheme.instanceOf(context).isDark());
     FlutterStatusbarcolor.setNavigationBarColor(
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
-        globals.currentTheme.isDark());
+        CustomTheme.instanceOf(context).isDark());
     return Theme(
         data: Theme.of(context),
         child: Scaffold(
@@ -889,7 +904,7 @@ class CoursEditorState extends State<CoursEditor> {
                 _getAppointmentEditor(
                     context,
                     Theme.of(context).cardColor,
-                    globals.currentTheme.isDark()
+                    CustomTheme.instanceOf(context).isDark()
                         ? Colors.white
                         : Colors.black87)
               ],

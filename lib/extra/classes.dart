@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:devinci/extra/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:devinci/extra/globals.dart' as globals;
@@ -7,6 +8,7 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:share_extend/share_extend.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:provider/provider.dart';
 
 class Cours {
   Cours(
@@ -51,19 +53,120 @@ class ReceivedNotification {
   });
 }
 
-class DevinciTheme with ChangeNotifier {
-  static bool _isDark = true;
-  ThemeMode currentTheme() {
-    return _isDark ? ThemeMode.dark : ThemeMode.light;
+enum ThemeType { Light, Dark, TrueDark }
+
+class DevinciTheme {
+  static ThemeData currentTheme = darkTheme;
+  static ThemeType _themeType = ThemeType.Dark;
+
+  static ThemeData getTheme(ThemeType type) {
+    switch (type) {
+      case ThemeType.Light:
+        currentTheme = lightTheme;
+        _themeType = ThemeType.Light;
+        break;
+      case ThemeType.Dark:
+        currentTheme = darkTheme;
+        _themeType = ThemeType.Dark;
+        break;
+      case ThemeType.TrueDark:
+        currentTheme = trueDarkTheme;
+        _themeType = ThemeType.TrueDark;
+        break;
+      default:
+        throw ArgumentError.value(
+            type, 'type', 'type must be part of ThemeType');
+    }
+    return currentTheme;
+  }
+}
+
+class CustomTheme extends StatefulWidget {
+  final Widget child;
+  final ThemeType initialThemeType;
+
+  const CustomTheme({
+    Key key,
+    this.initialThemeType,
+    @required this.child,
+  }) : super(key: key);
+
+  @override
+  CustomThemeState createState() => new CustomThemeState();
+
+  static ThemeData of(BuildContext context) {
+    _CustomTheme inherited =
+        (context.dependOnInheritedWidgetOfExactType<_CustomTheme>());
+    return inherited.data.theme;
+  }
+
+  static CustomThemeState instanceOf(BuildContext context) {
+    _CustomTheme inherited =
+        (context.dependOnInheritedWidgetOfExactType<_CustomTheme>());
+    return inherited.data;
+  }
+}
+
+class CustomThemeState extends State<CustomTheme> {
+  ThemeData _theme;
+
+  ThemeData get theme => _theme;
+
+  @override
+  void initState() {
+    _theme = DevinciTheme.getTheme(widget.initialThemeType);
+    super.initState();
+  }
+
+  void changeTheme(ThemeType themeType) {
+    setState(() {
+      _theme = DevinciTheme.getTheme(themeType);
+    });
+  }
+
+  void changeThemeByName(String name) {
+    setState(() {
+      switch (name) {
+        case 'light':
+          _theme = lightTheme;
+          break;
+        case 'dark':
+          _theme = darkTheme;
+          break;
+        case 'amoled_dark':
+          _theme = trueDarkTheme;
+          break;
+        default:
+          throw ArgumentError.value(name, 'name', 'name must be a theme name');
+      }
+    });
   }
 
   bool isDark() {
-    return _isDark;
+    return _theme == darkTheme || _theme == trueDarkTheme;
   }
 
-  void setDark(bool setDark) {
-    _isDark = setDark;
-    notifyListeners();
+  @override
+  Widget build(BuildContext context) {
+    return new _CustomTheme(
+      data: this,
+      child: widget.child,
+    ); //nothing here for now!
+  }
+}
+
+class _CustomTheme extends InheritedWidget {
+  final CustomThemeState data;
+
+  _CustomTheme({
+    this.data,
+    Key key,
+    @required Widget child,
+  }) : super(key: key, child: child);
+
+  @override
+  bool updateShouldNotify(_CustomTheme oldWidget) {
+    return true;
   }
 }
 
@@ -101,11 +204,11 @@ class PDFScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
-        globals.currentTheme.isDark());
+        CustomTheme.instanceOf(context).isDark());
     FlutterStatusbarcolor.setNavigationBarColor(
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
-        globals.currentTheme.isDark());
+        CustomTheme.instanceOf(context).isDark());
     return Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(

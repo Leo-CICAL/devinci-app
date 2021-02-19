@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:about/about.dart';
 import 'package:confetti/confetti.dart';
 import 'package:devinci/extra/CommonWidgets.dart';
+import 'package:devinci/extra/classes.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:wiredash/wiredash.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class SettingsPage extends TraceableStatefulWidget {
@@ -93,13 +95,6 @@ class _SettingsPageState extends State<SettingsPage> {
     super.dispose();
   }
 
-  void runBeforeBuild() async {
-    var packageInfo = await PackageInfo.fromPlatform();
-    appVersion = packageInfo.version;
-    appVersion += ' b' + packageInfo.buildNumber;
-    theme = globals.prefs.getString('theme') ?? 'system';
-  }
-
   String appVersion = '';
   String theme = 'system';
 
@@ -107,11 +102,12 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
     FlutterStatusbarcolor.setStatusBarWhiteForeground(
-        globals.currentTheme.isDark());
+        CustomTheme.instanceOf(context).isDark());
     FlutterStatusbarcolor.setNavigationBarColor(
         Theme.of(context).scaffoldBackgroundColor);
     FlutterStatusbarcolor.setNavigationBarWhiteForeground(
-        globals.currentTheme.isDark());
+        CustomTheme.instanceOf(context).isDark());
+    theme = globals.prefs.getString('theme') ?? 'system';
     return Stack(children: [
       Material(
         child: Scaffold(
@@ -298,25 +294,42 @@ class _SettingsPageState extends State<SettingsPage> {
                                       globals.prefs
                                           .setString('theme', newValue);
                                       if (newValue != 'system') {
-                                        globals.currentTheme
-                                            .setDark(newValue == 'dark');
+                                        CustomTheme.instanceOf(context)
+                                            .changeThemeByName(newValue);
+                                        // Provider.of<DevinciTheme>(context)
+                                        //     .setThemeByString(newValue);
                                       } else {
-                                        globals.currentTheme.setDark(
-                                            MediaQuery.of(context)
-                                                    .platformBrightness ==
-                                                Brightness.dark);
+                                        CustomTheme.instanceOf(context)
+                                            .changeTheme(MediaQuery.of(context)
+                                                        .platformBrightness ==
+                                                    Brightness.dark
+                                                ? ThemeType.Dark
+                                                : ThemeType.Light);
+                                        // Provider.of<DevinciTheme>(context)
+                                        //     .setTheme(MediaQuery.of(context)
+                                        //                 .platformBrightness ==
+                                        //             Brightness.dark
+                                        //         ? ThemeType.Dark
+                                        //         : ThemeType.Light);
+                                        // Provider.of<DevinciTheme>(context).setDark(
+                                        //     MediaQuery.of(context)
+                                        //             .platformBrightness ==
+                                        //         Brightness.dark);
                                       }
                                     });
                                   },
                                   items: <String>[
                                     'system',
                                     'dark',
+                                    'amoled_dark',
                                     'light',
                                   ].map<DropdownMenuItem<String>>(
                                       (String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
-                                      child: Text(value).tr(),
+                                      child: Text(value,
+                                              textAlign: TextAlign.right)
+                                          .tr(),
                                     );
                                   }).toList(),
                                 ),
