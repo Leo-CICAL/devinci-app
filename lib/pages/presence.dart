@@ -131,8 +131,8 @@ class _PresencePageState extends State<PresencePage> {
   List<Widget> pageGen() {
     var res = <Widget>[];
     for (var i = 0; i < globals.user.presence.length; i++) {
-      res.add(CupertinoScrollbar(
-        child: SmartRefresher(
+      res.add(
+        SmartRefresher(
           enablePullDown: true,
           header: ClassicHeader(),
           controller: _refreshController,
@@ -419,7 +419,7 @@ class _PresencePageState extends State<PresencePage> {
             ),
           ),
         ),
-      ));
+      );
     }
     return res;
   }

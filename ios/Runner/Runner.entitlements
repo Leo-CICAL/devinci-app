@@ -8,7 +8,7 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.eu.araulin.devinciApp</string>
+		<string>group.eu.araulin.devinci</string>
 	</array>
 	<key>com.apple.security.network.client</key>
 	<true/>
