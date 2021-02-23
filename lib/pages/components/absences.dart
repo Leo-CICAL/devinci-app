@@ -3,7 +3,6 @@ import 'package:devinci/pages/logic/absences.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:easy_localization/easy_localization.dart';
-import 'package:provider/provider.dart';
 import 'package:devinci/extra/classes.dart';
 
 Widget SemestreSelection(String sem, String subtitle) {

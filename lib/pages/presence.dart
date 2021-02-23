@@ -11,7 +11,6 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:f_logs/f_logs.dart';
-import 'package:provider/provider.dart';
 import 'package:devinci/extra/classes.dart';
 
 class PresencePage extends TraceableStatefulWidget {

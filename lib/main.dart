@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:one_context/one_context.dart';
 import 'package:package_info/package_info.dart';
-import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -44,28 +43,15 @@ Future<Null> main() async {
       .setInFocusDisplayType(OSNotificationDisplayType.notification);
 
   //init quick_actions
-  ThemeType defaultTheme = ThemeType.Light;
+  var defaultTheme = ThemeType.Light;
   var setTheme = globals.prefs.getString('theme') ?? 'system';
   if (setTheme != 'system') {
-    switch (setTheme) {
-      case 'light':
-        defaultTheme = ThemeType.Light;
-        break;
-      case 'dark':
-        defaultTheme = ThemeType.Dark;
-        break;
-      case 'amoled_dark':
-        defaultTheme = ThemeType.TrueDark;
-        break;
-      default:
-    }
+    defaultTheme = DevinciTheme.getThemeTypeFromString(setTheme);
   } else {
     defaultTheme =
         SchedulerBinding.instance.window.platformBrightness == Brightness.dark
             ? ThemeType.Dark
             : ThemeType.Light;
-    //Provider.of<DevinciTheme>(context).setDark(
-    //    SchedulerBinding.instance.window.platformBrightness == Brightness.dark);
   }
   var packageInfo = await PackageInfo.fromPlatform();
   globals.release = 'devinci@' + packageInfo.version;

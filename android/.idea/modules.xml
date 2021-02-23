@@ -36,7 +36,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/1530814127/flutter_secure_storage.iml" filepath="$PROJECT_DIR$/.idea/modules/1530814127/flutter_secure_storage.iml" group="android/flutter_secure_storage" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/1090396825/flutter_statusbarcolor.iml" filepath="$PROJECT_DIR$/.idea/modules/1090396825/flutter_statusbarcolor.iml" group="android/flutter_statusbarcolor" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/1739473352/flutter_user_agent.iml" filepath="$PROJECT_DIR$/.idea/modules/1739473352/flutter_user_agent.iml" group="android/flutter_user_agent" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/983129588/in_app_review.iml" filepath="$PROJECT_DIR$/.idea/modules/983129588/in_app_review.iml" group="android/in_app_review" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1918380141/onesignal_flutter.iml" filepath="$PROJECT_DIR$/.idea/modules/-1918380141/onesignal_flutter.iml" group="android/onesignal_flutter" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-505486042/package_info.iml" filepath="$PROJECT_DIR$/.idea/modules/-505486042/package_info.iml" group="android/package_info" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1773359647/path_provider.iml" filepath="$PROJECT_DIR$/.idea/modules/-1773359647/path_provider.iml" group="android/path_provider" />
@@ -44,6 +43,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/1022603402/path_provider_macos.iml" filepath="$PROJECT_DIR$/.idea/modules/1022603402/path_provider_macos.iml" group="android/path_provider_macos" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/575265679/path_provider_macos-0.0.4+8-android-path_provider_macos.iml" filepath="$PROJECT_DIR$/.idea/modules/575265679/path_provider_macos-0.0.4+8-android-path_provider_macos.iml" group="android/path_provider_macos" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/1935085720/path_provider_windows.iml" filepath="$PROJECT_DIR$/.idea/modules/1935085720/path_provider_windows.iml" group="android/path_provider_windows" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1503785709/purchases_flutter.iml" filepath="$PROJECT_DIR$/.idea/modules/-1503785709/purchases_flutter.iml" group="android/purchases_flutter" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-302749592/shared_preferences.iml" filepath="$PROJECT_DIR$/.idea/modules/-302749592/shared_preferences.iml" group="android/shared_preferences" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-672514323/shared_preferences_linux.iml" filepath="$PROJECT_DIR$/.idea/modules/-672514323/shared_preferences_linux.iml" group="android/shared_preferences_linux" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/1889997896/shared_preferences_macos.iml" filepath="$PROJECT_DIR$/.idea/modules/1889997896/shared_preferences_macos.iml" group="android/shared_preferences_macos" />
@@ -53,6 +53,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-876681088/url_launcher_macos.iml" filepath="$PROJECT_DIR$/.idea/modules/-876681088/url_launcher_macos.iml" group="android/url_launcher_macos" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/1272102434/url_launcher_web.iml" filepath="$PROJECT_DIR$/.idea/modules/1272102434/url_launcher_web.iml" group="android/url_launcher_web" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/897340234/url_launcher_windows.iml" filepath="$PROJECT_DIR$/.idea/modules/897340234/url_launcher_windows.iml" group="android/url_launcher_windows" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-34101876/wiredash.iml" filepath="$PROJECT_DIR$/.idea/modules/-34101876/wiredash.iml" group="android/wiredash" />
     </modules>
   </component>
 </project>

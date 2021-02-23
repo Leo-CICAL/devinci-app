@@ -18,7 +18,6 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
-import 'package:provider/provider.dart';
 import 'package:devinci/extra/classes.dart';
 
 class ShowCasePage extends StatelessWidget {

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:about/about.dart';
 import 'package:confetti/confetti.dart';
 import 'package:devinci/extra/CommonWidgets.dart';
-import 'package:devinci/extra/classes.dart';
+import 'package:devinci/extra/themes.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:matomo/matomo.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info/package_info.dart';
@@ -24,7 +23,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class SettingsPage extends TraceableStatefulWidget {
@@ -48,7 +46,7 @@ class _SettingsPageState extends State<SettingsPage> {
     _controllerTopCenter =
         ConfettiController(duration: const Duration(seconds: 6));
     Purchases.addPurchaserInfoUpdateListener((info) async {
-      if (info.entitlements.all["donor"].isActive) {
+      if (info.entitlements.all['donor'].isActive) {
         try {
           await scrollController.jumpTo(0);
           _controllerTopCenter.play();
@@ -86,7 +84,6 @@ class _SettingsPageState extends State<SettingsPage> {
         });
       }
     });
-    //SchedulerBinding.instance.addPostFrameCallback((_) => runBeforeBuild());
   }
 
   @override
@@ -95,19 +92,8 @@ class _SettingsPageState extends State<SettingsPage> {
     super.dispose();
   }
 
-  String appVersion = '';
-  String theme = 'system';
-
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
-    FlutterStatusbarcolor.setStatusBarWhiteForeground(
-        CustomTheme.instanceOf(context).isDark());
-    FlutterStatusbarcolor.setNavigationBarColor(
-        Theme.of(context).scaffoldBackgroundColor);
-    FlutterStatusbarcolor.setNavigationBarWhiteForeground(
-        CustomTheme.instanceOf(context).isDark());
-    theme = globals.prefs.getString('theme') ?? 'system';
     return Stack(children: [
       Material(
         child: Scaffold(
@@ -208,6 +194,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         ],
                       ))
                     : SizedBox.shrink(),
+                TitleSection('themes'),
+                ThemePicker(),
                 //TitleSection("Paramètres avancés"),
                 Container(
                   margin: EdgeInsets.only(
@@ -215,7 +203,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     right: 16,
                     top: 16,
                   ),
-                  height: (6 * 46).toDouble(),
+                  height: (5 * 46).toDouble(),
                   decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
                       shape: BoxShape.rectangle,
@@ -270,87 +258,6 @@ class _SettingsPageState extends State<SettingsPage> {
                           children: <Widget>[
                             Expanded(
                               child: Text(
-                                'theme',
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ).tr(),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(right: 9),
-                              child: ButtonTheme(
-                                alignedDropdown: true,
-                                child: DropdownButton<String>(
-                                  value: theme,
-                                  icon: Icon(Icons.expand_more_rounded),
-                                  iconSize: 24,
-                                  elevation: 16,
-                                  style: Theme.of(context).textTheme.subtitle1,
-                                  underline: Container(
-                                    height: 0,
-                                    color: Colors.transparent,
-                                  ),
-                                  onChanged: (String newValue) {
-                                    setState(() {
-                                      theme = newValue;
-                                      globals.prefs
-                                          .setString('theme', newValue);
-                                      if (newValue != 'system') {
-                                        CustomTheme.instanceOf(context)
-                                            .changeThemeByName(newValue);
-                                        // Provider.of<DevinciTheme>(context)
-                                        //     .setThemeByString(newValue);
-                                      } else {
-                                        CustomTheme.instanceOf(context)
-                                            .changeTheme(MediaQuery.of(context)
-                                                        .platformBrightness ==
-                                                    Brightness.dark
-                                                ? ThemeType.Dark
-                                                : ThemeType.Light);
-                                        // Provider.of<DevinciTheme>(context)
-                                        //     .setTheme(MediaQuery.of(context)
-                                        //                 .platformBrightness ==
-                                        //             Brightness.dark
-                                        //         ? ThemeType.Dark
-                                        //         : ThemeType.Light);
-                                        // Provider.of<DevinciTheme>(context).setDark(
-                                        //     MediaQuery.of(context)
-                                        //             .platformBrightness ==
-                                        //         Brightness.dark);
-                                      }
-                                    });
-                                  },
-                                  items: <String>[
-                                    'system',
-                                    'dark',
-                                    'amoled_dark',
-                                    'light',
-                                  ].map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value,
-                                              textAlign: TextAlign.right)
-                                          .tr(),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        height: 46,
-                        margin: EdgeInsets.only(left: 24),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                          width: 0.2,
-                          color: Color(0xffACACAC),
-                        ))),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(
                                 'attendance_notif',
                                 style: Theme.of(context).textTheme.subtitle1,
                               ).tr(),
@@ -358,6 +265,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Padding(
                               padding: EdgeInsets.only(right: 8),
                               child: Switch.adaptive(
+                                activeColor: Theme.of(context).accentColor,
                                 value: globals.notifConsent,
                                 onChanged: (bool value) {
                                   setState(() {
@@ -400,6 +308,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Padding(
                               padding: EdgeInsets.only(right: 8),
                               child: Switch.adaptive(
+                                activeColor: Theme.of(context).accentColor,
                                 value: globals.crashConsent == 'true',
                                 onChanged: (bool value) {
                                   setState(() {
@@ -439,6 +348,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Padding(
                               padding: EdgeInsets.only(right: 8),
                               child: Switch.adaptive(
+                                activeColor: Theme.of(context).accentColor,
                                 value: globals.analyticsConsent,
                                 onChanged: (bool value) {
                                   setState(() {

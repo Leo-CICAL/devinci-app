@@ -56,6 +56,12 @@
       "languageVersion": "2.0"
     },
     {
+      "name": "clippy_flutter",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/clippy_flutter-1.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "clock",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/clock-1.1.0-nullsafety.1",
       "packageUri": "lib/",
@@ -177,7 +183,7 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///C:/src/flutter/packages/flutter",
+      "rootUri": "file:///c:/src/flutter/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "2.10"
     },
@@ -189,7 +195,7 @@
     },
     {
       "name": "flutter_localizations",
-      "rootUri": "file:///C:/src/flutter/packages/flutter_localizations",
+      "rootUri": "file:///c:/src/flutter/packages/flutter_localizations",
       "packageUri": "lib/",
       "languageVersion": "2.2"
     },
@@ -198,6 +204,12 @@
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_markdown-0.5.2",
       "packageUri": "lib/",
       "languageVersion": "2.7"
+    },
+    {
+      "name": "flutter_material_color_picker",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_material_color_picker-1.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.2"
     },
     {
       "name": "flutter_phoenix",
@@ -225,7 +237,7 @@
     },
     {
       "name": "flutter_test",
-      "rootUri": "file:///C:/src/flutter/packages/flutter_test",
+      "rootUri": "file:///c:/src/flutter/packages/flutter_test",
       "packageUri": "lib/",
       "languageVersion": "2.2"
     },
@@ -237,7 +249,7 @@
     },
     {
       "name": "flutter_web_plugins",
-      "rootUri": "file:///C:/src/flutter/packages/flutter_web_plugins",
+      "rootUri": "file:///c:/src/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "2.0"
     },
@@ -342,12 +354,6 @@
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/modal_bottom_sheet-1.0.0+1",
       "packageUri": "lib/",
       "languageVersion": "2.0"
-    },
-    {
-      "name": "nested",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/nested-0.0.4",
-      "packageUri": "lib/",
-      "languageVersion": "2.2"
     },
     {
       "name": "node_interop",
@@ -474,12 +480,6 @@
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/process-3.0.13",
       "packageUri": "lib/",
       "languageVersion": "2.0"
-    },
-    {
-      "name": "provider",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/provider-4.3.3",
-      "packageUri": "lib/",
-      "languageVersion": "2.7"
     },
     {
       "name": "pub_semver",
@@ -609,7 +609,7 @@
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///C:/src/flutter/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///c:/src/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "1.11"
     },
@@ -872,7 +872,7 @@
       "languageVersion": "2.8"
     }
   ],
-  "generated": "2021-02-19T10:33:21.864827Z",
+  "generated": "2021-02-21T16:17:17.739309Z",
   "generator": "pub",
   "generatorVersion": "2.10.5"
 }

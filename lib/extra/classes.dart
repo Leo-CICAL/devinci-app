@@ -8,8 +8,8 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:share_extend/share_extend.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:provider/provider.dart';
 
+/// A class (cours in French) object
 class Cours {
   Cours(
       this.type,
@@ -25,15 +25,20 @@ class Cours {
       this.uid,
       this.groupe);
 
+  /// The type of the class, such as `TD` or `TP`
   String type;
   String title;
   String prof;
   String location;
+
+  /// The site of the class, such as `La Défense` or `Paris`
   String site;
   DateTime from;
   DateTime to;
   Color background;
   bool isAllDay;
+
+  /// Defines if the class is on-site (`presentiel`) or at home (`distanciel`)
   String flag;
   String uid;
   String groupe;
@@ -53,31 +58,121 @@ class ReceivedNotification {
   });
 }
 
-enum ThemeType { Light, Dark, TrueDark }
+enum ThemeType {
+  Light,
+  Dark,
+  TrueDark,
+  EsilvDark,
+  EsilvLight,
+  IimDark,
+  IimLight,
+  EmlvDark,
+  EmlvLight
+}
+
+extension ParseToString on ThemeType {
+  /// Returns the name of the theme
+  ///
+  /// __Example__ :
+  /// ```dart
+  /// ThemeType.Dark.toShortString() == 'Dark'
+  /// ```
+  String toShortString() {
+    return this.toString().split('.').last;
+  }
+}
 
 class DevinciTheme {
   static ThemeData currentTheme = darkTheme;
   static ThemeType _themeType = ThemeType.Dark;
 
+  /// Returns the ThemeData corresponding to the passed ThemeType [type]
+  ///
+  /// Throws [ArgumentError] if the given ThemeType [type] does not match any theme. (Very very unlikely)
+  ///
+  /// __Example__ :
+  /// ```dart
+  /// DevinciTheme.getTheme(ThemeType.Dark) == darkTheme
+  /// ```
   static ThemeData getTheme(ThemeType type) {
     switch (type) {
       case ThemeType.Light:
         currentTheme = lightTheme;
-        _themeType = ThemeType.Light;
         break;
       case ThemeType.Dark:
         currentTheme = darkTheme;
-        _themeType = ThemeType.Dark;
         break;
       case ThemeType.TrueDark:
         currentTheme = trueDarkTheme;
-        _themeType = ThemeType.TrueDark;
         break;
+      case ThemeType.EsilvDark:
+        currentTheme = darkEsilvTheme;
+        break;
+      case ThemeType.EsilvLight:
+        currentTheme = lightEsilvTheme;
+        break;
+      case ThemeType.IimDark:
+        currentTheme = darkIimTheme;
+        break;
+      case ThemeType.IimLight:
+        currentTheme = lightIimTheme;
+        break;
+      case ThemeType.EmlvDark:
+        currentTheme = darkEmlvTheme;
+        break;
+      case ThemeType.EmlvLight:
+        currentTheme = lightEmlvTheme;
+        break;
+
       default:
         throw ArgumentError.value(
             type, 'type', 'type must be part of ThemeType');
     }
+    _themeType = type;
     return currentTheme;
+  }
+
+  /// Returns the [ThemeType] corresponding to the passed theme's [name]
+  ///
+  /// __Example__ :
+  /// ```dart
+  /// DevinciTheme.getThemeTypeFromString('Dark') == ThemeType.Dark
+  /// ```
+  static ThemeType getThemeTypeFromString(String name) {
+    ThemeType res;
+    switch (name) {
+      case 'Light':
+        res = ThemeType.Light;
+        break;
+      case 'Dark':
+        res = ThemeType.Dark;
+        break;
+      case 'TrueDark':
+        res = ThemeType.TrueDark;
+        break;
+      case 'EsilvDark':
+        res = ThemeType.EsilvDark;
+        break;
+      case 'EsilvLight':
+        res = ThemeType.EsilvLight;
+        break;
+      case 'IimDark':
+        res = ThemeType.IimDark;
+        break;
+      case 'IimLight':
+        res = ThemeType.IimLight;
+        break;
+      case 'EmlvDark':
+        res = ThemeType.EmlvDark;
+        break;
+      case 'EmlvLight':
+        res = ThemeType.EmlvLight;
+        break;
+      default:
+        throw ArgumentError.value(
+            name, 'name', "name must a ThemeType's shortname");
+    }
+    return res;
   }
 }
 
@@ -110,6 +205,7 @@ class CustomTheme extends StatefulWidget {
 class CustomThemeState extends State<CustomTheme> {
   ThemeData _theme;
 
+  /// The current theme of the app, [theme] is a `ThemeData`.
   ThemeData get theme => _theme;
 
   @override
@@ -118,37 +214,38 @@ class CustomThemeState extends State<CustomTheme> {
     super.initState();
   }
 
+  /// Changes the __app's theme__ for the [themeType] theme.
+  ///
+  /// __Example__ :
+  /// ```dart
+  /// CustomTheme.instanceOf(context).changeTheme(ThemeType.Dark);
+  /// ```
   void changeTheme(ThemeType themeType) {
     setState(() {
       _theme = DevinciTheme.getTheme(themeType);
     });
+    globals.prefs.setString('theme', themeType.toShortString());
   }
 
-  void changeThemeByName(String name) {
-    setState(() {
-      switch (name) {
-        case 'light':
-          _theme = lightTheme;
-          break;
-        case 'dark':
-          _theme = darkTheme;
-          break;
-        case 'amoled_dark':
-          _theme = trueDarkTheme;
-          break;
-        default:
-          throw ArgumentError.value(name, 'name', 'name must be a theme name');
-      }
-    });
-  }
-
+  /// Returns `true` if the current theme is a __dark theme__. `false` otherwise
+  ///
+  /// Usefull for setting contrasts.
+  ///
+  /// __Example__ :
+  /// ```dart
+  /// CustomTheme.instanceOf(context).isDark() == true||false
+  /// ```
   bool isDark() {
-    return _theme == darkTheme || _theme == trueDarkTheme;
+    return _theme == darkTheme ||
+        _theme == trueDarkTheme ||
+        _theme == darkEsilvTheme ||
+        _theme == darkIimTheme ||
+        _theme == darkEmlvTheme;
   }
 
   @override
   Widget build(BuildContext context) {
-    return new _CustomTheme(
+    return _CustomTheme(
       data: this,
       child: widget.child,
     ); //nothing here for now!
@@ -288,9 +385,14 @@ class ContextEntryState extends State<ContextEntry> {
   }
 }
 
+/// A classroom object
+///
+/// Defines a PULV classroom
 class Salle {
   Salle(this.name, this.occupation);
   final String name;
+
+  /// The list of the occupation states based on the time
   final List<bool> occupation;
 }
 

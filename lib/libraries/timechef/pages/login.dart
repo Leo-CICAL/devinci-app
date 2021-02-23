@@ -11,7 +11,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:f_logs/f_logs.dart';
 import '../timechef.dart';
-import 'package:provider/provider.dart';
 import 'package:devinci/extra/classes.dart';
 
 class LoginPage extends StatefulWidget {

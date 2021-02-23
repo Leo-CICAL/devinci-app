@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -26,8 +25,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:one_context/one_context.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:provider/provider.dart';
-import 'package:devinci/extra/classes.dart';
 
 double getMatMoy(var elem) {
   if (elem['ratt'] != null) {

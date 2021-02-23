@@ -76,7 +76,7 @@
   "copy": "Kopieren",
   "share": "Teilen",
   "icon_change": "Symbol Andern",
-  "theme": "Thema",
+  "themes": "Themen",
   "notif_settings": "Benachrichtigungsparameter",
   "error_report": "Vorfallberichte",
   "usage_monitoring": "Überwachung der Verwendung",
@@ -126,7 +126,7 @@
   "thanks": "Vielen Dank!",
   "thanks_donation": "Diese Spende macht mich sehr glücklich, da ich nicht wirklich für meine Mittagessen bezahle. Sie wird es mir ermöglichen, dieses Abenteuer fortzusetzen, indem ich die App im App Store und im Play Store aufrechterhalte.\n\nIch danke Ihnen vielmals,\nAntoine Raulin",
   "donate": "Eine Spende machen",
-  "donate_explain": "Wenn Sie sich besonders nett fühlen und die weitere Entwicklung von Devinci unterstützen möchten, hilft jede Spende eine Menge!\nSie können mir auch helfen, indem Sie ein Like auf der GitHub-Seite des Projekts oder eine Bewertung im App Store oder Play Store hinterlassen.",
+  "donate_explain": "Wenn Sie sich besonders nett fühlen und die weitere Entwicklung von Devinci unterstützen möchten, hilft jede Spende eine Menge!\nSie können mir auch helfen, indem Sie ein Like auf der GitHub-Seite des Projekts oder eine Bewertung im App Store oder Play Store hinterlassen.\nJede Spende schaltet zusätzliche Funktionen der App und alle zukünftigen frei.",
   "little_chips": "Pommes frites",
   "whooper": "Ein Whooper",
   "menu_bk": "Ein Menü bei Burger King",
@@ -138,5 +138,6 @@
   "networkError": "Netzwerkfehler",
   "paymentPendingError": "Zahlung steht noch aus. Dankeschön!",
   "unexpectedBackendResponseError": "Server-Fehler. Entschuldigung",
-  "TransactionError": "Fehler während der Transaktion."
+  "TransactionError": "Fehler während der Transaktion.",
+  "theme_locked_donation_msg": "Dieses Thema ist nur nach einer Spende verfügbar, unabhängig von der Höhe des Betrages."
 }

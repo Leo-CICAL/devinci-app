@@ -76,7 +76,7 @@
   "copy": "Copy",
   "share": "Share",
   "icon_change": "Switch icon",
-  "theme": "Theme",
+  "themes": "Themes",
   "notif_settings": "Notification settings",
   "error_report": "Report error",
   "usage_monitoring": "Usage monitoring",
@@ -137,7 +137,7 @@
   "thanks": "Thank you!",
   "thanks_donation": "This donation makes me extremely happy, although it won't really pay for my lunches, it will allow me to continue this adventure by maintaining the app on the App Store and the Play Store.\n\nThank you very much,\nAntoine Raulin",
   "donate": "Donate",
-  "donate_explain": "If you're feeling extra nice and would like to support Devinci's development further, any tip at all helps a ton!\nYou can also help me by leaving a like on the project's GitHub page or a review in the App Store or Play Store.",
+  "donate_explain": "If you're feeling extra nice and would like to support Devinci's development further, any tip at all helps a ton!\nYou can also help me by leaving a like on the project's GitHub page or a review in the App Store or Play Store.\nEach donation unlocks the additional features of the app and all future ones.",
   "little_chips": "french fries-Sized tip",
   "whooper": "Whooper-Sized tip",
   "menu_bk": "A menu at Burger King",
@@ -149,5 +149,6 @@
   "networkError": "Network error",
   "paymentPendingError": "Payment pending. Thank you!",
   "unexpectedBackendResponseError": "Server error. Sorry",
-  "TransactionError": "Error during the transaction."
+  "TransactionError": "Error during the transaction.",
+  "theme_locked_donation_msg": "This theme is only available after making a donation, regardless of the amount."
 }

@@ -1,10 +1,10 @@
 import 'package:devinci/extra/CommonWidgets.dart';
+import 'package:devinci/extra/themes.dart';
 import 'package:devinci/libraries/devinci/extra/functions.dart';
 import 'package:devinci/pages/logic/notes.dart';
 import 'package:flutter/material.dart';
 import 'package:devinci/extra/globals.dart' as globals;
 import 'package:easy_localization/easy_localization.dart';
-import 'package:provider/provider.dart';
 import 'package:devinci/extra/classes.dart';
 
 Widget SemestreSelection(int sem) {
@@ -115,7 +115,7 @@ Widget MatiereTile(int i, int j) {
                                               ['matieres'][j]) ??
                                           11) >=
                                       10
-                                  ? Theme.of(getContext()).accentColor
+                                  ? getTheTeal(getContext())
                                   : getMatMoy(globals.user.notes[index]['s']
                                                   [currentSemester][i]
                                               ['matieres'][j]) ==
@@ -219,7 +219,7 @@ Widget NoteTile(int i, int j, int y) {
                                                         [currentSemester][i]['matieres']
                                                     [j]['notes'][y]['note'] >=
                                                 10
-                                            ? Theme.of(getContext()).accentColor
+                                            ? getTheTeal(getContext())
                                             : (globals.user.notes[index]['s']
                                                                 [currentSemester]
                                                             [i]['matieres'][j]

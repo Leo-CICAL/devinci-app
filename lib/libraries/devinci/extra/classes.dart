@@ -21,20 +21,21 @@ import 'package:sentry/sentry.dart';
 
 import 'api.dart';
 
+/// Internal API to communicate with the Devinci Portal.
 class Student {
-  //constructor
+  /// Creates a new Student object to communicate with the Devinci Portal
   Student(String username, String password) {
     this.username = username;
     this.password = password;
   }
 
-  //values
   String username;
   String password;
 
   bool error = false;
   int code = 200;
 
+  /// The list of tokens used to communicate with the Devinci Portal
   Map<String, String> tokens = {
     'SimpleSAML': '',
     'alv': '',
@@ -206,6 +207,11 @@ class Student {
     },
   };
 
+  /// Initializes the application
+  ///
+  /// - Check credentials
+  /// - Apply settings
+  /// - Register on the notification api
   Future<void> init() async {
     //fetch notesConfig
     try {
@@ -271,7 +277,7 @@ class Student {
     globals.crashConsent = globals.prefs.getString('crashConsent') ?? 'true';
     globals.analyticsConsent =
         globals.prefs.getBool('analyticsConsent') ?? false;
-    var calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? true;
+    var calendarViewDay = globals.prefs.getBool('calendarViewDay') ?? false;
     globals.calendarView =
         calendarViewDay ? CalendarView.day : CalendarView.workWeek;
     data['badge'] = await globals.storage.read(key: 'badge') ?? '';

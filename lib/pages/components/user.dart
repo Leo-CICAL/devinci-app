@@ -7,8 +7,6 @@ import 'package:devinci/extra/globals.dart' as globals;
 import 'package:one_context/one_context.dart';
 import 'package:recase/recase.dart';
 import 'package:f_logs/f_logs.dart';
-import 'package:provider/provider.dart';
-import 'package:devinci/extra/classes.dart';
 
 Widget InfoSection(String main, String second) {
   return Padding(

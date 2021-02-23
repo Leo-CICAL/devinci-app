@@ -76,7 +76,7 @@
   "copy": "Copier",
   "share": "Partager",
   "icon_change": "Changement d'icône",
-  "theme": "Thème",
+  "themes": "Thèmes",
   "notif_settings": "Paramètres des notifications",
   "error_report": "Rapports d'incident",
   "usage_monitoring": "Suivi d'utilisation",
@@ -137,7 +137,7 @@
   "thanks": "Merci !",
   "thanks_donation": "Ce don me fait extrêmement plaisir, à défaut de réellement payer mes déjeuners il permettra de pérenniser cette aventure en assurant le maintien de l'app sur l'App Store et le Play Store.\n\nEn te remerciant chaleureusement,\nAntoine Raulin",
   "donate": "Faire un don",
-  "donate_explain": "Tu aimes une fonctionnalité de l'app ou tu te sens juste super généreux aujourd'hui ?\nEn faisant un don, tu m'aides à développer Devinci et payer les frais de fonctionnement.\nTu peux aussi m'aider en laissant un like sur la page GitHub du projet ou un avis dans l'App Store ou le Play Store.",
+  "donate_explain": "Tu aimes une fonctionnalité de l'app ou tu te sens juste super généreux aujourd'hui ?\nEn faisant un don, tu m'aides à développer Devinci et payer les frais de fonctionnement.\nTu peux aussi m'aider en laissant un like sur la page GitHub du projet ou un avis dans l'App Store ou le Play Store.\nChaque don débloque les fonctionnalités supplémentaires de l'app et toutes celles à venir.",
   "little_chips": "Une petite frite",
   "whooper": "Un Whooper",
   "menu_bk": "Un menu chez Burger King",
@@ -149,5 +149,6 @@
   "networkError": "Erreur réseau",
   "paymentPendingError": "Paiement en attente de traitement. Merci !",
   "unexpectedBackendResponseError": "Erreur serveur. Désolé",
-  "TransactionError": "Erreur lors de la transaction."
+  "TransactionError": "Erreur lors de la transaction.",
+  "theme_locked_donation_msg": "Ce thème n'est disponible qu'après avoir fait un don, peu importe la somme"
 }

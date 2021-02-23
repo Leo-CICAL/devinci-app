@@ -15,8 +15,6 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:sembast/sembast.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:provider/provider.dart';
-import 'package:devinci/extra/classes.dart';
 
 Function setAgendaHeaderState;
 

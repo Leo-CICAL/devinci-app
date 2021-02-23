@@ -9,7 +9,6 @@ import 'package:one_context/one_context.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:provider/provider.dart';
 
 class SallesPage extends TraceableStatefulWidget {
   final bool tablet;
