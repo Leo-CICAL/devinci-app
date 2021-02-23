@@ -137,286 +137,288 @@ class _PresencePageState extends State<PresencePage> {
           header: ClassicHeader(),
           controller: _refreshController,
           onRefresh: _onRefresh,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: padding),
-            child: ListView(
-              shrinkWrap: true,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 62, left: 8, right: 8),
-                  child: Center(
-                    child: Text(
-                        globals.user.presence[i]['type'] == 'none'
-                            ? 'no_class'.tr()
-                            : globals.user.presence[i]['title'],
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                        style: widget.inSidePanel != null
-                            ? TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 20,
-                                color:
-                                    Theme.of(context).textTheme.headline2.color,
-                              )
-                            : Theme.of(context).textTheme.headline2),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 0),
-                  child: Center(
-                    child: Text(
-                        globals.user.presence[i]['type'] == 'none' ? '' : '—',
-                        style: Theme.of(context).textTheme.headline2),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 0),
-                  child: Center(
-                    child: Text(
-                        globals.user.presence[i]['type'] == 'none'
-                            ? ''
-                            : (globals.user.presence[i]['prof'] == ''
-                                ? globals.user.presence[i]['horaires']
-                                : globals.user.presence[i]['prof']),
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                        style: widget.inSidePanel != null
-                            ? TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color:
-                                    Theme.of(context).textTheme.headline2.color,
-                              )
-                            : Theme.of(context).textTheme.bodyText1),
-                  ),
-                ),
-                globals.user.presence[i]['prof'] != ''
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Center(
-                          child: Text(
-                              globals.user.presence[i]['type'] == 'none'
-                                  ? ''
-                                  : globals.user.presence[i]['horaires'],
-                              style: Theme.of(context).textTheme.bodyText2),
-                        ),
-                      )
-                    : SizedBox.shrink(),
-                Container(
-                  padding: EdgeInsets.only(
-                      top: 112,
-                      left: widget.inSidePanel != null ? 16 : 48,
-                      right: widget.inSidePanel != null ? 16 : 48),
-                  child: Center(
-                      child: {
-                    'ongoing': ProgressButton(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 18),
-                        child: Text(
-                          'ongoing',
-                          style: TextStyle(
+          child: ListView(
+            shrinkWrap: true,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(
+                    top: 62, left: 8 + padding, right: 8 + padding),
+                child: Center(
+                  child: Text(
+                      globals.user.presence[i]['type'] == 'none'
+                          ? 'no_class'.tr()
+                          : globals.user.presence[i]['title'],
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      style: widget.inSidePanel != null
+                          ? TextStyle(
+                              fontWeight: FontWeight.w500,
                               fontSize: 20,
+                              color:
+                                  Theme.of(context).textTheme.headline2.color,
+                            )
+                          : Theme.of(context).textTheme.headline2),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 0, left: padding, right: padding),
+                child: Center(
+                  child: Text(
+                      globals.user.presence[i]['type'] == 'none' ? '' : '—',
+                      style: Theme.of(context).textTheme.headline2),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 0, left: padding, right: padding),
+                child: Center(
+                  child: Text(
+                      globals.user.presence[i]['type'] == 'none'
+                          ? ''
+                          : (globals.user.presence[i]['prof'] == ''
+                              ? globals.user.presence[i]['horaires']
+                              : globals.user.presence[i]['prof']),
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      style: widget.inSidePanel != null
+                          ? TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: CustomTheme.instanceOf(context).isDark()
-                                  ? Colors.black
-                                  : Colors.white),
-                        ).tr(),
+                              fontSize: 16,
+                              color:
+                                  Theme.of(context).textTheme.headline2.color,
+                            )
+                          : Theme.of(context).textTheme.bodyText1),
+                ),
+              ),
+              globals.user.presence[i]['prof'] != ''
+                  ? Padding(
+                      padding: EdgeInsets.only(
+                          top: 8, left: padding, right: padding),
+                      child: Center(
+                        child: Text(
+                            globals.user.presence[i]['type'] == 'none'
+                                ? ''
+                                : globals.user.presence[i]['horaires'],
+                            style: Theme.of(context).textTheme.bodyText2),
                       ),
-                      onPressed: () async {
+                    )
+                  : SizedBox.shrink(),
+              Container(
+                padding: EdgeInsets.only(
+                  top: 112,
+                  left: (widget.inSidePanel != null ? 16 : 48) + padding,
+                  right: (widget.inSidePanel != null ? 16 : 48) + padding,
+                ),
+                child: Center(
+                    child: {
+                  'ongoing': ProgressButton(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18),
+                      child: Text(
+                        'ongoing',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: CustomTheme.instanceOf(context).isDark()
+                                ? Colors.black
+                                : Colors.white),
+                      ).tr(),
+                    ),
+                    onPressed: () async {
+                      setState(() {
+                        buttonState = ButtonState.inProgress;
+                      });
+                      try {
+                        await globals.user.setPresence(i);
                         setState(() {
-                          buttonState = ButtonState.inProgress;
+                          buttonState = ButtonState.normal;
                         });
+                      } catch (e) {
+                        FLog.info(
+                            className: '_PresencePageState',
+                            methodName: 'pageGen',
+                            text: 'needs reconnection');
+                        final snackBar = SnackBar(
+                          content: Text('reconnecting').tr(),
+                          duration: const Duration(seconds: 10),
+                        );
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+                        await showSnackBar(snackBar);
+                        try {
+                          await globals.user.getTokens();
+                        } catch (e, stacktrace) {
+                          FLog.logThis(
+                              className: '_PresencePageState',
+                              methodName: 'pageGen',
+                              text: 'exception',
+                              type: LogLevel.ERROR,
+                              exception: Exception(e),
+                              stacktrace: stacktrace);
+                        }
+                        Scaffold.of(context).removeCurrentSnackBar();
                         try {
                           await globals.user.setPresence(i);
                           setState(() {
                             buttonState = ButtonState.normal;
                           });
-                        } catch (e) {
-                          FLog.info(
+                        } catch (exception, stacktrace) {
+                          FLog.logThis(
                               className: '_PresencePageState',
                               methodName: 'pageGen',
-                              text: 'needs reconnection');
+                              text: 'exception',
+                              type: LogLevel.ERROR,
+                              exception: Exception(e),
+                              stacktrace: stacktrace);
+                          setState(() {
+                            buttonState = ButtonState.error;
+                          });
                           final snackBar = SnackBar(
-                            content: Text('reconnecting').tr(),
-                            duration: const Duration(seconds: 10),
+                            content: Text('error_msg').tr(),
+                            duration: const Duration(seconds: 6),
                           );
-// Find the Scaffold in the widget tree and use it to show a SnackBar.
-                          await showSnackBar(snackBar);
-                          try {
-                            await globals.user.getTokens();
-                          } catch (e, stacktrace) {
-                            FLog.logThis(
-                                className: '_PresencePageState',
-                                methodName: 'pageGen',
-                                text: 'exception',
-                                type: LogLevel.ERROR,
-                                exception: Exception(e),
-                                stacktrace: stacktrace);
-                          }
-                          Scaffold.of(context).removeCurrentSnackBar();
-                          try {
-                            await globals.user.setPresence(i);
-                            setState(() {
-                              buttonState = ButtonState.normal;
-                            });
-                          } catch (exception, stacktrace) {
-                            FLog.logThis(
-                                className: '_PresencePageState',
-                                methodName: 'pageGen',
-                                text: 'exception',
-                                type: LogLevel.ERROR,
-                                exception: Exception(e),
-                                stacktrace: stacktrace);
-                            setState(() {
-                              buttonState = ButtonState.error;
-                            });
-                            final snackBar = SnackBar(
-                              content: Text('error_msg').tr(),
-                              duration: const Duration(seconds: 6),
-                            );
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
-                            await showSnackBar(snackBar);
-                          }
+                          await showSnackBar(snackBar);
                         }
-                      },
-                      buttonState: buttonState,
-                      backgroundColor: Theme.of(context).accentColor,
-                      progressColor: CustomTheme.instanceOf(context).isDark()
-                          ? Colors.black
-                          : Colors.white,
-                    ),
-                    'done': ProgressButton(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 18),
-                        child: IconTheme(
-                          data: Theme.of(context).accentIconTheme,
-                          child: Icon(Icons.done),
-                        ),
+                      }
+                    },
+                    buttonState: buttonState,
+                    backgroundColor: Theme.of(context).accentColor,
+                    progressColor: CustomTheme.instanceOf(context).isDark()
+                        ? Colors.black
+                        : Colors.white,
+                  ),
+                  'done': ProgressButton(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18),
+                      child: IconTheme(
+                        data: Theme.of(context).accentIconTheme,
+                        child: Icon(Icons.done),
                       ),
-                      onPressed: null,
-                      buttonState: buttonState,
-                      backgroundColor: CustomTheme.instanceOf(context).isDark()
-                          ? Color(0xFF313131)
-                          : Color(0xFFDFDFDF),
                     ),
-                    'notOpen': ProgressButton(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 18),
-                        child: Text(
-                          'notOpen',
-                          style: TextStyle(
+                    onPressed: null,
+                    buttonState: buttonState,
+                    backgroundColor: CustomTheme.instanceOf(context).isDark()
+                        ? Color(0xFF313131)
+                        : Color(0xFFDFDFDF),
+                  ),
+                  'notOpen': ProgressButton(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18),
+                      child: Text(
+                        'notOpen',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ).tr(),
+                    ),
+                    onPressed: null,
+                    buttonState: buttonState,
+                    backgroundColor: CustomTheme.instanceOf(context).isDark()
+                        ? Color(0xFF313131)
+                        : Color(0xFFDFDFDF),
+                  ),
+                  'closed': ProgressButton(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18),
+                      child: Text(
+                        'closed',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                      ).tr(),
+                    ),
+                    onPressed: null,
+                    buttonState: buttonState,
+                    backgroundColor: CustomTheme.instanceOf(context).isDark()
+                        ? Colors.redAccent
+                        : Colors.red.shade700,
+                  ),
+                }[globals.user.presence[i]['type']]),
+              ),
+              Visibility(
+                visible: globals.user.presence[i]['zoom'] != '',
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: 32,
+                    left: (widget.inSidePanel != null ? 16 : 48) + padding,
+                    right: (widget.inSidePanel != null ? 16 : 48) + padding,
+                  ),
+                  child: ProgressButton(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18),
+                      child: Text(
+                        'ZOOM',
+                        style: TextStyle(
                             fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ).tr(),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
-                      onPressed: null,
-                      buttonState: buttonState,
-                      backgroundColor: CustomTheme.instanceOf(context).isDark()
-                          ? Color(0xFF313131)
-                          : Color(0xFFDFDFDF),
                     ),
-                    'closed': ProgressButton(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 18),
-                        child: Text(
-                          'closed',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
-                        ).tr(),
-                      ),
-                      onPressed: null,
-                      buttonState: buttonState,
-                      backgroundColor: CustomTheme.instanceOf(context).isDark()
-                          ? Colors.redAccent
-                          : Colors.red.shade700,
-                    ),
-                  }[globals.user.presence[i]['type']]),
-                ),
-                Visibility(
-                  visible: globals.user.presence[i]['zoom'] != '',
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        top: 32,
-                        left: widget.inSidePanel != null ? 16 : 48,
-                        right: widget.inSidePanel != null ? 16 : 48),
-                    child: ProgressButton(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 18),
-                        child: Text(
-                          'ZOOM',
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      ),
-                      onPressed: () async {
-                        String url = globals.user.presence[i]['zoom'];
-                        if (await canLaunch(url)) {
-                          await launch(url, forceSafariVC: false);
-                        } else {
-                          throw 'Could not launch $url';
-                        }
-                      },
-                      buttonState: ButtonState.normal,
-                      backgroundColor: CustomTheme.instanceOf(context).isDark()
-                          ? Colors.blueAccent.shade200
-                          : Color(0xFF2D8CFF),
-                    ),
+                    onPressed: () async {
+                      String url = globals.user.presence[i]['zoom'];
+                      if (await canLaunch(url)) {
+                        await launch(url, forceSafariVC: false);
+                      } else {
+                        throw 'Could not launch $url';
+                      }
+                    },
+                    buttonState: ButtonState.normal,
+                    backgroundColor: CustomTheme.instanceOf(context).isDark()
+                        ? Colors.blueAccent.shade200
+                        : Color(0xFF2D8CFF),
                   ),
                 ),
-                Visibility(
-                  visible: globals.user.presence[i]['validation_date'] != '',
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        top: 12,
-                        left: widget.inSidePanel != null ? 16 : 48,
-                        right: widget.inSidePanel != null ? 16 : 48),
-                    child: Center(
-                      child: RichText(
-                        text: TextSpan(
-                          text: '${'attendance_validation_date'.tr()}',
-                          style: DefaultTextStyle.of(context).style,
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: globals.user.presence[i]
-                                    ['validation_date'],
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                          ],
-                        ),
+              ),
+              Visibility(
+                visible: globals.user.presence[i]['validation_date'] != '',
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: 12,
+                    left: (widget.inSidePanel != null ? 16 : 48) + padding,
+                    right: (widget.inSidePanel != null ? 16 : 48) + padding,
+                  ),
+                  child: Center(
+                    child: RichText(
+                      text: TextSpan(
+                        text: '${'attendance_validation_date'.tr()}',
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: globals.user.presence[i]['validation_date'],
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                Visibility(
-                  visible: globals.user.presence[i]['zoom_pwd'] != '',
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        top: 12,
-                        left: widget.inSidePanel != null ? 16 : 48,
-                        right: widget.inSidePanel != null ? 16 : 48),
-                    child: Center(
-                      child: SelectableText.rich(
-                        TextSpan(
-                          text: '${'password'.tr()} : ',
-                          style: DefaultTextStyle.of(context).style,
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: globals.user.presence[i]['zoom_pwd'],
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                          ],
-                        ),
+              ),
+              Visibility(
+                visible: globals.user.presence[i]['zoom_pwd'] != '',
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: 12,
+                    left: (widget.inSidePanel != null ? 16 : 48) + padding,
+                    right: (widget.inSidePanel != null ? 16 : 48) + padding,
+                  ),
+                  child: Center(
+                    child: SelectableText.rich(
+                      TextSpan(
+                        text: '${'password'.tr()} : ',
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: globals.user.presence[i]['zoom_pwd'],
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );
