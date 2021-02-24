@@ -276,7 +276,7 @@ void betterFeedbackOnFeedback(
   final email = Email(
     body:
         '$feedbackText\n\n Erreur:${globals.feedbackError}\n StackTrace:${globals.feedbackStackTrace.toString()}\n eventId : ${globals.eventId}',
-    subject: 'Devinci - Erreur',
+    subject: 'LeoPortail - Erreur',
     recipients: ['antoine@araulin.eu'],
     attachmentPaths: [attachment.path, attachmentNotes.path],
     isHTML: false,

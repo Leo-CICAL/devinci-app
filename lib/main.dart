@@ -169,10 +169,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         localizationsDelegates: res,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
-        title: 'Devinci',
+        title: 'LeoPortail',
         theme: CustomTheme.of(context),
         builder: OneContext().builder,
-        home: LoginPage(title: 'Devinci', key: globals.loginPageKey),
+        home: LoginPage(title: 'LeoPortail', key: globals.loginPageKey),
         debugShowCheckedModeBanner: false,
       ),
     );

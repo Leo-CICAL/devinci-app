@@ -513,19 +513,19 @@
     },
     {
       "name": "sembast",
-      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/sembast-2.4.9",
+      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/sembast-2.4.10+1",
       "packageUri": "lib/",
       "languageVersion": "2.9"
     },
     {
       "name": "sentry",
-      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/sentry-4.0.4",
+      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/sentry-4.0.5",
       "packageUri": "lib/",
       "languageVersion": "2.8"
     },
     {
       "name": "sentry_flutter",
-      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/sentry_flutter-4.0.4",
+      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/sentry_flutter-4.0.5",
       "packageUri": "lib/",
       "languageVersion": "2.8"
     },
@@ -591,7 +591,7 @@
     },
     {
       "name": "shelf_web_socket",
-      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/shelf_web_socket-0.2.4",
+      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/shelf_web_socket-0.2.4+1",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
@@ -657,43 +657,43 @@
     },
     {
       "name": "syncfusion_flutter_calendar",
-      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_calendar-18.4.42",
+      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_calendar-18.4.44",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
     {
       "name": "syncfusion_flutter_core",
-      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_core-18.4.42",
+      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_core-18.4.44",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
     {
       "name": "syncfusion_flutter_datagrid",
-      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_datagrid-18.4.42-beta",
+      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_datagrid-18.4.44-beta",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
     {
       "name": "syncfusion_flutter_datepicker",
-      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_datepicker-18.4.42-beta",
+      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_datepicker-18.4.44-beta",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
     {
       "name": "syncfusion_flutter_pdf",
-      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_pdf-18.4.42-beta",
+      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_pdf-18.4.44-beta",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
     {
       "name": "syncfusion_flutter_pdfviewer",
-      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_pdfviewer-18.4.42-beta",
+      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_flutter_pdfviewer-18.4.44-beta",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
     {
       "name": "syncfusion_localizations",
-      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_localizations-18.4.42",
+      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/syncfusion_localizations-18.4.44",
       "packageUri": "lib/",
       "languageVersion": "2.1"
     },
@@ -819,7 +819,7 @@
     },
     {
       "name": "webkit_inspection_protocol",
-      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/webkit_inspection_protocol-0.7.4",
+      "rootUri": "file:///Users/antoine/development/flutter/.pub-cache/hosted/pub.dartlang.org/webkit_inspection_protocol-0.7.5",
       "packageUri": "lib/",
       "languageVersion": "2.0"
     },
@@ -872,7 +872,7 @@
       "languageVersion": "2.8"
     }
   ],
-  "generated": "2021-02-23T14:41:42.341699Z",
+  "generated": "2021-02-24T13:53:19.160196Z",
   "generator": "pub",
   "generatorVersion": "2.10.5"
 }

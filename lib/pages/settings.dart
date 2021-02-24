@@ -655,11 +655,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     GestureDetector(
                       onTap: () async {
-                        await Sentry.captureMessage('Devinci logs sent');
+                        await Sentry.captureMessage('LeoPortail logs sent');
                         var logs = await FLog.exportLogs();
                         final email = Email(
                           body: '',
-                          subject: 'Devinci - Logs',
+                          subject: 'LeoPortail - Logs',
                           recipients: ['devinci@araulin.eu'],
                           attachmentPaths: [logs.path],
                           isHTML: false,

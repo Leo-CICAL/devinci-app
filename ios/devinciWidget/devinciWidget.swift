@@ -168,7 +168,7 @@ struct devinciWidgetEntryView : View {
                         Image(systemName: "gear")
                         Spacer()
                     }.padding(.bottom, 8)
-                    Text("Quitter puis ouvrir Devinci pour initialiser le widget")
+                    Text("Quitter puis ouvrir LeoPortail pour initialiser le widget")
                         .font(.system(size:12))
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color(UIColor.label))
@@ -216,7 +216,7 @@ struct devinciWidgetEntryView : View {
                         Image(systemName: "gear")
                         Spacer()
                     }.padding(.bottom, 8)
-                    Text("Quitter puis ouvrir Devinci pour initialiser le widget")
+                    Text("Quitter puis ouvrir LeoPortail pour initialiser le widget")
                         .font(.system(size:12))
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color(UIColor.label))
@@ -309,7 +309,7 @@ struct devinciWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             devinciWidgetEntryView(entry: entry)
         }.supportedFamilies([.systemSmall, .systemMedium])
-        .configurationDisplayName("Devinci")
+        .configurationDisplayName("LeoPortail")
         .description("Gardez un oeil sur votre prochain cours.")
     }
 }
