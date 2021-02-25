@@ -207,6 +207,7 @@ class Student {
 
   Future<void> init() async {
     //fetch notesConfig
+    print("init");
     try {
       var client = HttpClient();
       client.connectionTimeout = const Duration(seconds: 4);
@@ -488,11 +489,17 @@ class Student {
               methodName: 'getTokens',
               text: 'username correct');
           //l('username correct');
+          var newLocation = RegExp(r',"(.*?)"')
+              .firstMatch(
+                body,
+              )
+              .group(1);
+          print(newLocation);
 
           req = await client.getUrl(
             Uri.parse(
-                'https://www.leonard-de-vinci.net/login.sso.php?username=' +
-                    Uri.encodeComponent(username)),
+              'https://www.leonard-de-vinci.net' + newLocation,
+            ),
           );
           req.followRedirects = false;
           req.headers.set('Referer', 'https://www.leonard-de-vinci.net/');
@@ -1884,23 +1891,23 @@ class Student {
                         .group(1);
                   } else if (body.contains('Vous avez été noté présent')) {
                     presence[i]['type'] = 'done';
-                    try{
+                    try {
                       var doc = parse(body);
                       var validationText = doc
                           .querySelector(
                               '#body_presence > div.alert.alert-success')
                           .text;
                       presence[i]['validation_date'] = RegExp(r'à (.*?) ')
-                        .firstMatch(validationText)
-                        .group(1);
-                    }catch(e, stacktrace){
+                          .firstMatch(validationText)
+                          .group(1);
+                    } catch (e, stacktrace) {
                       FLog.logThis(
-                    className: 'Student',
-                    methodName: 'getPresence',
-                    text: 'exception',
-                    type: LogLevel.ERROR,
-                    exception: Exception(e),
-                    stacktrace: stacktrace);
+                          className: 'Student',
+                          methodName: 'getPresence',
+                          text: 'exception',
+                          type: LogLevel.ERROR,
+                          exception: Exception(e),
+                          stacktrace: stacktrace);
                     }
                   } else if (body.contains('clôturé')) {
                     presence[i]['type'] = 'closed';
